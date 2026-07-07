@@ -1,0 +1,10 @@
+name:冶炼厂
+size:14 x 3 x 16
+amount:50.0元
+author:xy2407
+description:将矿脉石头和粗矿冶炼成对应矿物的工业建筑。
+tags:price_medium,material_medium,stage_middle
+job_type:smelter
+job_name:冶炼工人
+industrial:smeltery.json
+structure:smeltery.nbt

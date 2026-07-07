@@ -1,0 +1,45 @@
+{
+  "id": "cow_farm",
+  "name": "奶牛场",
+  "breeder": "farmer",
+  "jobName": "牧民",
+  "heldItem": "minecraft:wheat",
+  "points": {
+    "work": {
+      "type": "structure_pos",
+      "positions": [[1, 0, 0]]
+    },
+    "spawn": {
+      "type": "structure_pos",
+      "positions": [[2, 0, 0]]
+    }
+  },
+  "containers": {
+    "input": {
+      "type": "structure_pos",
+      "positions": [[0, 1, 0]]
+    },
+    "output": {
+      "type": "structure_pos",
+      "positions": [[0, 1, 1]]
+    }
+  },
+  "recipes": [
+    {
+      "id": "cow_beef",
+      "name": "养殖宰杀-牛肉",
+      "type": "breeding_slaughter",
+      "entityType": "minecraft:cow",
+      "feedItem": "minecraft:wheat",
+      "heldItem": "minecraft:wheat"
+    },
+    {
+      "id": "sheep_wool",
+      "name": "繁殖采集-羊毛",
+      "type": "breeding_collect",
+      "entityType": "minecraft:sheep",
+      "feedItem": "minecraft:wheat",
+      "heldItem": "minecraft:wheat"
+    }
+  ]
+}

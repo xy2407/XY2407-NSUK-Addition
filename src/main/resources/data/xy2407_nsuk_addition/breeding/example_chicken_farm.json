@@ -1,0 +1,45 @@
+{
+  "id": "chicken_farm",
+  "name": "养鸡场",
+  "breeding_worker": "breeder",
+  "jobName": "饲养员",
+  "heldItem": "minecraft:wheat_seeds",
+  "points": {
+    "work": {
+      "type": "structure_pos",
+      "positions": [[0, 1, 0]]
+    },
+    "spawn": {
+      "type": "structure_pos",
+      "positions": [[2, 1, 0]]
+    }
+  },
+  "containers": {
+    "input": {
+      "type": "structure_pos",
+      "positions": [[0, 1, 1]]
+    },
+    "output": {
+      "type": "structure_pos",
+      "positions": [[0, 1, 2]]
+    }
+  },
+  "recipes": [
+    {
+      "id": "chicken_meat",
+      "name": "养殖宰杀-鸡肉",
+      "type": "breeding_slaughter",
+      "entityType": "minecraft:chicken",
+      "feedItem": "minecraft:wheat_seeds",
+      "heldItem": "minecraft:wheat_seeds"
+    },
+    {
+      "id": "chicken_feather",
+      "name": "繁殖采集-鸡毛",
+      "type": "breeding_collect",
+      "entityType": "minecraft:chicken",
+      "feedItem": "minecraft:wheat_seeds",
+      "heldItem": "minecraft:wheat_seeds"
+    }
+  ]
+}

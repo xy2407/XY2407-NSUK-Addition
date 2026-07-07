@@ -1,0 +1,17 @@
+{
+  "fish": "aquaculture:arapaima",
+  "bucket": "aquaculture:arapaima_bucket",
+  "display_data": {
+    "entity": "aquaculture:arapaima",
+    "shape": "2x1",
+    "x": -0.05,
+    "y": -0.15
+  },
+  "journal_profile": {
+    "description": "journal.description.aquaculture.arapaima",
+    "group": "jungle"
+  },
+  "selection_weight": 30.0,
+  "strength": 0.3,
+  "speed": 0.9
+}

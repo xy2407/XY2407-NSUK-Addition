@@ -1,0 +1,977 @@
+{
+  "id": "fish1",
+  "name": "水产养殖场",
+  "breeder": "fish_farmer",
+  "jobName": "养殖工人",
+  "heldItem": "aquaculture:worm",
+  "points": {
+    "work": { "type": "structure_pos", "positions": [[7, 3, 7]] },
+    "spawn": { "type": "structure_pos", "positions": [[7, 3, 7]] }
+  },
+  "containers": {
+    "input": { "type": "structure_pos", "positions": [[7, 3, 6]] },
+    "output": { "type": "structure_pos", "positions": [[7, 3, 8]] }
+  },
+  "recipes": [
+    {
+      "id": "atlantic_cod",
+      "name": "atlantic_cod",
+      "type": "breeding_slaughter",
+      "entityType": "aquaculture:atlantic_cod",
+      "feedItem": "aquaculture:worm",
+      "heldItem": "aquaculture:worm"
+    },
+    {
+      "id": "blackfish",
+      "name": "blackfish",
+      "type": "breeding_slaughter",
+      "entityType": "aquaculture:blackfish",
+      "feedItem": "aquaculture:worm",
+      "heldItem": "aquaculture:worm"
+    },
+    {
+      "id": "pacific_halibut",
+      "name": "pacific_halibut",
+      "type": "breeding_slaughter",
+      "entityType": "aquaculture:pacific_halibut",
+      "feedItem": "aquaculture:worm",
+      "heldItem": "aquaculture:worm"
+    },
+    {
+      "id": "atlantic_halibut",
+      "name": "atlantic_halibut",
+      "type": "breeding_slaughter",
+      "entityType": "aquaculture:atlantic_halibut",
+      "feedItem": "aquaculture:worm",
+      "heldItem": "aquaculture:worm"
+    },
+    {
+      "id": "atlantic_herring",
+      "name": "atlantic_herring",
+      "type": "breeding_slaughter",
+      "entityType": "aquaculture:atlantic_herring",
+      "feedItem": "aquaculture:worm",
+      "heldItem": "aquaculture:worm"
+    },
+    {
+      "id": "pink_salmon",
+      "name": "pink_salmon",
+      "type": "breeding_slaughter",
+      "entityType": "aquaculture:pink_salmon",
+      "feedItem": "aquaculture:worm",
+      "heldItem": "aquaculture:worm"
+    },
+    {
+      "id": "pollock",
+      "name": "pollock",
+      "type": "breeding_slaughter",
+      "entityType": "aquaculture:pollock",
+      "feedItem": "aquaculture:worm",
+      "heldItem": "aquaculture:worm"
+    },
+    {
+      "id": "rainbow_trout",
+      "name": "rainbow_trout",
+      "type": "breeding_slaughter",
+      "entityType": "aquaculture:rainbow_trout",
+      "feedItem": "aquaculture:worm",
+      "heldItem": "aquaculture:worm"
+    },
+    {
+      "id": "bayad",
+      "name": "bayad",
+      "type": "breeding_slaughter",
+      "entityType": "aquaculture:bayad",
+      "feedItem": "aquaculture:worm",
+      "heldItem": "aquaculture:worm"
+    },
+    {
+      "id": "boulti",
+      "name": "boulti",
+      "type": "breeding_slaughter",
+      "entityType": "aquaculture:boulti",
+      "feedItem": "aquaculture:worm",
+      "heldItem": "aquaculture:worm"
+    },
+    {
+      "id": "capitaine",
+      "name": "capitaine",
+      "type": "breeding_slaughter",
+      "entityType": "aquaculture:capitaine",
+      "feedItem": "aquaculture:worm",
+      "heldItem": "aquaculture:worm"
+    },
+    {
+      "id": "synodontis",
+      "name": "synodontis",
+      "type": "breeding_slaughter",
+      "entityType": "aquaculture:synodontis",
+      "feedItem": "aquaculture:worm",
+      "heldItem": "aquaculture:worm"
+    },
+    {
+      "id": "smallmouth_bass",
+      "name": "smallmouth_bass",
+      "type": "breeding_slaughter",
+      "entityType": "aquaculture:smallmouth_bass",
+      "feedItem": "aquaculture:worm",
+      "heldItem": "aquaculture:worm"
+    },
+    {
+      "id": "bluegill",
+      "name": "bluegill",
+      "type": "breeding_slaughter",
+      "entityType": "aquaculture:bluegill",
+      "feedItem": "aquaculture:worm",
+      "heldItem": "aquaculture:worm"
+    },
+    {
+      "id": "brown_trout",
+      "name": "brown_trout",
+      "type": "breeding_slaughter",
+      "entityType": "aquaculture:brown_trout",
+      "feedItem": "aquaculture:worm",
+      "heldItem": "aquaculture:worm"
+    },
+    {
+      "id": "carp",
+      "name": "carp",
+      "type": "breeding_slaughter",
+      "entityType": "aquaculture:carp",
+      "feedItem": "aquaculture:worm",
+      "heldItem": "aquaculture:worm"
+    },
+    {
+      "id": "catfish",
+      "name": "catfish",
+      "type": "breeding_slaughter",
+      "entityType": "aquaculture:catfish",
+      "feedItem": "aquaculture:worm",
+      "heldItem": "aquaculture:worm"
+    },
+    {
+      "id": "gar",
+      "name": "gar",
+      "type": "breeding_slaughter",
+      "entityType": "aquaculture:gar",
+      "feedItem": "aquaculture:worm",
+      "heldItem": "aquaculture:worm"
+    },
+    {
+      "id": "minnow",
+      "name": "minnow",
+      "type": "breeding_slaughter",
+      "entityType": "aquaculture:minnow",
+      "feedItem": "aquaculture:worm",
+      "heldItem": "aquaculture:worm"
+    },
+    {
+      "id": "muskellunge",
+      "name": "muskellunge",
+      "type": "breeding_slaughter",
+      "entityType": "aquaculture:muskellunge",
+      "feedItem": "aquaculture:worm",
+      "heldItem": "aquaculture:worm"
+    },
+    {
+      "id": "perch",
+      "name": "perch",
+      "type": "breeding_slaughter",
+      "entityType": "aquaculture:perch",
+      "feedItem": "aquaculture:worm",
+      "heldItem": "aquaculture:worm"
+    },
+    {
+      "id": "arapaima",
+      "name": "arapaima",
+      "type": "breeding_slaughter",
+      "entityType": "aquaculture:arapaima",
+      "feedItem": "aquaculture:worm",
+      "heldItem": "aquaculture:worm"
+    },
+    {
+      "id": "piranha",
+      "name": "piranha",
+      "type": "breeding_slaughter",
+      "entityType": "aquaculture:piranha",
+      "feedItem": "aquaculture:worm",
+      "heldItem": "aquaculture:worm"
+    },
+    {
+      "id": "tambaqui",
+      "name": "tambaqui",
+      "type": "breeding_slaughter",
+      "entityType": "aquaculture:tambaqui",
+      "feedItem": "aquaculture:worm",
+      "heldItem": "aquaculture:worm"
+    },
+    {
+      "id": "brown_shrooma",
+      "name": "brown_shrooma",
+      "type": "breeding_slaughter",
+      "entityType": "aquaculture:brown_shrooma",
+      "feedItem": "aquaculture:worm",
+      "heldItem": "aquaculture:worm"
+    },
+    {
+      "id": "red_shrooma",
+      "name": "red_shrooma",
+      "type": "breeding_slaughter",
+      "entityType": "aquaculture:red_shrooma",
+      "feedItem": "aquaculture:worm",
+      "heldItem": "aquaculture:worm"
+    },
+    {
+      "id": "jellyfish",
+      "name": "jellyfish",
+      "type": "breeding_slaughter",
+      "entityType": "aquaculture:jellyfish",
+      "feedItem": "aquaculture:worm",
+      "heldItem": "aquaculture:worm"
+    },
+    {
+      "id": "red_grouper",
+      "name": "red_grouper",
+      "type": "breeding_slaughter",
+      "entityType": "aquaculture:red_grouper",
+      "feedItem": "aquaculture:worm",
+      "heldItem": "aquaculture:worm"
+    },
+    {
+      "id": "tuna",
+      "name": "tuna",
+      "type": "breeding_slaughter",
+      "entityType": "aquaculture:tuna",
+      "feedItem": "aquaculture:worm",
+      "heldItem": "aquaculture:worm"
+    },
+    {
+      "id": "tuna",
+      "name": "tuna",
+      "type": "breeding_slaughter",
+      "entityType": "tide:tuna",
+      "feedItem": "tide:crystal_shrimp",
+      "heldItem": "tide:crystal_shrimp"
+    },
+    {
+      "id": "mackerel",
+      "name": "mackerel",
+      "type": "breeding_slaughter",
+      "entityType": "tide:mackerel",
+      "feedItem": "tide:crystal_shrimp",
+      "heldItem": "tide:crystal_shrimp"
+    },
+    {
+      "id": "snook",
+      "name": "snook",
+      "type": "breeding_slaughter",
+      "entityType": "tide:snook",
+      "feedItem": "tide:crystal_shrimp",
+      "heldItem": "tide:crystal_shrimp"
+    },
+    {
+      "id": "angelfish",
+      "name": "angelfish",
+      "type": "breeding_slaughter",
+      "entityType": "tide:angelfish",
+      "feedItem": "tide:crystal_shrimp",
+      "heldItem": "tide:crystal_shrimp"
+    },
+    {
+      "id": "mahi_mahi",
+      "name": "mahi_mahi",
+      "type": "breeding_slaughter",
+      "entityType": "tide:mahi_mahi",
+      "feedItem": "tide:crystal_shrimp",
+      "heldItem": "tide:crystal_shrimp"
+    },
+    {
+      "id": "sailfish",
+      "name": "sailfish",
+      "type": "breeding_slaughter",
+      "entityType": "tide:sailfish",
+      "feedItem": "tide:crystal_shrimp",
+      "heldItem": "tide:crystal_shrimp"
+    },
+    {
+      "id": "swordfish",
+      "name": "swordfish",
+      "type": "breeding_slaughter",
+      "entityType": "tide:swordfish",
+      "feedItem": "tide:crystal_shrimp",
+      "heldItem": "tide:crystal_shrimp"
+    },
+    {
+      "id": "manta_ray",
+      "name": "manta_ray",
+      "type": "breeding_slaughter",
+      "entityType": "tide:manta_ray",
+      "feedItem": "tide:guppy",
+      "heldItem": "tide:guppy"
+    },
+    {
+      "id": "aquathorn",
+      "name": "aquathorn",
+      "type": "breeding_slaughter",
+      "entityType": "tide:aquathorn",
+      "feedItem": "tide:crystal_shrimp",
+      "heldItem": "tide:crystal_shrimp"
+    },
+    {
+      "id": "rainbow_trout",
+      "name": "rainbow_trout",
+      "type": "breeding_slaughter",
+      "entityType": "tide:rainbow_trout",
+      "feedItem": "tide:crystal_shrimp",
+      "heldItem": "tide:crystal_shrimp"
+    },
+    {
+      "id": "brook_trout",
+      "name": "brook_trout",
+      "type": "breeding_slaughter",
+      "entityType": "tide:brook_trout",
+      "feedItem": "tide:crystal_shrimp",
+      "heldItem": "tide:crystal_shrimp"
+    },
+    {
+      "id": "largemouth_bass",
+      "name": "largemouth_bass",
+      "type": "breeding_slaughter",
+      "entityType": "tide:largemouth_bass",
+      "feedItem": "tide:crystal_shrimp",
+      "heldItem": "tide:crystal_shrimp"
+    },
+    {
+      "id": "smallmouth_bass",
+      "name": "smallmouth_bass",
+      "type": "breeding_slaughter",
+      "entityType": "tide:smallmouth_bass",
+      "feedItem": "tide:crystal_shrimp",
+      "heldItem": "tide:crystal_shrimp"
+    },
+    {
+      "id": "white_crappie",
+      "name": "white_crappie",
+      "type": "breeding_slaughter",
+      "entityType": "tide:white_crappie",
+      "feedItem": "tide:crystal_shrimp",
+      "heldItem": "tide:crystal_shrimp"
+    },
+    {
+      "id": "black_crappie",
+      "name": "black_crappie",
+      "type": "breeding_slaughter",
+      "entityType": "tide:black_crappie",
+      "feedItem": "tide:crystal_shrimp",
+      "heldItem": "tide:crystal_shrimp"
+    },
+    {
+      "id": "yellow_perch",
+      "name": "yellow_perch",
+      "type": "breeding_slaughter",
+      "entityType": "tide:yellow_perch",
+      "feedItem": "tide:crystal_shrimp",
+      "heldItem": "tide:crystal_shrimp"
+    },
+    {
+      "id": "carp",
+      "name": "carp",
+      "type": "breeding_slaughter",
+      "entityType": "tide:carp",
+      "feedItem": "tide:crystal_shrimp",
+      "heldItem": "tide:crystal_shrimp"
+    },
+    {
+      "id": "pike",
+      "name": "pike",
+      "type": "breeding_slaughter",
+      "entityType": "tide:pike",
+      "feedItem": "tide:crystal_shrimp",
+      "heldItem": "tide:crystal_shrimp"
+    },
+    {
+      "id": "guppy",
+      "name": "guppy",
+      "type": "breeding_slaughter",
+      "entityType": "tide:guppy",
+      "feedItem": "tide:crystal_shrimp",
+      "heldItem": "tide:crystal_shrimp"
+    },
+    {
+      "id": "bluegill",
+      "name": "bluegill",
+      "type": "breeding_slaughter",
+      "entityType": "tide:bluegill",
+      "feedItem": "tide:crystal_shrimp",
+      "heldItem": "tide:crystal_shrimp"
+    },
+    {
+      "id": "catfish",
+      "name": "catfish",
+      "type": "breeding_slaughter",
+      "entityType": "tide:catfish",
+      "feedItem": "tide:crystal_shrimp",
+      "heldItem": "tide:crystal_shrimp"
+    },
+    {
+      "id": "walleye",
+      "name": "walleye",
+      "type": "breeding_slaughter",
+      "entityType": "tide:walleye",
+      "feedItem": "tide:crystal_shrimp",
+      "heldItem": "tide:crystal_shrimp"
+    },
+    {
+      "id": "arapaima",
+      "name": "arapaima",
+      "type": "breeding_slaughter",
+      "entityType": "tide:arapaima",
+      "feedItem": "tide:crystal_shrimp",
+      "heldItem": "tide:crystal_shrimp"
+    },
+    {
+      "id": "mirage_catfish",
+      "name": "mirage_catfish",
+      "type": "breeding_slaughter",
+      "entityType": "tide:mirage_catfish",
+      "feedItem": "tide:crystal_shrimp",
+      "heldItem": "tide:crystal_shrimp"
+    },
+    {
+      "id": "sand_tiger_shark",
+      "name": "sand_tiger_shark",
+      "type": "breeding_slaughter",
+      "entityType": "tide:sand_tiger_shark",
+      "feedItem": "tide:crystal_shrimp",
+      "heldItem": "tide:crystal_shrimp"
+    },
+    {
+      "id": "slimy_salmon",
+      "name": "slimy_salmon",
+      "type": "breeding_slaughter",
+      "entityType": "tide:slimy_salmon",
+      "feedItem": "tide:crystal_shrimp",
+      "heldItem": "tide:crystal_shrimp"
+    },
+    {
+      "id": "frostbite_flounder",
+      "name": "frostbite_flounder",
+      "type": "breeding_slaughter",
+      "entityType": "tide:frostbite_flounder",
+      "feedItem": "tide:crystal_shrimp",
+      "heldItem": "tide:crystal_shrimp"
+    },
+    {
+      "id": "sturgeon",
+      "name": "sturgeon",
+      "type": "breeding_slaughter",
+      "entityType": "tide:sturgeon",
+      "feedItem": "tide:crystal_shrimp",
+      "heldItem": "tide:crystal_shrimp"
+    },
+    {
+      "id": "blossom_bass",
+      "name": "blossom_bass",
+      "type": "breeding_slaughter",
+      "entityType": "tide:blossom_bass",
+      "feedItem": "tide:crystal_shrimp",
+      "heldItem": "tide:crystal_shrimp"
+    },
+    {
+      "id": "spore_stalker",
+      "name": "spore_stalker",
+      "type": "breeding_slaughter",
+      "entityType": "tide:spore_stalker",
+      "feedItem": "tide:crystal_shrimp",
+      "heldItem": "tide:crystal_shrimp"
+    },
+    {
+      "id": "mooneye",
+      "name": "mooneye",
+      "type": "breeding_slaughter",
+      "entityType": "tide:mooneye",
+      "feedItem": "tide:crystal_shrimp",
+      "heldItem": "tide:crystal_shrimp"
+    },
+    {
+      "id": "bull_shark",
+      "name": "bull_shark",
+      "type": "breeding_slaughter",
+      "entityType": "tide:bull_shark",
+      "feedItem": "tide:crystal_shrimp",
+      "heldItem": "tide:crystal_shrimp"
+    },
+    {
+      "id": "ocean_perch",
+      "name": "ocean_perch",
+      "type": "breeding_slaughter",
+      "entityType": "tide:ocean_perch",
+      "feedItem": "tide:crystal_shrimp",
+      "heldItem": "tide:crystal_shrimp"
+    },
+    {
+      "id": "red_snapper",
+      "name": "red_snapper",
+      "type": "breeding_slaughter",
+      "entityType": "tide:red_snapper",
+      "feedItem": "tide:crystal_shrimp",
+      "heldItem": "tide:crystal_shrimp"
+    },
+    {
+      "id": "flounder",
+      "name": "flounder",
+      "type": "breeding_slaughter",
+      "entityType": "tide:flounder",
+      "feedItem": "tide:crystal_shrimp",
+      "heldItem": "tide:crystal_shrimp"
+    },
+    {
+      "id": "anchovy",
+      "name": "anchovy",
+      "type": "breeding_slaughter",
+      "entityType": "tide:anchovy",
+      "feedItem": "tide:crystal_shrimp",
+      "heldItem": "tide:crystal_shrimp"
+    },
+    {
+      "id": "devils_hole_pupfish",
+      "name": "devils_hole_pupfish",
+      "type": "breeding_slaughter",
+      "entityType": "tide:devils_hole_pupfish",
+      "feedItem": "tide:crystal_shrimp",
+      "heldItem": "tide:crystal_shrimp"
+    },
+    {
+      "id": "midas_fish",
+      "name": "midas_fish",
+      "type": "breeding_slaughter",
+      "entityType": "tide:midas_fish",
+      "feedItem": "tide:crystal_shrimp",
+      "heldItem": "tide:crystal_shrimp"
+    },
+    {
+      "id": "incandescent_larva",
+      "name": "incandescent_larva",
+      "type": "breeding_slaughter",
+      "entityType": "tide:incandescent_larva",
+      "feedItem": "tide:crystal_shrimp",
+      "heldItem": "tide:crystal_shrimp"
+    },
+    {
+      "id": "bedrock_bug",
+      "name": "bedrock_bug",
+      "type": "breeding_slaughter",
+      "entityType": "tide:bedrock_bug",
+      "feedItem": "tide:crystal_shrimp",
+      "heldItem": "tide:crystal_shrimp"
+    },
+    {
+      "id": "sleepy_carp",
+      "name": "sleepy_carp",
+      "type": "breeding_slaughter",
+      "entityType": "tide:sleepy_carp",
+      "feedItem": "tide:crystal_shrimp",
+      "heldItem": "tide:crystal_shrimp"
+    },
+    {
+      "id": "blue_neonfish",
+      "name": "blue_neonfish",
+      "type": "breeding_slaughter",
+      "entityType": "tide:blue_neonfish",
+      "feedItem": "tide:crystal_shrimp",
+      "heldItem": "tide:crystal_shrimp"
+    },
+    {
+      "id": "judgment_fish",
+      "name": "judgment_fish",
+      "type": "breeding_slaughter",
+      "entityType": "tide:judgment_fish",
+      "feedItem": "tide:crystal_shrimp",
+      "heldItem": "tide:crystal_shrimp"
+    },
+    {
+      "id": "deep_blue",
+      "name": "deep_blue",
+      "type": "breeding_slaughter",
+      "entityType": "tide:deep_blue",
+      "feedItem": "tide:crystal_shrimp",
+      "heldItem": "tide:crystal_shrimp"
+    },
+    {
+      "id": "nephrosilu",
+      "name": "nephrosilu",
+      "type": "breeding_slaughter",
+      "entityType": "tide:nephrosilu",
+      "feedItem": "tide:crystal_shrimp",
+      "heldItem": "tide:crystal_shrimp"
+    },
+    {
+      "id": "neptune_koi",
+      "name": "neptune_koi",
+      "type": "breeding_slaughter",
+      "entityType": "tide:neptune_koi",
+      "feedItem": "tide:crystal_shrimp",
+      "heldItem": "tide:crystal_shrimp"
+    },
+    {
+      "id": "pluto_snail",
+      "name": "pluto_snail",
+      "type": "breeding_slaughter",
+      "entityType": "tide:pluto_snail",
+      "feedItem": "tide:crystal_shrimp",
+      "heldItem": "tide:crystal_shrimp"
+    },
+    {
+      "id": "sun_emblem",
+      "name": "sun_emblem",
+      "type": "breeding_slaughter",
+      "entityType": "tide:sun_emblem",
+      "feedItem": "tide:crystal_shrimp",
+      "heldItem": "tide:crystal_shrimp"
+    },
+    {
+      "id": "saturn_cuttlefish",
+      "name": "saturn_cuttlefish",
+      "type": "breeding_slaughter",
+      "entityType": "tide:saturn_cuttlefish",
+      "feedItem": "tide:crystal_shrimp",
+      "heldItem": "tide:crystal_shrimp"
+    },
+    {
+      "id": "marstilus",
+      "name": "marstilus",
+      "type": "breeding_slaughter",
+      "entityType": "tide:marstilus",
+      "feedItem": "tide:crystal_shrimp",
+      "heldItem": "tide:crystal_shrimp"
+    },
+    {
+      "id": "uranias_pisces",
+      "name": "uranias_pisces",
+      "type": "breeding_slaughter",
+      "entityType": "tide:uranias_pisces",
+      "feedItem": "tide:guppy",
+      "heldItem": "tide:guppy"
+    },
+    {
+      "id": "great_white_shark",
+      "name": "great_white_shark",
+      "type": "breeding_slaughter",
+      "entityType": "tide:great_white_shark",
+      "feedItem": "tide:guppy",
+      "heldItem": "tide:guppy"
+    },
+    {
+      "id": "shooting_starfish",
+      "name": "shooting_starfish",
+      "type": "breeding_slaughter",
+      "entityType": "tide:shooting_starfish",
+      "feedItem": "tide:crystal_shrimp",
+      "heldItem": "tide:crystal_shrimp"
+    },
+    {
+      "id": "coelacanth",
+      "name": "coelacanth",
+      "type": "breeding_slaughter",
+      "entityType": "tide:coelacanth",
+      "feedItem": "tide:guppy",
+      "heldItem": "tide:guppy"
+    },
+    {
+      "id": "cave_eel",
+      "name": "cave_eel",
+      "type": "breeding_slaughter",
+      "entityType": "tide:cave_eel",
+      "feedItem": "tide:guppy",
+      "heldItem": "tide:guppy"
+    },
+    {
+      "id": "cave_crawler",
+      "name": "cave_crawler",
+      "type": "breeding_slaughter",
+      "entityType": "tide:cave_crawler",
+      "feedItem": "tide:guppy",
+      "heldItem": "tide:guppy"
+    },
+    {
+      "id": "deep_grouper",
+      "name": "deep_grouper",
+      "type": "breeding_slaughter",
+      "entityType": "tide:deep_grouper",
+      "feedItem": "tide:crystal_shrimp",
+      "heldItem": "tide:crystal_shrimp"
+    },
+    {
+      "id": "shadow_snapper",
+      "name": "shadow_snapper",
+      "type": "breeding_slaughter",
+      "entityType": "tide:shadow_snapper",
+      "feedItem": "tide:crystal_shrimp",
+      "heldItem": "tide:crystal_shrimp"
+    },
+    {
+      "id": "glowfish",
+      "name": "glowfish",
+      "type": "breeding_slaughter",
+      "entityType": "tide:glowfish",
+      "feedItem": "tide:crystal_shrimp",
+      "heldItem": "tide:crystal_shrimp"
+    },
+    {
+      "id": "anglerfish",
+      "name": "anglerfish",
+      "type": "breeding_slaughter",
+      "entityType": "tide:anglerfish",
+      "feedItem": "tide:crystal_shrimp",
+      "heldItem": "tide:crystal_shrimp"
+    },
+    {
+      "id": "abyss_angler",
+      "name": "abyss_angler",
+      "type": "breeding_slaughter",
+      "entityType": "tide:abyss_angler",
+      "feedItem": "tide:crystal_shrimp",
+      "heldItem": "tide:crystal_shrimp"
+    },
+    {
+      "id": "iron_tetra",
+      "name": "iron_tetra",
+      "type": "breeding_slaughter",
+      "entityType": "tide:iron_tetra",
+      "feedItem": "tide:crystal_shrimp",
+      "heldItem": "tide:crystal_shrimp"
+    },
+    {
+      "id": "lapis_lanternfish",
+      "name": "lapis_lanternfish",
+      "type": "breeding_slaughter",
+      "entityType": "tide:lapis_lanternfish",
+      "feedItem": "tide:crystal_shrimp",
+      "heldItem": "tide:crystal_shrimp"
+    },
+    {
+      "id": "crystal_shrimp",
+      "name": "crystal_shrimp",
+      "type": "breeding_slaughter",
+      "entityType": "tide:crystal_shrimp",
+      "feedItem": "minecraft:wheat_seeds",
+      "heldItem": "minecraft:wheat_seeds"
+    },
+    {
+      "id": "dripstone_darter",
+      "name": "dripstone_darter",
+      "type": "breeding_slaughter",
+      "entityType": "tide:dripstone_darter",
+      "feedItem": "tide:crystal_shrimp",
+      "heldItem": "tide:crystal_shrimp"
+    },
+    {
+      "id": "luminescent_jellyfish",
+      "name": "luminescent_jellyfish",
+      "type": "breeding_slaughter",
+      "entityType": "tide:luminescent_jellyfish",
+      "feedItem": "tide:crystal_shrimp",
+      "heldItem": "tide:crystal_shrimp"
+    },
+    {
+      "id": "crystalline_carp",
+      "name": "crystalline_carp",
+      "type": "breeding_slaughter",
+      "entityType": "tide:crystalline_carp",
+      "feedItem": "tide:crystal_shrimp",
+      "heldItem": "tide:crystal_shrimp"
+    },
+    {
+      "id": "gilded_minnow",
+      "name": "gilded_minnow",
+      "type": "breeding_slaughter",
+      "entityType": "tide:gilded_minnow",
+      "feedItem": "tide:crystal_shrimp",
+      "heldItem": "tide:crystal_shrimp"
+    },
+    {
+      "id": "bedrock_tetra",
+      "name": "bedrock_tetra",
+      "type": "breeding_slaughter",
+      "entityType": "tide:bedrock_tetra",
+      "feedItem": "tide:crystal_shrimp",
+      "heldItem": "tide:crystal_shrimp"
+    },
+    {
+      "id": "chasm_eel",
+      "name": "chasm_eel",
+      "type": "breeding_slaughter",
+      "entityType": "tide:chasm_eel",
+      "feedItem": "tide:guppy",
+      "heldItem": "tide:guppy"
+    },
+    {
+      "id": "echo_snapper",
+      "name": "echo_snapper",
+      "type": "breeding_slaughter",
+      "entityType": "tide:echo_snapper",
+      "feedItem": "tide:crystal_shrimp",
+      "heldItem": "tide:crystal_shrimp"
+    },
+    {
+      "id": "windbass",
+      "name": "windbass",
+      "type": "breeding_slaughter",
+      "entityType": "tide:windbass",
+      "feedItem": "tide:crystal_shrimp",
+      "heldItem": "tide:crystal_shrimp"
+    },
+    {
+      "id": "snatcher_squid",
+      "name": "snatcher_squid",
+      "type": "breeding_slaughter",
+      "entityType": "tide:snatcher_squid",
+      "feedItem": "tide:guppy",
+      "heldItem": "tide:guppy"
+    },
+    {
+      "id": "voidseeker",
+      "name": "voidseeker",
+      "type": "breeding_slaughter",
+      "entityType": "tide:voidseeker",
+      "feedItem": "tide:crystal_shrimp",
+      "heldItem": "tide:crystal_shrimp"
+    },
+    {
+      "id": "dragon_fish",
+      "name": "dragon_fish",
+      "type": "breeding_slaughter",
+      "entityType": "tide:dragon_fish",
+      "feedItem": "tide:guppy",
+      "heldItem": "tide:guppy"
+    },
+    {
+      "id": "vengeance",
+      "name": "vengeance",
+      "type": "breeding_slaughter",
+      "entityType": "tide:vengeance",
+      "feedItem": "tide:crystal_shrimp",
+      "heldItem": "tide:crystal_shrimp"
+    },
+    {
+      "id": "pentapus",
+      "name": "pentapus",
+      "type": "breeding_slaughter",
+      "entityType": "tide:pentapus",
+      "feedItem": "tide:guppy",
+      "heldItem": "tide:guppy"
+    },
+    {
+      "id": "darkness_eater",
+      "name": "darkness_eater",
+      "type": "breeding_slaughter",
+      "entityType": "tide:darkness_eater",
+      "feedItem": "tide:guppy",
+      "heldItem": "tide:guppy"
+    },
+    {
+      "id": "shadow_shark",
+      "name": "shadow_shark",
+      "type": "breeding_slaughter",
+      "entityType": "tide:shadow_shark",
+      "feedItem": "tide:guppy",
+      "heldItem": "tide:guppy"
+    },
+    {
+      "id": "alpha_fish",
+      "name": "alpha_fish",
+      "type": "breeding_slaughter",
+      "entityType": "tide:alpha_fish",
+      "feedItem": "tide:guppy",
+      "heldItem": "tide:guppy"
+    },
+    {
+      "id": "pale_clubfish",
+      "name": "pale_clubfish",
+      "type": "breeding_slaughter",
+      "entityType": "tide:pale_clubfish",
+      "feedItem": "tide:crystal_shrimp",
+      "heldItem": "tide:crystal_shrimp"
+    },
+    {
+      "id": "amber_rockfish",
+      "name": "amber_rockfish",
+      "type": "breeding_slaughter",
+      "entityType": "tide:amber_rockfish",
+      "feedItem": "tide:crystal_shrimp",
+      "heldItem": "tide:crystal_shrimp"
+    },
+    {
+      "id": "enderfin",
+      "name": "enderfin",
+      "type": "breeding_slaughter",
+      "entityType": "tide:enderfin",
+      "feedItem": "tide:crystal_shrimp",
+      "heldItem": "tide:crystal_shrimp"
+    },
+    {
+      "id": "chorus_cod",
+      "name": "chorus_cod",
+      "type": "breeding_slaughter",
+      "entityType": "tide:chorus_cod",
+      "feedItem": "tide:crystal_shrimp",
+      "heldItem": "tide:crystal_shrimp"
+    },
+    {
+      "id": "ender_glider",
+      "name": "ender_glider",
+      "type": "breeding_slaughter",
+      "entityType": "tide:ender_glider",
+      "feedItem": "tide:crystal_shrimp",
+      "heldItem": "tide:crystal_shrimp"
+    },
+    {
+      "id": "endergazer",
+      "name": "endergazer",
+      "type": "breeding_slaughter",
+      "entityType": "tide:endergazer",
+      "feedItem": "tide:crystal_shrimp",
+      "heldItem": "tide:crystal_shrimp"
+    },
+    {
+      "id": "violet_carp",
+      "name": "violet_carp",
+      "type": "breeding_slaughter",
+      "entityType": "tide:violet_carp",
+      "feedItem": "tide:crystal_shrimp",
+      "heldItem": "tide:crystal_shrimp"
+    },
+    {
+      "id": "red_40",
+      "name": "red_40",
+      "type": "breeding_slaughter",
+      "entityType": "tide:red_40",
+      "feedItem": "tide:crystal_shrimp",
+      "heldItem": "tide:crystal_shrimp"
+    },
+    {
+      "id": "dutchman_sock",
+      "name": "dutchman_sock",
+      "type": "breeding_slaughter",
+      "entityType": "tide:dutchman_sock",
+      "feedItem": "tide:crystal_shrimp",
+      "heldItem": "tide:crystal_shrimp"
+    },
+    {
+      "id": "elytrout",
+      "name": "elytrout",
+      "type": "breeding_slaughter",
+      "entityType": "tide:elytrout",
+      "feedItem": "tide:crystal_shrimp",
+      "heldItem": "tide:crystal_shrimp"
+    },
+    {
+      "id": "mantyvern",
+      "name": "mantyvern",
+      "type": "breeding_slaughter",
+      "entityType": "tide:mantyvern",
+      "feedItem": "tide:guppy",
+      "heldItem": "tide:guppy"
+    }
+  ]
+}

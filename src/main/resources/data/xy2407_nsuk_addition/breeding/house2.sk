@@ -1,0 +1,10 @@
+name:小型禽畜牧场
+size:9 x 6 x 9
+amount:4500
+author:xy2407
+description:饲养兔子、鸡、松鼠、火鸡、鹈鹕、鹤鸵等小型禽畜的牧场。
+tags:price_medium,material_medium,stage_middle
+job_type:farmer
+job_name:饲养员
+breeding:house2.json
+structure:house2.nbt

@@ -1,0 +1,10 @@
+name:水产养殖场
+size:10 x 5 x 10
+amount:50.0元
+author:xy2407
+description:在水中养殖各类淡水与海洋鱼类的工业建筑，兼容Tide和Aquaculture鱼类。
+tags:price_medium,material_medium,stage_middle
+job_type:fish_farmer
+job_name:养殖工人
+breeding:fish1.json
+structure:fish1.nbt

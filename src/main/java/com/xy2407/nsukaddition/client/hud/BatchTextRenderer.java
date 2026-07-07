@@ -1,0 +1,45 @@
+package com.xy2407.nsukaddition.client.hud;
+
+import net.minecraft.client.gui.Font;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.font.FontSet;
+import net.minecraft.resources.ResourceLocation;
+import org.joml.Matrix4f;
+
+/** 批量文本渲染器，在同一帧内绘制字符串并计算文本宽度。 */
+final class BatchTextRenderer {
+    private static final ResourceLocation DEFAULT_FONT = ResourceLocation.fromNamespaceAndPath("minecraft", "default");
+
+    private GuiGraphics guiGraphics;
+
+    void beginFrame(GuiGraphics guiGraphics) {
+        this.guiGraphics = guiGraphics;
+    }
+
+    int calcWidth(Font font, String text) {
+        if (text == null || text.isEmpty()) {
+            return 0;
+        }
+        FontSet fontSet = font.getFontSet(DEFAULT_FONT);
+        int width = 0;
+        for (int i = 0; i < text.length(); i++) {
+            width += Math.round(fontSet.getGlyphInfo(text.charAt(i), true).getAdvance());
+        }
+        return width;
+    }
+
+    void drawText(Font font, String text, float x, float y, int color, boolean shadow, Matrix4f matrix) {
+        if (guiGraphics == null || text == null || text.isEmpty()) {
+            return;
+        }
+        guiGraphics.drawString(font, text, Math.round(x), Math.round(y), color, shadow);
+    }
+
+    void endFrame() {
+        guiGraphics = null;
+    }
+
+    void close() {
+        guiGraphics = null;
+    }
+}

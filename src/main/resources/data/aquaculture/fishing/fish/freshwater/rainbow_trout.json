@@ -1,0 +1,17 @@
+{
+  "fish": "aquaculture:rainbow_trout",
+  "bucket": "aquaculture:rainbow_trout_bucket",
+  "display_data": {
+    "entity": "aquaculture:rainbow_trout",
+    "shape": "1x1",
+    "x": -0.05,
+    "y": -0.08
+  },
+  "journal_profile": {
+    "description": "journal.description.aquaculture.rainbow_trout",
+    "group": "freshwater"
+  },
+  "selection_weight": 30.0,
+  "strength": 0.3,
+  "speed": 0.9
+}

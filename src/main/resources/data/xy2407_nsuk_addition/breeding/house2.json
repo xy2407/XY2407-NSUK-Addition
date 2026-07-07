@@ -1,0 +1,73 @@
+{
+  "id": "house2",
+  "name": "小型禽畜牧场",
+  "breeder": "farmer",
+  "jobName": "饲养员",
+  "heldItem": "minecraft:wheat_seeds",
+  "points": {
+    "work": { "type": "structure_pos", "positions": [[3, 0, 5]] },
+    "spawn": { "type": "structure_pos", "positions": [[3, 0, 5]] }
+  },
+  "containers": {
+    "input": { "type": "structure_pos", "positions": [[3, 1, 3]] },
+    "output": { "type": "structure_pos", "positions": [[2, 1, 8]] }
+  },
+  "recipes": [
+    {
+      "id": "rabbit_slaughter",
+      "name": "养殖宰杀-兔肉",
+      "type": "breeding_slaughter",
+      "entityType": "minecraft:rabbit",
+      "feedItem": "minecraft:carrot",
+      "heldItem": "minecraft:carrot"
+    },
+    {
+      "id": "chicken_slaughter",
+      "name": "养殖宰杀-鸡肉",
+      "type": "breeding_slaughter",
+      "entityType": "minecraft:chicken",
+      "feedItem": "minecraft:wheat_seeds",
+      "heldItem": "minecraft:wheat_seeds"
+    },
+    {
+      "id": "chicken_egg",
+      "name": "繁殖采集-鸡蛋",
+      "type": "breeding_collect",
+      "entityType": "minecraft:chicken",
+      "feedItem": "minecraft:wheat_seeds",
+      "heldItem": "minecraft:wheat_seeds"
+    },
+    {
+      "id": "squirrel_slaughter",
+      "name": "养殖宰杀-松鼠",
+      "type": "breeding_slaughter",
+      "entityType": "wildernature:squirrel",
+      "feedItem": "minecraft:wheat_seeds",
+      "heldItem": "minecraft:wheat_seeds"
+    },
+    {
+      "id": "turkey_slaughter",
+      "name": "养殖宰杀-火鸡肉",
+      "type": "breeding_slaughter",
+      "entityType": "wildernature:turkey",
+      "feedItem": "minecraft:wheat_seeds",
+      "heldItem": "minecraft:wheat_seeds"
+    },
+    {
+      "id": "pelican_slaughter",
+      "name": "养殖宰杀-鹈鹕肉",
+      "type": "breeding_slaughter",
+      "entityType": "wildernature:pelican",
+      "feedItem": "minecraft:wheat_seeds",
+      "heldItem": "minecraft:wheat_seeds"
+    },
+    {
+      "id": "cassowary_slaughter",
+      "name": "养殖宰杀-鹤鸵肉",
+      "type": "breeding_slaughter",
+      "entityType": "wildernature:cassowary",
+      "feedItem": "minecraft:wheat_seeds",
+      "heldItem": "minecraft:wheat_seeds"
+    }
+  ]
+}

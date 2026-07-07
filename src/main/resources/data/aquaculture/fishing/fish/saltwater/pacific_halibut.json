@@ -1,0 +1,17 @@
+{
+  "fish": "aquaculture:pacific_halibut",
+  "bucket": "aquaculture:pacific_halibut_bucket",
+  "display_data": {
+    "entity": "aquaculture:pacific_halibut",
+    "shape": "2x1",
+    "x": -0.05,
+    "y": -0.15
+  },
+  "journal_profile": {
+    "description": "journal.description.aquaculture.pacific_halibut",
+    "group": "saltwater"
+  },
+  "selection_weight": 30.0,
+  "strength": 0.3,
+  "speed": 0.9
+}

@@ -1,0 +1,9 @@
+{
+  "replace": false,
+  "values": [
+    {
+      "id": "tide:blossom_bass",
+      "required": false
+    }
+  ]
+}

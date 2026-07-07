@@ -1,0 +1,10 @@
+name:岩浆渔场
+size:8 x 5 x 6
+amount:80.0元
+author:xy2407
+description:在岩浆中养殖地狱鱼类的工业建筑，兼容Tide岩浆鱼类。
+tags:price_high,material_medium,stage_late
+job_type:lava_fish_farmer
+job_name:岩浆渔夫
+breeding:fish2.json
+structure:fish2.nbt

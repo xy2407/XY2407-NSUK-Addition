@@ -1,0 +1,17 @@
+{
+  "fish": "aquaculture:pink_salmon",
+  "bucket": "aquaculture:pink_salmon_bucket",
+  "display_data": {
+    "entity": "aquaculture:pink_salmon",
+    "shape": "1x1",
+    "x": -0.05,
+    "y": 0.06
+  },
+  "journal_profile": {
+    "description": "journal.description.aquaculture.pink_salmon",
+    "group": "freshwater"
+  },
+  "selection_weight": 30.0,
+  "strength": 0.3,
+  "speed": 0.9
+}

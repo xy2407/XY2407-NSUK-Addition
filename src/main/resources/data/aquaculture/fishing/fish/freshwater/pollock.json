@@ -1,0 +1,17 @@
+{
+  "fish": "aquaculture:pollock",
+  "bucket": "aquaculture:pollock_bucket",
+  "display_data": {
+    "entity": "aquaculture:pollock",
+    "shape": "1x1",
+    "x": -0.05,
+    "y": 0.06
+  },
+  "journal_profile": {
+    "description": "journal.description.aquaculture.pollock",
+    "group": "freshwater"
+  },
+  "selection_weight": 30.0,
+  "strength": 0.3,
+  "speed": 0.9
+}

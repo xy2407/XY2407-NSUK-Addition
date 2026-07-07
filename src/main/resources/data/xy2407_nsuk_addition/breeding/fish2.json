@@ -1,0 +1,105 @@
+{
+  "id": "fish2",
+  "name": "岩浆渔场",
+  "breeder": "lava_fish_farmer",
+  "jobName": "岩浆渔夫",
+  "heldItem": "minecraft:netherrack",
+  "points": {
+    "work": { "type": "structure_pos", "positions": [[4, 3, 0]] },
+    "spawn": { "type": "structure_pos", "positions": [[4, 3, 0]] }
+  },
+  "containers": {
+    "input": { "type": "structure_pos", "positions": [[5, 3, 0]] },
+    "output": { "type": "structure_pos", "positions": [[3, 3, 0]] }
+  },
+  "recipes": [
+    {
+      "id": "magma_mackerel",
+      "name": "magma_mackerel",
+      "type": "breeding_slaughter",
+      "entityType": "tide:magma_mackerel",
+      "feedItem": "minecraft:netherrack",
+      "heldItem": "minecraft:netherrack"
+    },
+    {
+      "id": "ember_koi",
+      "name": "ember_koi",
+      "type": "breeding_slaughter",
+      "entityType": "tide:ember_koi",
+      "feedItem": "minecraft:netherrack",
+      "heldItem": "minecraft:netherrack"
+    },
+    {
+      "id": "ash_perch",
+      "name": "ash_perch",
+      "type": "breeding_slaughter",
+      "entityType": "tide:ash_perch",
+      "feedItem": "minecraft:netherrack",
+      "heldItem": "minecraft:netherrack"
+    },
+    {
+      "id": "obsidian_pike",
+      "name": "obsidian_pike",
+      "type": "breeding_slaughter",
+      "entityType": "tide:obsidian_pike",
+      "feedItem": "minecraft:netherrack",
+      "heldItem": "minecraft:netherrack"
+    },
+    {
+      "id": "volcano_tuna",
+      "name": "volcano_tuna",
+      "type": "breeding_slaughter",
+      "entityType": "tide:volcano_tuna",
+      "feedItem": "minecraft:netherrack",
+      "heldItem": "minecraft:netherrack"
+    },
+    {
+      "id": "inferno_guppy",
+      "name": "inferno_guppy",
+      "type": "breeding_slaughter",
+      "entityType": "tide:inferno_guppy",
+      "feedItem": "minecraft:netherrack",
+      "heldItem": "minecraft:netherrack"
+    },
+    {
+      "id": "warped_guppy",
+      "name": "warped_guppy",
+      "type": "breeding_slaughter",
+      "entityType": "tide:warped_guppy",
+      "feedItem": "minecraft:netherrack",
+      "heldItem": "minecraft:netherrack"
+    },
+    {
+      "id": "crimson_fangjaw",
+      "name": "crimson_fangjaw",
+      "type": "breeding_slaughter",
+      "entityType": "tide:crimson_fangjaw",
+      "feedItem": "minecraft:netherrack",
+      "heldItem": "minecraft:netherrack"
+    },
+    {
+      "id": "soulscale",
+      "name": "soulscale",
+      "type": "breeding_slaughter",
+      "entityType": "tide:soulscale",
+      "feedItem": "minecraft:netherrack",
+      "heldItem": "minecraft:netherrack"
+    },
+    {
+      "id": "witherfin",
+      "name": "witherfin",
+      "type": "breeding_slaughter",
+      "entityType": "tide:witherfin",
+      "feedItem": "minecraft:netherrack",
+      "heldItem": "minecraft:netherrack"
+    },
+    {
+      "id": "blazing_swordfish",
+      "name": "blazing_swordfish",
+      "type": "breeding_slaughter",
+      "entityType": "tide:blazing_swordfish",
+      "feedItem": "minecraft:netherrack",
+      "heldItem": "minecraft:netherrack"
+    }
+  ]
+}

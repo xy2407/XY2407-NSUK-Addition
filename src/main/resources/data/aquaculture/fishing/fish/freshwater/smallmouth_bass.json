@@ -1,0 +1,17 @@
+{
+  "fish": "aquaculture:smallmouth_bass",
+  "bucket": "aquaculture:smallmouth_bass_bucket",
+  "display_data": {
+    "entity": "aquaculture:smallmouth_bass",
+    "shape": "1x1",
+    "x": -0.05,
+    "y": -0.08
+  },
+  "journal_profile": {
+    "description": "journal.description.aquaculture.smallmouth_bass",
+    "group": "freshwater"
+  },
+  "selection_weight": 30.0,
+  "strength": 0.3,
+  "speed": 0.9
+}

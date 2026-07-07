@@ -1,0 +1,6 @@
+{
+  "parent": "minecraft:block/cube_all",
+  "textures": {
+    "all": "xy2407_nsuk_addition:block/breeding_control_box"
+  }
+}

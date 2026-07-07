@@ -1,0 +1,10 @@
+name:畜牧牧场
+size:10 x 6 x 10
+amount:5000
+author:xy2407
+description:饲养牛、哞菇、猪、绵羊、山羊及鹿、小绵羊、野猪、野牛等中大型牲畜的牧场。
+tags:price_medium,material_medium,stage_middle
+job_type:farmer
+job_name:牧民
+breeding:house1.json
+structure:house1.nbt

@@ -1,0 +1,488 @@
+{
+  "id": "xy2407_nsuk_addition:smeltery",
+  "name": "冶炼厂",
+  "jobType": "smelter",
+  "jobName": "冶炼工人",
+  "heldItem": "minecraft:iron_ingot",
+  "points": {
+    "work": {
+      "type": "structure_pos",
+      "positions": [[9, 1, 9]],
+      "select": "nearest"
+    }
+  },
+  "containers": {
+    "input": {
+      "type": "structure_pos",
+      "positions": [[13, 1, 15]]
+    },
+    "output": {
+      "type": "structure_pos",
+      "positions": [[1, 1, 12]]
+    }
+  },
+  "recipes": [
+    {
+      "id": "smelt_coal",
+      "name": "冶炼煤矿",
+      "heldItem": "minecraft:iron_ingot",
+      "inputs": [
+        {
+          "customData": "{nsukaddition_rich_ore:\"coal\"}",
+          "count": 4,
+          "consume": true
+        }
+      ],
+      "outputs": [
+        {
+          "item": "minecraft:coal",
+          "baseAmount": 2,
+          "probability": 1.0,
+          "ignoreMultiplier": true
+        }
+      ],
+      "steps": [
+        {"type": "set_held_item", "item": "minecraft:iron_ingot"},
+        {"type": "move_to", "point": "work"},
+        {"type": "move_to_container", "container": "input"},
+        {"type": "require_inputs", "container": "input"},
+        {"type": "require_output_space", "container": "output"},
+        {"type": "move_to", "point": "work"},
+        {"type": "use_item", "ticks": 20, "swing": true},
+        {"type": "move_to_container", "container": "output"},
+        {"type": "look_at_container", "container": "output"},
+        {"type": "inspect_container", "ticks": 20, "container": "output"},
+        {"type": "craft_recipe", "input": "input", "output": "output"}
+      ]
+    },
+    {
+      "id": "smelt_copper",
+      "name": "冶炼铜矿",
+      "heldItem": "minecraft:iron_ingot",
+      "inputs": [
+        {
+          "customData": "{nsukaddition_rich_ore:\"copper\"}",
+          "count": 4,
+          "consume": true
+        }
+      ],
+      "outputs": [
+        {
+          "item": "minecraft:copper_ingot",
+          "baseAmount": 2,
+          "probability": 1.0,
+          "ignoreMultiplier": true
+        }
+      ],
+      "steps": [
+        {"type": "set_held_item", "item": "minecraft:iron_ingot"},
+        {"type": "move_to", "point": "work"},
+        {"type": "move_to_container", "container": "input"},
+        {"type": "require_inputs", "container": "input"},
+        {"type": "require_output_space", "container": "output"},
+        {"type": "move_to", "point": "work"},
+        {"type": "use_item", "ticks": 20, "swing": true},
+        {"type": "move_to_container", "container": "output"},
+        {"type": "look_at_container", "container": "output"},
+        {"type": "inspect_container", "ticks": 20, "container": "output"},
+        {"type": "craft_recipe", "input": "input", "output": "output"}
+      ]
+    },
+    {
+      "id": "smelt_iron",
+      "name": "冶炼铁矿",
+      "heldItem": "minecraft:iron_ingot",
+      "inputs": [
+        {
+          "customData": "{nsukaddition_rich_ore:\"iron\"}",
+          "count": 4,
+          "consume": true
+        }
+      ],
+      "outputs": [
+        {
+          "item": "minecraft:iron_ingot",
+          "baseAmount": 2,
+          "probability": 1.0,
+          "ignoreMultiplier": true
+        }
+      ],
+      "steps": [
+        {"type": "set_held_item", "item": "minecraft:iron_ingot"},
+        {"type": "move_to", "point": "work"},
+        {"type": "move_to_container", "container": "input"},
+        {"type": "require_inputs", "container": "input"},
+        {"type": "require_output_space", "container": "output"},
+        {"type": "move_to", "point": "work"},
+        {"type": "use_item", "ticks": 20, "swing": true},
+        {"type": "move_to_container", "container": "output"},
+        {"type": "look_at_container", "container": "output"},
+        {"type": "inspect_container", "ticks": 20, "container": "output"},
+        {"type": "craft_recipe", "input": "input", "output": "output"}
+      ]
+    },
+    {
+      "id": "smelt_gold",
+      "name": "冶炼金矿",
+      "heldItem": "minecraft:iron_ingot",
+      "inputs": [
+        {
+          "customData": "{nsukaddition_rich_ore:\"gold\"}",
+          "count": 4,
+          "consume": true
+        }
+      ],
+      "outputs": [
+        {
+          "item": "minecraft:gold_ingot",
+          "baseAmount": 2,
+          "probability": 1.0,
+          "ignoreMultiplier": true
+        }
+      ],
+      "steps": [
+        {"type": "set_held_item", "item": "minecraft:iron_ingot"},
+        {"type": "move_to", "point": "work"},
+        {"type": "move_to_container", "container": "input"},
+        {"type": "require_inputs", "container": "input"},
+        {"type": "require_output_space", "container": "output"},
+        {"type": "move_to", "point": "work"},
+        {"type": "use_item", "ticks": 20, "swing": true},
+        {"type": "move_to_container", "container": "output"},
+        {"type": "look_at_container", "container": "output"},
+        {"type": "inspect_container", "ticks": 20, "container": "output"},
+        {"type": "craft_recipe", "input": "input", "output": "output"}
+      ]
+    },
+    {
+      "id": "smelt_redstone",
+      "name": "冶炼红石矿",
+      "heldItem": "minecraft:iron_ingot",
+      "inputs": [
+        {
+          "customData": "{nsukaddition_rich_ore:\"redstone\"}",
+          "count": 4,
+          "consume": true
+        }
+      ],
+      "outputs": [
+        {
+          "item": "minecraft:redstone",
+          "baseAmount": 2,
+          "probability": 1.0,
+          "ignoreMultiplier": true
+        }
+      ],
+      "steps": [
+        {"type": "set_held_item", "item": "minecraft:iron_ingot"},
+        {"type": "move_to", "point": "work"},
+        {"type": "move_to_container", "container": "input"},
+        {"type": "require_inputs", "container": "input"},
+        {"type": "require_output_space", "container": "output"},
+        {"type": "move_to", "point": "work"},
+        {"type": "use_item", "ticks": 20, "swing": true},
+        {"type": "move_to_container", "container": "output"},
+        {"type": "look_at_container", "container": "output"},
+        {"type": "inspect_container", "ticks": 20, "container": "output"},
+        {"type": "craft_recipe", "input": "input", "output": "output"}
+      ]
+    },
+    {
+      "id": "smelt_lapis",
+      "name": "冶炼青金石矿",
+      "heldItem": "minecraft:iron_ingot",
+      "inputs": [
+        {
+          "customData": "{nsukaddition_rich_ore:\"lapis_lazuli\"}",
+          "count": 4,
+          "consume": true
+        }
+      ],
+      "outputs": [
+        {
+          "item": "minecraft:lapis_lazuli",
+          "baseAmount": 2,
+          "probability": 1.0,
+          "ignoreMultiplier": true
+        }
+      ],
+      "steps": [
+        {"type": "set_held_item", "item": "minecraft:iron_ingot"},
+        {"type": "move_to", "point": "work"},
+        {"type": "move_to_container", "container": "input"},
+        {"type": "require_inputs", "container": "input"},
+        {"type": "require_output_space", "container": "output"},
+        {"type": "move_to", "point": "work"},
+        {"type": "use_item", "ticks": 20, "swing": true},
+        {"type": "move_to_container", "container": "output"},
+        {"type": "look_at_container", "container": "output"},
+        {"type": "inspect_container", "ticks": 20, "container": "output"},
+        {"type": "craft_recipe", "input": "input", "output": "output"}
+      ]
+    },
+    {
+      "id": "smelt_quartz",
+      "name": "冶炼石英矿",
+      "heldItem": "minecraft:iron_ingot",
+      "inputs": [
+        {
+          "customData": "{nsukaddition_rich_ore:\"quartz\"}",
+          "count": 4,
+          "consume": true
+        }
+      ],
+      "outputs": [
+        {
+          "item": "minecraft:quartz",
+          "baseAmount": 2,
+          "probability": 1.0,
+          "ignoreMultiplier": true
+        }
+      ],
+      "steps": [
+        {"type": "set_held_item", "item": "minecraft:iron_ingot"},
+        {"type": "move_to", "point": "work"},
+        {"type": "move_to_container", "container": "input"},
+        {"type": "require_inputs", "container": "input"},
+        {"type": "require_output_space", "container": "output"},
+        {"type": "move_to", "point": "work"},
+        {"type": "use_item", "ticks": 20, "swing": true},
+        {"type": "move_to_container", "container": "output"},
+        {"type": "look_at_container", "container": "output"},
+        {"type": "inspect_container", "ticks": 20, "container": "output"},
+        {"type": "craft_recipe", "input": "input", "output": "output"}
+      ]
+    },
+    {
+      "id": "smelt_nether_gold",
+      "name": "冶炼地狱金矿",
+      "heldItem": "minecraft:iron_ingot",
+      "inputs": [
+        {
+          "customData": "{nsukaddition_rich_ore:\"nether_gold\"}",
+          "count": 4,
+          "consume": true
+        }
+      ],
+      "outputs": [
+        {
+          "item": "minecraft:gold_ingot",
+          "baseAmount": 2,
+          "probability": 1.0,
+          "ignoreMultiplier": true
+        }
+      ],
+      "steps": [
+        {"type": "set_held_item", "item": "minecraft:iron_ingot"},
+        {"type": "move_to", "point": "work"},
+        {"type": "move_to_container", "container": "input"},
+        {"type": "require_inputs", "container": "input"},
+        {"type": "require_output_space", "container": "output"},
+        {"type": "move_to", "point": "work"},
+        {"type": "use_item", "ticks": 20, "swing": true},
+        {"type": "move_to_container", "container": "output"},
+        {"type": "look_at_container", "container": "output"},
+        {"type": "inspect_container", "ticks": 20, "container": "output"},
+        {"type": "craft_recipe", "input": "input", "output": "output"}
+      ]
+    },
+    {
+      "id": "smelt_diamond",
+      "name": "冶炼钻石矿",
+      "heldItem": "minecraft:iron_ingot",
+      "inputs": [
+        {
+          "customData": "{nsukaddition_rich_ore:\"diamond\"}",
+          "count": 4,
+          "consume": true
+        }
+      ],
+      "outputs": [
+        {
+          "item": "minecraft:diamond",
+          "baseAmount": 1,
+          "probability": 1.0,
+          "ignoreMultiplier": true
+        }
+      ],
+      "steps": [
+        {"type": "set_held_item", "item": "minecraft:iron_ingot"},
+        {"type": "move_to", "point": "work"},
+        {"type": "move_to_container", "container": "input"},
+        {"type": "require_inputs", "container": "input"},
+        {"type": "require_output_space", "container": "output"},
+        {"type": "move_to", "point": "work"},
+        {"type": "use_item", "ticks": 20, "swing": true},
+        {"type": "move_to_container", "container": "output"},
+        {"type": "look_at_container", "container": "output"},
+        {"type": "inspect_container", "ticks": 20, "container": "output"},
+        {"type": "craft_recipe", "input": "input", "output": "output"}
+      ]
+    },
+    {
+      "id": "smelt_emerald",
+      "name": "冶炼绿宝石矿",
+      "heldItem": "minecraft:iron_ingot",
+      "inputs": [
+        {
+          "customData": "{nsukaddition_rich_ore:\"emerald\"}",
+          "count": 4,
+          "consume": true
+        }
+      ],
+      "outputs": [
+        {
+          "item": "minecraft:emerald",
+          "baseAmount": 1,
+          "probability": 1.0,
+          "ignoreMultiplier": true
+        }
+      ],
+      "steps": [
+        {"type": "set_held_item", "item": "minecraft:iron_ingot"},
+        {"type": "move_to", "point": "work"},
+        {"type": "move_to_container", "container": "input"},
+        {"type": "require_inputs", "container": "input"},
+        {"type": "require_output_space", "container": "output"},
+        {"type": "move_to", "point": "work"},
+        {"type": "use_item", "ticks": 20, "swing": true},
+        {"type": "move_to_container", "container": "output"},
+        {"type": "look_at_container", "container": "output"},
+        {"type": "inspect_container", "ticks": 20, "container": "output"},
+        {"type": "craft_recipe", "input": "input", "output": "output"}
+      ]
+    },
+    {
+      "id": "smelt_ancient_debris",
+      "name": "冶炼远古残骸矿",
+      "heldItem": "minecraft:iron_ingot",
+      "inputs": [
+        {
+          "customData": "{nsukaddition_rich_ore:\"ancient_debris\"}",
+          "count": 4,
+          "consume": true
+        }
+      ],
+      "outputs": [
+        {
+          "item": "minecraft:netherite_scrap",
+          "baseAmount": 1,
+          "probability": 1.0,
+          "ignoreMultiplier": true
+        }
+      ],
+      "steps": [
+        {"type": "set_held_item", "item": "minecraft:iron_ingot"},
+        {"type": "move_to", "point": "work"},
+        {"type": "move_to_container", "container": "input"},
+        {"type": "require_inputs", "container": "input"},
+        {"type": "require_output_space", "container": "output"},
+        {"type": "move_to", "point": "work"},
+        {"type": "use_item", "ticks": 20, "swing": true},
+        {"type": "move_to_container", "container": "output"},
+        {"type": "look_at_container", "container": "output"},
+        {"type": "inspect_container", "ticks": 20, "container": "output"},
+        {"type": "craft_recipe", "input": "input", "output": "output"}
+      ]
+    },
+    {
+      "id": "smelt_raw_copper",
+      "name": "冶炼粗铜",
+      "heldItem": "minecraft:iron_ingot",
+      "inputs": [
+        {
+          "item": "minecraft:raw_copper",
+          "count": 4,
+          "consume": true
+        }
+      ],
+      "outputs": [
+        {
+          "item": "minecraft:copper_ingot",
+          "baseAmount": 4,
+          "probability": 1.0,
+          "ignoreMultiplier": true
+        }
+      ],
+      "steps": [
+        {"type": "set_held_item", "item": "minecraft:iron_ingot"},
+        {"type": "move_to", "point": "work"},
+        {"type": "move_to_container", "container": "input"},
+        {"type": "require_inputs", "container": "input"},
+        {"type": "require_output_space", "container": "output"},
+        {"type": "move_to", "point": "work"},
+        {"type": "use_item", "ticks": 20, "swing": true},
+        {"type": "move_to_container", "container": "output"},
+        {"type": "look_at_container", "container": "output"},
+        {"type": "inspect_container", "ticks": 20, "container": "output"},
+        {"type": "craft_recipe", "input": "input", "output": "output"}
+      ]
+    },
+    {
+      "id": "smelt_raw_iron",
+      "name": "冶炼粗铁",
+      "heldItem": "minecraft:iron_ingot",
+      "inputs": [
+        {
+          "item": "minecraft:raw_iron",
+          "count": 4,
+          "consume": true
+        }
+      ],
+      "outputs": [
+        {
+          "item": "minecraft:iron_ingot",
+          "baseAmount": 4,
+          "probability": 1.0,
+          "ignoreMultiplier": true
+        }
+      ],
+      "steps": [
+        {"type": "set_held_item", "item": "minecraft:iron_ingot"},
+        {"type": "move_to", "point": "work"},
+        {"type": "move_to_container", "container": "input"},
+        {"type": "require_inputs", "container": "input"},
+        {"type": "require_output_space", "container": "output"},
+        {"type": "move_to", "point": "work"},
+        {"type": "use_item", "ticks": 20, "swing": true},
+        {"type": "move_to_container", "container": "output"},
+        {"type": "look_at_container", "container": "output"},
+        {"type": "inspect_container", "ticks": 20, "container": "output"},
+        {"type": "craft_recipe", "input": "input", "output": "output"}
+      ]
+    },
+    {
+      "id": "smelt_raw_gold",
+      "name": "冶炼粗金",
+      "heldItem": "minecraft:iron_ingot",
+      "inputs": [
+        {
+          "item": "minecraft:raw_gold",
+          "count": 4,
+          "consume": true
+        }
+      ],
+      "outputs": [
+        {
+          "item": "minecraft:gold_ingot",
+          "baseAmount": 4,
+          "probability": 1.0,
+          "ignoreMultiplier": true
+        }
+      ],
+      "steps": [
+        {"type": "set_held_item", "item": "minecraft:iron_ingot"},
+        {"type": "move_to", "point": "work"},
+        {"type": "move_to_container", "container": "input"},
+        {"type": "require_inputs", "container": "input"},
+        {"type": "require_output_space", "container": "output"},
+        {"type": "move_to", "point": "work"},
+        {"type": "use_item", "ticks": 20, "swing": true},
+        {"type": "move_to_container", "container": "output"},
+        {"type": "look_at_container", "container": "output"},
+        {"type": "inspect_container", "ticks": 20, "container": "output"},
+        {"type": "craft_recipe", "input": "input", "output": "output"}
+      ]
+    }
+  ]
+}

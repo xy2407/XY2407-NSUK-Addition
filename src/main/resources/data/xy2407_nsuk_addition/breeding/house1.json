@@ -1,0 +1,129 @@
+{
+  "id": "house1",
+  "name": "畜牧牧场",
+  "breeder": "farmer",
+  "jobName": "牧民",
+  "heldItem": "minecraft:wheat",
+  "points": {
+    "work": { "type": "structure_pos", "positions": [[3, 0, 6]] },
+    "spawn": { "type": "structure_pos", "positions": [[3, 0, 6]] }
+  },
+  "containers": {
+    "input": { "type": "structure_pos", "positions": [[3, 1, 4]] },
+    "output": { "type": "structure_pos", "positions": [[2, 1, 8]] }
+  },
+  "recipes": [
+    {
+      "id": "cow_slaughter",
+      "name": "养殖宰杀-牛肉",
+      "type": "breeding_slaughter",
+      "entityType": "minecraft:cow",
+      "feedItem": "minecraft:wheat",
+      "heldItem": "minecraft:wheat"
+    },
+    {
+      "id": "cow_milk",
+      "name": "繁殖采集-牛奶",
+      "type": "breeding_collect",
+      "entityType": "minecraft:cow",
+      "feedItem": "minecraft:wheat",
+      "heldItem": "minecraft:wheat"
+    },
+    {
+      "id": "mooshroom_slaughter",
+      "name": "养殖宰杀-哞菇",
+      "type": "breeding_slaughter",
+      "entityType": "minecraft:mooshroom",
+      "feedItem": "minecraft:wheat",
+      "heldItem": "minecraft:wheat"
+    },
+    {
+      "id": "mooshroom_stew",
+      "name": "繁殖采集-蘑菇煲",
+      "type": "breeding_collect",
+      "entityType": "minecraft:mooshroom",
+      "feedItem": "minecraft:wheat",
+      "heldItem": "minecraft:wheat"
+    },
+    {
+      "id": "mooshroom_mushroom",
+      "name": "繁殖采集-蘑菇",
+      "type": "breeding_collect",
+      "entityType": "minecraft:mooshroom",
+      "feedItem": "minecraft:wheat",
+      "heldItem": "minecraft:wheat"
+    },
+    {
+      "id": "pig_slaughter",
+      "name": "养殖宰杀-猪肉",
+      "type": "breeding_slaughter",
+      "entityType": "minecraft:pig",
+      "feedItem": "minecraft:carrot",
+      "heldItem": "minecraft:carrot"
+    },
+    {
+      "id": "sheep_slaughter",
+      "name": "养殖宰杀-羊肉",
+      "type": "breeding_slaughter",
+      "entityType": "minecraft:sheep",
+      "feedItem": "minecraft:wheat",
+      "heldItem": "minecraft:wheat"
+    },
+    {
+      "id": "sheep_wool",
+      "name": "繁殖采集-羊毛",
+      "type": "breeding_collect",
+      "entityType": "minecraft:sheep",
+      "feedItem": "minecraft:wheat",
+      "heldItem": "minecraft:wheat"
+    },
+    {
+      "id": "goat_slaughter",
+      "name": "养殖宰杀-山羊肉",
+      "type": "breeding_slaughter",
+      "entityType": "minecraft:goat",
+      "feedItem": "minecraft:wheat",
+      "heldItem": "minecraft:wheat"
+    },
+    {
+      "id": "deer_slaughter",
+      "name": "养殖宰杀-鹿肉",
+      "type": "breeding_slaughter",
+      "entityType": "wildernature:deer",
+      "feedItem": "minecraft:wheat",
+      "heldItem": "minecraft:wheat"
+    },
+    {
+      "id": "minisheep_slaughter",
+      "name": "养殖宰杀-小绵羊肉",
+      "type": "breeding_slaughter",
+      "entityType": "wildernature:minisheep",
+      "feedItem": "minecraft:wheat",
+      "heldItem": "minecraft:wheat"
+    },
+    {
+      "id": "minisheep_wool",
+      "name": "繁殖采集-小绵羊羊毛",
+      "type": "breeding_collect",
+      "entityType": "wildernature:minisheep",
+      "feedItem": "minecraft:wheat",
+      "heldItem": "minecraft:wheat"
+    },
+    {
+      "id": "boar_slaughter",
+      "name": "养殖宰杀-野猪肉",
+      "type": "breeding_slaughter",
+      "entityType": "wildernature:boar",
+      "feedItem": "minecraft:carrot",
+      "heldItem": "minecraft:carrot"
+    },
+    {
+      "id": "bison_slaughter",
+      "name": "养殖宰杀-野牛肉",
+      "type": "breeding_slaughter",
+      "entityType": "wildernature:bison",
+      "feedItem": "minecraft:wheat",
+      "heldItem": "minecraft:wheat"
+    }
+  ]
+}
