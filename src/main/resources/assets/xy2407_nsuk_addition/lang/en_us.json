@@ -197,6 +197,12 @@
   "message.xy2407_nsuk_addition.city_core_move.new_pos_occupied": "New position is occupied by a block",
   "message.xy2407_nsuk_addition.city_core_move.chunk_not_owned": "New position is not within city territory",
 
+  "hud.xy2407_nsuk_addition.core_move.title": "Core Relocation Mode",
+  "hud.xy2407_nsuk_addition.core_move.instruction1": "Right-click on a block face to set the target position",
+  "hud.xy2407_nsuk_addition.core_move.instruction2": "Press ENTER to confirm relocation",
+  "hud.xy2407_nsuk_addition.core_move.instruction3": "Press ESC to cancel",
+  "hud.xy2407_nsuk_addition.core_move.pos_set": "Target: %s",
+
   "gui.simukraft.farmland_box.crop.culturaldelights_cucumber": "Cucumber",
   "gui.simukraft.farmland_box.crop.culturaldelights_eggplant": "Eggplant",
   "gui.simukraft.farmland_box.crop.culturaldelights_corn": "Corn (Cultural Delights)",

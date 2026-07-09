@@ -231,6 +231,11 @@
   "message.xy2407_nsuk_addition.city_core_move.pos_mismatch": "核心位置信息不匹配",
   "message.xy2407_nsuk_addition.city_core_move.same_position": "新位置与当前位置相同",
   "message.xy2407_nsuk_addition.city_core_move.new_pos_occupied": "新位置已被方块占据",
-  "message.xy2407_nsuk_addition.city_core_move.chunk_not_owned": "新位置不在城市领地范围内"
+  "message.xy2407_nsuk_addition.city_core_move.chunk_not_owned": "新位置不在城市领地范围内",
+  "hud.xy2407_nsuk_addition.core_move.title": "核心迁移模式",
+  "hud.xy2407_nsuk_addition.core_move.instruction1": "右键点击方块表面设置目标位置",
+  "hud.xy2407_nsuk_addition.core_move.instruction2": "按 Enter 确认迁移",
+  "hud.xy2407_nsuk_addition.core_move.instruction3": "按 ESC 取消",
+  "hud.xy2407_nsuk_addition.core_move.pos_set": "目标位置: %s"
 }
 

@@ -3,6 +3,7 @@ package com.xy2407.nsukaddition.client;
 import com.lowdragmc.lowdraglib2.gui.holder.ModularUIContainerScreen;
 import com.xy2407.nsukaddition.NsukAddition;
 import com.xy2407.nsukaddition.client.container.ContainerRoleHudLayer;
+import com.xy2407.nsukaddition.client.hud.CoreMoveHudLayer;
 import com.xy2407.nsukaddition.client.hud.FpsHudLayer;
 import com.xy2407.nsukaddition.client.hud.SidebarHudLayer;
 import com.xy2407.nsukaddition.client.gui.CitizenEquipmentScreen;
@@ -96,6 +97,10 @@ public final class NsukAdditionClient {
         event.registerAboveAll(
                 ResourceLocation.fromNamespaceAndPath(NsukAddition.MOD_ID, "container_role_hud"),
                 ContainerRoleHudLayer.INSTANCE
+        );
+        event.registerAboveAll(
+                ResourceLocation.fromNamespaceAndPath(NsukAddition.MOD_ID, "core_move_hud"),
+                CoreMoveHudLayer.INSTANCE
         );
     }
 
