@@ -1,5 +1,6 @@
 package com.xy2407.nsukaddition.common.mining;
 
+import client.cn.kafei.simukraft.client.ui.SimuKraftUiTheme;
 import com.lowdragmc.lowdraglib2.gui.factory.IContainerUIHolder;
 import com.lowdragmc.lowdraglib2.gui.ui.ModularUI;
 import com.lowdragmc.lowdraglib2.gui.ui.UI;
@@ -22,7 +23,8 @@ public final class MiningControlBoxMenuHolder implements IContainerUIHolder {
     @Override
     public ModularUI createUI(Player player) {
         if (player != null && player.level().isClientSide()) {
-            return ModularUI.of(UI.of(new MiningControlBoxUiRoot(packet)), player)
+            UI ui = SimuKraftUiTheme.createUi(new MiningControlBoxUiRoot(packet));
+            return ModularUI.of(ui, player)
                     .shouldCloseOnEsc(true)
                     .shouldCloseOnKeyInventory(false);
         }

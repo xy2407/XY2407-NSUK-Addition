@@ -121,6 +121,8 @@
   "gui.xy2407_nsuk_addition.breeding.status.no_input": "缺少输入物品",
   "gui.xy2407_nsuk_addition.breeding.status.consume_failed": "消耗输入失败",
   "gui.xy2407_nsuk_addition.breeding.status.output_full": "输出容器已满",
+  "gui.xy2407_nsuk_addition.breeding.status.resting": "夜间休息中",
+  "gui.xy2407_nsuk_addition.breeding.status.feeding": "进食中",
   "message.xy2407_nsuk_addition.breeding.too_far": "距离养殖控制箱太远",
   "gui.category.breeding": "养殖",
 
@@ -148,6 +150,8 @@
   "gui.xy2407_nsuk_addition.mining.status.worker_fired": "工人已解雇",
   "gui.xy2407_nsuk_addition.mining.status.interrupted": "已中断",
   "gui.xy2407_nsuk_addition.mining.status.no_pickaxe": "没有可用镐子",
+  "gui.xy2407_nsuk_addition.mining.status.resting": "夜间休息中",
+  "gui.xy2407_nsuk_addition.mining.status.feeding": "进食中",
 
   "gui.xy2407_nsuk_addition.worldgen.tectonic": "Tectonic",
   "gui.xy2407_nsuk_addition.worldgen.terraforged": "TerraForged",
@@ -213,6 +217,20 @@
   "gui.simukraft.farmland_box.crop.kt_ice_grape": "冰葡萄（酒馆）",
   "gui.simukraft.farmland_box.crop.kt_gold_grape": "金葡萄（酒馆）",
 
-  "gui.xy2407_nsuk_addition.autorestock.toggle": "自动补充/入库"
+  "gui.xy2407_nsuk_addition.autorestock.toggle": "自动补充/入库",
+
+  "gui.xy2407_nsuk_addition.citizen_equipment.title": "市民装备",
+  "message.xy2407_nsuk_addition.command.player_required": "只有玩家可以执行该命令",
+  "message.xy2407_nsuk_addition.command.no_citizen_nearby": "附近 5 格内没有市民",
+  "message.xy2407_nsuk_addition.command.open_failed": "无法打开市民装备菜单",
+
+  "gui.xy2407_nsuk_addition.city_core_move.menu": "核心迁移",
+  "message.xy2407_nsuk_addition.city_core_move.success": "城市核心迁移成功",
+  "message.xy2407_nsuk_addition.city_core_move.no_permission": "只有市长可以迁移城市核心",
+  "message.xy2407_nsuk_addition.city_core_move.city_not_found": "城市不存在",
+  "message.xy2407_nsuk_addition.city_core_move.pos_mismatch": "核心位置信息不匹配",
+  "message.xy2407_nsuk_addition.city_core_move.same_position": "新位置与当前位置相同",
+  "message.xy2407_nsuk_addition.city_core_move.new_pos_occupied": "新位置已被方块占据",
+  "message.xy2407_nsuk_addition.city_core_move.chunk_not_owned": "新位置不在城市领地范围内"
 }
 

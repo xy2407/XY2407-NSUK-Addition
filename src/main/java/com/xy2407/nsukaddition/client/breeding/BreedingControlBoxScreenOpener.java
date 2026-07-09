@@ -22,6 +22,7 @@ import com.lowdragmc.lowdraglib2.gui.ui.data.ScrollerMode;
 import com.lowdragmc.lowdraglib2.gui.ui.data.TextWrap;
 import com.lowdragmc.lowdraglib2.gui.ui.data.Vertical;
 import com.xy2407.nsukaddition.common.breeding.BreedingConstants;
+import com.xy2407.nsukaddition.common.network.AutoRestockTogglePacket;
 import com.xy2407.nsukaddition.common.network.breeding.BreedingControlBoxActionPacket;
 import com.xy2407.nsukaddition.common.network.breeding.BreedingControlBoxDemolishPacket;
 import com.xy2407.nsukaddition.common.network.breeding.BreedingControlBoxOpenResponsePacket;
@@ -50,6 +51,23 @@ import java.util.Locale;
 @SuppressWarnings("null")
 @OnlyIn(Dist.CLIENT)
 public final class BreedingControlBoxScreenOpener {
+
+    private static final java.util.concurrent.ConcurrentHashMap.KeySetView<BlockPos, Boolean> RESTOCK_STATES =
+            java.util.concurrent.ConcurrentHashMap.newKeySet();
+
+    private static boolean isRestockOn(BlockPos pos) {
+        return RESTOCK_STATES.contains(pos.immutable());
+    }
+
+    private static void setRestockState(BlockPos pos, boolean on) {
+        BlockPos key = pos.immutable();
+        if (on) {
+            RESTOCK_STATES.add(key);
+        } else {
+            RESTOCK_STATES.remove(key);
+        }
+    }
+
     private static final int MAX_PANEL_WIDTH = 480;
     private static final int MAX_PANEL_HEIGHT = 300;
     private static final int MIN_PANEL_WIDTH = 300;
@@ -120,12 +138,73 @@ public final class BreedingControlBoxScreenOpener {
     }
 
     private static UIElement titleBar(LayoutMetrics metrics) {
+        int titleH = metrics.titleBarHeight();
+        int btnH = Math.max(12, titleH - 8);
+        int lblH = titleH - btnH;
         UIElement bar = new UIElement().layout(layout -> {
             layout.widthPercent(100);
-            layout.height(metrics.titleBarHeight());
+            layout.height(titleH);
         });
-        bar.addChild(label(Component.translatable("gui.xy2407_nsuk_addition.breeding.title"), Horizontal.CENTER, 0xFFFFFFFF, metrics.titleBarHeight(), TextWrap.HIDE));
-        bar.addChild(panelTopButton("gui.button.done", metrics.doneButtonWidth(), metrics.doneButtonHeight(), BreedingControlBoxScreenOpener::close));
+        bar.addChild(label(Component.translatable("gui.xy2407_nsuk_addition.breeding.title"), Horizontal.CENTER, 0xFFFFFFFF, titleH, TextWrap.HIDE));
+        bar.addChild(panelTopButton("gui.button.done", metrics.doneButtonWidth(), titleH, BreedingControlBoxScreenOpener::close));
+
+        int btnW = metrics.doneButtonWidth();
+        BlockPos boxPos = openedBoxPos;
+        if (boxPos != null) {
+            com.lowdragmc.lowdraglib2.gui.ui.elements.Label anchor = new com.lowdragmc.lowdraglib2.gui.ui.elements.Label();
+            anchor.setText(net.minecraft.network.chat.Component.translatable("gui.xy2407_nsuk_addition.autorestock.toggle"));
+            anchor.textStyle(style -> style.textColor(0xFFFFFFFF).textShadow(true));
+
+            com.lowdragmc.lowdraglib2.gui.ui.elements.Button onBtn = new com.lowdragmc.lowdraglib2.gui.ui.elements.Button();
+            onBtn.setText(net.minecraft.network.chat.Component.literal("开"));
+
+            com.lowdragmc.lowdraglib2.gui.ui.elements.Button offBtn = new com.lowdragmc.lowdraglib2.gui.ui.elements.Button();
+            offBtn.setText(net.minecraft.network.chat.Component.literal("关"));
+
+            boolean on = isRestockOn(boxPos);
+            onBtn.setActive(!on);
+            offBtn.setActive(on);
+
+            onBtn.setOnClick(event -> {
+                setRestockState(boxPos, true);
+                PacketDistributor.sendToServer(new AutoRestockTogglePacket(boxPos, true));
+                onBtn.setActive(false);
+                offBtn.setActive(true);
+            });
+            offBtn.setOnClick(event -> {
+                setRestockState(boxPos, false);
+                PacketDistributor.sendToServer(new AutoRestockTogglePacket(boxPos, false));
+                onBtn.setActive(true);
+                offBtn.setActive(false);
+            });
+
+            anchor.layout(layout -> {
+                layout.positionType(dev.vfyjxf.taffy.style.TaffyPosition.ABSOLUTE);
+                layout.right(0);
+                layout.top(0);
+                layout.width(btnW * 2 + 2);
+                layout.height(lblH);
+            });
+            onBtn.layout(layout -> {
+                layout.positionType(dev.vfyjxf.taffy.style.TaffyPosition.ABSOLUTE);
+                layout.right(btnW + 2);
+                layout.top(lblH);
+                layout.width(btnW);
+                layout.height(btnH);
+            });
+            offBtn.layout(layout -> {
+                layout.positionType(dev.vfyjxf.taffy.style.TaffyPosition.ABSOLUTE);
+                layout.right(0);
+                layout.top(lblH);
+                layout.width(btnW);
+                layout.height(btnH);
+            });
+
+            bar.addChild(anchor);
+            bar.addChild(onBtn);
+            bar.addChild(offBtn);
+        }
+
         return bar;
     }
 

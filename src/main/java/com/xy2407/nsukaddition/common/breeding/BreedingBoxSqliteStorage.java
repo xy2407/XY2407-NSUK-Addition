@@ -88,7 +88,9 @@ public final class BreedingBoxSqliteStorage {
                 ps.setLong(11, System.currentTimeMillis());
                 ps.executeUpdate();
             }
-        } catch (Exception ignored) {}
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to save breeding box data", e);
+        }
     }
 
     public static void deleteBox(ServerLevel level, long boxPosLong) {
@@ -101,7 +103,9 @@ public final class BreedingBoxSqliteStorage {
                 ps.setLong(1, boxPosLong);
                 ps.executeUpdate();
             }
-        } catch (Exception ignored) {}
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to delete breeding box data", e);
+        }
     }
 
     public static CompoundTag loadAll(ServerLevel level) {
@@ -130,8 +134,8 @@ public final class BreedingBoxSqliteStorage {
             }
             tag.put("Boxes", list);
             return list.isEmpty() ? null : tag;
-        } catch (Exception exception) {
-            return null;
+        } catch (Exception e) {
+            throw new RuntimeException("Failed to load breeding box data", e);
         }
     }
 }

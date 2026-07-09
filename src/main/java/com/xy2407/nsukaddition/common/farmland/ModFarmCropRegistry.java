@@ -6,10 +6,26 @@ import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.level.block.Block;
 
-/** 注册模组添加的额外农作物到农场系统枚举中。 */
+import java.util.Collections;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
+/** 注册模组添加的额外农作物到农场系统枚举中，并维护 ID→实例 备份映射防止反序列化丢失。 */
 public final class ModFarmCropRegistry {
 
+    private static final Map<String, FarmCrop> CROP_MAP = new ConcurrentHashMap<>();
+
     private ModFarmCropRegistry() {
+    }
+
+    public static Map<String, FarmCrop> getCropMap() {
+        return Collections.unmodifiableMap(CROP_MAP);
+    }
+
+    /** 通过ID查找自定义作物，优先从备份映射查找 */
+    public static FarmCrop findById(String id) {
+        if (id == null || id.isBlank()) return null;
+        return CROP_MAP.get(id.toLowerCase(java.util.Locale.ROOT));
     }
 
     public static void registerAll() {
@@ -64,11 +80,15 @@ public final class ModFarmCropRegistry {
             }
         }
 
-        EnumExtender.addEnumConstant(FarmCrop.class, cropId,
+        FarmCrop instance = EnumExtender.addEnumConstant(FarmCrop.class, cropId,
                 new EnumExtender.FieldValue("seed", seed),
                 new EnumExtender.FieldValue("plantBlock", plantBlock),
                 new EnumExtender.FieldValue("layout", layout),
                 new EnumExtender.FieldValue("produceBlock", produceBlock)
         );
+
+        if (instance != null) {
+            CROP_MAP.put(cropId.toLowerCase(java.util.Locale.ROOT), instance);
+        }
     }
 }

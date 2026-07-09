@@ -3,11 +3,6 @@ package com.xy2407.nsukaddition.client.mining;
 import client.cn.kafei.simukraft.client.buildbox.BuildingBoundsRenderer;
 import client.cn.kafei.simukraft.client.hire.NpcHireScreen;
 import client.cn.kafei.simukraft.client.ui.SimuKraftUiTheme;
-import com.lowdragmc.lowdraglib2.gui.texture.ColorBorderTexture;
-import com.lowdragmc.lowdraglib2.gui.texture.ColorRectTexture;
-import com.lowdragmc.lowdraglib2.gui.texture.GuiTextureGroup;
-import com.lowdragmc.lowdraglib2.gui.ui.ModularUI;
-import com.lowdragmc.lowdraglib2.gui.ui.UI;
 import com.lowdragmc.lowdraglib2.gui.ui.UIElement;
 import com.lowdragmc.lowdraglib2.gui.ui.elements.Button;
 import com.lowdragmc.lowdraglib2.gui.ui.elements.ItemSlot;
@@ -18,6 +13,7 @@ import com.lowdragmc.lowdraglib2.gui.ui.data.TextWrap;
 import com.lowdragmc.lowdraglib2.gui.ui.data.Vertical;
 import com.xy2407.nsukaddition.common.block.entity.MiningControlBoxBlockEntity;
 import com.xy2407.nsukaddition.common.mining.MiningConstants;
+import com.xy2407.nsukaddition.common.network.AutoRestockTogglePacket;
 import com.xy2407.nsukaddition.common.network.mining.MiningControlBoxActionPacket;
 import com.xy2407.nsukaddition.common.network.mining.MiningControlBoxDemolishPacket;
 import com.xy2407.nsukaddition.common.network.mining.MiningControlBoxOpenResponsePacket;
@@ -51,9 +47,21 @@ public final class MiningControlBoxUiRoot extends UIElement {
     private static final float TEXT_ROLL_SPEED = 0.25F;
     private static final int SLOT_SIZE = 18;
 
-    private static final int BTN_BASE = 0xFFE0E0E0;
-    private static final int BTN_HOVER = 0xFFF0F0F0;
-    private static final int BTN_BORDER = 0xFF1E1E1E;
+    private static final java.util.concurrent.ConcurrentHashMap.KeySetView<BlockPos, Boolean> RESTOCK_STATES =
+            java.util.concurrent.ConcurrentHashMap.newKeySet();
+
+    private static boolean isRestockOn(BlockPos pos) {
+        return RESTOCK_STATES.contains(pos.immutable());
+    }
+
+    private static void setRestockState(BlockPos pos, boolean on) {
+        BlockPos key = pos.immutable();
+        if (on) {
+            RESTOCK_STATES.add(key);
+        } else {
+            RESTOCK_STATES.remove(key);
+        }
+    }
 
     private static WeakReference<MiningControlBoxUiRoot> activeRoot = new WeakReference<>(null);
 
@@ -97,11 +105,10 @@ public final class MiningControlBoxUiRoot extends UIElement {
             l.width(metrics.panelWidth);
             l.height(metrics.panelHeight);
             l.paddingAll(metrics.panelPadding);
-            l.marginTop(-22);
             l.flexDirection(FlexDirection.COLUMN);
             l.alignItems(AlignItems.STRETCH);
             l.gapAll(metrics.gap);
-        }).style(s -> s.backgroundTexture(new ColorRectTexture(0xFF444444))).addClass("simukraft_panel");
+        }).addClass("simukraft_panel");
 
         panel.addChild(titleBar(metrics));
         panel.addChild(pickaxeSlots(metrics));
@@ -115,33 +122,121 @@ public final class MiningControlBoxUiRoot extends UIElement {
     }
 
     private static LayoutMetrics layoutMetrics(int screenWidth, int screenHeight) {
-        int rootPadding = Math.max(4, Math.round(Math.min(screenWidth, screenHeight) * 0.018F));
-        int panelPadding = Math.max(6, Math.round(Math.min(screenWidth, screenHeight) * 0.014F));
-        int panelWidth = Math.max(MIN_PANEL_WIDTH, Math.min(MAX_PANEL_WIDTH, screenWidth - rootPadding * 2));
-        int panelHeight = Math.max(MIN_PANEL_HEIGHT, Math.min(MAX_PANEL_HEIGHT, screenHeight - rootPadding * 2));
-        int gap = Math.max(3, Math.round(panelHeight * 0.016F));
-        int innerGap = Math.max(2, Math.round(panelHeight * 0.01F));
-        return new LayoutMetrics(rootPadding, panelPadding, panelWidth, panelHeight, gap, innerGap);
+        int rootPadding = clamp(Math.round(Math.min(screenWidth, screenHeight) * 0.018F), 4, 10);
+        int availableWidth = Math.max(MIN_PANEL_WIDTH, screenWidth - rootPadding * 2);
+        int availableHeight = Math.max(MIN_PANEL_HEIGHT, screenHeight - rootPadding * 2 - 24);
+        int panelWidth = clamp(Math.min(MAX_PANEL_WIDTH, availableWidth), Math.min(MIN_PANEL_WIDTH, availableWidth), availableWidth);
+        int panelHeight = clamp(Math.min(MAX_PANEL_HEIGHT, availableHeight), Math.min(MIN_PANEL_HEIGHT, availableHeight), availableHeight);
+        int panelPadding = clamp(Math.round(panelWidth * 0.024F), 6, 12);
+        int gap = clamp(Math.round(panelHeight * 0.018F), 3, 6);
+        int innerGap = clamp(gap - 1, 2, 5);
+        int titleHeight = clamp(Math.round(panelHeight * 0.080F), 14, 20);
+        int doneButtonHeight = clamp(Math.round(panelHeight * 0.078F), 18, 24);
+        int titleBarHeight = Math.max(titleHeight, doneButtonHeight);
+        int doneButtonWidth = clamp(Math.round(panelWidth * 0.16F), 50, 76);
+        int toolButtonHeight = clamp(Math.round(panelHeight * 0.085F), 18, 24);
+        int toolWidth = clamp(Math.round(panelWidth * 0.235F), 86, 112);
+        int actionHeight = clamp(Math.round(panelHeight * 0.078F), 20, 24);
+        int actionWidth = clamp((panelWidth - panelPadding * 2 - gap * 2) / 3, 84, 132);
+        return new LayoutMetrics(rootPadding, panelPadding, panelWidth, panelHeight, gap, innerGap,
+                titleBarHeight, doneButtonWidth, doneButtonHeight, toolWidth, toolButtonHeight, actionWidth, actionHeight);
+    }
+
+    private static int clamp(int value, int min, int max) {
+        return Math.max(min, Math.min(max, value));
     }
 
     private record LayoutMetrics(
             int rootPadding, int panelPadding, int panelWidth, int panelHeight,
-            int gap, int innerGap) {}
+            int gap, int innerGap, int titleBarHeight, int doneButtonWidth,
+            int doneButtonHeight, int toolWidth, int toolButtonHeight,
+            int actionWidth, int actionHeight) {}
 
     private UIElement titleBar(LayoutMetrics m) {
+        int titleH = m.titleBarHeight;
+        int doneW = m.doneButtonWidth;
+        int btnH = Math.max(12, titleH - 8);
+        int lblH = titleH - btnH;
+        int btnW = doneW;
         UIElement bar = new UIElement().layout(l -> {
             l.widthPercent(100);
-            l.height(18);
+            l.height(titleH);
         });
         bar.addChild(label(Component.translatable("gui.xy2407_nsuk_addition.mining.title"),
-                Horizontal.CENTER, 0xFFFFFFFF, 18, TextWrap.HIDE));
-        Button doneBtn = flatButton(Component.translatable("gui.button.done"), this::close, true, 50, 18);
+                Horizontal.CENTER, 0xFFFFFFFF, titleH, TextWrap.HIDE));
+
+        Button doneBtn = new Button();
+        doneBtn.setText(Component.translatable("gui.button.done"));
+        doneBtn.setOnClick(e -> close());
         doneBtn.layout(l -> {
             l.positionType(TaffyPosition.ABSOLUTE);
-            l.right(0);
+            l.left(0);
             l.top(0);
+            l.width(doneW);
+            l.height(titleH);
         });
         bar.addChild(doneBtn);
+
+        BlockPos boxPos = packet.boxPos();
+        if (boxPos != null) {
+            boolean on = isRestockOn(boxPos);
+
+            Label anchor = new Label();
+            anchor.setText(Component.translatable("gui.xy2407_nsuk_addition.autorestock.toggle"));
+            anchor.setOverflowVisible(false);
+            anchor.textStyle(style -> style.textColor(0xFFFFFFFF).textShadow(true)
+                    .textWrap(TextWrap.HIDE)
+                    .textAlignHorizontal(Horizontal.CENTER)
+                    .textAlignVertical(Vertical.CENTER));
+
+            Button onBtn = new Button();
+            onBtn.setText(Component.literal("开"));
+            onBtn.setActive(!on);
+
+            Button offBtn = new Button();
+            offBtn.setText(Component.literal("关"));
+            offBtn.setActive(on);
+
+            onBtn.setOnClick(event -> {
+                setRestockState(boxPos, true);
+                PacketDistributor.sendToServer(new AutoRestockTogglePacket(boxPos, true));
+                onBtn.setActive(false);
+                offBtn.setActive(true);
+            });
+            offBtn.setOnClick(event -> {
+                setRestockState(boxPos, false);
+                PacketDistributor.sendToServer(new AutoRestockTogglePacket(boxPos, false));
+                onBtn.setActive(true);
+                offBtn.setActive(false);
+            });
+
+            anchor.layout(layout -> {
+                layout.positionType(TaffyPosition.ABSOLUTE);
+                layout.right(0);
+                layout.top(0);
+                layout.width(btnW * 2 + 2);
+                layout.height(lblH);
+            });
+            onBtn.layout(layout -> {
+                layout.positionType(TaffyPosition.ABSOLUTE);
+                layout.right(btnW + 2);
+                layout.top(lblH);
+                layout.width(btnW);
+                layout.height(btnH);
+            });
+            offBtn.layout(layout -> {
+                layout.positionType(TaffyPosition.ABSOLUTE);
+                layout.right(0);
+                layout.top(lblH);
+                layout.width(btnW);
+                layout.height(btnH);
+            });
+
+            bar.addChild(anchor);
+            bar.addChild(onBtn);
+            bar.addChild(offBtn);
+        }
+
         return bar;
     }
 
@@ -204,7 +299,7 @@ public final class MiningControlBoxUiRoot extends UIElement {
         row.addChild(info);
 
         UIElement tools = new UIElement().layout(l -> {
-            l.width(80);
+            l.width(m.toolWidth);
             l.heightPercent(100);
             l.flexDirection(FlexDirection.COLUMN);
             l.alignItems(AlignItems.STRETCH);
@@ -213,9 +308,9 @@ public final class MiningControlBoxUiRoot extends UIElement {
             l.flexShrink(0);
         });
         tools.addChild(flatButton(Component.translatable("gui.xy2407_nsuk_addition.mining.demolish"),
-                this::demolish, true, 80, 22));
+                this::demolish, true, m.toolWidth, m.toolButtonHeight));
         tools.addChild(flatButton(Component.translatable("gui.xy2407_nsuk_addition.mining.bind_container"),
-                this::bindContainer, true, 80, 22));
+                this::bindContainer, true, m.toolWidth, m.toolButtonHeight));
         row.addChild(tools);
 
         return row;
@@ -237,7 +332,7 @@ public final class MiningControlBoxUiRoot extends UIElement {
             l.top(2);
             l.width(barW);
             l.height(barH);
-        }).style(s -> s.backgroundTexture(new ColorRectTexture(0xFF333333)));
+        }).style(s -> s.backgroundTexture(new com.lowdragmc.lowdraglib2.gui.texture.ColorRectTexture(0xFF333333)));
         bar.addChild(bg);
 
         progressFg = new UIElement().layout(l -> {
@@ -246,7 +341,7 @@ public final class MiningControlBoxUiRoot extends UIElement {
             l.top(2);
             l.width(0);
             l.height(barH);
-        }).style(s -> s.backgroundTexture(new ColorRectTexture(0xFF55AA55)));
+        }).style(s -> s.backgroundTexture(new com.lowdragmc.lowdraglib2.gui.texture.ColorRectTexture(0xFF55AA55)));
         bar.addChild(progressFg);
 
         progressText = label(Component.empty(), Horizontal.CENTER, 0xFFFFFFFF, barH + 4, TextWrap.HIDE);
@@ -257,23 +352,17 @@ public final class MiningControlBoxUiRoot extends UIElement {
     private UIElement actionRow(LayoutMetrics m) {
         UIElement row = new UIElement().layout(l -> {
             l.widthPercent(100);
-            l.height(22);
+            l.height(m.actionHeight);
             l.flexDirection(FlexDirection.ROW);
             l.flexWrap(FlexWrap.WRAP);
             l.justifyContent(AlignContent.CENTER);
             l.gapAll(m.gap);
         });
-        int btnW = 100;
-        int btnH = 22;
 
-        var startStop = flatButtonWithLabel(Component.empty(), () -> action(MiningControlBoxActionPacket.Action.TOGGLE_RUN), true, btnW, btnH);
-        startStopButton = startStop.btn();
-        startStopLabel = startStop.lbl();
-        hireButton = flatButton(Component.translatable("gui.xy2407_nsuk_addition.mining.hire"), this::hire, true, btnW, btnH);
-        fireButton = flatButton(Component.translatable("gui.xy2407_nsuk_addition.mining.fire"), () -> action(MiningControlBoxActionPacket.Action.FIRE), true, btnW, btnH);
-        var bounds = flatButtonWithLabel(Component.empty(), this::toggleBounds, true, btnW, btnH);
-        boundsButton = bounds.btn();
-        boundsLabel = bounds.lbl();
+        startStopButton = flatButton(Component.empty(), () -> action(MiningControlBoxActionPacket.Action.TOGGLE_RUN), false, m.actionWidth, m.actionHeight);
+        hireButton = flatButton(Component.translatable("gui.xy2407_nsuk_addition.mining.hire"), this::hire, false, m.actionWidth, m.actionHeight);
+        fireButton = flatButton(Component.translatable("gui.xy2407_nsuk_addition.mining.fire"), () -> action(MiningControlBoxActionPacket.Action.FIRE), false, m.actionWidth, m.actionHeight);
+        boundsButton = flatButton(Component.empty(), this::toggleBounds, false, m.actionWidth, m.actionHeight);
 
         row.addChild(startStopButton);
         row.addChild(hireButton);
@@ -341,11 +430,11 @@ public final class MiningControlBoxUiRoot extends UIElement {
         progressText.setText(Component.literal(packet.workTicks() + " / " + maxTicks + " tick"));
 
         boolean hasPickaxe = hasPickaxeAt(packet.boxPos());
-        startStopLabel.setText(toggleText());
+        startStopButton.setText(toggleText());
         startStopButton.setActive(packet.hasWorker() && hasPickaxe);
         hireButton.setActive(!packet.hasWorker());
         fireButton.setActive(packet.hasWorker());
-        boundsLabel.setText(boundsText());
+        boundsButton.setText(boundsText());
     }
 
     private static boolean hasPickaxeAt(BlockPos boxPos) {
@@ -400,6 +489,8 @@ public final class MiningControlBoxUiRoot extends UIElement {
     }
 
     private void hire() {
+        Minecraft.getInstance().player.displayClientMessage(
+                Component.literal("§b[NSUK] 雇佣按钮点击 → sourceType=" + MiningConstants.HIRE_SOURCE_TYPE + " role=" + MiningConstants.HIRE_ROLE + " pos=" + packet.boxPos()), false);
         NpcHireScreen.request(packet.boxPos(), MiningConstants.HIRE_SOURCE_TYPE, MiningConstants.HIRE_ROLE);
     }
 
@@ -437,77 +528,16 @@ public final class MiningControlBoxUiRoot extends UIElement {
     }
 
     private static Button flatButton(Component text, Runnable action, boolean active, int width, int height) {
-        Button btn = new Button().noText();
-        btn.buttonStyle(style -> style
-                .baseTexture(new GuiTextureGroup(new ColorBorderTexture(1, BTN_BORDER), new ColorRectTexture(BTN_BASE)))
-                .hoverTexture(new GuiTextureGroup(new ColorBorderTexture(1, BTN_BORDER), new ColorRectTexture(BTN_HOVER)))
-                .pressedTexture(new GuiTextureGroup(new ColorBorderTexture(1, BTN_BORDER), new ColorRectTexture(BTN_HOVER))));
-        btn.setOnClick(e -> {
-            if (btn.isActive()) action.run();
-        });
-        btn.setActive(active);
-        btn.layout(l -> {
-            l.width(width);
-            l.height(height);
-            l.flexShrink(0);
-        });
-
-        Label lbl = new Label();
-        lbl.setText(text);
-        lbl.setOverflowVisible(false);
-        lbl.layout(l -> {
-            l.widthPercent(100);
-            l.heightPercent(100);
-        });
-        lbl.textStyle(s -> s.textColor(active ? 0xFF222222 : 0xFF888888).textShadow(false)
-                .textWrap(TextWrap.HOVER_ROLL).rollSpeed(TEXT_ROLL_SPEED)
-                .textAlignHorizontal(Horizontal.CENTER).textAlignVertical(Vertical.CENTER));
-        btn.addChild(lbl);
-        return btn;
-    }
-
-    private static Button topButton(String key, int left, int top, int width, int height, Runnable action) {
         Button btn = new Button();
-        btn.setText(Component.translatable(key));
+        btn.setText(text);
+        btn.textStyle(style -> style.textWrap(TextWrap.HOVER_ROLL).rollSpeed(TEXT_ROLL_SPEED));
         btn.setOnClick(e -> action.run());
-        btn.layout(l -> {
-            l.positionType(TaffyPosition.ABSOLUTE);
-            l.left(left);
-            l.top(top);
-            l.width(width);
-            l.height(height);
-        });
-        return btn;
-    }
-
-    private static ButtonWithLabel flatButtonWithLabel(Component text, Runnable action, boolean active, int width, int height) {
-        Button btn = new Button().noText();
-        btn.buttonStyle(style -> style
-                .baseTexture(new GuiTextureGroup(new ColorBorderTexture(1, BTN_BORDER), new ColorRectTexture(BTN_BASE)))
-                .hoverTexture(new GuiTextureGroup(new ColorBorderTexture(1, BTN_BORDER), new ColorRectTexture(BTN_HOVER)))
-                .pressedTexture(new GuiTextureGroup(new ColorBorderTexture(1, BTN_BORDER), new ColorRectTexture(BTN_HOVER))));
-        btn.setOnClick(e -> {
-            if (btn.isActive()) action.run();
-        });
         btn.setActive(active);
         btn.layout(l -> {
             l.width(width);
             l.height(height);
             l.flexShrink(0);
         });
-        Label lbl = new Label();
-        lbl.setText(text);
-        lbl.setOverflowVisible(false);
-        lbl.layout(l -> {
-            l.widthPercent(100);
-            l.heightPercent(100);
-        });
-        lbl.textStyle(s -> s.textColor(active ? 0xFF222222 : 0xFF888888).textShadow(false)
-                .textWrap(TextWrap.HOVER_ROLL).rollSpeed(TEXT_ROLL_SPEED)
-                .textAlignHorizontal(Horizontal.CENTER).textAlignVertical(Vertical.CENTER));
-        btn.addChild(lbl);
-        return new ButtonWithLabel(btn, lbl);
+        return btn;
     }
-
-    private record ButtonWithLabel(Button btn, Label lbl) {}
 }

@@ -2,6 +2,12 @@ package com.xy2407.nsukaddition.common.mining;
 
 import com.xy2407.nsukaddition.common.block.entity.MiningControlBoxBlockEntity;
 import com.xy2407.nsukaddition.common.vein.OreVeinDropProcessor;
+import common.cn.kafei.simukraft.citizen.CitizenData;
+import common.cn.kafei.simukraft.citizen.CitizenHomeRestService;
+import common.cn.kafei.simukraft.citizen.CitizenSelfFeedingService;
+import common.cn.kafei.simukraft.citizen.CitizenWorkStatus;
+import common.cn.kafei.simukraft.entity.CitizenEntity;
+import common.cn.kafei.simukraft.job.CitizenEmploymentService;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.Container;
@@ -36,23 +42,38 @@ public final class MiningWorkService {
 
     private static void tickBox(ServerLevel level, MiningBoxManager manager, MiningBoxData data) {
 
+        BlockPos boxPos = data.boxPos();
+
+        CitizenData worker = MiningControlBoxService.findAssignedWorker(level, boxPos);
+        if (worker == null) {
+            data.setRunning(false);
+            data.setStatusKey(MiningConstants.STATUS_NO_WORKER);
+            manager.persist(data);
+            return;
+        }
+
+        if (CitizenHomeRestService.isRestTime(level)) {
+            CitizenEntity entity = common.cn.kafei.simukraft.citizen.CitizenTeleportService.findCitizenEntity(level, worker.uuid());
+            if (entity != null) entity.setHasActiveVisualTask(false);
+            data.setStatusKey(MiningConstants.STATUS_RESTING);
+            return;
+        }
+
+        if (CitizenSelfFeedingService.isSelfFeeding(level, worker.uuid())) {
+            CitizenEntity entity = common.cn.kafei.simukraft.citizen.CitizenTeleportService.findCitizenEntity(level, worker.uuid());
+            if (entity != null) entity.setHasActiveVisualTask(false);
+            data.setStatusKey(MiningConstants.STATUS_FEEDING);
+            return;
+        }
+
         data.setWorkTicks(data.workTicks() + 1);
 
         if (data.workTicks() < MiningConstants.TICKS_PER_LAYER) {
             return;
         }
 
-        BlockPos boxPos = data.boxPos();
-
         if (!MiningControlBoxService.isBoxBlockValid(level, boxPos)) {
             data.setRunning(false);
-            manager.persist(data);
-            return;
-        }
-
-        if (MiningControlBoxService.findAssignedWorker(level, boxPos) == null) {
-            data.setRunning(false);
-            data.setStatusKey(MiningConstants.STATUS_NO_WORKER);
             manager.persist(data);
             return;
         }

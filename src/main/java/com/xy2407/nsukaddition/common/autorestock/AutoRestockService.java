@@ -1,6 +1,14 @@
 package com.xy2407.nsukaddition.common.autorestock;
 
-import com.xy2407.nsukaddition.NsukAddition;
+import com.xy2407.nsukaddition.common.block.entity.MiningControlBoxBlockEntity;
+import com.xy2407.nsukaddition.common.breeding.BreedingBoxData;
+import com.xy2407.nsukaddition.common.breeding.BreedingBoxManager;
+import com.xy2407.nsukaddition.common.breeding.BreedingControlBoxService;
+import com.xy2407.nsukaddition.common.breeding.BreedingDefinition;
+import com.xy2407.nsukaddition.common.breeding.BreedingDefinitionLoader;
+import com.xy2407.nsukaddition.common.mining.MiningBoxData;
+import com.xy2407.nsukaddition.common.mining.MiningBoxManager;
+import com.xy2407.nsukaddition.common.mining.MiningControlBoxService;
 import common.cn.kafei.simukraft.building.PlacedBuildingRecord;
 import common.cn.kafei.simukraft.commercial.CommercialBoxData;
 import common.cn.kafei.simukraft.commercial.CommercialBoxManager;
@@ -24,6 +32,8 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.item.PickaxeItem;
+import net.minecraft.world.level.block.entity.BlockEntity;
 
 import java.util.Comparator;
 import java.util.LinkedHashSet;
@@ -40,47 +50,29 @@ public final class AutoRestockService {
     private AutoRestockService() {}
 
     public static void storeIndustrialOutputs(ServerLevel level, BlockPos pos) {
-        NsukAddition.LOGGER.info("[AutoRestockService] storeIndustrialOutputs called for pos={}", pos);
         IndustrialBoxManager manager = IndustrialBoxManager.get(level);
         IndustrialBoxData data = manager.get(pos);
         if (data == null) {
-            NsukAddition.LOGGER.warn("[AutoRestockService] data is null at {}, removing from config", pos);
             AutoRestockConfig.remove(level, pos);
             return;
         }
-        if (!data.running()) {
-            NsukAddition.LOGGER.info("[AutoRestockService] data.running() = false, skip");
-            return;
-        }
+        if (!data.running()) return;
 
         PlacedBuildingRecord building = IndustrialControlBoxService.resolveBuilding(level, pos);
-        if (building == null) {
-            NsukAddition.LOGGER.warn("[AutoRestockService] resolveBuilding returned null for {}", pos);
-            return;
-        }
+        if (building == null) return;
 
         IndustrialDefinitionLoader.LoadResult loadResult = IndustrialDefinitionLoader.loadForBuilding(building);
-        if (!loadResult.valid()) {
-            NsukAddition.LOGGER.warn("[AutoRestockService] loadResult invalid for building at {}", building.worldOrigin());
-            return;
-        }
+        if (!loadResult.valid()) return;
         IndustrialDefinition definition = loadResult.definition();
         if (definition == null) return;
 
         List<BlockPos> outputContainers = IndustrialControlBoxService.resolveContainerPositions(
                 building, definition, "output");
-        if (outputContainers.isEmpty()) {
-            NsukAddition.LOGGER.warn("[AutoRestockService] no output containers found");
-            return;
-        }
-        NsukAddition.LOGGER.info("[AutoRestockService] outputContainers = {}", outputContainers);
+        if (outputContainers.isEmpty()) return;
 
         BlockPos boxPos = building.worldOrigin();
         LogisticsWarehouseData warehouse = findNearestWarehouse(level, boxPos);
-        if (warehouse == null) {
-            NsukAddition.LOGGER.warn("[AutoRestockService] no warehouse found near {}", boxPos);
-            return;
-        }
+        if (warehouse == null) return;
 
         BlockPos warehousePos = warehouse.boxPos();
         for (BlockPos container : outputContainers) {
@@ -88,14 +80,12 @@ public final class AutoRestockService {
             for (GenericContainerAccess.SlotSnapshot slot : GenericContainerAccess.snapshotSlots(level, container)) {
                 if (slot.stack().isEmpty()) continue;
                 ItemStack stack = slot.stack();
-                NsukAddition.LOGGER.info("[AutoRestockService] storing {} from {} to warehouse", stack, container);
                 ItemStack remaining = LogisticsWarehouseInventoryService.insert(level, warehousePos, stack.copy());
                 int deposited = stack.getCount() - remaining.getCount();
                 if (deposited > 0) {
                     GenericContainerAccess.extractFromSlot(level, container,
                             slot.slot(), slot.access(), slot.side(), deposited,
                             s -> ItemStack.isSameItemSameComponents(s, stack));
-                    NsukAddition.LOGGER.info("[AutoRestockService] deposited {}, remaining {}", deposited, remaining);
                 }
             }
         }
@@ -105,46 +95,27 @@ public final class AutoRestockService {
         IndustrialBoxManager manager = IndustrialBoxManager.get(level);
         IndustrialBoxData data = manager.get(pos);
         if (data == null) {
-            NsukAddition.LOGGER.warn("[AutoRestockService] industrial data null at {}, removing from config", pos);
             AutoRestockConfig.remove(level, pos);
             return;
         }
-        if (!data.running()) {
-            NsukAddition.LOGGER.info("[AutoRestockService] industrial box not running at {}, skip input restock", pos);
-            return;
-        }
+        if (!data.running()) return;
 
         PlacedBuildingRecord building = IndustrialControlBoxService.resolveBuilding(level, pos);
-        if (building == null) {
-            NsukAddition.LOGGER.warn("[AutoRestockService] no industrial building found for {}", pos);
-            return;
-        }
+        if (building == null) return;
 
         IndustrialDefinitionLoader.LoadResult loadResult = IndustrialDefinitionLoader.loadForBuilding(building);
-        if (!loadResult.valid() || loadResult.definition() == null) {
-            NsukAddition.LOGGER.warn("[AutoRestockService] industrial definition invalid for building at {}", building.worldOrigin());
-            return;
-        }
+        if (!loadResult.valid() || loadResult.definition() == null) return;
         IndustrialDefinition definition = loadResult.definition();
 
         IndustrialDefinition.RecipeDefinition recipe = definition.recipeById(data.selectedRecipeId());
-        if (recipe == null || recipe.inputs().isEmpty()) {
-            NsukAddition.LOGGER.info("[AutoRestockService] no recipe or no inputs for industrial box at {}", pos);
-            return;
-        }
+        if (recipe == null || recipe.inputs().isEmpty()) return;
 
         List<BlockPos> inputContainers = IndustrialControlBoxService.resolveContainerPositions(building, definition, "input");
-        if (inputContainers.isEmpty()) {
-            NsukAddition.LOGGER.info("[AutoRestockService] no input containers for industrial box at {}", pos);
-            return;
-        }
+        if (inputContainers.isEmpty()) return;
 
         BlockPos boxPos = building.worldOrigin();
         LogisticsWarehouseData warehouse = findNearestWarehouse(level, boxPos);
-        if (warehouse == null) {
-            NsukAddition.LOGGER.info("[AutoRestockService] no warehouse found near {}", boxPos);
-            return;
-        }
+        if (warehouse == null) return;
 
         List<IndustrialDefinition.ItemRequirement> flatInputs =
                 IndustrialInputRequirements.flattenItems(recipe.inputs());
@@ -164,10 +135,6 @@ public final class AutoRestockService {
 
             ItemStack leftover = insertIntoContainers(level, inputContainers, extracted);
             int deposited = extracted.getCount() - leftover.getCount();
-            if (deposited > 0) {
-                NsukAddition.LOGGER.info("[AutoRestockService] restocked {} x{} to industrial input at {}",
-                        spec.displayItemId(), deposited, pos);
-            }
             if (!leftover.isEmpty()) {
                 LogisticsWarehouseInventoryService.insert(level, warehouse.boxPos(), leftover);
             }
@@ -311,5 +278,185 @@ public final class AutoRestockService {
         CommercialDefinition.ContainerDefinition container = definition.containers().get(containerId);
         if (container == null || !"structure_pos".equalsIgnoreCase(container.type())) return List.of();
         return IndustrialCoordinateResolver.resolvePositions(building, container.positions());
+    }
+
+    /** 矿工盒子入库：从仓库补充镐子，并将自动绑定箱子中的物品存入仓库。 */
+    public static void storeMiningOutputs(ServerLevel level, BlockPos pos) {
+        if (!MiningControlBoxService.isBoxBlockValid(level, pos)) return;
+        MiningBoxData data = MiningBoxManager.get(level).get(pos);
+        if (data == null || !data.running()) return;
+
+        BlockEntity be = level.getBlockEntity(pos);
+        if (!(be instanceof MiningControlBoxBlockEntity box)) return;
+
+        BlockPos warehousePos = nearestWarehousePos(level, pos);
+        if (warehousePos == null) return;
+
+        for (int slot = 0; slot < MiningControlBoxBlockEntity.PICKAXE_SLOTS; slot++) {
+            ItemStack slotStack = box.pickaxes().getStackInSlot(slot);
+            if (!slotStack.isEmpty()) continue;
+
+            ItemStack pickaxe = extractPickaxeFromWarehouse(level, warehousePos);
+            if (pickaxe.isEmpty()) break;
+
+            box.pickaxes().setStackInSlot(slot, pickaxe);
+            box.setChanged();
+        }
+
+        BlockPos chestPos = MiningControlBoxService.resolveContainerPos(level, pos);
+        if (chestPos == null || !level.isLoaded(chestPos)) return;
+
+        for (GenericContainerAccess.SlotSnapshot slot : GenericContainerAccess.snapshotSlots(level, chestPos)) {
+            if (slot.stack().isEmpty()) continue;
+            ItemStack stack = slot.stack();
+            ItemStack remaining = LogisticsWarehouseInventoryService.insert(level, warehousePos, stack.copy());
+            int deposited = stack.getCount() - remaining.getCount();
+            if (deposited > 0) {
+                GenericContainerAccess.extractFromSlot(level, chestPos,
+                        slot.slot(), slot.access(), slot.side(), deposited,
+                        s -> ItemStack.isSameItemSameComponents(s, stack));
+            }
+        }
+    }
+
+    private static ItemStack extractPickaxeFromWarehouse(ServerLevel level, BlockPos warehousePos) {
+        LogisticsWarehouseData warehouse = LogisticsManager.get(level).warehouses().stream()
+                .filter(w -> w.boxPos().equals(warehousePos))
+                .findFirst().orElse(null);
+        if (warehouse == null) return ItemStack.EMPTY;
+
+        Set<BlockPos> visited = new LinkedHashSet<>();
+        for (BlockPos rawContainer : warehouse.containers()) {
+            if (!level.isLoaded(rawContainer)) continue;
+            BlockPos canonical = GenericContainerAccess.canonicalContainerPos(level, rawContainer);
+            if (!visited.add(canonical.immutable())) continue;
+
+            for (GenericContainerAccess.SlotSnapshot slot : GenericContainerAccess.snapshotSlots(level, canonical)) {
+                if (slot.stack().isEmpty()) continue;
+                if (!(slot.stack().getItem() instanceof PickaxeItem)) continue;
+                if (slot.stack().getDamageValue() >= slot.stack().getMaxDamage()) continue;
+
+                return GenericContainerAccess.extractFromSlot(level, canonical,
+                        slot.slot(), slot.access(), slot.side(), 1,
+                        s -> s.getItem() instanceof PickaxeItem && s.getDamageValue() < s.getMaxDamage());
+            }
+        }
+        return ItemStack.EMPTY;
+    }
+
+    public static void restockBreedingInputs(ServerLevel level, BlockPos pos) {
+        BreedingBoxManager manager = BreedingBoxManager.get(level);
+        BreedingBoxData data = manager.get(pos);
+        if (data == null || !data.running()) return;
+
+        var building = BreedingControlBoxService.resolveBuilding(level, pos);
+        if (building == null) return;
+
+        BreedingDefinitionLoader.LoadResult loadResult = BreedingDefinitionLoader.loadForBuilding(building);
+        if (!loadResult.valid() || loadResult.definition() == null) return;
+
+        BreedingDefinition definition = loadResult.definition();
+        BreedingDefinition.RecipeDefinition recipe = definition.recipeById(data.selectedRecipeId());
+        if (recipe == null) return;
+
+        String feedItemId = recipe.effectiveFeedItem();
+        if (feedItemId.isBlank()) return;
+
+        List<BlockPos> inputContainers = resolveBreedingContainerPositions(building, definition, "input", pos);
+        if (inputContainers.isEmpty()) return;
+
+        BlockPos warehousePos = nearestWarehousePos(level, building.worldOrigin());
+        if (warehousePos == null) return;
+
+        int required = 16;
+        net.minecraft.world.item.Item item = net.minecraft.core.registries.BuiltInRegistries.ITEM
+                .get(net.minecraft.resources.ResourceLocation.tryParse(feedItemId));
+        if (item == null || item == Items.AIR) return;
+        ItemStack template = new ItemStack(item, required);
+
+        int existing = 0;
+        for (BlockPos container : inputContainers) {
+            if (!level.isLoaded(container)) continue;
+            for (GenericContainerAccess.SlotSnapshot slot : GenericContainerAccess.snapshotSlots(level, container)) {
+                if (slot.stack().is(item)) existing += slot.stack().getCount();
+            }
+        }
+        int shortage = required - existing;
+        if (shortage <= 0) return;
+
+        ItemStack extracted = LogisticsWarehouseInventoryService.extract(level, warehousePos, template, shortage);
+        if (extracted.isEmpty()) return;
+
+        ItemStack leftover = insertIntoContainers(level, inputContainers, extracted);
+        if (!leftover.isEmpty()) {
+            LogisticsWarehouseInventoryService.insert(level, warehousePos, leftover);
+        }
+    }
+
+    public static void storeBreedingOutputs(ServerLevel level, BlockPos pos) {
+        BreedingBoxManager manager = BreedingBoxManager.get(level);
+        BreedingBoxData data = manager.get(pos);
+        if (data == null || !data.running()) return;
+
+        var building = BreedingControlBoxService.resolveBuilding(level, pos);
+        if (building == null) return;
+
+        BreedingDefinitionLoader.LoadResult loadResult = BreedingDefinitionLoader.loadForBuilding(building);
+        if (!loadResult.valid() || loadResult.definition() == null) return;
+
+        BreedingDefinition definition = loadResult.definition();
+        List<BlockPos> outputContainers = resolveBreedingContainerPositions(building, definition, "output", pos);
+        if (outputContainers.isEmpty()) return;
+
+        BlockPos warehousePos = nearestWarehousePos(level, building.worldOrigin());
+        if (warehousePos == null) return;
+
+        for (BlockPos container : outputContainers) {
+            if (!level.isLoaded(container)) continue;
+            for (GenericContainerAccess.SlotSnapshot slot : GenericContainerAccess.snapshotSlots(level, container)) {
+                if (slot.stack().isEmpty()) continue;
+                ItemStack stack = slot.stack();
+                ItemStack remaining = LogisticsWarehouseInventoryService.insert(level, warehousePos, stack.copy());
+                int deposited = stack.getCount() - remaining.getCount();
+                if (deposited > 0) {
+                    GenericContainerAccess.extractFromSlot(level, container,
+                            slot.slot(), slot.access(), slot.side(), deposited,
+                            s -> ItemStack.isSameItemSameComponents(s, stack));
+                }
+            }
+        }
+    }
+
+    private static List<BlockPos> resolveBreedingContainerPositions(
+            PlacedBuildingRecord building, BreedingDefinition definition,
+            String containerId, BlockPos boxPos) {
+        BreedingDefinition.ContainerDefinition container = definition.containers().get(containerId);
+        if (container == null) return List.of();
+        if ("control_box_relative".equalsIgnoreCase(container.type())) {
+            int rotation = boxRotation(building.facing());
+            return container.positions().stream()
+                    .map(offset -> boxPos.offset(common.cn.kafei.simukraft.building.BuildingTransform.rotatePosition(offset, rotation)))
+                    .map(BlockPos::immutable)
+                    .toList();
+        }
+        if ("structure_pos".equalsIgnoreCase(container.type())) {
+            return IndustrialCoordinateResolver.resolvePositions(building, container.positions());
+        }
+        return List.of();
+    }
+
+    private static int boxRotation(String facing) {
+        if (facing == null) return 0;
+        return switch (facing.toLowerCase(java.util.Locale.ROOT)) {
+            case "east" -> 90;
+            case "south" -> 180;
+            case "west" -> 270;
+            default -> 0;
+        };
+    }
+
+    private static BlockPos nearestWarehousePos(ServerLevel level, BlockPos pos) {
+        LogisticsWarehouseData warehouse = findNearestWarehouse(level, pos);
+        return warehouse != null ? warehouse.boxPos() : null;
     }
 }

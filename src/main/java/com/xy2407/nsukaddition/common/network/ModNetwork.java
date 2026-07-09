@@ -2,6 +2,7 @@ package com.xy2407.nsukaddition.common.network;
 
 import com.xy2407.nsukaddition.NsukAddition;
 import com.xy2407.nsukaddition.common.network.building.BuildTaskActionPacket;
+import com.xy2407.nsukaddition.common.network.city.CityCoreMovePacket;
 import com.xy2407.nsukaddition.common.network.city.CityUpgradeRequestPacket;
 import com.xy2407.nsukaddition.common.network.city.ImmigrationActionPacket;
 import com.xy2407.nsukaddition.common.network.city.ImmigrationListRequestPacket;
@@ -17,6 +18,7 @@ import com.xy2407.nsukaddition.common.network.mining.MiningControlBoxOpenRequest
 import com.xy2407.nsukaddition.common.network.mining.MiningControlBoxOpenResponsePacket;
 import com.xy2407.nsukaddition.common.network.mining.MiningControlBoxViewUpdatePacket;
 import com.xy2407.nsukaddition.common.network.vein.OreVeinChunkSyncPacket;
+import com.xy2407.nsukaddition.common.network.AutoRestockStatePacket;
 import com.xy2407.nsukaddition.common.network.AutoRestockTogglePacket;
 import com.xy2407.nsukaddition.common.network.vein.OreVeinDiscoveryRequestPacket;
 import com.xy2407.nsukaddition.common.network.vein.OreVeinDiscoveryResponsePacket;
@@ -62,6 +64,12 @@ public final class ModNetwork {
 
         r.playToServer(CityUpgradeRequestPacket.TYPE, CityUpgradeRequestPacket.STREAM_CODEC, CityUpgradeRequestPacket::handle);
 
+        r.playToServer(CityCoreMovePacket.TYPE, CityCoreMovePacket.STREAM_CODEC, CityCoreMovePacket::handle);
+
         r.playToServer(AutoRestockTogglePacket.TYPE, AutoRestockTogglePacket.STREAM_CODEC, AutoRestockTogglePacket::handle);
+        r.playBidirectional(AutoRestockStatePacket.TYPE, AutoRestockStatePacket.STREAM_CODEC, AutoRestockStatePacket::handle);
+
+        r.playToServer(ContainerRoleQueryPacket.TYPE, ContainerRoleQueryPacket.STREAM_CODEC, ContainerRoleQueryPacket::handle);
+        r.playToClient(ContainerRoleResponsePacket.TYPE, ContainerRoleResponsePacket.STREAM_CODEC, ContainerRoleResponsePacket::handle);
     }
 }

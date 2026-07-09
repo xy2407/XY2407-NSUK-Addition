@@ -1,6 +1,5 @@
 package com.xy2407.nsukaddition.common.autorestock;
 
-import com.xy2407.nsukaddition.NsukAddition;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 
@@ -38,12 +37,10 @@ public final class AutoRestockConfig {
         BlockPos key = pos.immutable();
         if (enabled) {
             if (ENABLED.add(key)) {
-                NsukAddition.LOGGER.info("[AutoRestockConfig] enabled at {}", key);
                 AutoRestockSqliteStorage.save(level, key);
             }
         } else {
             if (ENABLED.remove(key)) {
-                NsukAddition.LOGGER.info("[AutoRestockConfig] disabled at {}", key);
                 AutoRestockSqliteStorage.delete(level, key);
             }
         }

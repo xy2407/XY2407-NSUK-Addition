@@ -183,6 +183,20 @@
 
   "gui.xy2407_nsuk_addition.autorestock.toggle": "Restock",
 
+  "gui.xy2407_nsuk_addition.citizen_equipment.title": "Citizen Equipment",
+  "message.xy2407_nsuk_addition.command.player_required": "Only players can execute this command",
+  "message.xy2407_nsuk_addition.command.no_citizen_nearby": "No citizen within 5 blocks",
+  "message.xy2407_nsuk_addition.command.open_failed": "Failed to open citizen equipment menu",
+
+  "gui.xy2407_nsuk_addition.city_core_move.menu": "Move Core",
+  "message.xy2407_nsuk_addition.city_core_move.success": "City core moved successfully",
+  "message.xy2407_nsuk_addition.city_core_move.no_permission": "Only the mayor can move the city core",
+  "message.xy2407_nsuk_addition.city_core_move.city_not_found": "City not found",
+  "message.xy2407_nsuk_addition.city_core_move.pos_mismatch": "Core position mismatch",
+  "message.xy2407_nsuk_addition.city_core_move.same_position": "New position is the same as current",
+  "message.xy2407_nsuk_addition.city_core_move.new_pos_occupied": "New position is occupied by a block",
+  "message.xy2407_nsuk_addition.city_core_move.chunk_not_owned": "New position is not within city territory",
+
   "gui.simukraft.farmland_box.crop.culturaldelights_cucumber": "Cucumber",
   "gui.simukraft.farmland_box.crop.culturaldelights_eggplant": "Eggplant",
   "gui.simukraft.farmland_box.crop.culturaldelights_corn": "Corn (Cultural Delights)",

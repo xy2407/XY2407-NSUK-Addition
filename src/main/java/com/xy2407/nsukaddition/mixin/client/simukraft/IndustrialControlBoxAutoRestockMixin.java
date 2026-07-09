@@ -4,6 +4,8 @@ import client.cn.kafei.simukraft.client.industrial.IndustrialControlBoxScreenOpe
 import com.lowdragmc.lowdraglib2.gui.ui.UIElement;
 import com.lowdragmc.lowdraglib2.gui.ui.elements.Button;
 import com.lowdragmc.lowdraglib2.gui.ui.elements.Label;
+import com.xy2407.nsukaddition.client.autorestock.ClientAutoRestockCache;
+import com.xy2407.nsukaddition.common.network.AutoRestockStatePacket;
 import com.xy2407.nsukaddition.common.network.AutoRestockTogglePacket;
 import dev.vfyjxf.taffy.style.TaffyPosition;
 import net.minecraft.core.BlockPos;
@@ -18,7 +20,6 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.concurrent.ConcurrentHashMap;
 
 /** 在工业控制箱标题栏注入自动补货开关按钮，支持一键切换补货状态。 */
 @Mixin(IndustrialControlBoxScreenOpener.class)
@@ -27,31 +28,12 @@ public abstract class IndustrialControlBoxAutoRestockMixin {
     @Unique
     private static final Class<?> LAYOUT_METRICS_CLASS;
 
-    @Unique
-    private static final ConcurrentHashMap.KeySetView<BlockPos, Boolean> BUTTON_STATES =
-            ConcurrentHashMap.newKeySet();
-
     static {
         try {
             LAYOUT_METRICS_CLASS = Class.forName(
                     "client.cn.kafei.simukraft.client.industrial.IndustrialControlBoxScreenOpener$LayoutMetrics");
         } catch (ClassNotFoundException e) {
             throw new RuntimeException("Failed to bind LayoutMetrics class", e);
-        }
-    }
-
-    @Unique
-    private static boolean isOn(BlockPos pos) {
-        return BUTTON_STATES.contains(pos.immutable());
-    }
-
-    @Unique
-    private static void setState(BlockPos pos, boolean on) {
-        BlockPos key = pos.immutable();
-        if (on) {
-            BUTTON_STATES.add(key);
-        } else {
-            BUTTON_STATES.remove(key);
         }
     }
 
@@ -64,8 +46,13 @@ public abstract class IndustrialControlBoxAutoRestockMixin {
         BlockPos boxPos = getOpenedBoxPos();
         if (boxPos == null) return;
 
+        PacketDistributor.sendToServer(new AutoRestockStatePacket(boxPos, false));
+
         int titleH = getIntMetric(metrics, "titleBarHeight", 20);
         int btnW = getIntMetric(metrics, "doneButtonWidth", 60);
+
+        int btnH = Math.max(12, titleH - 8);
+        int lblH = titleH - btnH;
 
         Label anchor = new Label();
         anchor.setText(Component.translatable("gui.xy2407_nsuk_addition.autorestock.toggle"));
@@ -77,18 +64,18 @@ public abstract class IndustrialControlBoxAutoRestockMixin {
         Button offBtn = new Button();
         offBtn.setText(Component.literal("关"));
 
-        boolean on = isOn(boxPos);
+        boolean on = ClientAutoRestockCache.isEnabled(boxPos);
         onBtn.setActive(!on);
         offBtn.setActive(on);
 
         onBtn.setOnClick(event -> {
-            setState(boxPos, true);
+            ClientAutoRestockCache.set(boxPos, true);
             PacketDistributor.sendToServer(new AutoRestockTogglePacket(boxPos, true));
             onBtn.setActive(false);
             offBtn.setActive(true);
         });
         offBtn.setOnClick(event -> {
-            setState(boxPos, false);
+            ClientAutoRestockCache.set(boxPos, false);
             PacketDistributor.sendToServer(new AutoRestockTogglePacket(boxPos, false));
             onBtn.setActive(true);
             offBtn.setActive(false);
@@ -96,24 +83,24 @@ public abstract class IndustrialControlBoxAutoRestockMixin {
 
         anchor.layout(layout -> {
             layout.positionType(TaffyPosition.ABSOLUTE);
-            layout.right(btnW * 2 + 4);
+            layout.right(0);
             layout.top(0);
-            layout.width(btnW);
-            layout.height(titleH);
+            layout.width(btnW * 2 + 2);
+            layout.height(lblH);
         });
         onBtn.layout(layout -> {
             layout.positionType(TaffyPosition.ABSOLUTE);
             layout.right(btnW + 2);
-            layout.top(0);
+            layout.top(lblH);
             layout.width(btnW);
-            layout.height(titleH);
+            layout.height(btnH);
         });
         offBtn.layout(layout -> {
             layout.positionType(TaffyPosition.ABSOLUTE);
             layout.right(0);
-            layout.top(0);
+            layout.top(lblH);
             layout.width(btnW);
-            layout.height(titleH);
+            layout.height(btnH);
         });
 
         bar.addChild(anchor);

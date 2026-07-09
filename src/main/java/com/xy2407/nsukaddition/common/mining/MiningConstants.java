@@ -24,6 +24,8 @@ public final class MiningConstants {
     public static final String STATUS_WORKER_FIRED = "gui.xy2407_nsuk_addition.mining.status.worker_fired";
     public static final String STATUS_INTERRUPTED = "gui.xy2407_nsuk_addition.mining.status.interrupted";
     public static final String STATUS_NO_PICKAXE = "gui.xy2407_nsuk_addition.mining.status.no_pickaxe";
+    public static final String STATUS_RESTING = "gui.xy2407_nsuk_addition.mining.status.resting";
+    public static final String STATUS_FEEDING = "gui.xy2407_nsuk_addition.mining.status.feeding";
 
     private MiningConstants() {}
 }

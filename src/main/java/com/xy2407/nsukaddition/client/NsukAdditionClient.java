@@ -2,9 +2,14 @@ package com.xy2407.nsukaddition.client;
 
 import com.lowdragmc.lowdraglib2.gui.holder.ModularUIContainerScreen;
 import com.xy2407.nsukaddition.NsukAddition;
+import com.xy2407.nsukaddition.client.container.ContainerRoleHudLayer;
 import com.xy2407.nsukaddition.client.hud.FpsHudLayer;
 import com.xy2407.nsukaddition.client.hud.SidebarHudLayer;
+import com.xy2407.nsukaddition.client.gui.CitizenEquipmentScreen;
 import com.xy2407.nsukaddition.client.keybind.ModKeyMappings;
+import com.xy2407.nsukaddition.client.city.CityCoreMoveInputHandler;
+import com.xy2407.nsukaddition.client.city.CityCoreMovePreview;
+import com.xy2407.nsukaddition.client.city.CityCoreMoveRenderer;
 import com.xy2407.nsukaddition.client.network.SidebarSyncClientHandler;
 import com.xy2407.nsukaddition.client.renderer.TouristStatusRenderer;
 import com.xy2407.nsukaddition.client.vein.OreVeinRenderToggleHandler;
@@ -50,6 +55,12 @@ public final class NsukAdditionClient {
         event.registerLayerDefinition(CITIZEN_SLIM, () -> createCitizenLayerDefinition(true));
     }
 
+    /**
+     * 创建市民模型层定义，在 body 节点下挂接胸部部件。
+     *
+     * 胸部几何数据与缩放公式移植自 Minecraft Comes Alive (MCA)
+     * Licensed under GPL-3.0: https://github.com/Luke100000/minecraft-comes-alive
+     */
     private static LayerDefinition createCitizenLayerDefinition(boolean slim) {
         MeshDefinition mesh = PlayerModel.createMesh(CubeDeformation.NONE, slim);
         PartDefinition root = mesh.getRoot();
@@ -69,6 +80,7 @@ public final class NsukAdditionClient {
     @SubscribeEvent
     public static void onRegisterMenuScreens(RegisterMenuScreensEvent event) {
         event.register(ModMenuTypes.MINING_CONTROL_BOX.get(), ModularUIContainerScreen::new);
+        event.register(ModMenuTypes.CITIZEN_EQUIPMENT.get(), CitizenEquipmentScreen::new);
     }
 
     @SubscribeEvent
@@ -81,6 +93,10 @@ public final class NsukAdditionClient {
                 ResourceLocation.fromNamespaceAndPath(NsukAddition.MOD_ID, "fps_hud"),
                 FpsHudLayer.INSTANCE
         );
+        event.registerAboveAll(
+                ResourceLocation.fromNamespaceAndPath(NsukAddition.MOD_ID, "container_role_hud"),
+                ContainerRoleHudLayer.INSTANCE
+        );
     }
 
     @SubscribeEvent
@@ -92,5 +108,9 @@ public final class NsukAdditionClient {
         OreVeinRenderToggleHandler.register();
 
         TouristStatusRenderer.register();
+
+        NeoForge.EVENT_BUS.addListener(CityCoreMoveRenderer::onRenderLevel);
+
+        CityCoreMoveInputHandler.register();
     }
 }

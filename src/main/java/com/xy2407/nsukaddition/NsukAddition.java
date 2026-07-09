@@ -9,6 +9,9 @@ import com.xy2407.nsukaddition.common.menu.ModMenuTypes;
 import com.xy2407.nsukaddition.common.registry.ModBlocks;
 import com.xy2407.nsukaddition.server.autorestock.AutoRestockServerTick;
 import com.xy2407.nsukaddition.server.breeding.BreedingServerTick;
+import com.xy2407.nsukaddition.server.citizen.CitizenEquipmentCommand;
+import com.xy2407.nsukaddition.server.citizen.CitizenEquipmentServerHandler;
+import com.xy2407.nsukaddition.server.city.CityMobSpawnPrevention;
 import com.xy2407.nsukaddition.server.city.CityServerTick;
 import com.xy2407.nsukaddition.server.mining.MiningServerTick;
 import com.xy2407.nsukaddition.server.vein.OreVeinDropHandler;
@@ -45,9 +48,12 @@ public final class NsukAddition {
         NeoForge.EVENT_BUS.register(BreedingServerTick.class);
         NeoForge.EVENT_BUS.register(MiningServerTick.class);
         NeoForge.EVENT_BUS.register(CityServerTick.class);
+        NeoForge.EVENT_BUS.register(CityMobSpawnPrevention.class);
         NeoForge.EVENT_BUS.register(OreVeinEventHandler.class);
         NeoForge.EVENT_BUS.register(OreVeinSyncService.class);
         NeoForge.EVENT_BUS.register(AutoRestockServerTick.class);
+        NeoForge.EVENT_BUS.register(CitizenEquipmentServerHandler.class);
+        NeoForge.EVENT_BUS.addListener(CitizenEquipmentCommand::register);
 
         MiningWorkService.setVeinDropProcessor(OreVeinDropHandler::process);
     }

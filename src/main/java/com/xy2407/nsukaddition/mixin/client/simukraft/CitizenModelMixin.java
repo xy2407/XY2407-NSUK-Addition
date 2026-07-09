@@ -9,7 +9,12 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-/** 修改 CitizenModel，为女性市民添加胸部模型部件及动画。 */
+/**
+ * 修改 CitizenModel，为女性市民添加胸部模型部件及动画。
+ *
+ * 胸部几何数据与缩放公式移植自 Minecraft Comes Alive (MCA)
+ * Licensed under GPL-3.0: https://github.com/Luke100000/minecraft-comes-alive
+ */
 @SuppressWarnings("null")
 @Mixin(CitizenModel.class)
 public abstract class CitizenModelMixin {

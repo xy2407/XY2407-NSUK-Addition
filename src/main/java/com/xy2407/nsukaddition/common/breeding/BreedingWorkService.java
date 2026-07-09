@@ -2,10 +2,11 @@ package com.xy2407.nsukaddition.common.breeding;
 
 import com.xy2407.nsukaddition.common.compat.LetFishLoveCompat;
 import common.cn.kafei.simukraft.building.BuildingTransform;
-import net.minecraft.network.chat.Component;
 import common.cn.kafei.simukraft.building.PlacedBuildingRecord;
 import common.cn.kafei.simukraft.citizen.CitizenData;
+import common.cn.kafei.simukraft.citizen.CitizenHomeRestService;
 import common.cn.kafei.simukraft.citizen.CitizenJobVisualService;
+import common.cn.kafei.simukraft.citizen.CitizenSelfFeedingService;
 import common.cn.kafei.simukraft.citizen.CitizenTeleportService;
 import common.cn.kafei.simukraft.entity.CitizenEntity;
 import common.cn.kafei.simukraft.industrial.IndustrialCoordinateResolver;
@@ -51,11 +52,6 @@ public final class BreedingWorkService {
     private static final ConcurrentMap<BlockPos, BoxRuntime> RUNTIMES = new ConcurrentHashMap<>();
 
     private BreedingWorkService() {}
-
-    private static void log(ServerLevel level, String msg) {
-        level.getServer().getPlayerList().broadcastSystemMessage(
-                Component.literal("[NSUK养殖] " + msg), false);
-    }
 
     public static void tick(ServerLevel level) {
         if (level == null) return;
@@ -112,14 +108,25 @@ public final class BreedingWorkService {
 
         if (rt.recipe == null || rt.worker == null || rt.building == null) return;
 
+        if (CitizenHomeRestService.isRestTime(level)) {
+            CitizenEntity entity = CitizenTeleportService.findCitizenEntity(level, rt.worker.uuid());
+            if (entity != null) entity.setHasActiveVisualTask(false);
+            setTransientStatus(manager, data, BreedingConstants.STATUS_RESTING, "");
+            return;
+        }
+        if (CitizenSelfFeedingService.isSelfFeeding(level, rt.worker.uuid())) {
+            CitizenEntity entity = CitizenTeleportService.findCitizenEntity(level, rt.worker.uuid());
+            if (entity != null) entity.setHasActiveVisualTask(false);
+            setTransientStatus(manager, data, BreedingConstants.STATUS_FEEDING, "");
+            return;
+        }
+
         if (rt.dropBounds != null && rt.dropOutputs != null && gameTime >= rt.collectDropsAt) {
             collectBuildingDrops(level, rt);
         }
 
         if (gameTime - rt.lastFeedTick >= FEED_INTERVAL) {
             rt.lastFeedTick = gameTime;
-            log(level, String.format("=== 600tick循环触发 box=%s recipe=%s entity=%s max=%d ===",
-                    data.boxPos().toShortString(), rt.recipe.id(), rt.recipe.entityType(), rt.recipe.maxEntities()));
             executeFeedCycle(level, manager, data, rt);
             triggerWorkSwing(level, rt.worker);
             CitizenJobVisualService.clearMainHandOverride(rt.worker.uuid());
@@ -163,7 +170,6 @@ public final class BreedingWorkService {
         BreedingDefinition.RecipeType recipeType = rt.recipe.type();
 
         if (isOutputFull(level, outputPositions)) {
-            log(level, "output容器已满, 跳过本轮");
             setTransientStatus(manager, data, "gui.xy2407_nsuk_addition.breeding.status.output_full", "");
             return;
         }
@@ -173,10 +179,6 @@ public final class BreedingWorkService {
         boolean hasWaterAnimalInstance = existingEntities.stream().anyMatch(WaterAnimal.class::isInstance);
         boolean hasSchoolingFishInstance = existingEntities.stream().anyMatch(AbstractSchoolingFish.class::isInstance);
         boolean hasAnimalInstance = existingEntities.stream().anyMatch(Animal.class::isInstance);
-
-        log(level, String.format("路径: 饲养配方 targetType=%s baseClass=%s hasWaterAnimal=%s hasSchoolingFish=%s hasAnimal=%s count=%d recipeType=%s",
-                targetType, targetType.getBaseClass().getSimpleName(),
-                hasWaterAnimalInstance, hasSchoolingFishInstance, hasAnimalInstance, existingEntities.size(), recipeType));
 
         if (hasWaterAnimalInstance || hasSchoolingFishInstance || WaterAnimal.class.isAssignableFrom(targetType.getBaseClass())
                 || AbstractSchoolingFish.class.isAssignableFrom(targetType.getBaseClass())) {
@@ -207,12 +209,8 @@ public final class BreedingWorkService {
         List<WaterAnimal> all = level.getEntitiesOfClass(WaterAnimal.class, bounds,
                 fish -> fish.getType() == targetType && !fish.isBaby());
         int adults = all.size();
-        log(level, String.format("鱼类扫描: 成年鱼=%d max=%d bounds=(%.0f,%.0f,%.0f)-(%.0f,%.0f,%.0f)",
-                adults, max == Integer.MAX_VALUE ? -1 : max,
-                bounds.minX, bounds.minY, bounds.minZ, bounds.maxX, bounds.maxY, bounds.maxZ));
 
         if (recipeType == BreedingDefinition.RecipeType.BREEDING_SLAUGHTER && max < Integer.MAX_VALUE && adults > max) {
-            log(level, String.format("捕杀触发: adults=%d > max=%d, 将宰杀%d条", adults, max, adults - max));
             int toKill = adults - max;
             int killed = 0;
             long gameTime = level.getGameTime();
@@ -242,16 +240,12 @@ public final class BreedingWorkService {
             adults = all.size();
         }
 
-        log(level, String.format("繁殖检查: all.size=%d LFLR.loaded=%s", all.size(), LetFishLoveCompat.isLoaded()));
         if (all.size() < 2) {
-            log(level, "繁殖失败: 成年鱼不足2条");
             return;
         }
         if (!LetFishLoveCompat.isLoaded()) {
-            log(level, "繁殖失败: LFLR未加载");
             return;
         }
-        log(level, "繁殖路径: LFLR配对");
         WaterAnimal a = all.get(0);
         WaterAnimal b = null;
         for (int j = 1; j < all.size(); j++) {
@@ -261,26 +255,16 @@ public final class BreedingWorkService {
                 break;
             }
         }
-        log(level, String.format("配对检查: a=%s b=%s canLove(a)=%s canLove(b)=%s",
-                a, b, LetFishLoveCompat.canFallInLove(a), b == null ? "null" : LetFishLoveCompat.canFallInLove(b)));
         if (b != null && LetFishLoveCompat.canFallInLove(a) && LetFishLoveCompat.canFallInLove(b)) {
 
             if (!hasFishFood(level, food, rt.recipe, 2)) {
-                log(level, "繁殖失败: 饲料不足");
                 setTransientStatus(manager, data, "gui.xy2407_nsuk_addition.breeding.status.no_input", "");
                 manager.persist(data);
                 return;
             }
-            log(level, "canFallInLove通过, 饲料充足, 调用triggerPairInLove...");
             if (LetFishLoveCompat.triggerPairInLove(level, a, b)) {
-                log(level, "triggerPairInLove返回true, 消耗饲料...");
                 tryConsumeFishFood(level, food, rt.recipe, 2);
-                log(level, "繁殖成功! 饲料已消耗");
-            } else {
-                log(level, "triggerPairInLove返回false, 跳过");
             }
-        } else {
-            log(level, "配对检查失败: b=null或canFallInLove=false");
         }
 
         manager.persist(data);
@@ -292,11 +276,8 @@ public final class BreedingWorkService {
         List<net.minecraft.world.entity.Mob> all = level.getEntitiesOfClass(net.minecraft.world.entity.Mob.class, bounds,
                 e -> e.getType() == targetType && e.isAlive() && !e.isBaby());
         int adults = all.size();
-        log(level, String.format("岩浆鱼扫描: 成年=%d max=%d target=%s recipeType=%s",
-                adults, max == Integer.MAX_VALUE ? -1 : max, targetType, recipeType));
 
         if (recipeType == BreedingDefinition.RecipeType.BREEDING_SLAUGHTER && max < Integer.MAX_VALUE && adults > max) {
-            log(level, String.format("岩浆鱼捕杀: adults=%d > max=%d, 将宰杀%d条", adults, max, adults - max));
             int toKill = adults - max;
             int killed = 0;
             long gameTime = level.getGameTime();
@@ -323,13 +304,10 @@ public final class BreedingWorkService {
             if (stopSpawn) { manager.persist(data); return; }
         }
 
-        log(level, "岩浆鱼繁殖: 尝试LFL交配");
         if (!LetFishLoveCompat.isLoaded()) {
-            log(level, "繁殖失败: LFLR未加载");
             return;
         }
         if (all.size() < 2) {
-            log(level, "繁殖失败: 成年岩浆鱼不足2条");
             return;
         }
         net.minecraft.world.entity.Mob a = all.get(0);
@@ -344,21 +322,13 @@ public final class BreedingWorkService {
         if (b != null && LetFishLoveCompat.canFallInLove(a) && LetFishLoveCompat.canFallInLove(b)) {
 
             if (!hasFishFood(level, food, rt.recipe, 2)) {
-                log(level, "岩浆鱼繁殖失败: 饲料不足");
                 setTransientStatus(manager, data, "gui.xy2407_nsuk_addition.breeding.status.no_input", "");
                 manager.persist(data);
                 return;
             }
-            log(level, "岩浆鱼: canFallInLove通过, 饲料充足, 调用triggerPairInLove...");
             if (LetFishLoveCompat.triggerPairInLove(level, a, b)) {
-                log(level, "triggerPairInLove返回true, 消耗饲料...");
                 tryConsumeFishFood(level, food, rt.recipe, 2);
-                log(level, "岩浆鱼繁殖成功! 饲料已消耗");
-            } else {
-                log(level, "triggerPairInLove返回false, 跳过");
             }
-        } else {
-            log(level, "岩浆鱼繁殖检查失败: 配对或canFallInLove不通过");
         }
         manager.persist(data);
     }
@@ -370,7 +340,6 @@ public final class BreedingWorkService {
         List<Entity> all = level.getEntitiesOfClass(Entity.class, bounds,
                 e -> e.getType() == targetType && e.isAlive() && !(e instanceof Mob m && m.isBaby()));
         int adults = all.size();
-        log(level, String.format("通用实体扫描: count=%d max=%d target=%s recipeType=%s", adults, max == Integer.MAX_VALUE ? -1 : max, targetType, recipeType));
 
         if (recipeType == BreedingDefinition.RecipeType.BREEDING_SLAUGHTER && max < Integer.MAX_VALUE && adults > max) {
             int toKill = adults - max;
@@ -395,7 +364,6 @@ public final class BreedingWorkService {
             if (stopSpawn) { manager.persist(data); return; }
         }
 
-        log(level, "通用实体: 无繁殖通道, 跳过");
         manager.persist(data);
     }
 
@@ -458,11 +426,8 @@ public final class BreedingWorkService {
         List<Animal> all = level.getEntitiesOfClass(Animal.class, bounds,
                 a -> a.getType() == targetType && !a.isBaby());
         int adults = all.size();
-        log(level, String.format("动物扫描: 成年=%d max=%d target=%s recipeType=%s",
-                adults, max == Integer.MAX_VALUE ? -1 : max, targetType, recipeType));
 
         if (recipeType == BreedingDefinition.RecipeType.BREEDING_SLAUGHTER && max < Integer.MAX_VALUE && adults > max) {
-            log(level, String.format("捕杀触发: adults=%d > max=%d, 将宰杀%d只", adults, max, adults - max));
             int toKill = adults - max;
             int killed = 0;
             long gameTime = level.getGameTime();
@@ -506,7 +471,6 @@ public final class BreedingWorkService {
         List<Animal> breedable = all.stream()
                 .filter(a -> a.isAlive() && !a.isBaby() && a.canFallInLove())
                 .collect(java.util.stream.Collectors.toCollection(ArrayList::new));
-        log(level, String.format("动物繁殖: breedable=%d", breedable.size()));
         if (breedable.size() >= 2) {
             Animal first = breedable.get(0);
             Animal second = null;
@@ -515,9 +479,7 @@ public final class BreedingWorkService {
                 if (c.getClass() == first.getClass() && c.canFallInLove()) { second = c; break; }
             }
             if (second != null) {
-                log(level, "动物配对: 找到配种对象, 尝试消耗食物");
                 if (rt.recipe.requireFood() && !BreedingInventoryHelper.consumeFood(level, food, first, 2)) {
-                    log(level, "动物繁殖失败: 食物不足");
                     setTransientStatus(manager, data, "gui.xy2407_nsuk_addition.breeding.status.no_input", "");
                     return;
                 }
@@ -525,13 +487,9 @@ public final class BreedingWorkService {
                 second.setInLove(null);
                 if (first.canMate(second)) {
                     first.spawnChildFromBreeding(level, second);
-                    log(level, "动物繁殖成功: " + first + " + " + second);
-                } else {
-                    log(level, "动物canMate失败: " + first + " " + second);
                 }
             }
         } else {
-            log(level, "动物繁殖失败: 无可繁殖动物");
             return;
         }
         data.setStatusKey(BreedingConstants.STATUS_RUNNING);
@@ -817,7 +775,6 @@ public final class BreedingWorkService {
             BreedingInventoryHelper.depositItem(level, out, "minecraft:milk_bucket", 1);
             milked++;
         }
-        log(level, String.format("牛奶采集: 挤奶%d头", milked));
     }
 
     private static void collectMushroomStew(ServerLevel level, AABB bounds,
@@ -833,7 +790,6 @@ public final class BreedingWorkService {
             BreedingInventoryHelper.depositItem(level, out, "minecraft:mushroom_stew", 1);
             collected++;
         }
-        log(level, String.format("蘑菇煲采集: 采集%d碗", collected));
     }
 
     private static void collectMushroom(ServerLevel level, AABB bounds,
@@ -855,7 +811,6 @@ public final class BreedingWorkService {
             level.addFreshEntity(cow);
         }
         target.discard();
-        log(level, "蘑菇采集: 剪1只哞菇, 产出5个" + (isRed ? "红色" : "棕色") + "蘑菇");
     }
 
     private static void collectShearWool(ServerLevel level, AABB bounds,
@@ -871,7 +826,6 @@ public final class BreedingWorkService {
             s.setSheared(true);
             sheared++;
         }
-        log(level, String.format("剪羊毛: 剪%d只", sheared));
     }
 
     private static void collectShearWool4(ServerLevel level, AABB bounds,
@@ -885,7 +839,6 @@ public final class BreedingWorkService {
         if (animal instanceof Sheep vanillaSheep && vanillaSheep.isSheared()) return;
         if (animal instanceof Sheep vanillaSheep) vanillaSheep.setSheared(true);
         BreedingInventoryHelper.depositItem(level, out, "minecraft:white_wool", 4);
-        log(level, "小绵羊剪毛: 产出4白羊毛");
     }
 
     private static void collectEgg(ServerLevel level, AABB bounds, List<BlockPos> out) {
@@ -907,9 +860,6 @@ public final class BreedingWorkService {
                     collected += stack.getCount() - leftover.getCount();
                 }
             }
-        }
-        if (collected > 0) {
-            log(level, String.format("鸡蛋采集: 收集%d个鸡蛋", collected));
         }
     }
 

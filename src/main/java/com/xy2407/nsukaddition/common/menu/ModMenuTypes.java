@@ -19,6 +19,10 @@ public final class ModMenuTypes {
             "mining_control_box",
             () -> IMenuTypeExtension.create(MiningControlBoxMenuProvider::createClientMenu));
 
+    public static final DeferredHolder<MenuType<?>, MenuType<CitizenEquipmentMenu>> CITIZEN_EQUIPMENT = MENUS.register(
+            "citizen_equipment",
+            () -> IMenuTypeExtension.create(CitizenEquipmentMenu::new));
+
     private ModMenuTypes() {
     }
 

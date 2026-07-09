@@ -21,6 +21,8 @@ public final class BreedingConstants {
     public static final String STATUS_WORKER_FIRED = "gui.xy2407_nsuk_addition.breeding.status.worker_fired";
     public static final String STATUS_INTERRUPTED = "gui.xy2407_nsuk_addition.breeding.status.interrupted";
     public static final String STATUS_IDLE = "gui.xy2407_nsuk_addition.breeding.status.idle";
+    public static final String STATUS_RESTING = "gui.xy2407_nsuk_addition.breeding.status.resting";
+    public static final String STATUS_FEEDING = "gui.xy2407_nsuk_addition.breeding.status.feeding";
 
     public static final String TOO_FAR_MESSAGE = "message.xy2407_nsuk_addition.breeding.too_far";
 }

@@ -38,8 +38,6 @@ public record AutoRestockTogglePacket(BlockPos pos, boolean enabled) implements 
         if (ctx.player() instanceof ServerPlayer player && player.level() instanceof ServerLevel level) {
             if (!player.blockPosition().closerThan(p.pos(), 16.0D)) return;
             AutoRestockConfig.setEnabled(level, p.pos(), p.enabled());
-            NsukAddition.LOGGER.info("AutoRestock {} at {} by player {}", p.enabled() ? "enabled" : "disabled",
-                    p.pos().toShortString(), player.getName().getString());
         }
     }
 }
