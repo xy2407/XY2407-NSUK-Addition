@@ -149,7 +149,7 @@
 - **[Minecraft Comes Alive (MCA)](https://github.com/Luke100000/minecraft-comes-alive)** — Female citizen chest model reference (GPL-3.0)
 - **[Minecraft Forge / NeoForged Community](https://discord.neoforged.net/)** — Technical support and development resources
 - **[ParchmentMC](https://parchmentmc.org/)** — Mappings data (Mojang mappings parameter name completion)
-- **[Taffy](https://github.com/vfyjxf/taffy)** — LDLib2 layout engine
+- **[Taffy](https://github.com/vfyjxf/taffy-java)** — LDLib2 layout engine
 - **[Yoga](https://github.com/AppliedEnergistics/Yoga)** — LDLib2 layout engine reference implementation
 
 ***
@@ -306,7 +306,7 @@
 - **[Minecraft Comes Alive (MCA)](https://github.com/Luke100000/minecraft-comes-alive)** — 女性市民胸部渲染模型参考（GPL-3.0）
 - **[Minecraft Forge / NeoForged 社区](https://discord.neoforged.net/)** — 技术支持和开发资源
 - **[ParchmentMC](https://parchmentmc.org/)** — 混淆映射表（Mojang mappings 参数名补全）
-- **[Taffy](https://github.com/vfyjxf/taffy)** — LDLib2 布局引擎
+- **[Taffy](https://github.com/vfyjxf/taffy-java)** — LDLib2 布局引擎
 - **[Yoga](https://github.com/AppliedEnergistics/Yoga)** — LDLib2 布局引擎参考实现
 
 ***
