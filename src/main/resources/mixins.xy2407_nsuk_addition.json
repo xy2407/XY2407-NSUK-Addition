@@ -23,6 +23,7 @@
     "CityDataMixin",
     "CityCoreBlockMixin",
     "CityManagerMixin",
+    "CityClaimServiceMixin",
     "BuilderConstructionServiceMixin",
     "PlannerWorkServiceMixin",
     "simukraft.IndustrialItemStackSpecMixin",

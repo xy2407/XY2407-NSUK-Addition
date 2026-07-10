@@ -3,12 +3,22 @@ package com.xy2407.nsukaddition.common.city;
 import java.util.List;
 import java.util.Map;
 
-/** 城市升级所需的人口、材料与资金需求，定义各级别升阶阈值并提供查询方法。 */
+/** 城市升级所需的人口、建筑、材料与资金需求，定义各级别升阶阈值并提供查询方法。 */
 public record CityUpgradeRequirement(
 
         CityLevel targetLevel,
 
         int requiredPopulation,
+
+        int requiredFarms,
+
+        int requiredRanches,
+
+        int requiredShops,
+
+        int requiredFactories,
+
+        int requiredMines,
 
         int requiredLogs,
 
@@ -18,19 +28,19 @@ public record CityUpgradeRequirement(
 ) {
 
     private static final CityUpgradeRequirement SETTLEMENT_TO_VILLAGE = new CityUpgradeRequirement(
-            CityLevel.VILLAGE, 12, 32, 32, 0
+            CityLevel.VILLAGE, 12, 2, 0, 0, 0, 0, 32, 32, 0
     );
 
     private static final CityUpgradeRequirement VILLAGE_TO_TOWN = new CityUpgradeRequirement(
-            CityLevel.TOWN, 36, 128, 128, 256
+            CityLevel.TOWN, 36, 4, 2, 2, 0, 0, 128, 128, 256
     );
 
     private static final CityUpgradeRequirement TOWN_TO_CITY_STATE = new CityUpgradeRequirement(
-            CityLevel.CITY_STATE, 108, 256, 256, 512
+            CityLevel.CITY_STATE, 108, 8, 4, 6, 4, 2, 256, 256, 512
     );
 
     private static final CityUpgradeRequirement CITY_STATE_TO_METROPOLIS = new CityUpgradeRequirement(
-            CityLevel.METROPOLIS, 240, 512, 512, 1024
+            CityLevel.METROPOLIS, 240, 12, 6, 8, 8, 4, 512, 512, 1024
     );
 
     private static final Map<CityLevel, CityUpgradeRequirement> UPGRADE_TABLE = Map.of(

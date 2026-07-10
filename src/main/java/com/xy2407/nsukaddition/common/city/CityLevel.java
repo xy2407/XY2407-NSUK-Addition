@@ -3,19 +3,22 @@ package com.xy2407.nsukaddition.common.city;
 /** 城市等级枚举，定义从聚落到都市的五个等级。 */
 public enum CityLevel {
 
-    SETTLEMENT(1, "聚落"),
-    VILLAGE(2, "村庄"),
-    TOWN(3, "城镇"),
-    CITY_STATE(4, "城邦"),
-    METROPOLIS(5, "都市");
+    SETTLEMENT(1, "聚落", 25),
+    VILLAGE(2, "村庄", 49),
+    TOWN(3, "城镇", 100),
+    CITY_STATE(4, "城邦", 196),
+    METROPOLIS(5, "都市", 361);
 
     private final int level;
 
     private final String displayName;
 
-    CityLevel(int level, String displayName) {
+    private final int maxChunks;
+
+    CityLevel(int level, String displayName, int maxChunks) {
         this.level = level;
         this.displayName = displayName;
+        this.maxChunks = maxChunks;
     }
 
     public int level() {
@@ -52,5 +55,10 @@ public enum CityLevel {
 
     public boolean atLeast(CityLevel target) {
         return target != null && this.level >= target.level;
+    }
+
+    /** 该等级允许拥有的最大区块领地数量。 */
+    public int maxChunks() {
+        return maxChunks;
     }
 }

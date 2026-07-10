@@ -1,28 +1,21 @@
 package com.xy2407.nsukaddition.server;
 
+import com.xy2407.nsukaddition.common.city.CityBuildingStats;
 import com.xy2407.nsukaddition.common.material.MaterialCategory;
 import com.xy2407.nsukaddition.common.material.MaterialCategoryRegistry;
-import com.xy2407.nsukaddition.common.mining.MiningBoxManager;
-import com.xy2407.nsukaddition.common.mining.MiningControlBoxBlock;
 import com.xy2407.nsukaddition.common.network.SidebarSyncPacket;
 import com.xy2407.nsukaddition.server.building.BuildTaskTrackedState;
 import com.xy2407.nsukaddition.server.material.AvailableMaterialCollector;
 import com.xy2407.nsukaddition.server.material.BuildingMaterialCalculator;
 import com.xy2407.nsukaddition.server.material.WarehouseReserveCollector;
 import common.cn.kafei.simukraft.building.BuildingTaskData;
-import common.cn.kafei.simukraft.building.PlacedBuildingRecord;
-import common.cn.kafei.simukraft.building.PlacedBuildingService;
 import common.cn.kafei.simukraft.citizen.CitizenData;
 import common.cn.kafei.simukraft.citizen.CitizenService;
-import common.cn.kafei.simukraft.city.CityChunkManager;
 import common.cn.kafei.simukraft.city.CityManager;
 import common.cn.kafei.simukraft.city.CityMemberData;
 import common.cn.kafei.simukraft.city.CityPermissionLevel;
 import common.cn.kafei.simukraft.city.FinanceTransactionData;
-import common.cn.kafei.simukraft.city.poi.CityPoiManager;
-import common.cn.kafei.simukraft.city.poi.CityPoiType;
 import common.cn.kafei.simukraft.economy.FinanceLedgerService;
-import net.minecraft.world.level.ChunkPos;
 
 import common.cn.kafei.simukraft.storage.SimuSqliteStorage;
 import net.minecraft.server.level.ServerLevel;
@@ -69,25 +62,13 @@ public final class SidebarSyncService {
             }
         }
 
-        int shop = 0, factory = 0, res = 0, farm = 0, ranch = 0, mine = 0;
-        for (PlacedBuildingRecord rec : PlacedBuildingService.getBuildings(level)) {
-            if (cid.equals(rec.cityId())) {
-                switch (rec.category()) {
-                    case "commercial" -> shop++;
-                    case "industry" -> factory++;
-                    case "residential" -> res++;
-                    case "breeding" -> ranch++;
-                }
-            }
-        }
+        CityBuildingStats stats = CityBuildingStats.collect(level, cid);
 
-        farm = CityPoiManager.get(level).getCityPois(cid, CityPoiType.FARMLAND).size();
-
-        CityChunkManager chunkManager = CityChunkManager.get(level);
-        for (var box : MiningBoxManager.get(level).all()) {
-            if (level.getBlockState(box.boxPos()).getBlock() instanceof MiningControlBoxBlock
-                    && cid.equals(chunkManager.getChunkOwner(new ChunkPos(box.boxPos()).toLong()))) {
-                mine++;
+        // SidebarSyncService 额外统计住宅数量用于 HUD 展示
+        int res = 0;
+        for (var rec : common.cn.kafei.simukraft.building.PlacedBuildingService.getBuildings(level)) {
+            if (cid.equals(rec.cityId()) && "residential".equals(rec.category())) {
+                res++;
             }
         }
 
@@ -101,7 +82,7 @@ public final class SidebarSyncService {
         List<SidebarSyncPacket.CitizenEntry> citizens = collectCitizens(level, cid);
 
         PacketDistributor.sendToPlayer(player, new SidebarSyncPacket(
-                cid, oNames, oPerms, shop, factory, res, farm, ranch, mine,
+                cid, oNames, oPerms, stats.shopCount(), stats.factoryCount(), res, stats.farmCount(), stats.ranchCount(), stats.mineCount(),
                 reserveMaterials, buildTasks, financeEntries, citizens));
     }
 

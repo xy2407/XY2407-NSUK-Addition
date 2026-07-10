@@ -1,7 +1,7 @@
 package com.xy2407.nsukaddition.common.network.mining;
 
 import com.xy2407.nsukaddition.NsukAddition;
-import com.xy2407.nsukaddition.client.mining.MiningControlBoxUiRoot;
+import com.xy2407.nsukaddition.common.network.clientbound.MiningControlBoxUiBridge;
 import com.xy2407.nsukaddition.common.mining.MiningControlBoxView;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -58,6 +58,6 @@ public record MiningControlBoxOpenResponsePacket(
     }
 
     public static void handle(MiningControlBoxOpenResponsePacket p, IPayloadContext ctx) {
-        ctx.enqueueWork(() -> MiningControlBoxUiRoot.refreshActive(p));
+        ctx.enqueueWork(() -> MiningControlBoxUiBridge.refreshActive(p));
     }
 }

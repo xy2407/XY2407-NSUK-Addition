@@ -21,6 +21,11 @@
   "gui.xy2407_nsuk_addition.city_upgrade.unavailable": "暂无可用的升级配置",
   "gui.xy2407_nsuk_addition.city_upgrade.requirements": "升级需求：",
   "gui.xy2407_nsuk_addition.city_upgrade.require_population": "· 市民数量：%d",
+  "gui.xy2407_nsuk_addition.city_upgrade.require_farms": "· 农场数量：%d",
+  "gui.xy2407_nsuk_addition.city_upgrade.require_ranches": "· 牧场数量：%d",
+  "gui.xy2407_nsuk_addition.city_upgrade.require_shops": "· 商业数量：%d",
+  "gui.xy2407_nsuk_addition.city_upgrade.require_factories": "· 工厂数量：%d",
+  "gui.xy2407_nsuk_addition.city_upgrade.require_mines": "· 矿场数量：%d",
   "gui.xy2407_nsuk_addition.city_upgrade.require_logs": "· 木头数量：%d",
   "gui.xy2407_nsuk_addition.city_upgrade.require_stone": "· 石头数量：%d",
   "gui.xy2407_nsuk_addition.city_upgrade.require_funds": "· 城市资金：%s",
@@ -35,6 +40,8 @@
   "message.xy2407_nsuk_addition.city_upgrade.material_shortage": "升级材料不足",
   "message.xy2407_nsuk_addition.city_upgrade.funds_shortage": "城市资金不足",
   "message.xy2407_nsuk_addition.city_upgrade.unknown": "升级失败，请重试",
+
+  "message.xy2407_nsuk_addition.city_chunk.limit_reached": "当前城市等级（%s）最多拥有 %d 个区块领地",
 
   "gui.xy2407_nsuk_addition.build_tasks.title": "建筑任务",
 
@@ -164,6 +171,11 @@
   "gui.xy2407_nsuk_addition.city_upgrade.requirement.logs": "木头：%d / %d",
   "gui.xy2407_nsuk_addition.city_upgrade.requirement.stone": "石头：%d / %d",
   "gui.xy2407_nsuk_addition.city_upgrade.requirement.funds": "资金：%.0f / %.0f",
+  "gui.xy2407_nsuk_addition.city_upgrade.requirement.farms": "农场：%d / %d",
+  "gui.xy2407_nsuk_addition.city_upgrade.requirement.ranches": "牧场：%d / %d",
+  "gui.xy2407_nsuk_addition.city_upgrade.requirement.shops": "商业：%d / %d",
+  "gui.xy2407_nsuk_addition.city_upgrade.requirement.factories": "工厂：%d / %d",
+  "gui.xy2407_nsuk_addition.city_upgrade.requirement.mines": "矿场：%d / %d",
   "gui.xy2407_nsuk_addition.city_upgrade.met": "✔",
   "gui.xy2407_nsuk_addition.city_upgrade.not_met": "✘",
   "gui.xy2407_nsuk_addition.city_upgrade.button": "升级",

@@ -1,5 +1,6 @@
 package com.xy2407.nsukaddition.common.farmland;
 
+import com.xy2407.nsukaddition.common.util.EnumExtender;
 import common.cn.kafei.simukraft.farmland.FarmCrop;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceLocation;

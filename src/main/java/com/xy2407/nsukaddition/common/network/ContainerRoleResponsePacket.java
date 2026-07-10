@@ -1,7 +1,7 @@
 package com.xy2407.nsukaddition.common.network;
 
 import com.xy2407.nsukaddition.NsukAddition;
-import com.xy2407.nsukaddition.client.container.ContainerRoleClientCache;
+import com.xy2407.nsukaddition.common.network.clientbound.ContainerRoleBridge;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
@@ -40,7 +40,7 @@ public record ContainerRoleResponsePacket(BlockPos containerPos, String role, St
     }
 
     public static void handle(ContainerRoleResponsePacket p, net.neoforged.neoforge.network.handling.IPayloadContext ctx) {
-        ctx.enqueueWork(() -> ContainerRoleClientCache.setResponse(p));
+        ctx.enqueueWork(() -> ContainerRoleBridge.handle(p));
     }
 
     /** 容器角色记录：标识容器是 input 还是 output，及所属建筑类型和相对坐标 */

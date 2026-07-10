@@ -22,7 +22,6 @@ import com.xy2407.nsukaddition.common.network.AutoRestockStatePacket;
 import com.xy2407.nsukaddition.common.network.AutoRestockTogglePacket;
 import com.xy2407.nsukaddition.common.network.vein.OreVeinDiscoveryRequestPacket;
 import com.xy2407.nsukaddition.common.network.vein.OreVeinDiscoveryResponsePacket;
-import com.xy2407.nsukaddition.server.vein.OreVeinDiscoveryHandler;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.network.event.RegisterPayloadHandlersEvent;
@@ -55,7 +54,7 @@ public final class ModNetwork {
 
         r.playToClient(OreVeinChunkSyncPacket.TYPE, OreVeinChunkSyncPacket.STREAM_CODEC, OreVeinChunkSyncPacket::handle);
 
-        r.playToServer(OreVeinDiscoveryRequestPacket.TYPE, OreVeinDiscoveryRequestPacket.STREAM_CODEC, OreVeinDiscoveryHandler::handle);
+        r.playToServer(OreVeinDiscoveryRequestPacket.TYPE, OreVeinDiscoveryRequestPacket.STREAM_CODEC, OreVeinDiscoveryRequestPacket::handle);
         r.playToClient(OreVeinDiscoveryResponsePacket.TYPE, OreVeinDiscoveryResponsePacket.STREAM_CODEC, OreVeinDiscoveryResponsePacket::handle);
 
         r.playToServer(ImmigrationListRequestPacket.TYPE, ImmigrationListRequestPacket.STREAM_CODEC, ImmigrationListRequestPacket::handle);

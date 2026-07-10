@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.UUID;
 import java.util.function.Predicate;
 
-/** 城市升级的条件检查与执行服务，负责扣减仓库及玩家资源。 */
+/** 城市升级的条件检查与执行服务，负责统计建筑、扣减仓库及玩家资源。 */
 public final class CityUpgradeService {
 
     private CityUpgradeService() {}
@@ -46,6 +46,21 @@ public final class CityUpgradeService {
             int currentPopulation,
             int requiredPopulation,
             boolean populationMet,
+            int currentFarms,
+            int requiredFarms,
+            boolean farmsMet,
+            int currentRanches,
+            int requiredRanches,
+            boolean ranchesMet,
+            int currentShops,
+            int requiredShops,
+            boolean shopsMet,
+            int currentFactories,
+            int requiredFactories,
+            boolean factoriesMet,
+            int currentMines,
+            int requiredMines,
+            boolean minesMet,
             int currentLogs,
             int requiredLogs,
             boolean logsMet,
@@ -79,6 +94,13 @@ public final class CityUpgradeService {
         int population = (int) CitizenManager.get(level).getCityPopulation(cityId);
         boolean populationMet = population >= req.requiredPopulation();
 
+        CityBuildingStats stats = CityBuildingStats.collect(level, cityId);
+        boolean farmsMet = stats.farmCount() >= req.requiredFarms();
+        boolean ranchesMet = stats.ranchCount() >= req.requiredRanches();
+        boolean shopsMet = stats.shopCount() >= req.requiredShops();
+        boolean factoriesMet = stats.factoryCount() >= req.requiredFactories();
+        boolean minesMet = stats.mineCount() >= req.requiredMines();
+
         int totalLogs = countMatchingInWarehouses(level, cityId, LOGS_MATCHER)
                 + countMatchingInInventory(operator, LOGS_MATCHER);
         int totalStone = countMatchingInWarehouses(level, cityId, STONE_MATCHER)
@@ -88,11 +110,17 @@ public final class CityUpgradeService {
 
         boolean fundsMet = city.funds() >= req.requiredFunds();
 
-        boolean allMet = populationMet && logsMet && stoneMet && fundsMet;
+        boolean allMet = populationMet && farmsMet && ranchesMet && shopsMet
+                && factoriesMet && minesMet && logsMet && stoneMet && fundsMet;
 
         return new UpgradeCheckResult(
                 currentLevel, targetLevel, req,
                 population, req.requiredPopulation(), populationMet,
+                stats.farmCount(), req.requiredFarms(), farmsMet,
+                stats.ranchCount(), req.requiredRanches(), ranchesMet,
+                stats.shopCount(), req.requiredShops(), shopsMet,
+                stats.factoryCount(), req.requiredFactories(), factoriesMet,
+                stats.mineCount(), req.requiredMines(), minesMet,
                 totalLogs, req.requiredLogs(), logsMet,
                 totalStone, req.requiredStone(), stoneMet,
                 city.funds(), req.requiredFunds(), fundsMet,

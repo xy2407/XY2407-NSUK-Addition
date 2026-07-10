@@ -21,6 +21,11 @@
   "gui.xy2407_nsuk_addition.city_upgrade.unavailable": "No upgrade configuration available",
   "gui.xy2407_nsuk_addition.city_upgrade.requirements": "Upgrade Requirements:",
   "gui.xy2407_nsuk_addition.city_upgrade.require_population": "· Population: %d",
+  "gui.xy2407_nsuk_addition.city_upgrade.require_farms": "· Farms: %d",
+  "gui.xy2407_nsuk_addition.city_upgrade.require_ranches": "· Ranches: %d",
+  "gui.xy2407_nsuk_addition.city_upgrade.require_shops": "· Shops: %d",
+  "gui.xy2407_nsuk_addition.city_upgrade.require_factories": "· Factories: %d",
+  "gui.xy2407_nsuk_addition.city_upgrade.require_mines": "· Mines: %d",
   "gui.xy2407_nsuk_addition.city_upgrade.require_logs": "· Logs: %d",
   "gui.xy2407_nsuk_addition.city_upgrade.require_stone": "· Stone: %d",
   "gui.xy2407_nsuk_addition.city_upgrade.require_funds": "· City Funds: %s",
@@ -35,6 +40,8 @@
   "message.xy2407_nsuk_addition.city_upgrade.material_shortage": "Not enough materials for upgrade",
   "message.xy2407_nsuk_addition.city_upgrade.funds_shortage": "Not enough city funds for upgrade",
   "message.xy2407_nsuk_addition.city_upgrade.unknown": "Upgrade failed, please try again",
+
+  "message.xy2407_nsuk_addition.city_chunk.limit_reached": "City level (%s) allows a maximum of %d chunk claims",
 
   "gui.xy2407_nsuk_addition.build_tasks.title": "Build Tasks",
 
@@ -160,6 +167,11 @@
   "gui.xy2407_nsuk_addition.city_upgrade.requirement.logs": "Logs: %d / %d",
   "gui.xy2407_nsuk_addition.city_upgrade.requirement.stone": "Stone: %d / %d",
   "gui.xy2407_nsuk_addition.city_upgrade.requirement.funds": "Funds: %.0f / %.0f",
+  "gui.xy2407_nsuk_addition.city_upgrade.requirement.farms": "Farms: %d / %d",
+  "gui.xy2407_nsuk_addition.city_upgrade.requirement.ranches": "Ranches: %d / %d",
+  "gui.xy2407_nsuk_addition.city_upgrade.requirement.shops": "Shops: %d / %d",
+  "gui.xy2407_nsuk_addition.city_upgrade.requirement.factories": "Factories: %d / %d",
+  "gui.xy2407_nsuk_addition.city_upgrade.requirement.mines": "Mines: %d / %d",
   "gui.xy2407_nsuk_addition.city_upgrade.met": "✔",
   "gui.xy2407_nsuk_addition.city_upgrade.not_met": "✘",
   "gui.xy2407_nsuk_addition.city_upgrade.button": "Upgrade",

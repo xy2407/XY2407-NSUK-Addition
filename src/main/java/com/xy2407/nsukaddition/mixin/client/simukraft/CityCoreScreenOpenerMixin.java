@@ -2,6 +2,7 @@ package com.xy2407.nsukaddition.mixin.client.simukraft;
 
 import client.cn.kafei.simukraft.client.city.CityCoreScreenOpener;
 import com.xy2407.nsukaddition.client.city.CityCoreMovePreview;
+import com.xy2407.nsukaddition.client.data.SidebarDataSnapshot;
 import com.xy2407.nsukaddition.common.city.CityLevel;
 import com.xy2407.nsukaddition.common.city.CityUpgradeRequirement;
 import com.xy2407.nsukaddition.common.network.city.CityUpgradeRequestPacket;
@@ -78,9 +79,30 @@ public abstract class CityCoreScreenOpenerMixin {
         panel.addChild(line(Component.translatable("gui.xy2407_nsuk_addition.city_upgrade.next_level", nextLevel.displayName())));
         panel.addChild(contentSpacer());
 
+        // 需求部分
         panel.addChild(line(Component.translatable("gui.xy2407_nsuk_addition.city_upgrade.requirements")));
         panel.addChild(line(Component.translatable("gui.xy2407_nsuk_addition.city_upgrade.require_population",
                 req.requiredPopulation())));
+        if (req.requiredFarms() > 0) {
+            panel.addChild(line(Component.translatable("gui.xy2407_nsuk_addition.city_upgrade.require_farms",
+                    req.requiredFarms())));
+        }
+        if (req.requiredRanches() > 0) {
+            panel.addChild(line(Component.translatable("gui.xy2407_nsuk_addition.city_upgrade.require_ranches",
+                    req.requiredRanches())));
+        }
+        if (req.requiredShops() > 0) {
+            panel.addChild(line(Component.translatable("gui.xy2407_nsuk_addition.city_upgrade.require_shops",
+                    req.requiredShops())));
+        }
+        if (req.requiredFactories() > 0) {
+            panel.addChild(line(Component.translatable("gui.xy2407_nsuk_addition.city_upgrade.require_factories",
+                    req.requiredFactories())));
+        }
+        if (req.requiredMines() > 0) {
+            panel.addChild(line(Component.translatable("gui.xy2407_nsuk_addition.city_upgrade.require_mines",
+                    req.requiredMines())));
+        }
         panel.addChild(line(Component.translatable("gui.xy2407_nsuk_addition.city_upgrade.require_logs",
                 req.requiredLogs())));
         panel.addChild(line(Component.translatable("gui.xy2407_nsuk_addition.city_upgrade.require_stone",
@@ -90,10 +112,32 @@ public abstract class CityCoreScreenOpenerMixin {
                     String.format(Locale.ROOT, "%.2f", req.requiredFunds()))));
         }
 
+        // 进度部分
+        SidebarDataSnapshot snap = SidebarDataSnapshot.get();
         panel.addChild(contentSpacer());
         panel.addChild(line(Component.translatable("gui.xy2407_nsuk_addition.city_upgrade.progress")));
-        panel.addChild(line(Component.translatable("gui.xy2407_nsuk_addition.city_upgrade.progress_population",
+        panel.addChild(line(Component.translatable("gui.xy2407_nsuk_addition.city_upgrade.requirement.population",
                 packet.cityPopulation(), req.requiredPopulation())));
+        if (req.requiredFarms() > 0) {
+            panel.addChild(line(Component.translatable("gui.xy2407_nsuk_addition.city_upgrade.requirement.farms",
+                    snap.farmCount(), req.requiredFarms())));
+        }
+        if (req.requiredRanches() > 0) {
+            panel.addChild(line(Component.translatable("gui.xy2407_nsuk_addition.city_upgrade.requirement.ranches",
+                    snap.ranchCount(), req.requiredRanches())));
+        }
+        if (req.requiredShops() > 0) {
+            panel.addChild(line(Component.translatable("gui.xy2407_nsuk_addition.city_upgrade.requirement.shops",
+                    snap.shopCount(), req.requiredShops())));
+        }
+        if (req.requiredFactories() > 0) {
+            panel.addChild(line(Component.translatable("gui.xy2407_nsuk_addition.city_upgrade.requirement.factories",
+                    snap.factoryCount(), req.requiredFactories())));
+        }
+        if (req.requiredMines() > 0) {
+            panel.addChild(line(Component.translatable("gui.xy2407_nsuk_addition.city_upgrade.requirement.mines",
+                    snap.mineCount(), req.requiredMines())));
+        }
         panel.addChild(line(Component.translatable("gui.xy2407_nsuk_addition.city_upgrade.progress_funds",
                 String.format(Locale.ROOT, "%.2f", packet.funds()),
                 String.format(Locale.ROOT, "%.2f", req.requiredFunds()))));
@@ -106,7 +150,7 @@ public abstract class CityCoreScreenOpenerMixin {
         cir.setReturnValue(scrollable(panel));
     }
 
-    @Inject(method = "menuColumn", at = @At("RETURN"), remap = false)
+    @Inject(method = "MenuColumn", at = @At("RETURN"), remap = false)
     private static void nsuk$addMoveMenuButton(CallbackInfoReturnable<UIElement> cir) {
         CityCoreOpenResponsePacket packet = nsuk$currentPacket;
         if (packet == null) return;

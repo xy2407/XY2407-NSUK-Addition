@@ -1,7 +1,7 @@
 package com.xy2407.nsukaddition.common.network.breeding;
 
 import com.xy2407.nsukaddition.NsukAddition;
-import com.xy2407.nsukaddition.client.breeding.BreedingControlBoxScreenOpener;
+import com.xy2407.nsukaddition.common.network.clientbound.BreedingControlBoxBridge;
 import com.xy2407.nsukaddition.common.breeding.BreedingControlBoxView;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -131,7 +131,7 @@ public record BreedingControlBoxOpenResponsePacket(BlockPos boxPos,
     }
 
     public static void handle(BreedingControlBoxOpenResponsePacket p, IPayloadContext ctx) {
-        ctx.enqueueWork(() -> BreedingControlBoxScreenOpener.open(p));
+        ctx.enqueueWork(() -> BreedingControlBoxBridge.open(p));
     }
 
     public record RecipeEntry(String id, String name, List<ItemEntry> inputs, List<ItemEntry> outputs) {

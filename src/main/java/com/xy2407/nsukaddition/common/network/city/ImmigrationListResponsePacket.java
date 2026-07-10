@@ -1,7 +1,7 @@
 package com.xy2407.nsukaddition.common.network.city;
 
 import com.xy2407.nsukaddition.NsukAddition;
-import com.xy2407.nsukaddition.client.hud.ImmigrationScreen;
+import com.xy2407.nsukaddition.common.network.clientbound.ImmigrationScreenBridge;
 import com.xy2407.nsukaddition.common.city.ImmigrantData;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
@@ -53,6 +53,6 @@ public record ImmigrationListResponsePacket(UUID cityId, List<ImmigrantData> imm
     }
 
     public static void handle(ImmigrationListResponsePacket p, IPayloadContext ctx) {
-        ctx.enqueueWork(() -> ImmigrationScreen.refresh(p.cityId(), p.immigrants()));
+        ctx.enqueueWork(() -> ImmigrationScreenBridge.refresh(p.cityId(), p.immigrants()));
     }
 }

@@ -1,7 +1,7 @@
 package com.xy2407.nsukaddition.common.network.vein;
 
 import com.xy2407.nsukaddition.NsukAddition;
-import com.xy2407.nsukaddition.client.network.vein.OreVeinDiscoveryClientHandler;
+import com.xy2407.nsukaddition.common.network.clientbound.OreVeinDiscoveryBridge;
 import com.xy2407.nsukaddition.common.vein.OreVeinType;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
@@ -49,6 +49,6 @@ public record OreVeinDiscoveryResponsePacket(Map<Long, OreVeinType> veins, Strin
     }
 
     public static void handle(OreVeinDiscoveryResponsePacket packet, IPayloadContext context) {
-        OreVeinDiscoveryClientHandler.handle(packet, context);
+        OreVeinDiscoveryBridge.handle(packet, context);
     }
 }

@@ -15,6 +15,16 @@ import com.xy2407.nsukaddition.client.network.SidebarSyncClientHandler;
 import com.xy2407.nsukaddition.client.renderer.TouristStatusRenderer;
 import com.xy2407.nsukaddition.client.vein.OreVeinRenderToggleHandler;
 import com.xy2407.nsukaddition.common.menu.ModMenuTypes;
+import com.xy2407.nsukaddition.client.breeding.BreedingControlBoxScreenOpener;
+import com.xy2407.nsukaddition.client.container.ContainerRoleClientCache;
+import com.xy2407.nsukaddition.client.hud.ImmigrationScreen;
+import com.xy2407.nsukaddition.client.mining.MiningControlBoxUiRoot;
+import com.xy2407.nsukaddition.client.network.vein.OreVeinDiscoveryClientHandler;
+import com.xy2407.nsukaddition.common.network.clientbound.BreedingControlBoxBridge;
+import com.xy2407.nsukaddition.common.network.clientbound.ContainerRoleBridge;
+import com.xy2407.nsukaddition.common.network.clientbound.ImmigrationScreenBridge;
+import com.xy2407.nsukaddition.common.network.clientbound.MiningControlBoxUiBridge;
+import com.xy2407.nsukaddition.common.network.clientbound.OreVeinDiscoveryBridge;
 import com.xy2407.nsukaddition.common.network.clientbound.SidebarSyncBridge;
 import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
@@ -109,6 +119,25 @@ public final class NsukAdditionClient {
         NeoForge.EVENT_BUS.register(NsukAdditionGameClient.class);
 
         SidebarSyncBridge.install(SidebarSyncClientHandler.INSTANCE);
+
+        BreedingControlBoxBridge.install(BreedingControlBoxScreenOpener::open, BreedingControlBoxScreenOpener::refreshIfOpen);
+
+        MiningControlBoxUiBridge.install(
+                MiningControlBoxUiRoot::refreshActive,
+                MiningControlBoxUiRoot::refreshActive,
+                (player, packet) -> {
+                    var ui = client.cn.kafei.simukraft.client.ui.SimuKraftUiTheme.createUi(new MiningControlBoxUiRoot(packet));
+                    return com.lowdragmc.lowdraglib2.gui.ui.ModularUI.of(ui, player)
+                            .shouldCloseOnEsc(true)
+                            .shouldCloseOnKeyInventory(false);
+                }
+        );
+
+        ContainerRoleBridge.install(ContainerRoleClientCache::setResponse);
+
+        ImmigrationScreenBridge.install(ImmigrationScreen::refresh);
+
+        OreVeinDiscoveryBridge.install(OreVeinDiscoveryClientHandler::handle);
 
         OreVeinRenderToggleHandler.register();
 

@@ -1,7 +1,7 @@
 package com.xy2407.nsukaddition.common.network.breeding;
 
 import com.xy2407.nsukaddition.NsukAddition;
-import com.xy2407.nsukaddition.client.breeding.BreedingControlBoxScreenOpener;
+import com.xy2407.nsukaddition.common.network.clientbound.BreedingControlBoxBridge;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
@@ -28,6 +28,6 @@ public record BreedingControlBoxViewUpdatePacket(BreedingControlBoxOpenResponseP
     }
 
     public static void handle(BreedingControlBoxViewUpdatePacket p, IPayloadContext ctx) {
-        ctx.enqueueWork(() -> BreedingControlBoxScreenOpener.refreshIfOpen(p.response()));
+        ctx.enqueueWork(() -> BreedingControlBoxBridge.refresh(p.response()));
     }
 }
