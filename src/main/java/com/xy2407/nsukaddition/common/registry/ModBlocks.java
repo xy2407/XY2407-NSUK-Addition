@@ -2,6 +2,7 @@ package com.xy2407.nsukaddition.common.registry;
 
 import com.xy2407.nsukaddition.NsukAddition;
 import com.xy2407.nsukaddition.common.block.BreedingControlBoxBlock;
+import com.xy2407.nsukaddition.common.block.ColonyCoreBlock;
 import com.xy2407.nsukaddition.common.block.DynamicRoeBlock;
 import com.xy2407.nsukaddition.common.block.entity.DynamicRoeBlockEntity;
 import com.xy2407.nsukaddition.common.block.entity.MiningControlBoxBlockEntity;
@@ -46,6 +47,11 @@ public final class ModBlocks {
             BLOCK_ENTITIES.register("dynamic_roe_block",
                     () -> BlockEntityType.Builder.of(DynamicRoeBlockEntity::new, DYNAMIC_ROE_BLOCK.get()).build(null));
 
+    public static final DeferredBlock<Block> COLONY_CORE = BLOCKS.register(
+            "colony_core", ColonyCoreBlock::new);
+    public static final DeferredItem<BlockItem> COLONY_CORE_ITEM = ITEMS.register(
+            "colony_core", () -> new BlockItem(COLONY_CORE.get(), new Item.Properties()));
+
     private ModBlocks() {
     }
 
@@ -61,6 +67,7 @@ public final class ModBlocks {
             event.accept(BREEDING_CONTROL_BOX_ITEM);
             event.accept(MINING_CONTROL_BOX_ITEM);
             event.accept(DYNAMIC_ROE_BLOCK_ITEM);
+            event.accept(COLONY_CORE_ITEM);
         }
     }
 }

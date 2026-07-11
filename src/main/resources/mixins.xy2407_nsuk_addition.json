@@ -14,8 +14,6 @@
     "WorkMaterialPolicyMixin",
     "BuildingPackageCatalogMixin",
     "CityPlacementRestrictionHandlerMixin",
-    "NpcHireAccessValidatorMixin",
-    "NpcHireListRequestPacketMixin",
     "BuildBoxScreenOpenerMixin",
     "BuildingStructureServiceMixin",
     "FarmlandFarmingServiceMixin",
@@ -48,10 +46,13 @@
     "client.simukraft.CitizenModelMixin",
     "client.simukraft.FarmlandCropScreenMixin",
     "client.simukraft.CityCoreScreenOpenerMixin",
+    "client.simukraft.CityChunkMapElementMixin",
+    "client.simukraft.SimuKraftCityHighlighterMixin",
     "client.simukraft.IndustrialControlBoxScreenOpenerMixin",
     "client.simukraft.IndustrialControlBoxAutoRestockMixin",
     "client.simukraft.CommercialControlBoxAutoRestockMixin",
     "client.tide.FishDisplayBlockEntityMixin",
-    "client.MouseHandlerMixin"
+    "client.MouseHandlerMixin",
+    "client.ColonyEntryHudMixin"
   ]
 }

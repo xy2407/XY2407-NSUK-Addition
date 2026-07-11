@@ -1,16 +1,21 @@
 package com.xy2407.nsukaddition.server.vein;
 
+import com.xy2407.nsukaddition.NsukAddition;
 import com.xy2407.nsukaddition.common.vein.OreVeinChunkData;
 import com.xy2407.nsukaddition.common.vein.OreVeinType;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
+import net.neoforged.neoforge.event.level.LevelEvent;
 
 import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 /** 矿脉分布服务，基于世界种子确定性生成矿脉的位置、类型和规模。 */
+@EventBusSubscriber(modid = NsukAddition.MOD_ID)
 public final class OreVeinDistributionService {
 
     private static final long SALT_CENTER   = 0x6F72655665696E43L;
@@ -202,6 +207,19 @@ public final class OreVeinDistributionService {
             if (!veinCache.containsKey(neighbor)) {
                 blockedChunks.add(neighbor);
             }
+        }
+    }
+
+    public static void clearDimension(String dimKey) {
+        veinCaches.remove(dimKey);
+        blockedChunkSets.remove(dimKey);
+    }
+
+    // 维度卸载时清理该维度的矿脉缓存，防止内存泄漏。
+    @SubscribeEvent
+    public static void onLevelUnload(LevelEvent.Unload event) {
+        if (event.getLevel() instanceof ServerLevel serverLevel) {
+            clearDimension(serverLevel.dimension().location().toString());
         }
     }
 

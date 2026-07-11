@@ -69,8 +69,12 @@ public record SidebarSyncPacket(
             String uuid,
             String jobType,
             boolean hasHome,
-            String skinPath
+            String skinPath,
+            String colonyName
     ) {
+        public CitizenEntry(String name, String uuid, String jobType, boolean hasHome, String skinPath) {
+            this(name, uuid, jobType, hasHome, skinPath, "");
+        }
     }
 
     public static void encode(RegistryFriendlyByteBuf b, SidebarSyncPacket p) {
@@ -113,6 +117,7 @@ public record SidebarSyncPacket(
             b.writeUtf(ce.jobType, 32);
             b.writeBoolean(ce.hasHome);
             b.writeUtf(ce.skinPath, 128);
+            b.writeUtf(ce.colonyName, 64);
         }
     }
 
@@ -161,7 +166,7 @@ public record SidebarSyncPacket(
             String jobType = b.readUtf(32);
             boolean hasHome = b.readBoolean();
             String skinPath = b.readUtf(128);
-            citizens.add(new CitizenEntry(name, uuid, jobType, hasHome, skinPath));
+            citizens.add(new CitizenEntry(name, uuid, jobType, hasHome, skinPath, b.readUtf(64)));
         }
 
         return new SidebarSyncPacket(

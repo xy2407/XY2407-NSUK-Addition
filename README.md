@@ -62,6 +62,8 @@
 - **City Data Panel** — Display city population, funds, and stats
 - **Building Statistics** — Statistics for various building types
 - **Popup Animation** — Smooth UI popup animations
+- **Sub-Territory Display** — Auto-detect colony belonging and display colony name when player enters colony territory
+- **Territory Count** — Show number of sub-territories under the current city
 
 ### Citizen Equipment
 
@@ -74,16 +76,33 @@
 - **Container Role Query** — Query container role information
 - **HUD Display** — Role information HUD overlay
 
+### Colony (Sub-Territory)
+
+- **Colony System** — Create and manage sub-territories (colonies) under parent cities
+- **Colony Territory Map** — Full-screen world map GUI for purchasing/abandoning colony chunks
+- **3-Color Scheme** — Own city = green, own colony (sub-territory) = blue, others' territory = red, on both Xaero's World Map and LDLib2 GUI
+- **Colony Core GUI** — Complete management interface (info/edit/residents/core relocation/destruction)
+- **Colony SQLite Persistence** — All colony data persists in SQLite (colonies, chunks, citizen assignments)
+- **Territory Sync** — Real-time broadcast sync on purchase/abandon/create/destroy
+- **City-Level Restrictions** — Chunk purchase limits based on parent city level
+
 ### Tourism & Immigration
 
-- **Village Tourism** — Tourism system support
-- **Town Immigration** — Immigration management service
-- **Immigration GUI** — Immigration operation interface
+- **Village Tourism** — Tourism system support (tourists visit shops and spend money)
+- **Town Immigration** — Immigration management service (citizens apply to join your town)
+- **Immigration GUI** — Immigration approval/rejection interface
 
 ### Building
 
 - **Building Pack Deployment** — More flexible building pack deployment
 - **Building Task Management** — Building task tracking and control
+
+### Core Relocation
+
+- **City Core Relocation** — Preview ghost placement, right-click targeting, Enter to confirm relocation
+- **Colony Core Relocation** — Same preview workflow for sub-territory cores
+- **Input Protection** — Blocks right-click interactions during preview mode
+- **Ghost Renderer** — Semi-transparent block preview at target position
 
 ### Winery
 
@@ -219,6 +238,8 @@
 - **城市数据面板** — 显示城市人口、资金等统计数据
 - **建筑统计** — 各类建筑的统计数据
 - **弹出动画** — 平滑的 UI 弹出动画
+- **附属地显示** — 玩家进入附属地时自动检测并显示附属地名称
+- **属地数量** — 显示当前城市下的附属地数量
 
 ### 市民装备
 
@@ -231,16 +252,33 @@
 - **容器角色查询** — 查询容器角色信息
 - **HUD 显示** — 角色信息 HUD 叠加层
 
+### 附属地系统
+
+- **附属地创建与管理** — 在父城市下创建和管理子领地（附属地）
+- **附属地地图** — 全屏世界地图 GUI，购买/放弃附属地区块
+- **3 色方案** — 自己城市=绿色，自己附属地=蓝色，他人领地=红色（Xaero 地图与 LDLib2 GUI 均支持）
+- **附属地核心 GUI** — 完整管理界面（信息/编辑/居民管理/核心迁移/销毁）
+- **SQLite 持久化** — 所有附属地数据持久化存储（领地/区块/居民）
+- **区块广播同步** — 购买/放弃/创建/销毁时实时同步
+- **城市等级限制** — 根据父城市等级限制区块购买数量
+
 ### 旅游与移民
 
-- **村庄旅游** — 旅游系统支持
-- **小镇移民** — 移民管理服务
-- **移民 GUI** — 移民操作界面
+- **村庄旅游** — 旅游系统支持（游客访问商店并消费）
+- **小镇移民** — 移民管理服务（市民申请加入你的城镇）
+- **移民 GUI** — 移民审批/拒绝操作界面
 
 ### 建筑系统
 
 - **建筑包部署服务** — 更灵活的建筑包部署机制
 - **建筑任务管理** — 建筑任务跟踪与控制
+
+### 核心迁移
+
+- **城市核心迁移** — 预览 ghost 方块放置，右键选点，Enter 确认迁移
+- **附属地核心迁移** — 与城市核心相同的工作流
+- **输入保护** — 预览模式下阻止右键交互
+- **Ghost 渲染器** — 目标位置半透明方块预览
 
 ### 酿酒厂
 

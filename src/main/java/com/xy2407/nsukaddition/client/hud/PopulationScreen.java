@@ -239,6 +239,13 @@ public final class PopulationScreen extends Screen {
             homeStatus = "无家";
             homeColor = TEXT_MUTED;
         }
+
+        String colonyInfo = citizen.colonyName();
+        if (colonyInfo != null && !colonyInfo.isEmpty()) {
+            homeStatus = "附属:" + colonyInfo;
+            homeColor = 0xFF66CCFF;
+        }
+
         int hsW = font.width(homeStatus);
         gg.drawString(font, Component.literal(homeStatus), x + cardW - hsW - 10, y + (ITEM_H - font.lineHeight) / 2,
                 homeColor, false);

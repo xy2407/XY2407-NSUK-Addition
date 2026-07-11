@@ -120,6 +120,19 @@ public final class TownImmigrationService {
         }
     }
 
+    // 城市被删除时清理该城市的待处理移民数据。
+    public static void onCityDeleted(ServerLevel level, UUID cityId) {
+        CopyOnWriteArrayList<ImmigrantData> list = PENDING.remove(cityId);
+        if (list == null) return;
+        for (ImmigrantData immigrant : list) {
+            CitizenEntity entity = findEntity(level, immigrant.citizenId());
+            if (entity != null) entity.discard();
+            CitizenManager.get(level).removeCitizen(immigrant.citizenId());
+            SPAWN_POSITIONS.remove(immigrant.citizenId());
+        }
+        SPAWNED_THIS_DAY.remove(cityId);
+    }
+
     private static ImmigrantData removeRequest(UUID cityId, UUID requestId) {
         CopyOnWriteArrayList<ImmigrantData> list = PENDING.get(cityId);
         if (list == null) return null;

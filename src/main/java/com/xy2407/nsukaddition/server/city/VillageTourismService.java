@@ -75,6 +75,12 @@ public final class VillageTourismService {
         clearAllTourists(level);
     }
 
+    // 城市被删除时清理该城市的游客数据。
+    public static void onCityDeleted(UUID cityId) {
+        ACTIVE_TOURISTS.remove(cityId);
+        LAST_SPAWN_TICK.remove(cityId);
+    }
+
     private static List<CityData> getVillageCities(ServerLevel level) {
         List<CityData> result = new ArrayList<>();
         for (CityData city : common.cn.kafei.simukraft.city.CityService.allCities(level)) {

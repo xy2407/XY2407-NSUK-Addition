@@ -25,7 +25,6 @@ public final class EnumExtender {
     public record FieldValue(String name, Object value) {
     }
 
-    /** 注入新枚举常量并返回创建的实例 */
     @SuppressWarnings("unchecked")
     public static <T extends Enum<T>> T addEnumConstant(
             Class<T> enumClass,

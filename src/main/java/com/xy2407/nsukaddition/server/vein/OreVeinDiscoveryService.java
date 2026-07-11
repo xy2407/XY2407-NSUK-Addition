@@ -83,6 +83,13 @@ public final class OreVeinDiscoveryService {
         loadFromPlayer(player);
     }
 
+    @SubscribeEvent
+    public static void onPlayerLogout(PlayerEvent.PlayerLoggedOutEvent event) {
+        if (!(event.getEntity() instanceof ServerPlayer player)) return;
+        saveToPlayer(player);
+        DISCOVERED_VEINS.remove(player.getStringUUID());
+    }
+
     private static Set<Long> getDiscovered(ServerPlayer player) {
         return DISCOVERED_VEINS.computeIfAbsent(player.getStringUUID(), k -> new HashSet<>());
     }

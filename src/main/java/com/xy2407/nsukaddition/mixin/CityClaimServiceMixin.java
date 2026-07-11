@@ -1,6 +1,7 @@
 package com.xy2407.nsukaddition.mixin;
 
 import com.xy2407.nsukaddition.common.city.CityLevel;
+import com.xy2407.nsukaddition.common.colony.ColonySqliteStorage;
 import common.cn.kafei.simukraft.city.CityChunkManager;
 import common.cn.kafei.simukraft.city.CityClaimService;
 import common.cn.kafei.simukraft.city.CityData;
@@ -11,7 +12,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-/** 拦截 CityClaimService.buyChunk，在购买前检查城市等级对应的区块领地上限。 */
+/** 拦截 CityClaimService.buyChunk，在购买前检查城市等级对应的区块领地上限（排除附属地区块）。 */
 @Mixin(value = CityClaimService.class, remap = false)
 public class CityClaimServiceMixin {
 
@@ -25,9 +26,13 @@ public class CityClaimServiceMixin {
         CityLevel cityLevel = CityLevel.fromLevel(city.cityLevel());
         int maxChunks = cityLevel.maxChunks();
         CityChunkManager chunkManager = CityChunkManager.get(level);
-        int currentChunks = chunkManager.getCityChunks(city.cityId()).size();
+        int totalChunks = chunkManager.getCityChunks(city.cityId()).size();
 
-        if (currentChunks >= maxChunks) {
+        // 减去附属地区块数，城市核心方块购买只消耗城市自身的区块配额
+        int colonyChunks = ColonySqliteStorage.countChunksByParentCity(level, city.cityId());
+        int cityOwnChunks = totalChunks - colonyChunks;
+
+        if (cityOwnChunks >= maxChunks) {
             cir.setReturnValue(CityClaimService.ClaimResult.failed(
                     net.minecraft.network.chat.Component.translatable(
                             "message.xy2407_nsuk_addition.city_chunk.limit_reached",

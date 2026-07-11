@@ -143,7 +143,8 @@ public final class SidebarHudLayer implements LayeredDraw.Layer {
         RECT_RENDERER.fill(matrix, r.x() + 1, r.y() + 1, r.width() - 2, SidebarLayout.TOP_BAR_H - 1, titleBar);
         RECT_RENDERER.fill(matrix, r.x() + 1, r.y() + SidebarLayout.TOP_BAR_H, r.width() - 2, 1, border);
         TEXT_RENDERER.drawText(mc.font,
-                Component.translatable("hud.xy2407_nsuk_addition.sidebar.title").getString(),
+                Component.translatable("hud.xy2407_nsuk_addition.sidebar.title").getString()
+                        + "  " + HeaderSectionRenderer.buildTitleExtra(mc),
                 r.x() + SidebarLayout.PAD_X,
                 r.y() + 6,
                 textColor,

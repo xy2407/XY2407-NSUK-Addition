@@ -7,6 +7,16 @@ import com.xy2407.nsukaddition.common.network.city.CityUpgradeRequestPacket;
 import com.xy2407.nsukaddition.common.network.city.ImmigrationActionPacket;
 import com.xy2407.nsukaddition.common.network.city.ImmigrationListRequestPacket;
 import com.xy2407.nsukaddition.common.network.city.ImmigrationListResponsePacket;
+import com.xy2407.nsukaddition.common.network.colony.ColonyCreatePacket;
+import com.xy2407.nsukaddition.common.network.colony.ColonyDeletePacket;
+import com.xy2407.nsukaddition.common.network.colony.ColonyChunkBuyPacket;
+import com.xy2407.nsukaddition.common.network.colony.ColonyChunkAbandonPacket;
+import com.xy2407.nsukaddition.common.network.colony.ColonyCitizenRelocatePacket;
+import com.xy2407.nsukaddition.common.network.colony.ColonyCoreMovePacket;
+import com.xy2407.nsukaddition.common.network.colony.ColonyCoreOpenRequestPacket;
+import com.xy2407.nsukaddition.common.network.colony.ColonyCoreOpenResponsePacket;
+import com.xy2407.nsukaddition.common.network.colony.ColonyRenamePacket;
+import com.xy2407.nsukaddition.common.network.colony.ColonyChunkSyncPacket;
 import com.xy2407.nsukaddition.common.network.breeding.BreedingControlBoxActionPacket;
 import com.xy2407.nsukaddition.common.network.breeding.BreedingControlBoxDemolishPacket;
 import com.xy2407.nsukaddition.common.network.breeding.BreedingControlBoxOpenRequestPacket;
@@ -64,6 +74,17 @@ public final class ModNetwork {
         r.playToServer(CityUpgradeRequestPacket.TYPE, CityUpgradeRequestPacket.STREAM_CODEC, CityUpgradeRequestPacket::handle);
 
         r.playToServer(CityCoreMovePacket.TYPE, CityCoreMovePacket.STREAM_CODEC, CityCoreMovePacket::handle);
+
+        r.playToServer(ColonyCoreOpenRequestPacket.TYPE, ColonyCoreOpenRequestPacket.STREAM_CODEC, ColonyCoreOpenRequestPacket::handle);
+        r.playToClient(ColonyCoreOpenResponsePacket.TYPE, ColonyCoreOpenResponsePacket.STREAM_CODEC, ColonyCoreOpenResponsePacket::handle);
+        r.playToServer(ColonyCoreMovePacket.TYPE, ColonyCoreMovePacket.STREAM_CODEC, ColonyCoreMovePacket::handle);
+        r.playToServer(ColonyCitizenRelocatePacket.TYPE, ColonyCitizenRelocatePacket.STREAM_CODEC, ColonyCitizenRelocatePacket::handle);
+        r.playToServer(ColonyChunkBuyPacket.TYPE, ColonyChunkBuyPacket.STREAM_CODEC, ColonyChunkBuyPacket::handle);
+        r.playToServer(ColonyChunkAbandonPacket.TYPE, ColonyChunkAbandonPacket.STREAM_CODEC, ColonyChunkAbandonPacket::handle);
+        r.playToServer(ColonyRenamePacket.TYPE, ColonyRenamePacket.STREAM_CODEC, ColonyRenamePacket::handle);
+        r.playToServer(ColonyCreatePacket.TYPE, ColonyCreatePacket.STREAM_CODEC, ColonyCreatePacket::handle);
+        r.playToServer(ColonyDeletePacket.TYPE, ColonyDeletePacket.STREAM_CODEC, ColonyDeletePacket::handle);
+        r.playToClient(ColonyChunkSyncPacket.TYPE, ColonyChunkSyncPacket.STREAM_CODEC, ColonyChunkSyncPacket::handle);
 
         r.playToServer(AutoRestockTogglePacket.TYPE, AutoRestockTogglePacket.STREAM_CODEC, AutoRestockTogglePacket::handle);
         r.playBidirectional(AutoRestockStatePacket.TYPE, AutoRestockStatePacket.STREAM_CODEC, AutoRestockStatePacket::handle);

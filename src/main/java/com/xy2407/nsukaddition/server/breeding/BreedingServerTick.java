@@ -5,6 +5,7 @@ import com.xy2407.nsukaddition.common.breeding.BreedingBoxSqliteStorage;
 import com.xy2407.nsukaddition.common.breeding.BreedingControlBoxViewSyncService;
 import com.xy2407.nsukaddition.common.breeding.BreedingDefinitionLoader;
 import com.xy2407.nsukaddition.common.breeding.BreedingWorkService;
+import com.xy2407.nsukaddition.common.storage.NsukWriteExecutor;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -29,6 +30,8 @@ public final class BreedingServerTick {
 
     @SubscribeEvent
     public static void onServerStopping(ServerStoppingEvent event) {
+        // 先等待所有异步写入完成，再清理缓存
+        NsukWriteExecutor.shutdown();
         MinecraftServer server = event.getServer();
         BreedingControlBoxViewSyncService.clearServerCaches(server);
         BreedingDefinitionLoader.clearCache();

@@ -150,7 +150,7 @@ public abstract class CityCoreScreenOpenerMixin {
         cir.setReturnValue(scrollable(panel));
     }
 
-    @Inject(method = "MenuColumn", at = @At("RETURN"), remap = false)
+    @Inject(method = "menuColumn", at = @At("RETURN"), remap = false)
     private static void nsuk$addMoveMenuButton(CallbackInfoReturnable<UIElement> cir) {
         CityCoreOpenResponsePacket packet = nsuk$currentPacket;
         if (packet == null) return;

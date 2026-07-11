@@ -1,5 +1,8 @@
 package com.xy2407.nsukaddition.common.citizen;
 
+import com.xy2407.nsukaddition.NsukAddition;
+import com.xy2407.nsukaddition.common.storage.NsukSqliteDatabase;
+import com.xy2407.nsukaddition.common.storage.NsukWriteExecutor;
 import common.cn.kafei.simukraft.storage.SimuSqliteDatabase;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.MinecraftServer;
@@ -11,70 +14,53 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.EnumMap;
 import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 
-/** 市民盔甲装备数据的 SQLite 持久化存储，用于跨实体重生/传送时恢复装备。 */
+/** 市民盔甲装备数据的 SQLite 持久化存储，写操作异步执行避免SQLITE_BUSY。 */
 @SuppressWarnings("null")
 public final class CitizenEquipmentSqliteStorage {
-
-    private static final ConcurrentMap<String, SimuSqliteDatabase> DATABASES = new ConcurrentHashMap<>();
 
     private CitizenEquipmentSqliteStorage() {}
 
     private static SimuSqliteDatabase openDatabase(MinecraftServer server) {
-        String key = SimuSqliteDatabase.databasePath(server).toAbsolutePath().normalize().toString();
-        return DATABASES.computeIfAbsent(key, ignored -> {
-            SimuSqliteDatabase db = SimuSqliteDatabase.open(server);
-            initTable(db);
-            return db;
-        });
-    }
-
-    private static void initTable(SimuSqliteDatabase database) {
-        try (Connection connection = database.openConnection();
-             Statement statement = connection.createStatement()) {
-            statement.executeUpdate(
-                    "CREATE TABLE IF NOT EXISTS citizen_equipment("
-                            + "uuid TEXT PRIMARY KEY, "
-                            + "head BLOB, "
-                            + "chest BLOB, "
-                            + "legs BLOB, "
-                            + "feet BLOB"
-                            + ")"
-            );
-        } catch (SQLException exception) {
-            throw new IllegalStateException("Failed to initialize citizen_equipment table in SQLite", exception);
-        }
+        return NsukSqliteDatabase.get(server);
     }
 
     public static void clearServerCache(MinecraftServer server) {
-        if (server == null) return;
-        DATABASES.remove(SimuSqliteDatabase.databasePath(server).toAbsolutePath().normalize().toString());
+        NsukSqliteDatabase.clearServerCache(server);
     }
 
     public static void save(ServerLevel level, UUID citizenUuid, Map<EquipmentSlot, ItemStack> equipment) {
         if (level == null || citizenUuid == null) return;
-        try {
-            SimuSqliteDatabase db = openDatabase(level.getServer());
-            try (Connection connection = db.openConnection();
-                 PreparedStatement ps = connection.prepareStatement(
-                         "INSERT INTO citizen_equipment(uuid, head, chest, legs, feet) VALUES(?, ?, ?, ?, ?) "
-                                 + "ON CONFLICT(uuid) DO UPDATE SET head = excluded.head, chest = excluded.chest, "
-                                 + "legs = excluded.legs, feet = excluded.feet"
-                 )) {
-                ps.setString(1, citizenUuid.toString());
-                ps.setBytes(2, stackToBytes(level, equipment.get(EquipmentSlot.HEAD)));
-                ps.setBytes(3, stackToBytes(level, equipment.get(EquipmentSlot.CHEST)));
-                ps.setBytes(4, stackToBytes(level, equipment.get(EquipmentSlot.LEGS)));
-                ps.setBytes(5, stackToBytes(level, equipment.get(EquipmentSlot.FEET)));
-                ps.executeUpdate();
+        MinecraftServer server = level.getServer();
+        // 序列化装备数据在主线程完成（需要registryAccess），写盘异步
+        byte[] head = stackToBytes(level, equipment.get(EquipmentSlot.HEAD));
+        byte[] chest = stackToBytes(level, equipment.get(EquipmentSlot.CHEST));
+        byte[] legs = stackToBytes(level, equipment.get(EquipmentSlot.LEGS));
+        byte[] feet = stackToBytes(level, equipment.get(EquipmentSlot.FEET));
+        String uuidStr = citizenUuid.toString();
+        NsukWriteExecutor.submit(() -> {
+            try {
+                SimuSqliteDatabase db = openDatabase(server);
+                try (Connection connection = db.openConnection();
+                     PreparedStatement ps = connection.prepareStatement(
+                             "INSERT INTO citizen_equipment(uuid, head, chest, legs, feet) VALUES(?, ?, ?, ?, ?) "
+                                     + "ON CONFLICT(uuid) DO UPDATE SET head = excluded.head, chest = excluded.chest, "
+                                     + "legs = excluded.legs, feet = excluded.feet"
+                     )) {
+                    ps.setString(1, uuidStr);
+                    ps.setBytes(2, head);
+                    ps.setBytes(3, chest);
+                    ps.setBytes(4, legs);
+                    ps.setBytes(5, feet);
+                    ps.executeUpdate();
+                }
+            } catch (Exception e) {
+                NsukAddition.LOGGER.error("Failed to save citizen equipment data", e);
             }
-        } catch (Exception ignored) {}
+        });
     }
 
     public static Map<EquipmentSlot, ItemStack> load(ServerLevel level, UUID citizenUuid) {
@@ -101,15 +87,20 @@ public final class CitizenEquipmentSqliteStorage {
 
     public static void delete(ServerLevel level, UUID citizenUuid) {
         if (level == null || citizenUuid == null) return;
-        try {
-            SimuSqliteDatabase db = openDatabase(level.getServer());
-            try (Connection connection = db.openConnection();
-                 PreparedStatement ps = connection.prepareStatement(
-                         "DELETE FROM citizen_equipment WHERE uuid = ?")) {
-                ps.setString(1, citizenUuid.toString());
-                ps.executeUpdate();
+        MinecraftServer server = level.getServer();
+        NsukWriteExecutor.submit(() -> {
+            try {
+                SimuSqliteDatabase db = openDatabase(server);
+                try (Connection connection = db.openConnection();
+                     PreparedStatement ps = connection.prepareStatement(
+                             "DELETE FROM citizen_equipment WHERE uuid = ?")) {
+                    ps.setString(1, citizenUuid.toString());
+                    ps.executeUpdate();
+                }
+            } catch (Exception e) {
+                NsukAddition.LOGGER.error("Failed to delete citizen equipment data", e);
             }
-        } catch (Exception ignored) {}
+        });
     }
 
     private static byte[] stackToBytes(ServerLevel level, ItemStack stack) {

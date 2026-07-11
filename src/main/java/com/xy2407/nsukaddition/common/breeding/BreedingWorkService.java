@@ -37,6 +37,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
@@ -57,8 +58,11 @@ public final class BreedingWorkService {
         if (level == null) return;
         BreedingBoxManager manager = BreedingBoxManager.get(level);
         long gameTime = level.getGameTime();
+        Set<BlockPos> activePositions = ConcurrentHashMap.newKeySet();
         for (BreedingBoxData data : manager.all()) {
-            BoxRuntime rt = RUNTIMES.computeIfAbsent(data.boxPos().immutable(), k -> new BoxRuntime());
+            BlockPos key = data.boxPos().immutable();
+            activePositions.add(key);
+            BoxRuntime rt = RUNTIMES.computeIfAbsent(key, k -> new BoxRuntime());
             if (!data.running()) {
                 rt.reset();
                 continue;
@@ -69,6 +73,8 @@ public final class BreedingWorkService {
             tickBox(level, manager, data, rt, gameTime);
             BreedingControlBoxViewSyncService.syncStatusIfChanged(level, data);
         }
+        // 清理已不存在方块的运行时
+        RUNTIMES.keySet().retainAll(activePositions);
     }
 
     private static void tickBox(ServerLevel level, BreedingBoxManager manager, BreedingBoxData data, BoxRuntime rt, long gameTime) {

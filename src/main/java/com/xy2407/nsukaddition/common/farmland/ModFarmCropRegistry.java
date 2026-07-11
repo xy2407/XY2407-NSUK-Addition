@@ -23,7 +23,6 @@ public final class ModFarmCropRegistry {
         return Collections.unmodifiableMap(CROP_MAP);
     }
 
-    /** 通过ID查找自定义作物，优先从备份映射查找 */
     public static FarmCrop findById(String id) {
         if (id == null || id.isBlank()) return null;
         return CROP_MAP.get(id.toLowerCase(java.util.Locale.ROOT));

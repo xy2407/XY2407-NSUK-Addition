@@ -48,7 +48,8 @@ public final class SidebarDataClient {
         List<SidebarDataSnapshot.CitizenRecord> citizens = new ArrayList<>();
         for (SidebarSyncPacket.CitizenEntry entry : p.citizens()) {
             citizens.add(new SidebarDataSnapshot.CitizenRecord(
-                    entry.name(), entry.uuid(), entry.jobType(), entry.hasHome(), entry.skinPath()));
+                    entry.name(), entry.uuid(), entry.jobType(), entry.hasHome(), entry.skinPath(),
+                    entry.colonyName()));
         }
 
         SidebarDataSnapshot.set(new SidebarDataSnapshot(p.cityId(), officers,

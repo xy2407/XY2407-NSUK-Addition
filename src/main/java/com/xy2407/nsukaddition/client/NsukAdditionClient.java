@@ -11,16 +11,22 @@ import com.xy2407.nsukaddition.client.keybind.ModKeyMappings;
 import com.xy2407.nsukaddition.client.city.CityCoreMoveInputHandler;
 import com.xy2407.nsukaddition.client.city.CityCoreMovePreview;
 import com.xy2407.nsukaddition.client.city.CityCoreMoveRenderer;
+import com.xy2407.nsukaddition.client.colony.ColonyCoreMoveInputHandler;
+import com.xy2407.nsukaddition.client.colony.ColonyCoreMoveRenderer;
 import com.xy2407.nsukaddition.client.network.SidebarSyncClientHandler;
 import com.xy2407.nsukaddition.client.renderer.TouristStatusRenderer;
 import com.xy2407.nsukaddition.client.vein.OreVeinRenderToggleHandler;
 import com.xy2407.nsukaddition.common.menu.ModMenuTypes;
 import com.xy2407.nsukaddition.client.breeding.BreedingControlBoxScreenOpener;
+import com.xy2407.nsukaddition.client.colony.ColonyCoreScreenOpener;
+import com.xy2407.nsukaddition.client.colony.ColonyChunkClientCache;
+import com.xy2407.nsukaddition.client.colony.ColonyChunkMapElement;
 import com.xy2407.nsukaddition.client.container.ContainerRoleClientCache;
 import com.xy2407.nsukaddition.client.hud.ImmigrationScreen;
 import com.xy2407.nsukaddition.client.mining.MiningControlBoxUiRoot;
 import com.xy2407.nsukaddition.client.network.vein.OreVeinDiscoveryClientHandler;
 import com.xy2407.nsukaddition.common.network.clientbound.BreedingControlBoxBridge;
+import com.xy2407.nsukaddition.common.network.clientbound.ColonyCoreBridge;
 import com.xy2407.nsukaddition.common.network.clientbound.ContainerRoleBridge;
 import com.xy2407.nsukaddition.common.network.clientbound.ImmigrationScreenBridge;
 import com.xy2407.nsukaddition.common.network.clientbound.MiningControlBoxUiBridge;
@@ -66,12 +72,7 @@ public final class NsukAdditionClient {
         event.registerLayerDefinition(CITIZEN_SLIM, () -> createCitizenLayerDefinition(true));
     }
 
-    /**
-     * 创建市民模型层定义，在 body 节点下挂接胸部部件。
-     *
-     * 胸部几何数据与缩放公式移植自 Minecraft Comes Alive (MCA)
-     * Licensed under GPL-3.0: https://github.com/Luke100000/minecraft-comes-alive
-     */
+    // 创建市民模型层定义，在 body 节点下挂接胸部部件。胸部几何与缩放公式移植自 MCA。
     private static LayerDefinition createCitizenLayerDefinition(boolean slim) {
         MeshDefinition mesh = PlayerModel.createMesh(CubeDeformation.NONE, slim);
         PartDefinition root = mesh.getRoot();
@@ -139,12 +140,27 @@ public final class NsukAdditionClient {
 
         OreVeinDiscoveryBridge.install(OreVeinDiscoveryClientHandler::handle);
 
+        ColonyCoreBridge.install(ColonyCoreScreenOpener::open,
+                (colonyId, chunks) -> {
+                    ColonyChunkClientCache.getInstance().removeColony(colonyId);
+                    ColonyChunkMapElement.onColonyRemoved(colonyId);
+                    com.xy2407.nsukaddition.client.compat.xaero.NsukXaeroWorldMapIntegration.refreshVeinHighlights();
+                },
+                (colonyId, name, parentName, parentId, chunks) -> {
+                    ColonyChunkClientCache.getInstance().updateFromSync(colonyId, name, parentId, chunks);
+                    ColonyChunkMapElement.onColonyChunkSync(colonyId, chunks);
+                    com.xy2407.nsukaddition.client.compat.xaero.NsukXaeroWorldMapIntegration.refreshVeinHighlights();
+                }
+        );
+
         OreVeinRenderToggleHandler.register();
 
         TouristStatusRenderer.register();
 
         NeoForge.EVENT_BUS.addListener(CityCoreMoveRenderer::onRenderLevel);
+        NeoForge.EVENT_BUS.addListener(ColonyCoreMoveRenderer::onRenderLevel);
 
         CityCoreMoveInputHandler.register();
+        ColonyCoreMoveInputHandler.register();
     }
 }

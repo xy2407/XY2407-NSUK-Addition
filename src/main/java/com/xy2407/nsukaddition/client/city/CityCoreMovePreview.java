@@ -18,16 +18,16 @@ import java.util.UUID;
 @OnlyIn(Dist.CLIENT)
 public final class CityCoreMovePreview {
 
-    /** 是否处于迁移预览模式 */
+    // 是否处于迁移预览模式
     private static boolean active = false;
 
-    /** ghost 方块位置（同时只能存在一个） */
+    // ghost 方块位置（同时只能存在一个）
     private static BlockPos ghostPos = null;
 
-    /** 原城市核心位置 */
+    // 原城市核心位置
     private static BlockPos oldCorePos = null;
 
-    /** 城市 ID */
+    // 城市 ID
     private static UUID cityId = null;
 
     private CityCoreMovePreview() {}
@@ -35,7 +35,7 @@ public final class CityCoreMovePreview {
     public static boolean isActive() { return active; }
     public static BlockPos getGhostPos() { return ghostPos; }
 
-    /** 进入迁移预览模式 */
+    // 进入迁移预览模式
     public static void enter(BlockPos corePos, UUID id) {
         active = true;
         ghostPos = null;
@@ -43,7 +43,7 @@ public final class CityCoreMovePreview {
         cityId = id;
     }
 
-    /** 退出迁移预览模式 */
+    // 退出迁移预览模式
     public static void exit() {
         active = false;
         ghostPos = null;
@@ -51,7 +51,7 @@ public final class CityCoreMovePreview {
         cityId = null;
     }
 
-    /** 右键处理：在目标方块对应面放置 ghost，返回 true 表示已拦截 */
+    // 右键处理：在目标方块对应面放置 ghost，返回 true 表示已拦截
     public static boolean onRightClick() {
         if (!active) return false;
 

@@ -2,6 +2,7 @@ package com.xy2407.nsukaddition.client;
 
 import com.xy2407.nsukaddition.NsukAddition;
 import com.xy2407.nsukaddition.client.city.CityCoreMovePreview;
+import com.xy2407.nsukaddition.client.colony.ColonyCoreMovePreview;
 import com.xy2407.nsukaddition.client.container.ContainerRoleQueryHandler;
 import com.xy2407.nsukaddition.client.data.SidebarDataClient;
 import com.xy2407.nsukaddition.client.keybind.ModKeyMappings;
@@ -31,7 +32,7 @@ public final class NsukAdditionGameClient {
         }
         ContainerRoleQueryHandler.onClientTick();
 
-        if (CityCoreMovePreview.isActive()) {
+        if (CityCoreMovePreview.isActive() || ColonyCoreMovePreview.isActive()) {
             Minecraft mc = Minecraft.getInstance();
             while (mc.options.keyInventory.consumeClick()) {}
 
@@ -39,10 +40,12 @@ public final class NsukAdditionGameClient {
             boolean escapeNow = isKeyDown(GLFW.GLFW_KEY_ESCAPE);
 
             if (enterNow && !prevEnter) {
-                CityCoreMovePreview.onConfirm();
+                if (CityCoreMovePreview.isActive()) CityCoreMovePreview.onConfirm();
+                else ColonyCoreMovePreview.onConfirm();
             }
             if (escapeNow && !prevEscape) {
-                CityCoreMovePreview.onCancel();
+                if (CityCoreMovePreview.isActive()) CityCoreMovePreview.onCancel();
+                else ColonyCoreMovePreview.onCancel();
             }
 
             prevEnter = enterNow;
@@ -61,6 +64,7 @@ public final class NsukAdditionGameClient {
     @SubscribeEvent
     public static void onPlayerLoggedOut(ClientPlayerNetworkEvent.LoggingOut event) {
         CityCoreMovePreview.exit();
+        ColonyCoreMovePreview.exit();
         OreVeinClientCache.getInstance().forceSaveToDisk();
         OreVeinClientCache.getInstance().clear();
         SidebarDataClient.reset();

@@ -25,14 +25,18 @@ public final class NsukXaeroWorldMapIntegration {
 
     public static void registerHighlighter(List<AbstractHighlighter> highlighters) {
         if (highlighters == null) return;
-        if (containsNsukVeinHighlighter(highlighters)) {
-            refreshVeinHighlights();
-            return;
+        // 矿脉高亮器
+        if (!containsNsukVeinHighlighter(highlighters)) {
+            highlighters.add(new NsukVeinHighlighter());
+            if (!registeredOnce) {
+                registeredOnce = true;
+                NsukAddition.LOGGER.info("NsukAddition: Registered ore vein highlighter for Xaero's World Map.");
+            }
         }
-        highlighters.add(new NsukVeinHighlighter());
-        if (!registeredOnce) {
-            registeredOnce = true;
-            NsukAddition.LOGGER.info("NsukAddition: Registered ore vein highlighter for Xaero's World Map.");
+        // 附属地领地高亮器
+        if (!containsColonyHighlighter(highlighters)) {
+            highlighters.add(new ColonyTerritoryHighlighter());
+            NsukAddition.LOGGER.info("NsukAddition: Registered colony territory highlighter for Xaero's World Map.");
         }
         refreshVeinHighlights();
     }
@@ -75,6 +79,13 @@ public final class NsukXaeroWorldMapIntegration {
     private static boolean containsNsukVeinHighlighter(List<AbstractHighlighter> highlighters) {
         for (AbstractHighlighter h : highlighters) {
             if (h instanceof NsukVeinHighlighter) return true;
+        }
+        return false;
+    }
+
+    private static boolean containsColonyHighlighter(List<AbstractHighlighter> highlighters) {
+        for (AbstractHighlighter h : highlighters) {
+            if (h instanceof ColonyTerritoryHighlighter) return true;
         }
         return false;
     }

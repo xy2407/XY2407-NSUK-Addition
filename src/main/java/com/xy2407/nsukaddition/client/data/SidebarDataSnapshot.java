@@ -27,7 +27,10 @@ public final class SidebarDataSnapshot {
                                  String type, String reason) {
     }
 
-    public record CitizenRecord(String name, String uuid, String jobType, boolean hasHome, String skinPath) {
+    public record CitizenRecord(String name, String uuid, String jobType, boolean hasHome, String skinPath, String colonyName) {
+        public CitizenRecord(String name, String uuid, String jobType, boolean hasHome, String skinPath) {
+            this(name, uuid, jobType, hasHome, skinPath, null);
+        }
     }
 
     private static volatile SidebarDataSnapshot instance = new SidebarDataSnapshot();

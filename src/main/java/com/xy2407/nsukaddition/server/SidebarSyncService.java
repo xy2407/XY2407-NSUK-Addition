@@ -1,6 +1,8 @@
 package com.xy2407.nsukaddition.server;
 
 import com.xy2407.nsukaddition.common.city.CityBuildingStats;
+import com.xy2407.nsukaddition.common.colony.ColonyData;
+import com.xy2407.nsukaddition.common.colony.ColonySqliteStorage;
 import com.xy2407.nsukaddition.common.material.MaterialCategory;
 import com.xy2407.nsukaddition.common.material.MaterialCategoryRegistry;
 import com.xy2407.nsukaddition.common.network.SidebarSyncPacket;
@@ -146,12 +148,22 @@ public final class SidebarSyncService {
     private static List<SidebarSyncPacket.CitizenEntry> collectCitizens(ServerLevel level, UUID cityId) {
         List<SidebarSyncPacket.CitizenEntry> entries = new ArrayList<>();
         try {
+            // 预加载附属地映射：colonyId -> colonyName
+            java.util.Map<UUID, String> colonyNames = new java.util.HashMap<>();
+            for (ColonyData cd : ColonySqliteStorage.loadColoniesByParentCity(level, cityId)) {
+                colonyNames.put(cd.colonyId(), cd.name());
+            }
+
             for (CitizenData citizen : CitizenService.listCitizensByCity(level, cityId)) {
                 String jobType = citizen.jobType() != null ? citizen.jobType().name() : "UNEMPLOYED";
                 boolean hasHome = citizen.homeId() != null;
                 String skinPath = citizen.skinPath() != null ? citizen.skinPath() : "";
+
+                UUID colonyId = ColonySqliteStorage.getColonyForCitizen(level, citizen.uuid());
+                String colonyName = colonyId != null ? colonyNames.getOrDefault(colonyId, "") : "";
+
                 entries.add(new SidebarSyncPacket.CitizenEntry(
-                        citizen.name(), citizen.uuid().toString(), jobType, hasHome, skinPath));
+                        citizen.name(), citizen.uuid().toString(), jobType, hasHome, skinPath, colonyName));
             }
         } catch (Exception ignored) {
         }

@@ -1,5 +1,8 @@
 package com.xy2407.nsukaddition.common.mining;
 
+import com.xy2407.nsukaddition.NsukAddition;
+import com.xy2407.nsukaddition.common.storage.NsukSqliteDatabase;
+import com.xy2407.nsukaddition.common.storage.NsukWriteExecutor;
 import common.cn.kafei.simukraft.storage.SimuSqliteDatabase;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
@@ -10,89 +13,67 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentMap;
 
-/** 采矿控制箱数据的 SQLite 持久化存储，支持单条存删与全量加载。 */
+/** 采矿控制箱数据的 SQLite 持久化存储，写操作异步执行避免SQLITE_BUSY。 */
 @SuppressWarnings("null")
 public final class MiningBoxSqliteStorage {
-
-    private static final ConcurrentMap<String, SimuSqliteDatabase> DATABASES = new ConcurrentHashMap<>();
 
     private MiningBoxSqliteStorage() {}
 
     private static SimuSqliteDatabase openDatabase(MinecraftServer server) {
-        String key = SimuSqliteDatabase.databasePath(server).toAbsolutePath().normalize().toString();
-        return DATABASES.computeIfAbsent(key, ignored -> {
-            SimuSqliteDatabase db = SimuSqliteDatabase.open(server);
-            initTable(db);
-            return db;
-        });
-    }
-
-    private static void initTable(SimuSqliteDatabase database) {
-        try (Connection connection = database.openConnection();
-             Statement statement = connection.createStatement()) {
-            statement.executeUpdate(
-                    "CREATE TABLE IF NOT EXISTS mining_boxes("
-                            + "box_pos_long INTEGER PRIMARY KEY, "
-                            + "current_y_level INTEGER NOT NULL, "
-                            + "work_ticks INTEGER NOT NULL DEFAULT 0, "
-                            + "running INTEGER NOT NULL DEFAULT 0, "
-                            + "status_key TEXT NOT NULL DEFAULT '', "
-                            + "status_text TEXT NOT NULL DEFAULT '', "
-                            + "updated_at INTEGER NOT NULL DEFAULT 0"
-                            + ")"
-            );
-        } catch (SQLException exception) {
-            throw new IllegalStateException("Failed to initialize mining_boxes table in SQLite", exception);
-        }
+        return NsukSqliteDatabase.get(server);
     }
 
     public static void clearServerCache(MinecraftServer server) {
-        if (server == null) return;
-        DATABASES.remove(SimuSqliteDatabase.databasePath(server).toAbsolutePath().normalize().toString());
+        NsukSqliteDatabase.clearServerCache(server);
     }
 
     public static void saveBox(ServerLevel level, MiningBoxData data) {
         if (level == null || data == null) return;
-        try {
-            SimuSqliteDatabase db = openDatabase(level.getServer());
-            try (Connection connection = db.openConnection();
-                 PreparedStatement ps = connection.prepareStatement(
-                         "INSERT INTO mining_boxes(box_pos_long, current_y_level, work_ticks, running, status_key, status_text, updated_at) "
-                                 + "VALUES(?, ?, ?, ?, ?, ?, ?) "
-                                 + "ON CONFLICT(box_pos_long) DO UPDATE SET current_y_level = excluded.current_y_level, "
-                                 + "work_ticks = excluded.work_ticks, running = excluded.running, "
-                                 + "status_key = excluded.status_key, status_text = excluded.status_text, "
-                                 + "updated_at = excluded.updated_at"
-                 )) {
-                ps.setLong(1, data.boxPos().asLong());
-                ps.setInt(2, data.currentYLevel());
-                ps.setInt(3, data.workTicks());
-                ps.setInt(4, data.running() ? 1 : 0);
-                ps.setString(5, data.statusKey());
-                ps.setString(6, data.statusText());
-                ps.setLong(7, System.currentTimeMillis());
-                ps.executeUpdate();
+        MinecraftServer server = level.getServer();
+        NsukWriteExecutor.submit(() -> {
+            try {
+                SimuSqliteDatabase db = openDatabase(server);
+                try (Connection connection = db.openConnection();
+                     PreparedStatement ps = connection.prepareStatement(
+                             "INSERT INTO mining_boxes(box_pos_long, current_y_level, work_ticks, running, status_key, status_text, updated_at) "
+                                     + "VALUES(?, ?, ?, ?, ?, ?, ?) "
+                                     + "ON CONFLICT(box_pos_long) DO UPDATE SET current_y_level = excluded.current_y_level, "
+                                     + "work_ticks = excluded.work_ticks, running = excluded.running, "
+                                     + "status_key = excluded.status_key, status_text = excluded.status_text, "
+                                     + "updated_at = excluded.updated_at"
+                     )) {
+                    ps.setLong(1, data.boxPos().asLong());
+                    ps.setInt(2, data.currentYLevel());
+                    ps.setInt(3, data.workTicks());
+                    ps.setInt(4, data.running() ? 1 : 0);
+                    ps.setString(5, data.statusKey());
+                    ps.setString(6, data.statusText());
+                    ps.setLong(7, System.currentTimeMillis());
+                    ps.executeUpdate();
+                }
+            } catch (Exception e) {
+                NsukAddition.LOGGER.error("Failed to save mining box data", e);
             }
-        } catch (Exception exception) {
-
-        }
+        });
     }
 
     public static void deleteBox(ServerLevel level, long boxPosLong) {
         if (level == null) return;
-        try {
-            SimuSqliteDatabase db = openDatabase(level.getServer());
-            try (Connection connection = db.openConnection();
-                 PreparedStatement ps = connection.prepareStatement(
-                         "DELETE FROM mining_boxes WHERE box_pos_long = ?")) {
-                ps.setLong(1, boxPosLong);
-                ps.executeUpdate();
+        MinecraftServer server = level.getServer();
+        NsukWriteExecutor.submit(() -> {
+            try {
+                SimuSqliteDatabase db = openDatabase(server);
+                try (Connection connection = db.openConnection();
+                     PreparedStatement ps = connection.prepareStatement(
+                             "DELETE FROM mining_boxes WHERE box_pos_long = ?")) {
+                    ps.setLong(1, boxPosLong);
+                    ps.executeUpdate();
+                }
+            } catch (Exception e) {
+                NsukAddition.LOGGER.error("Failed to delete mining box data", e);
             }
-        } catch (Exception ignored) {}
+        });
     }
 
     public static CompoundTag loadAll(ServerLevel level) {
