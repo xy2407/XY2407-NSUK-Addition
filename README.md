@@ -152,8 +152,8 @@
 
 ## Acknowledgements
 
-- **[New:Sim-U-Kraft](https://www.curseforge.com/minecraft/mc-mods/new-sim-u-kraft)** — Sim-U-Kraft team for the API and runtime platform
 - **[NeoForge](https://neoforged.net/)** — Minecraft modding platform
+- **[New:Sim-U-Kraft](https://github.com/New-Sim-U-Kraft/New-Simukraft-1.21.1)** — Sim-U-Kraft team for the API and runtime platform
 - **[LDLib2](https://www.curseforge.com/minecraft/mc-mods/ldlib)** — GUI framework support
 - **[Xaero](https://www.curseforge.com/minecraft/mc-mods/xaeros-world-map)** — Xaero's World Map map integration
 - **[LetFishLove Reborn](https://www.curseforge.com/minecraft/mc-mods/let-fish-love-reborn)** — Fish breeding system compatibility
@@ -328,8 +328,8 @@
 
 ## 鸣谢
 
-- **[New:Sim-U-Kraft](https://www.curseforge.com/minecraft/mc-mods/new-sim-u-kraft)** — Sim-U-Kraft 模组团队，为本模组提供 API 和运行平台
 - **[NeoForge](https://neoforged.net/)** — Minecraft 模组加载平台
+- **[New:Sim-U-Kraft](https://github.com/New-Sim-U-Kraft/New-Simukraft-1.21.1)** — Sim-U-Kraft 模组团队，为本模组提供 API 和运行平台
 - **[LDLib2](https://www.curseforge.com/minecraft/mc-mods/ldlib)** — GUI 框架支持
 - **[Xaero](https://www.curseforge.com/minecraft/mc-mods/xaeros-world-map)** — Xaero's World Map 地图兼容
 - **[LetFishLove Reborn](https://www.curseforge.com/minecraft/mc-mods/let-fish-love-reborn)** — 鱼类繁殖系统兼容
