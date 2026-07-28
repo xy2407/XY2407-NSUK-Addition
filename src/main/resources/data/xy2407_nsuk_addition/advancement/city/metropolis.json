@@ -1,0 +1,31 @@
+{
+  "parent": "xy2407_nsuk_addition:city/city_state",
+  "display": {
+    "icon": {
+      "id": "minecraft:dragon_egg"
+    },
+    "title": {
+      "translate": "advancement.xy2407_nsuk_addition.city.metropolis.title"
+    },
+    "description": {
+      "translate": "advancement.xy2407_nsuk_addition.city.metropolis.description"
+    },
+    "frame": "challenge",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "level_up_metropolis": {
+      "trigger": "xy2407_nsuk_addition:city_level_up",
+      "conditions": {
+        "target_level": 5
+      }
+    }
+  },
+  "requirements": [
+    [
+      "level_up_metropolis"
+    ]
+  ]
+}

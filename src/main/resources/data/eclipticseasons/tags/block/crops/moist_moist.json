@@ -1,0 +1,12 @@
+{
+  "values": [
+    {"id": "farm_and_charm:oat_crop", "required": false},
+    {"id": "farm_and_charm:strawberry_crop", "required": false},
+    {"id": "farmersdelight:cabbages", "required": false},
+    {"id": "culturaldelights:cucumbers", "required": false},
+    {"id": "culturaldelights:eggplants", "required": false},
+    {"id": "culturaldelights:corn", "required": false},
+    {"id": "kaleidoscope_cookery:tomato_crop", "required": false},
+    {"id": "kaleidoscope_cookery:lettuce_crop", "required": false}
+  ]
+}

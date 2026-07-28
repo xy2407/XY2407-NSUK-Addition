@@ -130,7 +130,7 @@
 | Mod | Version | Link |
 |-----|---------|------|
 | NeoForge | ≥ 21.1.234 | https://neoforged.net/ |
-| New:Sim-U-Kraft | ≥ 2.0.1 | https://modrinth.com/mod/new-sim-u-kraft |
+| New:Sim-U-Kraft | ≥ 2.0.1 | https://github.com/New-Sim-U-Kraft/New-Simukraft-1.21.1 |
 | LDLib2 | ≥ 2.2.26 | https://www.curseforge.com/minecraft/mc-mods/ldlib |
 
 ### Optional
@@ -306,7 +306,7 @@
 | 模组 | 版本 | 链接 |
 |------|------|------|
 | NeoForge | ≥ 21.1.234 | https://neoforged.net/ |
-| New:Sim-U-Kraft | ≥ 2.0.1 | https://modrinth.com/mod/new-sim-u-kraft |
+| New:Sim-U-Kraft | ≥ 2.0.1 | https://github.com/New-Sim-U-Kraft/New-Simukraft-1.21.1 |
 | LDLib2 | ≥ 2.2.26 | https://www.curseforge.com/minecraft/mc-mods/ldlib |
 
 ### 可选

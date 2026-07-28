@@ -1,0 +1,7 @@
+{
+  "type": "kaleidoscope_tavern:pressing_tub",
+  "fluid": "xy2407_nsuk_addition:white_savanna_grape_juice",
+  "ingredient": {
+    "item": "vinery:savanna_grapes_white"
+  }
+}

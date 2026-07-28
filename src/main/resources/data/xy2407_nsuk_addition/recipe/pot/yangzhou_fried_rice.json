@@ -1,0 +1,21 @@
+{
+  "type": "kaleidoscope_cookery:pot",
+  "ingredients": [
+    {
+      "item": "kaleidoscope_cookery:cooked_rice"
+    },
+    {
+      "item": "kaleidoscope_cookery:cooked_rice"
+    },
+    {
+      "item": "kaleidoscope_cookery:raw_cut_small_meats"
+    },
+    {
+      "item": "minecraft:egg"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "kaleidoscope_chinesefood:yangzhou_fried_rice"
+  }
+}

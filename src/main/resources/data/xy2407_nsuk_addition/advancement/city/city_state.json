@@ -1,0 +1,31 @@
+{
+  "parent": "xy2407_nsuk_addition:city/town",
+  "display": {
+    "icon": {
+      "id": "minecraft:nether_star"
+    },
+    "title": {
+      "translate": "advancement.xy2407_nsuk_addition.city.city_state.title"
+    },
+    "description": {
+      "translate": "advancement.xy2407_nsuk_addition.city.city_state.description"
+    },
+    "frame": "goal",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "level_up_city_state": {
+      "trigger": "xy2407_nsuk_addition:city_level_up",
+      "conditions": {
+        "target_level": 4
+      }
+    }
+  },
+  "requirements": [
+    [
+      "level_up_city_state"
+    ]
+  ]
+}

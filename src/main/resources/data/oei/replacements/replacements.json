@@ -1,0 +1,151 @@
+[
+    {
+        "matchItems": [
+            "farmersdelight:rice",
+            "kaleidoscope_cookery:wild_rice"
+        ],
+        "resultItems": "kaleidoscope_cookery:rice",
+        "rules": {
+            "data": {
+                "recipe": "replace",
+                "loot_table": "replace",
+                "advancement": "replace"
+            },
+            "tag": {
+                "item": "replace"
+            }
+        }
+    },
+    {
+        "matchItems": [
+            "farmersdelight:rice_panicle"
+        ],
+        "resultItems": "kaleidoscope_cookery:rice_panicle",
+        "rules": {
+            "data": {
+                "recipe": "replace",
+                "loot_table": "replace",
+                "advancement": "replace"
+            },
+            "tag": {
+                "item": "replace"
+            }
+        }
+    },
+    {
+        "matchItems": [
+            "farm_and_charm:onion"
+        ],
+        "resultItems": "farmersdelight:onion",
+        "rules": {
+            "data": {
+                "recipe": "replace",
+                "loot_table": "replace",
+                "advancement": "replace"
+            },
+            "tag": {
+                "item": "replace"
+            }
+        }
+    },
+    {
+        "matchItems": [
+            "farmersdelight:rotten_tomato",
+            "farmersdelight:tomato",
+            "farm_and_charm:rotten_tomato",
+            "farm_and_charm:tomato"
+        ],
+        "resultItems": "kaleidoscope_cookery:tomato",
+        "rules": {
+            "data": {
+                "recipe": "replace",
+                "loot_table": "replace",
+                "advancement": "replace"
+            },
+            "tag": {
+                "item": "replace"
+            }
+        }
+    },
+    {
+        "matchItems": [
+            "farmersdelight:tomato_seeds",
+            "farm_and_charm:tomato_seeds"
+        ],
+        "resultItems": "kaleidoscope_cookery:tomato_seed",
+        "rules": {
+            "data": {
+                "recipe": "replace",
+                "loot_table": "replace",
+                "advancement": "replace"
+            },
+            "tag": {
+                "item": "replace"
+            }
+        }
+    },
+    {
+        "matchItems": [
+            "farm_and_charm:lettuce"
+        ],
+        "resultItems": "kaleidoscope_cookery:lettuce",
+        "rules": {
+            "data": {
+                "recipe": "replace",
+                "loot_table": "replace",
+                "advancement": "replace"
+            },
+            "tag": {
+                "item": "replace"
+            }
+        }
+    },
+    {
+        "matchItems": [
+            "farm_and_charm:lettuce_seeds"
+        ],
+        "resultItems": "kaleidoscope_cookery:lettuce_seed",
+        "rules": {
+            "data": {
+                "recipe": "replace",
+                "loot_table": "replace",
+                "advancement": "replace"
+            },
+            "tag": {
+                "item": "replace"
+            }
+        }
+    },
+    {
+        "matchItems": [
+            "farm_and_charm:kernels"
+        ],
+        "resultItems": "culturaldelights:corn_kernels",
+        "rules": {
+            "data": {
+                "recipe": "replace",
+                "loot_table": "replace",
+                "advancement": "replace"
+            },
+            "tag": {
+                "item": "replace"
+            }
+        }
+    },
+    {
+        "matchItems": [
+            "farm_and_charm:corn"
+        ],
+        "resultItems": "culturaldelights:corn_cob",
+        "rules": {
+            "data": {
+                "recipe": "replace",
+                "loot_table": "replace",
+                "advancement": "replace"
+            },
+            "tag": {
+                "item": "replace"
+            }
+        }
+    }
+]

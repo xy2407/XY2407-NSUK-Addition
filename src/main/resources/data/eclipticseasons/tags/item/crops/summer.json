@@ -1,0 +1,10 @@
+{
+  "values": [
+    {"id": "culturaldelights:cucumber_seeds", "required": false},
+    {"id": "culturaldelights:eggplant_seeds", "required": false},
+    {"id": "culturaldelights:corn_kernels", "required": false},
+    {"id": "farmersdelight:rice", "required": false},
+    {"id": "kaleidoscope_cookery:tomato_seed", "required": false},
+    {"id": "kaleidoscope_cookery:chili_seed", "required": false}
+  ]
+}

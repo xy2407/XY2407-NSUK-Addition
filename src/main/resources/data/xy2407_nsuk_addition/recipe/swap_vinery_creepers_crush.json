@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "vinery:creepers_crush"
+    }
+  ],
+  "result": {
+    "id": "kaleidoscope_tavern:wine",
+    "count": 1
+  }
+}

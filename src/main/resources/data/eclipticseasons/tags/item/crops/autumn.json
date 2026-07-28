@@ -1,0 +1,6 @@
+{
+  "values": [
+    {"id": "farmersdelight:cabbage_seeds", "required": false},
+    {"id": "kaleidoscope_cookery:lettuce_seed", "required": false}
+  ]
+}

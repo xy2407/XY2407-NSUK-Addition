@@ -1,0 +1,6 @@
+{
+  "values": [
+    {"id": "farm_and_charm:barley_crop", "required": false},
+    {"id": "farm_and_charm:oat_crop", "required": false}
+  ]
+}

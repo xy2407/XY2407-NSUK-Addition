@@ -1,0 +1,21 @@
+{
+  "type": "kaleidoscope_cookery:pot",
+  "ingredients": [
+    {
+      "item": "kaleidoscope_cookery:raw_pork_belly"
+    },
+    {
+      "item": "kaleidoscope_cookery:raw_pork_belly"
+    },
+    {
+      "item": "kaleidoscope_cookery:green_chili"
+    },
+    {
+      "item": "kaleidoscope_cookery:green_chili"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "kaleidoscope_chinesefood:twice_cooked_pork"
+  }
+}

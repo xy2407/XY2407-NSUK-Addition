@@ -1,0 +1,14 @@
+{
+  "values": [
+    {"id": "farmersdelight:cabbages", "required": false},
+    {"id": "kaleidoscope_cookery:lettuce_crop", "required": false},
+    {"id": "vinery:red_grape_bush", "required": false},
+    {"id": "vinery:white_grape_bush", "required": false},
+    {"id": "vinery:savanna_grape_bush_red", "required": false},
+    {"id": "vinery:savanna_grape_bush_white", "required": false},
+    {"id": "vinery:taiga_grape_bush_red", "required": false},
+    {"id": "vinery:taiga_grape_bush_white", "required": false},
+    {"id": "kaleidoscope_tavern:grape_crop", "required": false},
+    {"id": "kaleidoscope_tavern:gold_grape_crop", "required": false}
+  ]
+}

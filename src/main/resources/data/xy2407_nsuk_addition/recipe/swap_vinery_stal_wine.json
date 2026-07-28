@@ -1,0 +1,12 @@
+{
+  "type": "minecraft:crafting_shapeless",
+  "ingredients": [
+    {
+      "item": "vinery:stal_wine"
+    }
+  ],
+  "result": {
+    "id": "kaleidoscope_tavern:wine",
+    "count": 1
+  }
+}

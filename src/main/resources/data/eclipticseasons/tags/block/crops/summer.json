@@ -1,0 +1,12 @@
+{
+  "values": [
+    {"id": "culturaldelights:cucumbers", "required": false},
+    {"id": "culturaldelights:eggplants", "required": false},
+    {"id": "culturaldelights:corn", "required": false},
+    {"id": "farmersdelight:rice", "required": false},
+    {"id": "farm_and_charm:strawberry_crop", "required": false},
+    {"id": "farmersdelight:onions", "required": false},
+    {"id": "kaleidoscope_cookery:tomato_crop", "required": false},
+    {"id": "kaleidoscope_cookery:chili_crop", "required": false}
+  ]
+}

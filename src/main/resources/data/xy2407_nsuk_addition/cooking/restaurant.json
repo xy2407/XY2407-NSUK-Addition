@@ -1,0 +1,68 @@
+{
+  "id": "restaurant",
+  "name": "中餐馆",
+  "job": {
+    "id": "chef",
+    "name": "厨师",
+    "heldItem": "kaleidoscope_cookery:kitchen_shovel"
+  },
+  "points": {
+    "work": {
+      "type": "structure_pos",
+      "positions": [[11, 0, 8]]
+    },
+    "desk": {
+      "type": "structure_pos",
+      "positions": [[2, 1, 4], [2, 1, 8], [6, 1, 4], [10, 1, 4], [14, 1, 4]]
+    }
+  },
+  "containers": {
+    "input": {
+      "type": "structure_pos",
+      "positions": [[14, 1, 9]]
+    },
+    "output": {
+      "type": "structure_pos",
+      "positions": [[7, 1, 8]]
+    }
+  },
+  "seats": [
+    { "positions": [[2, 1, 3], [2, 1, 5]] },
+    { "positions": [[2, 1, 7], [2, 1, 9]] },
+    { "positions": [[5, 1, 4], [7, 1, 4]] },
+    { "positions": [[9, 1, 4], [11, 1, 4]] },
+    { "positions": [[14, 1, 3], [14, 1, 5]] }
+  ],
+  "cook": [
+    { "item": "kaleidoscope_chinesefood:sichuan_wonton", "price": 35 },
+    { "item": "kaleidoscope_chinesefood:wonton_noodles", "price": 32 },
+    { "item": "kaleidoscope_chinesefood:yangrou_paomo", "price": 48 },
+    { "item": "kaleidoscope_chinesefood:sauerkraut_beef_noodles", "price": 42 },
+    { "item": "kaleidoscope_chinesefood:maocai", "price": 38 },
+    { "item": "kaleidoscope_chinesefood:seaweed_egg_drop_soup", "price": 30 },
+    { "item": "kaleidoscope_chinesefood:tomato_egg_drop_soup", "price": 30 },
+    { "item": "kaleidoscope_chinesefood:century_egg_congee", "price": 33 },
+    { "item": "kaleidoscope_chinesefood:pumpkin_porridge", "price": 31 },
+    { "item": "kaleidoscope_chinesefood:twice_cooked_pork", "price": 45 },
+    { "item": "kaleidoscope_chinesefood:stir_fried_yellow_beef", "price": 50 },
+    { "item": "kaleidoscope_chinesefood:beef_with_scrambled_eggs", "price": 40 },
+    { "item": "kaleidoscope_chinesefood:stir_fried_three_fresh_vegetables", "price": 35 },
+    { "item": "kaleidoscope_chinesefood:big_plate_chicken", "price": 48 },
+    { "item": "kaleidoscope_chinesefood:big_plate_chicken_noodles", "price": 46 },
+    { "item": "kaleidoscope_chinesefood:tomato_egg_noodles", "price": 34 },
+    { "item": "kaleidoscope_chinesefood:pork_chili_noodles", "price": 36 },
+    { "item": "kaleidoscope_chinesefood:four_joy_meatballs", "price": 44 },
+    { "item": "kaleidoscope_chinesefood:stuffed_eggplant", "price": 37 },
+    { "item": "kaleidoscope_chinesefood:dry_pot_potatoes", "price": 36 },
+    { "item": "kaleidoscope_chinesefood:dry_pot_chicken", "price": 42 },
+    { "item": "kaleidoscope_chinesefood:dry_pot_spare_ribs", "price": 45 },
+    { "item": "kaleidoscope_chinesefood:yangzhou_fried_rice", "price": 38 },
+    { "item": "kaleidoscope_chinesefood:lamb_pilaf", "price": 46 },
+    { "item": "kaleidoscope_chinesefood:steamed_rice_rolls", "price": 32 },
+    { "item": "kaleidoscope_chinesefood:yellow_croaker_tofu_soup", "price": 40 },
+    { "item": "kaleidoscope_chinesefood:red_rice_roll", "price": 33 },
+    { "item": "kaleidoscope_chinesefood:sichuan_boiled_pork_slices", "price": 43 },
+    { "item": "kaleidoscope_chinesefood:sichuan_boiled_fish", "price": 47 },
+    { "item": "kaleidoscope_chinesefood:yellow_croaker_soup", "price": 41 }
+  ]
+}

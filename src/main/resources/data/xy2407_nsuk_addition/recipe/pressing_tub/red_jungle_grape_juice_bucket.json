@@ -1,0 +1,7 @@
+{
+  "type": "kaleidoscope_tavern:pressing_tub",
+  "fluid": "xy2407_nsuk_addition:red_jungle_grape_juice",
+  "ingredient": {
+    "item": "vinery:jungle_grapes_red"
+  }
+}

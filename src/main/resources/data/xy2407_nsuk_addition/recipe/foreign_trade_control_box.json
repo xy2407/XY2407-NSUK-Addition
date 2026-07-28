@@ -1,0 +1,21 @@
+{
+  "type": "minecraft:crafting_shaped",
+  "category": "building",
+  "pattern": [
+    "###",
+    "#X#",
+    "###"
+  ],
+  "key": {
+    "#": {
+      "tag": "minecraft:planks"
+    },
+    "X": {
+      "item": "minecraft:emerald"
+    }
+  },
+  "result": {
+    "id": "xy2407_nsuk_addition:foreign_trade_control_box",
+    "count": 1
+  }
+}

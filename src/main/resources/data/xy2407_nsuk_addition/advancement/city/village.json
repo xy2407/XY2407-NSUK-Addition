@@ -1,0 +1,30 @@
+{
+  "display": {
+    "icon": {
+      "id": "minecraft:bell"
+    },
+    "title": {
+      "translate": "advancement.xy2407_nsuk_addition.city.village.title"
+    },
+    "description": {
+      "translate": "advancement.xy2407_nsuk_addition.city.village.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "level_up_village": {
+      "trigger": "xy2407_nsuk_addition:city_level_up",
+      "conditions": {
+        "target_level": 2
+      }
+    }
+  },
+  "requirements": [
+    [
+      "level_up_village"
+    ]
+  ]
+}

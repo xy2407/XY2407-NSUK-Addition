@@ -1,0 +1,16 @@
+{
+  "type": "kaleidoscope_tavern:barrel",
+  "carrier": {
+    "item": "kaleidoscope_tavern:empty_bottle"
+  },
+  "fluid": "xy2407_nsuk_addition:red_grape_juice",
+  "ingredients": [
+    {
+      "item": "vinery:cherry"
+    }
+  ],
+  "result": {
+    "count": 1,
+    "id": "vinery:cherry_wine"
+  }
+}

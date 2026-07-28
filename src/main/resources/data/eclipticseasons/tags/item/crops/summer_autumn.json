@@ -1,0 +1,11 @@
+{
+  "values": [
+    {"id": "vinery:red_grape_seeds", "required": false},
+    {"id": "vinery:white_grape_seeds", "required": false},
+    {"id": "vinery:savanna_grape_seeds_red", "required": false},
+    {"id": "vinery:savanna_grape_seeds_white", "required": false},
+    {"id": "vinery:taiga_grape_seeds_red", "required": false},
+    {"id": "vinery:taiga_grape_seeds_white", "required": false},
+    {"id": "kaleidoscope_tavern:grapevine", "required": false}
+  ]
+}

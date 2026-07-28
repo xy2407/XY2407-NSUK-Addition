@@ -1,0 +1,7 @@
+name: 酿酒厂
+author: NSUK
+size: 9x9x4
+amount: 5000
+description: KaleidoscopeTavern 葡萄酒/香槟/白兰地/威士忌等全自动酿造厂
+structure: winery.nbt
+industrial: xy2407_nsuk_addition:winery

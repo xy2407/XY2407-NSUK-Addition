@@ -1,0 +1,31 @@
+{
+  "parent": "xy2407_nsuk_addition:city/village",
+  "display": {
+    "icon": {
+      "id": "minecraft:emerald"
+    },
+    "title": {
+      "translate": "advancement.xy2407_nsuk_addition.city.town.title"
+    },
+    "description": {
+      "translate": "advancement.xy2407_nsuk_addition.city.town.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "level_up_town": {
+      "trigger": "xy2407_nsuk_addition:city_level_up",
+      "conditions": {
+        "target_level": 3
+      }
+    }
+  },
+  "requirements": [
+    [
+      "level_up_town"
+    ]
+  ]
+}
