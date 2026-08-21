@@ -16,6 +16,7 @@ import com.lowdragmc.lowdraglib2.gui.ui.data.Vertical;
 import com.lowdragmc.lowdraglib2.gui.ui.event.UIEvents;
 import com.lowdragmc.lowdraglib2.gui.ui.rendering.GUIContext;
 import com.xy2407.nsukaddition.common.foreigntrade.ForeignTradeMarket;
+import com.xy2407.nsukaddition.common.foreigntrade.TradeItemResolver;
 import com.xy2407.nsukaddition.common.foreigntrade.FreeMarketRepository;
 import com.xy2407.nsukaddition.common.network.foreigntrade.*;
 
@@ -131,6 +132,7 @@ public final class ForeignTradeMenuScreenOpener {
     private static final int BP_BTN_H = 18;
     private static boolean batchPopupVisible;
     private static String batchItemId;
+    private static String batchCityId;
     private static int batchUnitCount;
     private static boolean batchIsBuy;
     private static String batchQuantityText = "1";
@@ -194,11 +196,13 @@ public final class ForeignTradeMenuScreenOpener {
 
     private static UIElement gridContainer;
     private static ForeignTradeMenuScreen currentScreen;
+    private static String currentCityId;
 
     private ForeignTradeMenuScreenOpener() {}
 
-    public static void open(BlockPos pos) {
+    public static void open(BlockPos pos, String cityId) {
         boxPos = pos != null ? pos.immutable() : null;
+        currentCityId = cityId;
         PacketDistributor.sendToServer(new ForeignTradeMarketRequestPacket(boxPos));
     }
 
@@ -207,7 +211,11 @@ public final class ForeignTradeMenuScreenOpener {
         if (mc == null) return;
         boxPos = pos != null ? pos.immutable() : null;
         marketData = entries;
-        filtered = new ArrayList<>(entries);
+        String villageType = currentCityId != null ? DiplomacyClientCache.getVillageTypeByCityId(currentCityId) : null;
+        var villageFiltered = villageType != null
+                ? entries.stream().filter(e -> villageType.equals(e.villageType())).toList()
+                : entries;
+        filtered = new ArrayList<>(villageFiltered);
         searchText = "";
         scrollOffset = 0;
         categoryScrollOffset = 0;
@@ -619,9 +627,7 @@ public final class ForeignTradeMenuScreenOpener {
     }
 
     private static UIElement tradeCard(ForeignTradeMarket.MarketEntry entry) {
-        ResourceLocation rl = ResourceLocation.tryParse(entry.itemId());
-        Item item = rl != null ? BuiltInRegistries.ITEM.get(rl) : null;
-        ItemStack stack = item != null ? new ItemStack(item) : ItemStack.EMPTY;
+        ItemStack stack = TradeItemResolver.buildDisplay(entry.itemId(), entry.category(), 1);
 
         UIElement card = new UIElement() {
             @Override
@@ -709,12 +715,12 @@ public final class ForeignTradeMenuScreenOpener {
 
             btnRow.addChild(makeSellBuyButton(
                     Component.translatable("gui.xy2407_nsuk_addition.foreign_trade.sell"),
-                    SELL_BTN, () -> sendTransaction(entry.itemId(), false, 1),
-                    () -> openBatchPopup(entry.itemId(), false, entry.count())));
+                    SELL_BTN, () -> sendTransaction(currentCityId, entry.itemId(), false, 1),
+                    () -> openBatchPopup(currentCityId, entry.itemId(), false, entry.count())));
             btnRow.addChild(makeSellBuyButton(
                     Component.translatable("gui.xy2407_nsuk_addition.foreign_trade.buy"),
-                    BUY_BTN, () -> sendTransaction(entry.itemId(), true, 1),
-                    () -> openBatchPopup(entry.itemId(), true, entry.count())));
+                    BUY_BTN, () -> sendTransaction(currentCityId, entry.itemId(), true, 1),
+                    () -> openBatchPopup(currentCityId, entry.itemId(), true, entry.count())));
 
             card.addChild(btnRow);
         }
@@ -865,8 +871,9 @@ public final class ForeignTradeMenuScreenOpener {
         return button;
     }
 
-    private static void openBatchPopup(String itemId, boolean isBuy, int unitCount) {
+    private static void openBatchPopup(String cityId, String itemId, boolean isBuy, int unitCount) {
         batchItemId = itemId;
+        batchCityId = cityId != null ? cityId : "";
         batchIsBuy = isBuy;
         batchUnitCount = unitCount;
         batchQuantityText = "1";
@@ -889,9 +896,9 @@ public final class ForeignTradeMenuScreenOpener {
         return button;
     }
 
-    private static void sendTransaction(String itemId, boolean isBuy, int amount) {
+    private static void sendTransaction(String cityId, String itemId, boolean isBuy, int amount) {
         if (boxPos == null) return;
-        PacketDistributor.sendToServer(new ForeignTradeTransactionPacket(boxPos, itemId, isBuy, Math.max(1, amount)));
+        PacketDistributor.sendToServer(new ForeignTradeTransactionPacket(boxPos, cityId, itemId, isBuy, Math.max(1, amount)));
     }
 
     private static void sendFreeMarketBuy(long listingId) {
@@ -1659,7 +1666,7 @@ public final class ForeignTradeMenuScreenOpener {
         gg.drawString(font, actionText, baseX, baseY + 22, 0xFF1A1A1A, false);
 
         String unitInfo = Component.translatable("gui.xy2407_nsuk_addition.foreign_trade.batch.unit",
-                batchUnitCount, batchIsBuy ? findMarketBuyPrice(batchItemId) : findMarketSellPrice(batchItemId)).getString();
+                batchUnitCount, batchIsBuy ? findMarketBuyPrice(batchCityId, batchItemId) : findMarketSellPrice(batchCityId, batchItemId)).getString();
         gg.drawString(font, unitInfo, baseX, baseY + 34, 0xFF555555, false);
 
         if (!batchIsBuy) {
@@ -1748,7 +1755,7 @@ public final class ForeignTradeMenuScreenOpener {
         if (!batchIsBuy && batchAvailableCount > 0 && qty * batchUnitCount > batchAvailableCount) {
             return;
         }
-        sendTransaction(batchItemId, batchIsBuy, qty);
+        sendTransaction(batchCityId, batchItemId, batchIsBuy, qty);
         batchPopupVisible = false;
     }
 
@@ -1780,18 +1787,26 @@ public final class ForeignTradeMenuScreenOpener {
         return false;
     }
 
-    private static double findMarketSellPrice(String itemId) {
+    private static double findMarketSellPrice(String cityId, String itemId) {
+        String villageType = DiplomacyClientCache.getVillageTypeByCityId(cityId);
         for (var e : marketData) {
-            if (e.itemId().equals(itemId)) return e.sellPrice();
+            if (e.itemId().equals(itemId) && matchesVillage(e, villageType)) return e.sellPrice();
         }
         return 0;
     }
 
-    private static double findMarketBuyPrice(String itemId) {
+    private static double findMarketBuyPrice(String cityId, String itemId) {
+        String villageType = DiplomacyClientCache.getVillageTypeByCityId(cityId);
         for (var e : marketData) {
-            if (e.itemId().equals(itemId)) return e.buyPrice();
+            if (e.itemId().equals(itemId) && matchesVillage(e, villageType)) return e.buyPrice();
         }
         return 0;
+    }
+
+    private static boolean matchesVillage(ForeignTradeMarket.MarketEntry e, String villageType) {
+        String vt = villageType != null ? villageType : "";
+        String ev = e.villageType() != null ? e.villageType() : "";
+        return ev.equals(vt);
     }
 
     private static String formatPrice(double price) {

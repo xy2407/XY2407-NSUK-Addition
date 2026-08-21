@@ -1,11 +1,13 @@
 package com.xy2407.nsukaddition.mixin.client.simukraft;
 
 import client.cn.kafei.simukraft.client.city.CityCoreScreenOpener;
+import client.cn.kafei.simukraft.client.toast.ClientInfoToast;
+import com.xy2407.nsukaddition.NsukAddition;
 import com.xy2407.nsukaddition.client.city.CityCoreMovePreview;
-import com.xy2407.nsukaddition.client.data.SidebarDataSnapshot;
-import com.xy2407.nsukaddition.common.city.CityLevel;
-import com.xy2407.nsukaddition.common.city.CityUpgradeRequirement;
-import com.xy2407.nsukaddition.common.network.city.CityUpgradeRequestPacket;
+import com.xy2407.nsukaddition.client.foreigntrade.DiplomacyClientCache;
+import com.xy2407.nsukaddition.common.foreigntrade.DiplomacyStorage.DiplomacyRelation;
+import com.xy2407.nsukaddition.common.network.foreigntrade.DiplomacyDataRequestPacket;
+import com.xy2407.nsukaddition.common.network.foreigntrade.EstablishDiplomacyRequestPacket;
 import common.cn.kafei.simukraft.city.CityPermissionLevel;
 import common.cn.kafei.simukraft.network.city.core.CityCoreOpenResponsePacket;
 import com.lowdragmc.lowdraglib2.gui.ui.UIElement;
@@ -22,9 +24,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-import java.util.Locale;
-
-/** 修改 CityCoreScreenOpener，替换城市升级面板并在菜单中添加核心迁移选项。 */
+/** 修改 CityCoreScreenOpener：升级面板使用官方 UI，仅在菜单中添加核心迁移与外交选项。 */
 @Mixin(CityCoreScreenOpener.class)
 public abstract class CityCoreScreenOpenerMixin {
 
@@ -53,105 +53,49 @@ public abstract class CityCoreScreenOpenerMixin {
         nsuk$currentPacket = packet;
     }
 
-    @Inject(method = "upgradePanel", at = @At("HEAD"), cancellable = true, remap = false)
-    private static void nsuk$upgradePanel(CityCoreOpenResponsePacket packet, CallbackInfoReturnable<UIElement> cir) {
-        UIElement panel = basePanel();
-
-        CityLevel currentLevel = CityLevel.fromLevel(packet.cityLevel());
-        panel.addChild(line(Component.translatable("gui.xy2407_nsuk_addition.city_upgrade.current_level", currentLevel.displayName())));
-
-        if (currentLevel.isMax()) {
-            panel.addChild(contentSpacer());
-            panel.addChild(line(Component.translatable("gui.xy2407_nsuk_addition.city_upgrade.max_level")));
-            cir.setReturnValue(scrollable(panel));
-            return;
-        }
-
-        CityLevel nextLevel = currentLevel.next();
-        CityUpgradeRequirement req = CityUpgradeRequirement.forCurrentLevel(currentLevel);
-        if (req == null || nextLevel == null) {
-            panel.addChild(contentSpacer());
-            panel.addChild(line(Component.translatable("gui.xy2407_nsuk_addition.city_upgrade.unavailable")));
-            cir.setReturnValue(scrollable(panel));
-            return;
-        }
-
-        panel.addChild(line(Component.translatable("gui.xy2407_nsuk_addition.city_upgrade.next_level", nextLevel.displayName())));
-        panel.addChild(contentSpacer());
-
-        panel.addChild(line(Component.translatable("gui.xy2407_nsuk_addition.city_upgrade.requirements")));
-        panel.addChild(line(Component.translatable("gui.xy2407_nsuk_addition.city_upgrade.require_population",
-                req.requiredPopulation())));
-        if (req.requiredFarms() > 0) {
-            panel.addChild(line(Component.translatable("gui.xy2407_nsuk_addition.city_upgrade.require_farms",
-                    req.requiredFarms())));
-        }
-        if (req.requiredRanches() > 0) {
-            panel.addChild(line(Component.translatable("gui.xy2407_nsuk_addition.city_upgrade.require_ranches",
-                    req.requiredRanches())));
-        }
-        if (req.requiredShops() > 0) {
-            panel.addChild(line(Component.translatable("gui.xy2407_nsuk_addition.city_upgrade.require_shops",
-                    req.requiredShops())));
-        }
-        if (req.requiredFactories() > 0) {
-            panel.addChild(line(Component.translatable("gui.xy2407_nsuk_addition.city_upgrade.require_factories",
-                    req.requiredFactories())));
-        }
-        if (req.requiredMines() > 0) {
-            panel.addChild(line(Component.translatable("gui.xy2407_nsuk_addition.city_upgrade.require_mines",
-                    req.requiredMines())));
-        }
-        panel.addChild(line(Component.translatable("gui.xy2407_nsuk_addition.city_upgrade.require_logs",
-                req.requiredLogs())));
-        panel.addChild(line(Component.translatable("gui.xy2407_nsuk_addition.city_upgrade.require_stone",
-                req.requiredStone())));
-        if (req.requiredFunds() > 0) {
-            panel.addChild(line(Component.translatable("gui.xy2407_nsuk_addition.city_upgrade.require_funds",
-                    String.format(Locale.ROOT, "%.2f", req.requiredFunds()))));
-        }
-
-        SidebarDataSnapshot snap = SidebarDataSnapshot.get();
-        panel.addChild(contentSpacer());
-        panel.addChild(line(Component.translatable("gui.xy2407_nsuk_addition.city_upgrade.progress")));
-        panel.addChild(line(Component.translatable("gui.xy2407_nsuk_addition.city_upgrade.requirement.population",
-                packet.cityPopulation(), req.requiredPopulation())));
-        if (req.requiredFarms() > 0) {
-            panel.addChild(line(Component.translatable("gui.xy2407_nsuk_addition.city_upgrade.requirement.farms",
-                    snap.farmCount(), req.requiredFarms())));
-        }
-        if (req.requiredRanches() > 0) {
-            panel.addChild(line(Component.translatable("gui.xy2407_nsuk_addition.city_upgrade.requirement.ranches",
-                    snap.ranchCount(), req.requiredRanches())));
-        }
-        if (req.requiredShops() > 0) {
-            panel.addChild(line(Component.translatable("gui.xy2407_nsuk_addition.city_upgrade.requirement.shops",
-                    snap.shopCount(), req.requiredShops())));
-        }
-        if (req.requiredFactories() > 0) {
-            panel.addChild(line(Component.translatable("gui.xy2407_nsuk_addition.city_upgrade.requirement.factories",
-                    snap.factoryCount(), req.requiredFactories())));
-        }
-        if (req.requiredMines() > 0) {
-            panel.addChild(line(Component.translatable("gui.xy2407_nsuk_addition.city_upgrade.requirement.mines",
-                    snap.mineCount(), req.requiredMines())));
-        }
-        panel.addChild(line(Component.translatable("gui.xy2407_nsuk_addition.city_upgrade.progress_funds",
-                String.format(Locale.ROOT, "%.2f", packet.funds()),
-                String.format(Locale.ROOT, "%.2f", req.requiredFunds()))));
-
-        panel.addChild(contentSpacer());
-        panel.addChild(contentButton("gui.xy2407_nsuk_addition.city_upgrade.button", () ->
-                PacketDistributor.sendToServer(new CityUpgradeRequestPacket(packet.pos(), packet.cityId()))
-        ));
-
-        cir.setReturnValue(scrollable(panel));
-    }
-
     @Inject(method = "menuColumn", at = @At("RETURN"), remap = false)
     private static void nsuk$addMoveMenuButton(CallbackInfoReturnable<UIElement> cir) {
         CityCoreOpenResponsePacket packet = nsuk$currentPacket;
         if (packet == null) return;
+
+        if (packet.hasCity() && !packet.canManageCity()) {
+            UIElement menu = cir.getReturnValue();
+            var children = menu.getChildren();
+            if (children.size() >= 2) {
+                var copy = new java.util.ArrayList<>(children);
+                menu.clearAllChildren();
+                var spacer = copy.remove(copy.size() - 1);
+                var closeBtn = copy.remove(copy.size() - 1);
+                for (var child : copy) menu.addChild(child);
+                menu.addChild(menuButton("gui.xy2407_nsuk_addition.foreign_trade.establish_menu", () -> {
+                    PacketDistributor.sendToServer(new DiplomacyDataRequestPacket());
+                    ClientInfoToast.show(
+                            Component.translatable("gui.xy2407_nsuk_addition.foreign_trade.establish_title"),
+                            Component.translatable("gui.xy2407_nsuk_addition.foreign_trade.opening_panel"),
+                            "info");
+                    try {
+                        Class<?> openerClass = Class.forName("client.cn.kafei.simukraft.client.city.CityCoreScreenOpener");
+                        java.lang.reflect.Field f = openerClass.getDeclaredField("activeWindow");
+                        f.setAccessible(true);
+                        Object window = f.get(null);
+                        if (window != null) {
+                            java.lang.reflect.Method m = window.getClass().getDeclaredMethod(
+                                    "openTab", String.class, String.class, UIElement.class);
+                            m.setAccessible(true);
+                            m.invoke(window, "diplomacy",
+                                    "gui.xy2407_nsuk_addition.foreign_trade.establish_menu",
+                                    nsuk$createDiplomacyPanel(packet));
+                        }
+                    } catch (Exception e) {
+                        NsukAddition.LOGGER.error("Failed to open diplomacy panel", e);
+                    }
+                }));
+                menu.addChild(spacer);
+                menu.addChild(closeBtn);
+            }
+            return;
+        }
+
         if (!packet.hasCity() || packet.permissionLevel() != CityPermissionLevel.MAYOR) return;
 
         UIElement menu = cir.getReturnValue();
@@ -169,5 +113,33 @@ public abstract class CityCoreScreenOpenerMixin {
             menu.addChild(spacer);
             menu.addChild(closeBtn);
         }
+    }
+
+    private static UIElement nsuk$createDiplomacyPanel(CityCoreOpenResponsePacket packet) {
+        UIElement panel = basePanel();
+        panel.addChild(line(Component.translatable("gui.xy2407_nsuk_addition.foreign_trade.establish_title")));
+        panel.addChild(line(Component.translatable("gui.xy2407_nsuk_addition.foreign_trade.establish_desc", packet.cityName())));
+        panel.addChild(contentSpacer());
+        int posX = packet.pos().getX();
+        int posZ = packet.pos().getZ();
+        boolean alreadyEstablished = false;
+        for (DiplomacyRelation rel : DiplomacyClientCache.getRelations()) {
+            if (rel.posX() == posX && rel.posZ() == posZ) {
+                alreadyEstablished = true;
+                break;
+            }
+        }
+        if (alreadyEstablished) {
+            panel.addChild(line(Component.translatable("gui.xy2407_nsuk_addition.foreign_trade.already_established")));
+        } else {
+            panel.addChild(contentButton("gui.xy2407_nsuk_addition.foreign_trade.confirm_establish", () -> {
+                PacketDistributor.sendToServer(new EstablishDiplomacyRequestPacket(packet.cityId(), posX, posZ));
+                ClientInfoToast.show(
+                        Component.translatable("gui.xy2407_nsuk_addition.foreign_trade.establish_title"),
+                        Component.translatable("gui.xy2407_nsuk_addition.foreign_trade.establish_toast", packet.cityName()),
+                        "info");
+            }));
+        }
+        return scrollable(panel);
     }
 }

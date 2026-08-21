@@ -10,9 +10,9 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import java.util.UUID;
 
-/** 就餐订单同步包（S→C），通知客户端某 NPC 点了什么菜。 */
+/** 就餐订单同步包（S→C），通知客户端某 NPC 点了什么菜，并携带是否为游客标志供头顶字体着色。 */
 @SuppressWarnings("null")
-public record DiningOrderSyncPacket(UUID citizenId, String itemId, boolean start) implements CustomPacketPayload {
+public record DiningOrderSyncPacket(UUID citizenId, String itemId, boolean start, boolean isTourist) implements CustomPacketPayload {
 
     public static final Type<DiningOrderSyncPacket> TYPE = new Type<>(
             ResourceLocation.fromNamespaceAndPath(NsukAddition.MOD_ID, "dining_order_sync"));
@@ -26,10 +26,11 @@ public record DiningOrderSyncPacket(UUID citizenId, String itemId, boolean start
         b.writeUUID(p.citizenId());
         b.writeUtf(p.itemId(), 128);
         b.writeBoolean(p.start());
+        b.writeBoolean(p.isTourist());
     }
 
     public static DiningOrderSyncPacket decode(RegistryFriendlyByteBuf b) {
-        return new DiningOrderSyncPacket(b.readUUID(), b.readUtf(128), b.readBoolean());
+        return new DiningOrderSyncPacket(b.readUUID(), b.readUtf(128), b.readBoolean(), b.readBoolean());
     }
 
     public static void handle(DiningOrderSyncPacket p, IPayloadContext ctx) {

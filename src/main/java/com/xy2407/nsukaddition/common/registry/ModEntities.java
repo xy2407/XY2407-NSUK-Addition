@@ -1,6 +1,7 @@
 package com.xy2407.nsukaddition.common.registry;
 
 import com.xy2407.nsukaddition.NsukAddition;
+import com.xy2407.nsukaddition.common.entity.RtsFakePlayerEntity;
 import com.xy2407.nsukaddition.common.entity.SitEntity;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.entity.EntityType;
@@ -15,6 +16,9 @@ public final class ModEntities {
 
     public static final DeferredHolder<EntityType<?>, EntityType<SitEntity>> SIT_ENTITY =
             ENTITY_TYPES.register("sit_entity", () -> SitEntity.TYPE);
+
+    public static final DeferredHolder<EntityType<?>, EntityType<RtsFakePlayerEntity>> RTS_FAKE_PLAYER =
+            ENTITY_TYPES.register("rts_fake_player", () -> RtsFakePlayerEntity.TYPE);
 
     private ModEntities() {}
 

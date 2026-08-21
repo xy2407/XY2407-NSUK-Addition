@@ -1,6 +1,10 @@
 package com.xy2407.nsukaddition.common.breeding;
 
 import com.xy2407.nsukaddition.common.compat.LetFishLoveCompat;
+import common.cn.kafei.simukraft.city.group.CityUserGroup;
+import common.cn.kafei.simukraft.city.group.CityUserGroupService;
+import com.xy2407.nsukaddition.NsukAddition;
+import com.xy2407.nsukaddition.common.item.EntityCaptureItem;
 import common.cn.kafei.simukraft.building.BuildingTransform;
 import common.cn.kafei.simukraft.building.PlacedBuildingRecord;
 import common.cn.kafei.simukraft.citizen.CitizenData;
@@ -14,6 +18,10 @@ import common.cn.kafei.simukraft.path.CitizenNavigationService;
 import common.cn.kafei.simukraft.path.MovementIntent;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.Tag;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -21,12 +29,11 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.entity.animal.AbstractSchoolingFish;
 import net.minecraft.world.entity.animal.Animal;
-import net.minecraft.world.entity.animal.MushroomCow;
-import net.minecraft.world.entity.animal.Sheep;
 import net.minecraft.world.entity.animal.WaterAnimal;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.ExperienceOrb;
 import net.minecraft.world.entity.Mob;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -48,7 +55,9 @@ public final class BreedingWorkService {
     private static final long VALIDATE_INTERVAL = 20L;
     private static final long ENTITY_SCAN_INTERVAL = 40L;
 
-    private static final long FEED_INTERVAL = 800L;
+    private static final long FEED_INTERVAL = 2400L;
+    private static final long DROP_COLLECT_INTERVAL = 600L;
+    private static final int BREEDING_CAP = 24;
 
     private static final ConcurrentMap<BlockPos, BoxRuntime> RUNTIMES = new ConcurrentHashMap<>();
 
@@ -130,7 +139,7 @@ public final class BreedingWorkService {
             rt.nextUnifiedCollect = gameTime + 40;
         }
         if (gameTime >= rt.nextUnifiedCollect) {
-            rt.nextUnifiedCollect = gameTime + 400;
+            rt.nextUnifiedCollect = gameTime + DROP_COLLECT_INTERVAL;
             unifiedCollectDrops(level, data.boxPos(), rt);
         }
 
@@ -228,7 +237,7 @@ public final class BreedingWorkService {
             int killed = 0;
             for (WaterAnimal target : adults) {
                 if (killed >= toKill) break;
-                killWithDrops(level, target, out);
+                killWithDrops(level, target, out, cityIdOf(rt));
                 killed++;
             }
             adultCount -= killed;
@@ -285,7 +294,7 @@ public final class BreedingWorkService {
             int killed = 0;
             for (net.minecraft.world.entity.Mob target : adults) {
                 if (killed >= toKill) break;
-                killWithDrops(level, target, out);
+                killWithDrops(level, target, out, cityIdOf(rt));
                 killed++;
             }
             adultCount -= killed;
@@ -341,7 +350,7 @@ public final class BreedingWorkService {
             for (Entity target : all) {
                 if (killed >= toKill) break;
                 if (target instanceof net.minecraft.world.entity.LivingEntity le) {
-                    killWithDrops(level, le, out);
+                    killWithDrops(level, le, out, cityIdOf(rt));
                 }
                 killed++;
             }
@@ -413,71 +422,284 @@ public final class BreedingWorkService {
         EntityType<?> targetType = BuiltInRegistries.ENTITY_TYPE.getOptional(typeId).orElse(null);
         if (targetType == null) return;
 
-        List<Animal> all = level.getEntitiesOfClass(Animal.class, bounds,
-                a -> a.getType() == targetType && a.isAlive());
-        if (all.isEmpty()) return;
-        List<Animal> adults = all.stream().filter(a -> !a.isBaby()).toList();
-        int adultCount = adults.size();
+        Mob base = consolidateAnimals(level, bounds, targetType);
+        if (base == null) return;
+        int virtualCount = getVirtualCount(base);
 
-        int totalCount = all.size();
-        if (max < Integer.MAX_VALUE && totalCount > max) {
-            int toKill = Math.min(totalCount - max, adultCount);
-            int killed = 0;
-            long gameTime = level.getGameTime();
-            for (Animal target : adults) {
-                if (killed >= toKill) break;
-                killWithDrops(level, target, out);
-                killed++;
-            }
-            adultCount -= killed;
+        if (recipeType == BreedingDefinition.RecipeType.BREEDING_SLAUGHTER && virtualCount > BREEDING_CAP) {
+            int toKill = virtualCount - BREEDING_CAP;
+            spawnAndKill(level, base, targetType, toKill, out, cityIdOf(rt));
+            virtualCount = getVirtualCount(base);
         }
-
-        adults = level.getEntitiesOfClass(Animal.class, bounds,
-                a -> a.getType() == targetType && !a.isBaby());
-        adultCount = adults.size();
 
         if (recipeType == BreedingDefinition.RecipeType.BREEDING_COLLECT) {
             CollectAction action = resolveCollectAction(rt.recipe.id());
             if (action != CollectAction.NONE) {
-                executeCollectAction(level, manager, data, rt, bounds, food, out, action, targetType);
-                adults = level.getEntitiesOfClass(Animal.class, bounds,
-                        a -> a.getType() == targetType && !a.isBaby());
-                adultCount = adults.size();
+                executeCollectAction(level, manager, data, rt, bounds, food, out, action, targetType, virtualCount);
             }
         }
 
-        if (rt.recipe.requireFood()) {
-            all = level.getEntitiesOfClass(Animal.class, bounds,
-                    a -> a.getType() == targetType && a.isAlive());
-            if (all.isEmpty()) return;
-            if (!BreedingInventoryHelper.consumeFood(level, food, all.getFirst(), all.size())) {
+        if (rt.recipe.requireFood() && virtualCount > 0) {
+            int available = countFeed(level, food, rt.recipe);
+            int pairGrowth = virtualCount / 2;
+            int growthCap = Math.max(0, BREEDING_CAP - virtualCount);
+            int growth = Math.max(0, Math.min(pairGrowth, growthCap));
+            int toConsume = Math.max(0, Math.min(available, growth));
+            if (toConsume > 0) {
+                consumeFeedCount(level, food, rt.recipe, toConsume);
+                List<CompoundTag> entries = readVirtualEntries(base);
+                for (int i = 0; i < toConsume; i++) {
+                    CompoundTag def = new CompoundTag();
+                    def.putInt("Age", 0);
+                    entries.add(def);
+                }
+                setVirtualEntries(base, entries);
+            } else if (growthCap == 0) {
+                setTransientStatus(manager, data, BreedingConstants.STATUS_REACHED_CAP, "");
+            } else {
                 setTransientStatus(manager, data, "gui.xy2407_nsuk_addition.breeding.status.no_input", "");
-                return;
             }
         }
-
-        List<Animal> currentAnimals = level.getEntitiesOfClass(Animal.class, bounds,
-                a -> a.getType() == targetType && a.isAlive());
-        for (Animal animal : currentAnimals) {
-            int age = animal.getAge();
-            if (age < 0) {
-                animal.setAge(age + (int)(Math.abs(age) * 0.7));
-            } else if (age > 0) {
-                animal.setAge(age - (int)(age * 0.6));
-            }
-        }
-
-        List<Animal> breedable = adults.stream()
-                .filter(Animal::canFallInLove)
-                .collect(java.util.stream.Collectors.toCollection(ArrayList::new));
-        if (breedable.size() >= 2) {
-            for (Animal animal : breedable) {
-                animal.setInLove(null);
-            }
-        }
-        data.setStatusKey(BreedingConstants.STATUS_RUNNING);
-        data.setStatusText("");
+        updateBaseDisplay(base);
         manager.persist(data);
+    }
+
+    private static final String VIRTUAL_ENTRIES_KEY = "nsuk_breeding_entries";
+
+    private static List<CompoundTag> readVirtualEntries(Mob entity) {
+        List<CompoundTag> result = new ArrayList<>();
+        if (entity == null) return result;
+        CompoundTag data = entity.getPersistentData();
+        if (data.contains(VIRTUAL_ENTRIES_KEY, Tag.TAG_LIST)) {
+            ListTag list = data.getList(VIRTUAL_ENTRIES_KEY, Tag.TAG_COMPOUND);
+            for (int i = 0; i < list.size(); i++) {
+                result.add(list.getCompound(i).copy());
+            }
+        }
+        return result;
+    }
+
+    private static void setVirtualEntries(Mob entity, List<CompoundTag> entries) {
+        if (entity == null) return;
+        ListTag list = new ListTag();
+        for (CompoundTag e : entries) {
+            list.add(e.copy());
+        }
+        entity.getPersistentData().put(VIRTUAL_ENTRIES_KEY, list);
+    }
+
+    private static int getVirtualCount(Mob entity) {
+        return readVirtualEntries(entity).size();
+    }
+
+    private static CompoundTag sanitizeEntityNbt(Mob mob) {
+        CompoundTag raw = new CompoundTag();
+        mob.saveWithoutId(raw);
+        CompoundTag entry = com.xy2407.nsukaddition.common.capture.EntityNbtSanitizer.sanitize(raw);
+        entry.remove("Age");
+        return entry;
+    }
+
+    private static Mob consolidateAnimals(ServerLevel level, AABB bounds, EntityType<?> targetType) {
+        List<Mob> all = level.getEntitiesOfClass(Mob.class, bounds,
+                m -> m.getType() == targetType && m.isAlive());
+        if (all.isEmpty()) return null;
+
+        Mob base = null;
+        for (Mob m : all) {
+            if (!readVirtualEntries(m).isEmpty()) {
+                base = m;
+                break;
+            }
+        }
+        if (base == null) {
+            base = all.get(0);
+            List<CompoundTag> init = new ArrayList<>();
+            init.add(sanitizeEntityNbt(base));
+            setVirtualEntries(base, init);
+        }
+        List<CompoundTag> entries = readVirtualEntries(base);
+        for (Mob m : all) {
+            if (m != base && readVirtualEntries(m).isEmpty()) {
+                entries.add(sanitizeEntityNbt(m));
+                m.discard();
+            }
+        }
+        setVirtualEntries(base, entries);
+        return base;
+    }
+
+    private static void updateBaseDisplay(Mob base) {
+        if (base == null) return;
+        base.setCustomName(Component.literal("x" + getVirtualCount(base)));
+        base.setCustomNameVisible(true);
+    }
+
+    public static void handleBaseDeath(Mob base) {
+        if (base == null) return;
+        List<CompoundTag> entries = readVirtualEntries(base);
+        if (entries.isEmpty()) return;
+        if (entries.size() == 1) {
+            return;
+        }
+        if (!(base.level() instanceof ServerLevel level)) return;
+        entries.remove(entries.size() - 1);
+        EntityType<?> type = base.getType();
+        Mob fresh = (Mob) type.create(level);
+        if (fresh == null) return;
+        CompoundTag raw = base.saveWithoutId(new CompoundTag());
+        raw.remove("Pos");
+        raw.remove("Rotation");
+        raw.remove("UUID");
+        raw.remove(VIRTUAL_ENTRIES_KEY);
+        raw.remove("Health");
+        raw.remove("DeathTime");
+        raw.remove("HurtTime");
+        raw.remove("HurtByTimestamp");
+        try {
+            fresh.load(raw);
+        } catch (RuntimeException ignored) {
+        }
+        fresh.setHealth(fresh.getMaxHealth());
+        fresh.moveTo(base.getX(), base.getY(), base.getZ(), base.getYRot(), base.getXRot());
+        if (!entries.isEmpty()) {
+            setVirtualEntries(fresh, entries);
+            updateBaseDisplay(fresh);
+        } else {
+            fresh.setCustomName(null);
+            fresh.setCustomNameVisible(false);
+        }
+        level.addFreshEntity(fresh);
+    }
+
+    public static boolean isBaseEntity(Mob entity) {
+        return entity != null && !readVirtualEntries(entity).isEmpty();
+    }
+
+    public static boolean baseToCapture(ServerLevel level, Player player, InteractionHand hand, Mob base) {
+        if (level == null || player == null || base == null) {
+            return false;
+        }
+        List<CompoundTag> entries = readVirtualEntries(base);
+        if (entries.isEmpty()) {
+            return false;
+        }
+        ItemStack stack = player.getItemInHand(hand);
+        if (stack.isEmpty() || !(stack.getItem() instanceof EntityCaptureItem) || stack.getCount() <= 0) {
+            return false;
+        }
+        if (EntityCaptureItem.getEntryCount(stack) >= EntityCaptureItem.MAX_CAPTURES) {
+            return false;
+        }
+        EntityType<?> baseType = base.getType();
+        CompoundTag entry = entries.remove(entries.size() - 1);
+        entry.remove("Age");
+        EntityType<?> stackType = EntityCaptureItem.getEntityType(stack);
+        if (stackType == null) {
+            ItemStack captured = new ItemStack(stack.getItem(), 1);
+            EntityCaptureItem.transferIn(captured, baseType, entry);
+            if (player.getAbilities().instabuild) {
+                if (!player.getInventory().add(captured)) {
+                    player.drop(captured, false);
+                }
+            } else if (stack.getCount() == 1) {
+                player.setItemInHand(hand, captured);
+            } else {
+                stack.shrink(1);
+                if (!player.getInventory().add(captured)) {
+                    player.drop(captured, false);
+                }
+            }
+        } else if (stackType.equals(baseType)) {
+            EntityCaptureItem.transferIn(stack, baseType, entry);
+        } else {
+            entries.add(entry);
+            setVirtualEntries(base, entries);
+            updateBaseDisplay(base);
+            return false;
+        }
+        setVirtualEntries(base, entries);
+        if (entries.isEmpty()) {
+            base.discard();
+        } else {
+            updateBaseDisplay(base);
+        }
+        return true;
+    }
+
+    private static void spawnAndKill(ServerLevel level, Mob base, EntityType<?> targetType, int count, List<BlockPos> out, UUID cityId) {
+        if (count <= 0) return;
+        List<CompoundTag> entries = readVirtualEntries(base);
+        double cx = (base.getX() + base.getBoundingBox().getXsize() / 2.0D);
+        double cy = base.getY();
+        double cz = (base.getZ() + base.getBoundingBox().getZsize() / 2.0D);
+        int spawned = 0;
+        for (int i = 0; i < count; i++) {
+            CompoundTag entry = entries.isEmpty() ? null : entries.remove(entries.size() - 1);
+            try {
+                Entity e = targetType.create(level);
+                if (e == null) continue;
+                if (entry != null && e instanceof net.minecraft.world.entity.LivingEntity le) {
+                    try {
+                        le.load(entry.copy());
+                    } catch (RuntimeException ignored) {
+                    }
+                }
+                e.absMoveTo(cx, cy, cz, level.random.nextFloat() * 360.0F, 0);
+                level.addFreshEntity(e);
+                if (e instanceof net.minecraft.world.entity.LivingEntity le) {
+                    killWithDrops(level, le, out, cityId);
+                    spawned++;
+                } else {
+                    e.discard();
+                }
+            } catch (RuntimeException ex) {
+                NsukAddition.LOGGER.error("spawnAndKill failed for {}", targetType, ex);
+            }
+        }
+        setVirtualEntries(base, entries);
+    }
+
+    private static int countFeed(ServerLevel level, List<BlockPos> positions, BreedingDefinition.RecipeDefinition recipe) {
+        if (!recipe.requireFood() || recipe.inputItems().isEmpty()) return Integer.MAX_VALUE;
+        String foodId = recipe.inputItems().getFirst().itemId();
+        if (foodId.isBlank()) return Integer.MAX_VALUE;
+        ResourceLocation id = ResourceLocation.tryParse(foodId);
+        if (id == null) return 0;
+        int found = 0;
+        for (BlockPos pos : positions) {
+            net.minecraft.world.Container container = BreedingInventoryHelper.containerAt(level, pos);
+            if (container == null) continue;
+            for (int i = 0; i < container.getContainerSize(); i++) {
+                ItemStack s = container.getItem(i);
+                ResourceLocation sid = BuiltInRegistries.ITEM.getKey(s.getItem());
+                if (sid != null && sid.equals(id)) found += s.getCount();
+            }
+        }
+        return found;
+    }
+
+    private static void consumeFeedCount(ServerLevel level, List<BlockPos> positions, BreedingDefinition.RecipeDefinition recipe, int count) {
+        if (count <= 0) return;
+        String foodId = recipe.inputItems().getFirst().itemId();
+        ResourceLocation id = ResourceLocation.tryParse(foodId);
+        if (id == null) return;
+        int remaining = count;
+        for (BlockPos pos : positions) {
+            net.minecraft.world.Container container = BreedingInventoryHelper.containerAt(level, pos);
+            if (container == null) continue;
+            for (int i = 0; i < container.getContainerSize() && remaining > 0; i++) {
+                ItemStack s = container.getItem(i);
+                ResourceLocation sid = BuiltInRegistries.ITEM.getKey(s.getItem());
+                if (sid != null && sid.equals(id)) {
+                    int take = Math.min(s.getCount(), remaining);
+                    s.shrink(take);
+                    remaining -= take;
+                    container.setChanged();
+                }
+            }
+            if (remaining <= 0) return;
+        }
     }
 
     private static void unifiedCollectDrops(ServerLevel level, BlockPos boxPos, BoxRuntime rt) {
@@ -531,9 +753,27 @@ public final class BreedingWorkService {
         return new AABB(minX, minY, minZ, maxX, maxY, maxZ);
     }
 
-    private static void killWithDrops(ServerLevel level, net.minecraft.world.entity.LivingEntity entity, List<BlockPos> out) {
-        ServerPlayer player = level.getServer().getPlayerList().getPlayers()
+    private static ServerPlayer resolveKillSource(ServerLevel level, UUID cityId) {
+        if (cityId != null) {
+            List<ServerPlayer> mayors = CityUserGroupService.onlinePlayers(level, CityUserGroup.mayors(cityId));
+            if (!mayors.isEmpty()) {
+                return mayors.get(0);
+            }
+            List<ServerPlayer> officials = CityUserGroupService.onlinePlayers(level, CityUserGroup.officials(cityId));
+            if (!officials.isEmpty()) {
+                return officials.get(0);
+            }
+        }
+        return level.getServer().getPlayerList().getPlayers()
                 .stream().findFirst().orElse(null);
+    }
+
+    private static UUID cityIdOf(BoxRuntime rt) {
+        return rt != null && rt.building != null ? rt.building.cityId() : null;
+    }
+
+    private static void killWithDrops(ServerLevel level, net.minecraft.world.entity.LivingEntity entity, List<BlockPos> out, UUID cityId) {
+        ServerPlayer player = resolveKillSource(level, cityId);
         net.minecraft.world.damagesource.DamageSource src = player != null
                 ? level.damageSources().playerAttack(player)
                 : level.damageSources().generic();
@@ -542,17 +782,6 @@ public final class BreedingWorkService {
         if (entity.isAlive()) {
             entity.kill();
         }
-
-        ResourceLocation entityId = BuiltInRegistries.ENTITY_TYPE.getKey(entity.getType());
-        String ns = entityId.getNamespace();
-        boolean isFishType = "tide".equals(ns) || "aquaculture".equals(ns) || entity instanceof WaterAnimal;
-        String boneId = isFishType ? "tide:fish_bone" : "minecraft:bone";
-        ResourceLocation boneLoc = ResourceLocation.tryParse(boneId);
-        net.minecraft.world.item.Item boneItem = boneLoc != null ? BuiltInRegistries.ITEM.get(boneLoc) : Items.AIR;
-        if (boneItem == Items.AIR) {
-            boneItem = Items.BONE;
-        }
-        level.addFreshEntity(new ItemEntity(level, entity.getX(), entity.getY() + 0.5, entity.getZ(), new ItemStack(boneItem, 2)));
     }
 
     private static void setWorkerHeldItem(CitizenData worker, BreedingDefinition.RecipeDefinition recipe, BreedingDefinition definition) {
@@ -715,7 +944,13 @@ public final class BreedingWorkService {
         MILK,
         MUSHROOM,
         SHEAR_WOOL,
-        SHEAR_WOOL_4
+        SHEAR_WOOL_4,
+        WOODEN_MILK,
+        WOODEN_SHEEP_MILK,
+        WOODEN_GOAT_MILK,
+        WOODEN_BUFFALO_MILK,
+        WOODEN_WARPED_MILK,
+        CHICKEN_EGG
     }
 
     private static CollectAction resolveCollectAction(String recipeId) {
@@ -725,76 +960,79 @@ public final class BreedingWorkService {
             case "mooshroom_mushroom" -> CollectAction.MUSHROOM;
             case "sheep_wool" -> CollectAction.SHEAR_WOOL;
             case "minisheep_wool" -> CollectAction.SHEAR_WOOL_4;
+            case "cow_wooden_milk" -> CollectAction.WOODEN_MILK;
+            case "sheep_milk" -> CollectAction.WOODEN_SHEEP_MILK;
+            case "goat_milk" -> CollectAction.WOODEN_GOAT_MILK;
+            case "buffalo_milk" -> CollectAction.WOODEN_BUFFALO_MILK;
+            case "wooly_cow_milk" -> CollectAction.WOODEN_WARPED_MILK;
+            case "chicken_egg" -> CollectAction.CHICKEN_EGG;
             default -> CollectAction.NONE;
         };
     }
 
     private static void executeCollectAction(ServerLevel level, BreedingBoxManager manager,
             BreedingBoxData data, BoxRuntime rt, AABB bounds,
-            List<BlockPos> food, List<BlockPos> out, CollectAction action, EntityType<?> targetType) {
+            List<BlockPos> food, List<BlockPos> out, CollectAction action, EntityType<?> targetType,
+            int virtualCount) {
         if (action == CollectAction.NONE || out.isEmpty()) return;
         switch (action) {
-            case MILK -> collectMilk(level, bounds, food, out, targetType);
-            case MUSHROOM -> collectMushroom(level, bounds, out, targetType);
-            case SHEAR_WOOL -> collectShearWool(level, bounds, out, targetType);
+            case MILK -> collectMilk(level, bounds, food, out, targetType, virtualCount);
+            case MUSHROOM -> collectMushroom(level, bounds, out, targetType, virtualCount);
+            case SHEAR_WOOL -> collectShearWool(level, bounds, out, targetType, virtualCount);
             case SHEAR_WOOL_4 -> collectShearWool4(level, bounds, out, targetType);
+            case WOODEN_MILK -> collectWoodenMilk(level, bounds, food, out, targetType, "meadow:wooden_milk_bucket", virtualCount);
+            case WOODEN_SHEEP_MILK -> collectWoodenMilk(level, bounds, food, out, targetType, "meadow:wooden_sheep_milk_bucket", virtualCount);
+            case WOODEN_GOAT_MILK -> collectWoodenMilk(level, bounds, food, out, targetType, "meadow:wooden_goat_milk_bucket", virtualCount);
+            case WOODEN_BUFFALO_MILK -> collectWoodenMilk(level, bounds, food, out, targetType, "meadow:wooden_buffalo_milk_bucket", virtualCount);
+            case WOODEN_WARPED_MILK -> collectWoodenMilk(level, bounds, food, out, targetType, "meadow:wooden_warped_milk_bucket", virtualCount);
+            case CHICKEN_EGG -> collectChickenEgg(level, bounds, out, targetType, virtualCount);
             default -> {}
         }
     }
 
     private static void collectMilk(ServerLevel level, AABB bounds,
-            List<BlockPos> food, List<BlockPos> out, EntityType<?> targetType) {
-        List<Animal> cows = level.getEntitiesOfClass(Animal.class, bounds,
-                a -> a.getType() == targetType && !a.isBaby());
-        if (cows.isEmpty()) return;
-        int count = Math.min(cows.size(), 4);
-        BreedingInventoryHelper.depositItem(level, out, "minecraft:milk_bucket", count);
+            List<BlockPos> food, List<BlockPos> out, EntityType<?> targetType, int virtualCount) {
+        if (virtualCount <= 0) return;
+        BreedingInventoryHelper.depositItem(level, out, "minecraft:milk_bucket", Math.min(virtualCount, BREEDING_CAP));
+    }
+
+    private static void collectWoodenMilk(ServerLevel level, AABB bounds,
+            List<BlockPos> food, List<BlockPos> out, EntityType<?> targetType, String bucketId, int virtualCount) {
+        if (virtualCount <= 0) return;
+        BreedingInventoryHelper.depositItem(level, out, bucketId, Math.min(virtualCount, BREEDING_CAP));
+    }
+
+    private static void collectChickenEgg(ServerLevel level, AABB bounds,
+            List<BlockPos> out, EntityType<?> targetType, int virtualCount) {
+        if (virtualCount <= 0) return;
+        BreedingInventoryHelper.depositItem(level, out, "minecraft:egg", Math.min(virtualCount, BREEDING_CAP));
     }
 
     private static void collectMushroom(ServerLevel level, AABB bounds,
-            List<BlockPos> out, EntityType<?> targetType) {
-        List<MushroomCow> mooshrooms = level.getEntitiesOfClass(MushroomCow.class, bounds,
-                m -> m.getType() == targetType && !m.isBaby());
-        if (mooshrooms.isEmpty()) return;
-
-        int totalMushrooms = 0;
-        for (MushroomCow mooshroom : mooshrooms) {
-            if (totalMushrooms >= 20) break;
-            boolean isRed = mooshroom.getVariant() == MushroomCow.MushroomType.RED;
-            String mushroomId = isRed ? "minecraft:red_mushroom" : "minecraft:brown_mushroom";
-            totalMushrooms += 5;
-        }
-        String mushroomId = mooshrooms.getFirst().getVariant() == MushroomCow.MushroomType.RED
-                ? "minecraft:red_mushroom" : "minecraft:brown_mushroom";
+            List<BlockPos> out, EntityType<?> targetType, int virtualCount) {
+        if (virtualCount <= 0) return;
+        int totalMushrooms = virtualCount * 5;
+        String mushroomId = "minecraft:red_mushroom";
         BreedingInventoryHelper.depositItem(level, out, mushroomId, Math.min(totalMushrooms, 20));
     }
 
     private static void collectShearWool(ServerLevel level, AABB bounds,
-            List<BlockPos> out, EntityType<?> targetType) {
-        List<Sheep> sheep = level.getEntitiesOfClass(Sheep.class, bounds,
-                s -> s.getType() == targetType && !s.isBaby() && !s.isSheared());
-        if (sheep.isEmpty()) return;
-        int sheared = 0;
-        for (Sheep s : sheep) {
-            if (sheared >= 4) break;
-            String woolId = "minecraft:" + s.getColor().getName() + "_wool";
-            BreedingInventoryHelper.depositItem(level, out, woolId, 2);
-            s.setSheared(true);
-            sheared++;
-        }
+            List<BlockPos> out, EntityType<?> targetType, int virtualCount) {
+        if (virtualCount <= 0) return;
+        int woolCount = virtualCount * 2;
+        BreedingInventoryHelper.depositItem(level, out, "minecraft:white_wool", Math.min(woolCount, 8));
     }
 
     private static void collectShearWool4(ServerLevel level, AABB bounds,
             List<BlockPos> out, EntityType<?> targetType) {
-        List<Animal> sheep = level.getEntitiesOfClass(Animal.class, bounds,
-                a -> a.getType() == targetType && !a.isBaby());
-        if (sheep.isEmpty()) return;
-
-        Animal animal = sheep.get(0);
-
-        if (animal instanceof Sheep vanillaSheep && vanillaSheep.isSheared()) return;
-        if (animal instanceof Sheep vanillaSheep) vanillaSheep.setSheared(true);
+        if (getVirtualCountOnAny(level, bounds, targetType) <= 0) return;
         BreedingInventoryHelper.depositItem(level, out, "minecraft:white_wool", 4);
+    }
+
+    private static int getVirtualCountOnAny(ServerLevel level, AABB bounds, EntityType<?> targetType) {
+        List<Mob> all = level.getEntitiesOfClass(Mob.class, bounds,
+                m -> m.getType() == targetType && m.isAlive() && getVirtualCount(m) > 0);
+        return all.isEmpty() ? 0 : getVirtualCount(all.get(0));
     }
 
     private static final class BoxRuntime {

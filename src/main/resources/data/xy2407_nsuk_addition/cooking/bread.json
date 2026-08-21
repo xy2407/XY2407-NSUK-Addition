@@ -1,0 +1,108 @@
+{
+  "id": "bread",
+  "waiter": "and",
+  "name": "面包店",
+  "job": {
+    "id": "chef",
+    "name": "厨师",
+    "heldItem": "kaleidoscope_cookery:kitchen_shovel"
+  },
+  "points": {
+    "work": {
+      "type": "structure_pos",
+      "positions": [
+        [
+          6,
+          1,
+          2
+        ]
+      ]
+    },
+    "desk": {
+      "type": "structure_pos",
+      "positions": [
+        [8, 0, 10],
+        [2, 1, 5],
+        [2, 1, 3],
+        [7, 1, 6],
+        [11, 1, 5],
+        [11, 1, 3]
+      ]
+    }
+  },
+  "containers": {
+    "input": {
+      "type": "structure_pos",
+      "positions": [
+        [
+          5,
+          1,
+          2
+        ]
+      ]
+    },
+    "output": {
+      "type": "structure_pos",
+      "positions": [
+        [
+          8,
+          1,
+          2
+        ]
+      ]
+    }
+  },
+  "seats": [
+    {
+      "positions": [
+        [11, 1, 2],
+        [11, 1, 6]
+      ]
+    },
+    {
+      "positions": [
+        [8, 1, 6],
+        [6, 1, 6]
+      ]
+    },
+    {
+      "positions": [
+        [2, 1, 6],
+        [2, 1, 2]
+      ]
+    }
+  ],
+  "cook": [
+    { "item": "bakeries:toast", "price": 3 },
+    { "item": "bakeries:sliced_toast", "price": 4 },
+    { "item": "bakeries:bake_sliced_toast", "price": 5 },
+    { "item": "bakeries:honey_butter_spread_toast", "price": 7 },
+    { "item": "bakeries:cheese_cocoa_toast", "price": 8 },
+    { "item": "bakeries:sliced_cheese_cocoa_toast", "price": 9 },
+    { "item": "bakeries:bagel", "price": 6 },
+    { "item": "bakeries:whole_wheat_bagel", "price": 6 },
+    { "item": "bakeries:round_bread", "price": 5 },
+    { "item": "bakeries:berry_bread", "price": 9 },
+    { "item": "bakeries:cheese_cream_bread", "price": 10 },
+    { "item": "bakeries:brown_sugar_roll", "price": 8 },
+    { "item": "bakeries:pineapple_bun", "price": 10 },
+    { "item": "bakeries:pineapple_oil", "price": 8 },
+    { "item": "bakeries:meat_floss_bread_roll", "price": 12 },
+    { "item": "bakeries:croissant", "price": 8 },
+    { "item": "bakeries:dirty_choco_croissant", "price": 10 },
+    { "item": "bakeries:salt_croissant", "price": 9 },
+    { "item": "bakeries:flat_croissant", "price": 8 },
+    { "item": "bakeries:baguette", "price": 7 },
+    { "item": "bakeries:country_bread", "price": 6 },
+    { "item": "bakeries:country_bread_slice", "price": 3 },
+    { "item": "bakeries:honey_butter_spread_country_bread", "price": 9 },
+    { "item": "bakeries:ciabatta", "price": 8 },
+    { "item": "bakeries:focaccia", "price": 9 },
+    { "item": "bakeries:berry_bagel", "price": 10 },
+    { "item": "bakeries:bagel_filled_sauce", "price": 11 },
+    { "item": "bakeries:baguette_with_filling", "price": 12 },
+    { "item": "bakeries:tomato_cheese_croissant_sandwich", "price": 13 },
+    { "item": "bakeries:egg_tart", "price": 8 },
+    { "item": "bakeries:taro_salt_yolk_bread", "price": 14 }
+  ]
+}

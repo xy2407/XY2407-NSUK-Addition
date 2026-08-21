@@ -21,9 +21,11 @@ final class SidebarLayout {
 
     static final int TITLE_CONTENT_GAP = 4;
 
-    static final int HEADER_SECTION_H = 84;
+    static final int HEADER_SECTION_H = 110;
 
     static final int FOOTER_H = 34;
+
+    static final int FOOTER_NOTE_H = 12;
 
     static final int BUTTON_H = 18;
 

@@ -1,0 +1,8 @@
+name: 酒吧
+size: 18x12x17
+amount: 300
+author: xy2407
+description: 提供各类鸡尾酒的酒吧，NPC可在此点酒小酌补充饱食度。
+tags: price_middle,material_middle,stage_middle
+cooking: bar.json
+structure: bar.nbt

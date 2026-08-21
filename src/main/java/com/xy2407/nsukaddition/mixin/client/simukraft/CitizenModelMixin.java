@@ -38,6 +38,11 @@ public abstract class CitizenModelMixin {
             return;
         }
 
+        if (entity.isChildNpc()) {
+            nsukaddition$breasts.visible = false;
+            return;
+        }
+
         String skinPath = entity.getSkinPath();
         boolean female = skinPath != null
                 && (skinPath.contains("female") || skinPath.toLowerCase().endsWith("_f"));

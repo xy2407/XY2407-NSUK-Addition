@@ -8,8 +8,7 @@ import com.xy2407.nsukaddition.common.block.DynamicRoeBlock;
 import com.xy2407.nsukaddition.common.block.ForeignTradeControlBoxBlock;
 import com.xy2407.nsukaddition.common.block.entity.DynamicRoeBlockEntity;
 import com.xy2407.nsukaddition.common.block.entity.ForeignTradeControlBoxBlockEntity;
-import com.xy2407.nsukaddition.common.block.entity.MiningControlBoxBlockEntity;
-import com.xy2407.nsukaddition.common.mining.MiningControlBoxBlock;
+import com.xy2407.nsukaddition.common.item.CityCorePlacerItem;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.Item;
@@ -39,14 +38,6 @@ public final class ModBlocks {
     public static final DeferredItem<BlockItem> RESTAURANT_CONTROL_BOX_ITEM = ITEMS.register(
             "restaurant_control_box", () -> new BlockItem(RESTAURANT_CONTROL_BOX.get(), new Item.Properties()));
 
-    public static final DeferredBlock<Block> MINING_CONTROL_BOX = BLOCKS.register(
-            "mining_control_box", MiningControlBoxBlock::new);
-    public static final DeferredItem<BlockItem> MINING_CONTROL_BOX_ITEM = ITEMS.register(
-            "mining_control_box", () -> new BlockItem(MINING_CONTROL_BOX.get(), new Item.Properties()));
-    public static final DeferredHolder<BlockEntityType<?>, BlockEntityType<MiningControlBoxBlockEntity>> MINING_CONTROL_BOX_ENTITY =
-            BLOCK_ENTITIES.register("mining_control_box",
-                    () -> BlockEntityType.Builder.of(MiningControlBoxBlockEntity::new, MINING_CONTROL_BOX.get()).build(null));
-
     public static final DeferredBlock<Block> DYNAMIC_ROE_BLOCK = BLOCKS.register(
             "dynamic_roe_block", () -> new DynamicRoeBlock(Block.Properties.of().strength(0.3F).noOcclusion().noCollission().sound(SoundType.FROGSPAWN)));
     public static final DeferredItem<BlockItem> DYNAMIC_ROE_BLOCK_ITEM = ITEMS.register(
@@ -68,6 +59,9 @@ public final class ModBlocks {
             BLOCK_ENTITIES.register("foreign_trade_control_box",
                     () -> BlockEntityType.Builder.of(ForeignTradeControlBoxBlockEntity::new, FOREIGN_TRADE_CONTROL_BOX.get()).build(null));
 
+    public static final DeferredItem<CityCorePlacerItem> CITY_CORE_PLACER = ITEMS.register(
+            "city_core_placer", CityCorePlacerItem::new);
+
     private ModBlocks() {
     }
 
@@ -82,10 +76,10 @@ public final class ModBlocks {
         if (event.getTabKey() == common.cn.kafei.simukraft.registry.ModCreativeModeTabs.SIMUKRAFT_TAB.getKey()) {
             event.accept(BREEDING_CONTROL_BOX_ITEM);
             event.accept(RESTAURANT_CONTROL_BOX_ITEM);
-            event.accept(MINING_CONTROL_BOX_ITEM);
             event.accept(DYNAMIC_ROE_BLOCK_ITEM);
             event.accept(COLONY_CORE_ITEM);
             event.accept(FOREIGN_TRADE_CONTROL_BOX_ITEM);
+            event.accept(CITY_CORE_PLACER);
         }
     }
 }

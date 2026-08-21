@@ -1,0 +1,8 @@
+name: 咖啡馆
+size: 12x6x19
+amount: 240
+author: xy2407
+description: 提供各类咖啡饮品的咖啡馆，NPC可在此点单小憩补充饱食度。
+tags: price_middle,material_middle,stage_middle
+cooking: coffee.json
+structure: coffee.nbt

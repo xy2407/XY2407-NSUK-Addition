@@ -1,0 +1,40 @@
+{
+  "village_trades": {
+    "plains": [
+      {"item_id": "minecraft:wheat", "count": 1, "buy": 1.0, "sell": 0.8, "daily_buy_limit": 64, "daily_sell_limit": 48},
+      {"item_id": "minecraft:carrot", "count": 1, "buy": 1.2, "sell": 0.9, "daily_buy_limit": 48, "daily_sell_limit": 32},
+      {"item_id": "minecraft:potato", "count": 1, "buy": 1.2, "sell": 0.9, "daily_buy_limit": 48, "daily_sell_limit": 32},
+      {"item_id": "minecraft:hay_block", "count": 1, "buy": 9.0, "sell": 7.0, "daily_buy_limit": 16, "daily_sell_limit": 12},
+      {"item_id": "minecraft:white_wool", "count": 1, "buy": 2.0, "sell": 1.5, "daily_buy_limit": 32, "daily_sell_limit": 24},
+      {"item_id": "minecraft:emerald", "count": 1, "buy": 10.0, "sell": 8.0, "daily_buy_limit": 8, "daily_sell_limit": 4}
+    ],
+    "desert": [
+      {"item_id": "minecraft:cactus", "count": 1, "buy": 1.5, "sell": 1.0, "daily_buy_limit": 48, "daily_sell_limit": 32},
+      {"item_id": "minecraft:sand", "count": 1, "buy": 0.5, "sell": 0.3, "daily_buy_limit": 128, "daily_sell_limit": 96},
+      {"item_id": "minecraft:sugar_cane", "count": 1, "buy": 1.0, "sell": 0.7, "daily_buy_limit": 64, "daily_sell_limit": 48},
+      {"item_id": "minecraft:dead_bush", "count": 1, "buy": 0.8, "sell": 0.5, "daily_buy_limit": 32, "daily_sell_limit": 24},
+      {"item_id": "minecraft:emerald", "count": 1, "buy": 10.0, "sell": 8.0, "daily_buy_limit": 8, "daily_sell_limit": 4}
+    ],
+    "savanna": [
+      {"item_id": "minecraft:acacia_log", "count": 1, "buy": 1.2, "sell": 0.9, "daily_buy_limit": 64, "daily_sell_limit": 48},
+      {"item_id": "minecraft:acacia_planks", "count": 1, "buy": 0.9, "sell": 0.7, "daily_buy_limit": 64, "daily_sell_limit": 48},
+      {"item_id": "minecraft:melon", "count": 1, "buy": 2.0, "sell": 1.5, "daily_buy_limit": 32, "daily_sell_limit": 24},
+      {"item_id": "minecraft:sugar_cane", "count": 1, "buy": 1.0, "sell": 0.7, "daily_buy_limit": 64, "daily_sell_limit": 48},
+      {"item_id": "minecraft:emerald", "count": 1, "buy": 10.0, "sell": 8.0, "daily_buy_limit": 8, "daily_sell_limit": 4}
+    ],
+    "taiga": [
+      {"item_id": "minecraft:spruce_log", "count": 1, "buy": 1.2, "sell": 0.9, "daily_buy_limit": 64, "daily_sell_limit": 48},
+      {"item_id": "minecraft:spruce_planks", "count": 1, "buy": 0.9, "sell": 0.7, "daily_buy_limit": 64, "daily_sell_limit": 48},
+      {"item_id": "minecraft:sweet_berries", "count": 1, "buy": 1.5, "sell": 1.0, "daily_buy_limit": 48, "daily_sell_limit": 32},
+      {"item_id": "minecraft:fern", "count": 1, "buy": 0.5, "sell": 0.3, "daily_buy_limit": 32, "daily_sell_limit": 24},
+      {"item_id": "minecraft:emerald", "count": 1, "buy": 10.0, "sell": 8.0, "daily_buy_limit": 8, "daily_sell_limit": 4}
+    ],
+    "snowy": [
+      {"item_id": "minecraft:snowball", "count": 1, "buy": 0.5, "sell": 0.3, "daily_buy_limit": 64, "daily_sell_limit": 48},
+      {"item_id": "minecraft:ice", "count": 1, "buy": 1.0, "sell": 0.7, "daily_buy_limit": 32, "daily_sell_limit": 24},
+      {"item_id": "minecraft:blue_ice", "count": 1, "buy": 3.0, "sell": 2.0, "daily_buy_limit": 16, "daily_sell_limit": 12},
+      {"item_id": "minecraft:sweet_berries", "count": 1, "buy": 1.5, "sell": 1.0, "daily_buy_limit": 48, "daily_sell_limit": 32},
+      {"item_id": "minecraft:emerald", "count": 1, "buy": 10.0, "sell": 8.0, "daily_buy_limit": 8, "daily_sell_limit": 4}
+    ]
+  }
+}

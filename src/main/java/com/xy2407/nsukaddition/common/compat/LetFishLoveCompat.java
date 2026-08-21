@@ -36,7 +36,6 @@ public final class LetFishLoveCompat {
         return null;
     }
 
-    /** Mob 版 cap 获取（岩浆鱼等非 WaterAnimal 的鱼类），先查缓存再通过 capability 主动获取。 */
     private static FishBreedingCap getOrCacheCap(Mob fish) {
         FishBreedingCap cached = FishBreedingCapAttacher.CAPABILITY_CACHE.get(fish.getUUID());
         if (cached != null) {

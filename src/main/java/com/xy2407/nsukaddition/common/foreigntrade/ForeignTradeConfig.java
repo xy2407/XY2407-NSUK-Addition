@@ -19,13 +19,40 @@ public final class ForeignTradeConfig {
     private static final String RESOURCE_PATH = "/data/xy2407_nsuk_addition/trade/foreign_trade_items.json";
     private static final Gson GSON = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
 
-    public record TradeItemDef(String item_id, int count, double buy, double sell, String category) {
+    public record TradeNbt(String entity, Boolean baby) {
+    }
+
+    public record TradeItemDef(String item_id, int count, double buy, double sell, String category, TradeNbt nbt) {
         public TradeItemDef(String item_id, int count, double buy, double sell, String category) {
+            this(item_id, count, buy, sell, category, null);
+        }
+
+        public TradeItemDef(String item_id, int count, double buy, double sell, String category, TradeNbt nbt) {
             this.item_id = item_id;
             this.count = count;
             this.buy = buy;
             this.sell = sell;
             this.category = category != null ? category : "other";
+            this.nbt = nbt;
+        }
+
+        public boolean isAnimal() {
+            return category != null && category.equalsIgnoreCase("animal");
+        }
+
+        public String captureEntityId() {
+            if (nbt != null && nbt.entity() != null && !nbt.entity().isBlank()) {
+                return nbt.entity();
+            }
+            return item_id;
+        }
+
+        public boolean captureBaby() {
+            return nbt != null && Boolean.TRUE.equals(nbt.baby());
+        }
+
+        public String tradeKey() {
+            return isAnimal() ? captureEntityId() : item_id;
         }
     }
 
@@ -46,7 +73,6 @@ public final class ForeignTradeConfig {
         }
     }
 
-    /** 每次启动时比较内置资源与磁盘文件，不匹配则用内置资源覆盖磁盘文件。 */
     private static void syncFromResource() {
         try {
             byte[] resourceBytes = null;
@@ -85,5 +111,17 @@ public final class ForeignTradeConfig {
 
     public static List<TradeItemDef> getEntries() {
         return List.copyOf(entries);
+    }
+
+    public static TradeItemDef find(String key) {
+        if (key == null) {
+            return null;
+        }
+        for (TradeItemDef d : entries) {
+            if (key.equals(d.tradeKey()) || key.equals(d.item_id())) {
+                return d;
+            }
+        }
+        return null;
     }
 }

@@ -1,6 +1,5 @@
 package com.xy2407.nsukaddition.common.compat;
 
-import com.chinaex123.letfishlove.capabilities.FishBreedingCap;
 import com.chinaex123.letfishlove.capabilities.FishBreedingCapAttacher;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;

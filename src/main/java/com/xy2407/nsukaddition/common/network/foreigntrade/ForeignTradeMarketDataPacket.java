@@ -37,6 +37,7 @@ public record ForeignTradeMarketDataPacket(
             buf.writeDouble(e.buyPrice());
             buf.writeDouble(e.sellPrice());
             buf.writeUtf(e.category(), 64);
+            buf.writeUtf(e.villageType(), 64);
         }
         buf.writeBoolean(p.canOperate());
     }
@@ -51,7 +52,8 @@ public record ForeignTradeMarketDataPacket(
             double buyPrice = buf.readDouble();
             double sellPrice = buf.readDouble();
             String category = buf.readUtf(64);
-            entries.add(new ForeignTradeMarket.MarketEntry(itemId, count, buyPrice, sellPrice, category));
+            String villageType = buf.readUtf(64);
+            entries.add(new ForeignTradeMarket.MarketEntry(itemId, count, buyPrice, sellPrice, category, villageType));
         }
         boolean canOperate = buf.readBoolean();
         return new ForeignTradeMarketDataPacket(boxPos, entries, canOperate);

@@ -1,0 +1,25 @@
+{
+  "id": "xy2407_nsuk_addition:mill",
+  "name": "磨坊",
+  "jobType": "mill_worker",
+  "jobName": "磨坊工人",
+  "heldItem": "minecraft:stone_hoe",
+  "points": {
+    "work": {
+      "type": "structure_pos",
+      "positions": [[7, 2, 4]],
+      "select": "nearest"
+    }
+  },
+  "containers": {
+    "input": {
+      "type": "structure_pos",
+      "positions": [[5, 2, 4], [5, 2, 3]]
+    },
+    "output": {
+      "type": "structure_pos",
+      "positions": [[6, 2, 2], [7, 2, 2]]
+    }
+  },
+  "recipes": []
+}

@@ -39,9 +39,13 @@ public final class RestaurantDefinitionLoader {
     private static final String RESOURCE_PREFIX = "/data/xy2407_nsuk_addition/cooking/";
 
     private static final String VERSION_ENTRY = "_nsuk_version.txt";
-    private static final String CURRENT_VERSION = "1";
+    private static final String CURRENT_VERSION = "6";
     private static final List<String> COOKING_FILES = List.of(
-            "restaurant.json", "restaurant.sk", "restaurant.nbt"
+            "restaurant.json", "restaurant.sk", "restaurant.nbt",
+            "pub.json", "pub.sk", "pub.nbt",
+            "bread.json", "bread.sk", "bread.nbt",
+            "bar.json", "bar.sk", "bar.nbt",
+            "coffee.json", "coffee.sk", "coffee.nbt"
     );
 
     private static final Gson GSON = new GsonBuilder()
@@ -50,7 +54,6 @@ public final class RestaurantDefinitionLoader {
 
     private RestaurantDefinitionLoader() {}
 
-    /** 初始化：扫描外部目录。需在服务器启动时调用。 */
     public static void init() {
         Path dirPath = FMLPaths.GAMEDIR.get().resolve(EXTERNAL_DIR);
         try {
@@ -59,7 +62,6 @@ public final class RestaurantDefinitionLoader {
         } catch (Exception ignored) {}
     }
 
-    /** 将餐厅文件从模组资源部署到外部目录。 */
     public static void deployFiles() {
         Path dirPath = FMLPaths.GAMEDIR.get().resolve(EXTERNAL_DIR);
         try {
@@ -84,7 +86,6 @@ public final class RestaurantDefinitionLoader {
             }
         }
         writeVersion(dirPath);
-        NsukAddition.LOGGER.info("Deployed cooking files to {}", dirPath);
         scanExternalDir();
     }
 
@@ -197,8 +198,14 @@ public final class RestaurantDefinitionLoader {
             JsonObject obj = json.getAsJsonObject();
             String id = getString(obj, "id", "");
             String name = getString(obj, "name", id);
+            String waiterType = getString(obj, "waiter", "nsuk");
             RestaurantDefinition.JobDefinition job = obj.has("job") ? parseJob(obj.getAsJsonObject("job")) : null;
             Map<String, RestaurantDefinition.PointDefinition> points = parsePoints(obj);
+            if (obj.has("waiter_work") && obj.get("waiter_work").isJsonObject()) {
+                JsonObject w = obj.getAsJsonObject("waiter_work");
+                points.put("waiter_work", new RestaurantDefinition.PointDefinition("waiter_work",
+                        getString(w, "type", "structure_pos"), parsePositions(w.get("positions"))));
+            }
             Map<String, RestaurantDefinition.ContainerDefinition> containers = parseContainers(obj);
             Map<String, Double> cookMap = parseCook(obj);
             List<String> cook = new ArrayList<>(cookMap.keySet());
@@ -209,7 +216,9 @@ public final class RestaurantDefinitionLoader {
                             List.of(new RestaurantDefinition.ItemRequirement(itemId, 1)),
                             200, List.of()))
                     .toList();
-            return new RestaurantDefinition(id, name, job, points, containers, seats, cook, cookMap, recipes, null);
+            List<BlockPos> outputBlock = obj.has("output_block")
+                    ? parsePositions(obj.getAsJsonObject("output_block").get("positions")) : List.of();
+            return new RestaurantDefinition(id, name, job, points, containers, seats, cook, cookMap, recipes, outputBlock, null, waiterType);
         }
 
         private RestaurantDefinition.JobDefinition parseJob(JsonObject j) {
@@ -252,7 +261,6 @@ public final class RestaurantDefinitionLoader {
             return list;
         }
 
-        /** 解析 cook 字段：菜品物品 id 列表及其价格。 */
         private Map<String, Double> parseCook(JsonObject obj) {
             if (!obj.has("cook")) return Map.of();
             Map<String, Double> map = new java.util.LinkedHashMap<>();

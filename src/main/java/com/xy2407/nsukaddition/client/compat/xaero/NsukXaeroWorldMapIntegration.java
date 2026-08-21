@@ -25,9 +25,6 @@ public final class NsukXaeroWorldMapIntegration {
 
     public static void registerHighlighter(List<AbstractHighlighter> highlighters) {
         if (highlighters == null) return;
-        if (!containsNsukVeinHighlighter(highlighters)) {
-            highlighters.add(new NsukVeinHighlighter());
-        }
         if (!containsColonyHighlighter(highlighters)) {
             highlighters.add(new ColonyTerritoryHighlighter());
         }
@@ -67,13 +64,6 @@ public final class NsukXaeroWorldMapIntegration {
         for (MapRegion mapRegion : loadedMapRegions) {
             mapRegion.requestRefresh(processor);
         }
-    }
-
-    private static boolean containsNsukVeinHighlighter(List<AbstractHighlighter> highlighters) {
-        for (AbstractHighlighter h : highlighters) {
-            if (h instanceof NsukVeinHighlighter) return true;
-        }
-        return false;
     }
 
     private static boolean containsColonyHighlighter(List<AbstractHighlighter> highlighters) {

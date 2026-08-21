@@ -13,6 +13,7 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 public final class RiceCropHelper {
 
     private static final ResourceLocation FD_RICE_BLOCK = ResourceLocation.tryParse("farmersdelight:rice");
+    private static final net.minecraft.world.level.block.Block RICE_BLOCK = FD_RICE_BLOCK != null ? BuiltInRegistries.BLOCK.get(FD_RICE_BLOCK) : null;
     private static final int RICE_PANICLES_MAX_AGE = 3;
 
     private RiceCropHelper() {
@@ -27,8 +28,8 @@ public final class RiceCropHelper {
     }
 
     public static boolean isRiceSoilReady(LevelReader level, BlockPos cropPos) {
-        BlockState cropState = level.getBlockState(cropPos);
-        return cropState.isAir() || cropState.canBeReplaced();
+        BlockState plantState = level.getBlockState(cropPos.below());
+        return RICE_BLOCK == null || !plantState.is(RICE_BLOCK);
     }
 
     public static boolean isRicePaniclesMature(LevelReader level, BlockPos cropPos, FarmCrop crop) {

@@ -38,17 +38,6 @@ public record AutoRestockTogglePacket(BlockPos pos, boolean enabled) implements 
         if (ctx.player() instanceof ServerPlayer player && player.level() instanceof ServerLevel level) {
             if (!player.blockPosition().closerThan(p.pos(), 16.0D)) return;
             AutoRestockConfig.setEnabled(level, p.pos(), p.enabled());
-            syncMiningBoxAutoRestock(level, p.pos(), p.enabled());
-        }
-    }
-
-    private static void syncMiningBoxAutoRestock(ServerLevel level, BlockPos pos, boolean enabled) {
-        if (!level.getBlockState(pos).is(com.xy2407.nsukaddition.common.registry.ModBlocks.MINING_CONTROL_BOX.get())) return;
-        com.xy2407.nsukaddition.common.mining.MiningBoxData data =
-                com.xy2407.nsukaddition.common.mining.MiningBoxManager.get(level).get(pos);
-        if (data != null && data.autoRestock() != enabled) {
-            data.setAutoRestock(enabled);
-            com.xy2407.nsukaddition.common.mining.MiningBoxManager.get(level).persist(data);
         }
     }
 }

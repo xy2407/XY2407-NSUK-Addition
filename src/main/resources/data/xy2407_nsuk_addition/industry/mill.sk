@@ -1,0 +1,7 @@
+name:磨坊
+size:9 x 7 x 5
+amount:150元
+author:xy2407
+description:磨坊建筑定义，加工配方待补充。
+tags:price_low,material_low,stage_early
+job_type:mill_worker

@@ -17,7 +17,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-/** 修改 BuildingPackageCatalog，注入养殖分类并支持散装目录文件读取。 */
+/** 修改 BuildingPackageCatalog，注入养殖和外贸分类并支持散装目录文件读取。 */
 @Mixin(value = BuildingPackageCatalog.class, remap = false)
 public class BuildingPackageCatalogMixin {
 
@@ -29,18 +29,34 @@ public class BuildingPackageCatalogMixin {
     @Inject(method = "categories", at = @At("RETURN"), cancellable = true)
     private static void nsuk$categories(CallbackInfoReturnable<List<String>> cir) {
         List<String> original = cir.getReturnValue();
-        if (original.contains("breeding")) {
-            return;
-        }
         List<String> extended = new ArrayList<>(original);
-        extended.add("breeding");
-        cir.setReturnValue(List.copyOf(extended));
+        boolean changed = false;
+        if (!extended.contains("breeding")) {
+            extended.add("breeding");
+            changed = true;
+        }
+        if (!extended.contains("cooking")) {
+            extended.add("cooking");
+            changed = true;
+        }
+        if (!extended.contains("foreign_trade")) {
+            extended.add("foreign_trade");
+            changed = true;
+        }
+        if (changed) {
+            cir.setReturnValue(List.copyOf(extended));
+        }
     }
 
     @Inject(method = "normalizeCategory", at = @At("HEAD"), cancellable = true)
     private static void nsuk$normalizeCategory(String category, CallbackInfoReturnable<String> cir) {
-        if (category != null && "breeding".equalsIgnoreCase(category)) {
+        if (category == null) return;
+        if ("breeding".equalsIgnoreCase(category)) {
             cir.setReturnValue("breeding");
+        } else if ("cooking".equalsIgnoreCase(category)) {
+            cir.setReturnValue("cooking");
+        } else if ("foreign_trade".equalsIgnoreCase(category) || "foreigntrade".equalsIgnoreCase(category)) {
+            cir.setReturnValue("foreign_trade");
         }
     }
 
@@ -68,7 +84,7 @@ public class BuildingPackageCatalogMixin {
         }
 
         String actualFile = source.actualFileName(normalizedCategory, fileName);
-        Path loosePath = packagePath.resolve(normalizedCategory).resolve(actualFile);
+        Path loosePath = packagePath.resolve(actualFile);
 
         if (Files.isRegularFile(loosePath)) {
             cir.setReturnValue(Optional.of(new FileInputStream(loosePath.toFile())));

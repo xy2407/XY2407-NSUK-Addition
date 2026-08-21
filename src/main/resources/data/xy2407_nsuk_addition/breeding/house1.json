@@ -30,6 +30,14 @@
       "heldItem": "minecraft:wheat"
     },
     {
+      "id": "cow_wooden_milk",
+      "name": "挤奶采集-牛奶木桶",
+      "type": "breeding_collect",
+      "entityType": "minecraft:cow",
+      "feedItem": "minecraft:wheat",
+      "heldItem": "minecraft:wheat"
+    },
+    {
       "id": "mooshroom_slaughter",
       "name": "养殖宰杀-哞菇",
       "type": "breeding_slaughter",
@@ -114,6 +122,46 @@
       "name": "养殖宰杀-野牛肉",
       "type": "breeding_slaughter",
       "entityType": "wildernature:bison",
+      "feedItem": "minecraft:wheat",
+      "heldItem": "minecraft:wheat"
+    },
+    {
+      "id": "sheep_milk",
+      "name": "挤奶采集-羊奶",
+      "type": "breeding_collect",
+      "entityType": "minecraft:sheep",
+      "feedItem": "minecraft:wheat",
+      "heldItem": "minecraft:wheat"
+    },
+    {
+      "id": "goat_milk",
+      "name": "挤奶采集-山羊奶",
+      "type": "breeding_collect",
+      "entityType": "minecraft:goat",
+      "feedItem": "minecraft:wheat",
+      "heldItem": "minecraft:wheat"
+    },
+    {
+      "id": "buffalo_milk",
+      "name": "挤奶采集-水牛奶",
+      "type": "breeding_collect",
+      "entityType": "meadow:water_buffalo",
+      "feedItem": "minecraft:wheat",
+      "heldItem": "minecraft:wheat"
+    },
+    {
+      "id": "wooly_cow_milk",
+      "name": "挤奶采集-毛牛奶",
+      "type": "breeding_collect",
+      "entityType": "meadow:wooly_cow",
+      "feedItem": "minecraft:wheat",
+      "heldItem": "minecraft:wheat"
+    },
+    {
+      "id": "water_buffalo_slaughter",
+      "name": "养殖宰杀-水牛(生熊肉)",
+      "type": "breeding_slaughter",
+      "entityType": "meadow:water_buffalo",
       "feedItem": "minecraft:wheat",
       "heldItem": "minecraft:wheat"
     }

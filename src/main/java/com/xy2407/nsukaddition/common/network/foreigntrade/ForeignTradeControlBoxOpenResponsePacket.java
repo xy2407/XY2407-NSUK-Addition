@@ -10,8 +10,6 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
-import java.util.UUID;
-
 /** 外贸控制箱打开响应网络包，服务端返回界面数据供客户端渲染。 */
 @SuppressWarnings("null")
 public record ForeignTradeControlBoxOpenResponsePacket(
@@ -19,11 +17,7 @@ public record ForeignTradeControlBoxOpenResponsePacket(
         boolean running,
         String statusKey,
         String statusText,
-        String selectedTradeId,
-        boolean hasWorker,
-        UUID workerId,
-        String workerName,
-        boolean autoRestock
+        String selectedTradeId
 ) implements CustomPacketPayload {
 
     public static final Type<ForeignTradeControlBoxOpenResponsePacket> TYPE = new Type<>(
@@ -33,8 +27,7 @@ public record ForeignTradeControlBoxOpenResponsePacket(
 
     public static ForeignTradeControlBoxOpenResponsePacket from(ForeignTradeBoxView view) {
         return new ForeignTradeControlBoxOpenResponsePacket(
-                view.boxPos(), view.running(), view.statusKey(), view.statusText(), view.selectedTradeId(),
-                view.hasWorker(), view.workerId(), view.workerName(), view.autoRestock());
+                view.boxPos(), view.running(), view.statusKey(), view.statusText(), view.selectedTradeId());
     }
 
     @Override
@@ -46,24 +39,11 @@ public record ForeignTradeControlBoxOpenResponsePacket(
         buf.writeUtf(p.statusKey(), 128);
         buf.writeUtf(p.statusText(), 256);
         buf.writeUtf(p.selectedTradeId(), 128);
-        buf.writeBoolean(p.hasWorker());
-        if (p.hasWorker() && p.workerId() != null) buf.writeUUID(p.workerId());
-        buf.writeUtf(p.workerName(), 128);
-        buf.writeBoolean(p.autoRestock());
     }
 
     public static ForeignTradeControlBoxOpenResponsePacket decode(RegistryFriendlyByteBuf buf) {
-        BlockPos boxPos = buf.readBlockPos();
-        boolean running = buf.readBoolean();
-        String statusKey = buf.readUtf(128);
-        String statusText = buf.readUtf(256);
-        String selectedTradeId = buf.readUtf(128);
-        boolean hasWorker = buf.readBoolean();
-        UUID workerId = hasWorker ? buf.readUUID() : null;
-        String workerName = buf.readUtf(128);
-        boolean autoRestock = buf.readBoolean();
-        return new ForeignTradeControlBoxOpenResponsePacket(boxPos, running, statusKey, statusText,
-                selectedTradeId, hasWorker, workerId, workerName, autoRestock);
+        return new ForeignTradeControlBoxOpenResponsePacket(
+                buf.readBlockPos(), buf.readBoolean(), buf.readUtf(128), buf.readUtf(256), buf.readUtf(128));
     }
 
     public static void handle(ForeignTradeControlBoxOpenResponsePacket p, IPayloadContext ctx) {

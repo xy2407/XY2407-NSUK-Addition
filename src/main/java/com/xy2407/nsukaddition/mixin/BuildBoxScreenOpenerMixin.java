@@ -14,7 +14,7 @@ import org.spongepowered.asm.mixin.injection.ModifyVariable;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
-/** 修改 BuildBoxScreenOpener，在建筑选择界面注入养殖分类按钮和分类处理。 */
+/** 修改 BuildBoxScreenOpener，在建筑选择界面注入养殖和外贸分类按钮及分类处理。 */
 @Mixin(targets = "client.cn.kafei.simukraft.client.buildbox.BuildBoxScreenOpener", remap = false)
 public class BuildBoxScreenOpenerMixin {
 
@@ -29,7 +29,7 @@ public class BuildBoxScreenOpenerMixin {
     @ModifyVariable(method = "createSelectBuildingUi",
             at = @At("RETURN"),
             ordinal = 2)
-    private static UIElement nsuk$addBreedingButton(UIElement gridRegion) {
+    private static UIElement nsuk$addCategoryButtons(UIElement gridRegion) {
         if (gridRegion == null) {
             return null;
         }
@@ -39,27 +39,39 @@ public class BuildBoxScreenOpenerMixin {
             return gridRegion;
         }
 
-        Button btn = new Button();
-        btn.setText(Component.translatable("gui.category.breeding"));
-        btn.setOnClick(event -> {
-            BuildingListScreenOpener.open("breeding", pos);
-        });
-        btn.layout(layout -> {
+        Button breedingBtn = new Button();
+        breedingBtn.setText(Component.translatable("gui.category.breeding"));
+        breedingBtn.setOnClick(event -> BuildingListScreenOpener.open("breeding", pos));
+        breedingBtn.layout(layout -> {
             layout.width(110);
             layout.height(20);
             layout.flexShrink(0);
         });
-        gridRegion.addChild(btn);
+        gridRegion.addChild(breedingBtn);
+
+        Button foreignTradeBtn = new Button();
+        foreignTradeBtn.setText(Component.translatable("gui.category.foreign_trade"));
+        foreignTradeBtn.setOnClick(event -> BuildingListScreenOpener.open("foreign_trade", pos));
+        foreignTradeBtn.layout(layout -> {
+            layout.width(110);
+            layout.height(20);
+            layout.flexShrink(0);
+        });
+        gridRegion.addChild(foreignTradeBtn);
+
         return gridRegion;
     }
 
     @Inject(method = "handleBuildingCategory",
             at = @At("HEAD"),
             cancellable = true)
-    private static void nsuk$handleBreedingCategory(BlockPos buildBoxPos, String translationKey,
-                                                     CallbackInfo ci) {
+    private static void nsuk$handleCategoryButtons(BlockPos buildBoxPos, String translationKey,
+                                                   CallbackInfo ci) {
         if ("gui.category.breeding".equals(translationKey)) {
             BuildingListScreenOpener.open("breeding", buildBoxPos);
+            ci.cancel();
+        } else if ("gui.category.foreign_trade".equals(translationKey)) {
+            BuildingListScreenOpener.open("foreign_trade", buildBoxPos);
             ci.cancel();
         }
     }

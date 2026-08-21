@@ -14,6 +14,8 @@ import com.mojang.blaze3d.vertex.DefaultVertexFormat;
 import com.mojang.blaze3d.vertex.Tesselator;
 import com.mojang.blaze3d.vertex.VertexFormat;
 import com.xy2407.nsukaddition.common.network.colony.ColonyChunkAbandonPacket;
+import com.xy2407.nsukaddition.common.network.colony.ColonyChunkBatchAbandonPacket;
+import com.xy2407.nsukaddition.common.network.colony.ColonyChunkBatchBuyPacket;
 import com.xy2407.nsukaddition.common.network.colony.ColonyChunkBuyPacket;
 import com.xy2407.nsukaddition.common.network.colony.ColonyCoreOpenResponsePacket;
 import net.minecraft.client.Minecraft;
@@ -27,8 +29,10 @@ import org.joml.Matrix4f;
 import org.joml.Vector2f;
 
 import javax.annotation.Nonnull;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.UUID;
@@ -52,6 +56,9 @@ public final class ColonyChunkMapElement extends UIElement {
     private static final int GRID_COLOR = 0x40000000;
     private static final int CORE_MARKER_COLOR = 0xFF4080FF;
     private static final int ADJACENT_BUYABLE_COLOR = 0x66FFFF55;
+    private static final int BATCH_CLAIM_PREVIEW_COLOR = 0x66FFFF55;
+    private static final int MAX_BATCH_CLAIM_CHUNKS = 256;
+    private static final String BATCH_CLAIM_DRAG_MARKER = "colony_chunk_batch_claim";
 
     private final ColonyCoreOpenResponsePacket packet;
     private final ClientCityChunkCache cityCache = ClientCityChunkCache.getInstance();
@@ -71,6 +78,7 @@ public final class ColonyChunkMapElement extends UIElement {
     private int contextMenuHeight;
     private boolean contextMenuVisible;
     private boolean mapConsumerReleased;
+    private final LinkedHashSet<Long> batchClaimChunks = new LinkedHashSet<>();
 
     private static volatile ColonyChunkMapElement activeInstance;
 
@@ -91,7 +99,9 @@ public final class ColonyChunkMapElement extends UIElement {
         });
         addEventListener(UIEvents.MOUSE_WHEEL, this::onMouseWheel);
         addEventListener(UIEvents.MOUSE_DOWN, this::onMouseDown);
+        addEventListener(UIEvents.MOUSE_UP, this::onMouseUp);
         addEventListener(UIEvents.DRAG_SOURCE_UPDATE, this::onDragUpdate);
+        addEventListener(UIEvents.DRAG_END, this::onDragEnd);
     }
 
     @Override
@@ -159,6 +169,7 @@ public final class ColonyChunkMapElement extends UIElement {
         renderGridOverlay(guiContext, startX, startY, width, height, centerX, centerY, chunkSize, startChunkX, startChunkZ);
         renderHoveredChunk(guiContext, startX, startY, width, height, centerX, centerY, chunkSize);
         renderOwnedChunkBorders(guiContext, startX, startY, width, height, centerX, centerY, chunkSize, startChunkX, endChunkX, startChunkZ, endChunkZ);
+        renderBatchSelection(guiContext, startX, startY, width, height, centerX, centerY, chunkSize);
         renderCoreMarker(guiContext, startX, startY, width, height, centerX, centerY, chunkSize);
         renderHoverBox(guiContext, startX, startY, width, height, centerX, centerY, chunkSize);
         renderContextMenu(guiContext, startX, startY, width, height);
@@ -372,10 +383,16 @@ public final class ColonyChunkMapElement extends UIElement {
         boolean isOwned = isChunkOwned(contextMenuChunkX, contextMenuChunkZ);
         boolean canBuy = packet.canManageColony() && !isOwned && isAdjacentToSelf(contextMenuChunkX, contextMenuChunkZ);
         boolean canAbandon = packet.canManageColony() && isSelf;
-        Component title = Component.translatable("gui.xy2407_nsuk_addition.colony.map_menu_title", contextMenuChunkX, contextMenuChunkZ);
+        boolean hasBatch = !batchClaimChunks.isEmpty();
+        Component title = hasBatch
+                ? Component.translatable("gui.xy2407_nsuk_addition.colony.map_menu_batch_title", batchClaimChunks.size())
+                : Component.translatable("gui.xy2407_nsuk_addition.colony.map_menu_title", contextMenuChunkX, contextMenuChunkZ);
         Component action;
         boolean actionEnabled = false;
-        if (isSelf) {
+        if (hasBatch) {
+            action = Component.translatable("gui.xy2407_nsuk_addition.colony.map_batch_action");
+            actionEnabled = packet.canManageColony();
+        } else if (isSelf) {
             action = Component.translatable("gui.xy2407_nsuk_addition.colony.map_abandon");
             actionEnabled = canAbandon;
         } else if (!packet.canManageColony()) {
@@ -414,13 +431,33 @@ public final class ColonyChunkMapElement extends UIElement {
         if (mouseY < contextMenuDrawY + 20) return true;
         contextMenuVisible = false;
         if (mouseY < contextMenuDrawY + 36) {
-            long chunkLong = ChunkPos.asLong(contextMenuChunkX, contextMenuChunkZ);
-            if (packet.canManageColony()) {
-                if (selfChunks.contains(chunkLong)) {
-                    PacketDistributor.sendToServer(new ColonyChunkAbandonPacket(packet.colonyId(), contextMenuChunkX, contextMenuChunkZ));
-                } else if (!isChunkOwned(contextMenuChunkX, contextMenuChunkZ) && isAdjacentToSelf(contextMenuChunkX, contextMenuChunkZ)) {
-                    PacketDistributor.sendToServer(new ColonyChunkBuyPacket(packet.colonyId(), contextMenuChunkX, contextMenuChunkZ));
+            if (!packet.canManageColony()) return true;
+            if (!batchClaimChunks.isEmpty()) {
+                List<ColonyChunkBatchBuyPacket.ChunkEntry> buyList = new ArrayList<>();
+                List<ColonyChunkBatchAbandonPacket.ChunkEntry> abandonList = new ArrayList<>();
+                for (long cl : batchClaimChunks) {
+                    int cx = ChunkPos.getX(cl);
+                    int cz = ChunkPos.getZ(cl);
+                    if (selfChunks.contains(cl)) {
+                        abandonList.add(new ColonyChunkBatchAbandonPacket.ChunkEntry(cx, cz));
+                    } else if (!isChunkOwned(cx, cz) && isAdjacentToSelf(cx, cz)) {
+                        buyList.add(new ColonyChunkBatchBuyPacket.ChunkEntry(cx, cz));
+                    }
                 }
+                if (!buyList.isEmpty()) {
+                    PacketDistributor.sendToServer(new ColonyChunkBatchBuyPacket(packet.colonyId(), buyList));
+                }
+                if (!abandonList.isEmpty()) {
+                    PacketDistributor.sendToServer(new ColonyChunkBatchAbandonPacket(packet.colonyId(), abandonList));
+                }
+                batchClaimChunks.clear();
+                return true;
+            }
+            long chunkLong = ChunkPos.asLong(contextMenuChunkX, contextMenuChunkZ);
+            if (selfChunks.contains(chunkLong)) {
+                PacketDistributor.sendToServer(new ColonyChunkAbandonPacket(packet.colonyId(), contextMenuChunkX, contextMenuChunkZ));
+            } else if (!isChunkOwned(contextMenuChunkX, contextMenuChunkZ) && isAdjacentToSelf(contextMenuChunkX, contextMenuChunkZ)) {
+                PacketDistributor.sendToServer(new ColonyChunkBuyPacket(packet.colonyId(), contextMenuChunkX, contextMenuChunkZ));
             }
         }
         return true;
@@ -453,6 +490,14 @@ public final class ColonyChunkMapElement extends UIElement {
             event.stopPropagation();
             return;
         }
+        if (event.button == 2) {
+            contextMenuVisible = false;
+            batchClaimChunks.clear();
+            collectBatchClaimChunk(event.x, event.y);
+            event.target.startDrag(BATCH_CLAIM_DRAG_MARKER, null);
+            event.stopPropagation();
+            return;
+        }
         if (event.button == 1) {
             double centerX = mapStartX + mapWidth / 2.0D;
             double centerY = mapStartY + mapHeight / 2.0D;
@@ -468,10 +513,68 @@ public final class ColonyChunkMapElement extends UIElement {
 
     private void onDragUpdate(UIEvent event) {
         contextMenuVisible = false;
+        if (BATCH_CLAIM_DRAG_MARKER.equals(event.dragHandler.getDraggingObject())) {
+            collectBatchClaimChunk(event.x, event.y);
+            event.stopPropagation();
+            return;
+        }
         if (event.dragHandler.getDraggingObject() instanceof Vector2f startOffset) {
             offsetX = startOffset.x + event.x - event.dragStartX;
             offsetY = startOffset.y + event.y - event.dragStartY;
             event.stopPropagation();
+        }
+    }
+
+    private void onMouseUp(UIEvent event) {
+        if (event.button == 2) {
+            finishBatchClaim();
+            event.stopPropagation();
+        }
+    }
+
+    private void onDragEnd(UIEvent event) {
+        finishBatchClaim();
+    }
+
+    private void collectBatchClaimChunk(double mouseX, double mouseY) {
+        if (batchClaimChunks.size() >= MAX_BATCH_CLAIM_CHUNKS || isMouseOutsideMap(mouseX, mouseY)) {
+            return;
+        }
+        int chunkX = screenToChunk(mouseX, mapCenterX(), offsetX, 16.0D * zoomLevel);
+        int chunkZ = screenToChunk(mouseY, mapCenterY(), offsetY, 16.0D * zoomLevel);
+        batchClaimChunks.add(ChunkPos.asLong(chunkX, chunkZ));
+    }
+
+    private void finishBatchClaim() {
+    }
+
+    private boolean isMouseOutsideMap(double mouseX, double mouseY) {
+        double mapStartX = getPositionX() + MAP_SIDE_PADDING;
+        double mapStartY = getPositionY() + MAP_TOP_PADDING;
+        double mapWidth = getSizeWidth() - MAP_SIDE_PADDING * 2.0D;
+        double mapHeight = getSizeHeight() - MAP_TOP_PADDING - MAP_SIDE_PADDING;
+        return isOutside(mouseX, mouseY, mapStartX, mapStartY, mapWidth, mapHeight);
+    }
+
+    private double mapCenterX() {
+        return getPositionX() + MAP_SIDE_PADDING + (getSizeWidth() - MAP_SIDE_PADDING * 2.0D) / 2.0D;
+    }
+
+    private double mapCenterY() {
+        return getPositionY() + MAP_TOP_PADDING + (getSizeHeight() - MAP_TOP_PADDING - MAP_SIDE_PADDING) / 2.0D;
+    }
+
+    private void renderBatchSelection(GUIContext guiContext, int startX, int startY, int width, int height, double centerX, double centerY, double chunkSize) {
+        if (batchClaimChunks.isEmpty()) return;
+        for (long chunkLong : batchClaimChunks) {
+            int chunkX = ChunkPos.getX(chunkLong);
+            int chunkZ = ChunkPos.getZ(chunkLong);
+            double screenX = centerX + offsetX + chunkX * chunkSize;
+            double screenY = centerY + offsetY + chunkZ * chunkSize;
+            if (screenX + chunkSize < startX || screenX > startX + width || screenY + chunkSize < startY || screenY > startY + height) {
+                continue;
+            }
+            guiContext.graphics.fill((int) screenX, (int) screenY, (int) (screenX + chunkSize), (int) (screenY + chunkSize), BATCH_CLAIM_PREVIEW_COLOR);
         }
     }
 

@@ -3,8 +3,9 @@ package com.xy2407.nsukaddition.server.autorestock;
 import com.xy2407.nsukaddition.common.autorestock.AutoRestockConfig;
 import com.xy2407.nsukaddition.common.autorestock.AutoRestockService;
 import com.xy2407.nsukaddition.common.autorestock.AutoRestockSqliteStorage;
+import com.xy2407.nsukaddition.common.foreigntrade.FreeMarketRepository;
+import com.xy2407.nsukaddition.common.foreigntrade.VillageCityTypeStorage;
 import com.xy2407.nsukaddition.common.registry.ModBlocks;
-import com.xy2407.nsukaddition.common.storage.NsukWriteExecutor;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -25,12 +26,13 @@ public final class AutoRestockServerTick {
         ServerLevel overWorld = server.overworld();
         if (overWorld != null) {
             AutoRestockConfig.loadFromDatabase(overWorld);
+            VillageCityTypeStorage.preloadAll(overWorld);
         }
+        FreeMarketRepository.preloadAll();
     }
 
     @SubscribeEvent
     public static void onServerStopping(ServerStoppingEvent event) {
-        NsukWriteExecutor.shutdown();
         AutoRestockConfig.clear();
         AutoRestockSqliteStorage.clearServerCache(event.getServer());
     }
@@ -49,17 +51,20 @@ public final class AutoRestockServerTick {
     }
 
     private static void processStoreOnly(ServerLevel level) {
-        if (AutoRestockConfig.allEnabled().isEmpty()) return;
+        var enabled = AutoRestockConfig.allEnabled();
+        if (enabled.isEmpty()) {
+            return;
+        }
 
         for (var pos : AutoRestockConfig.allEnabled()) {
-            if (!level.isLoaded(pos)) continue;
+            if (!level.isLoaded(pos)) {
+                continue;
+            }
             var state = level.getBlockState(pos);
             if (state.is(common.cn.kafei.simukraft.registry.ModBlocks.INDUSTRIAL_CONTROL_BOX.get())) {
                 AutoRestockService.storeIndustrialOutputs(level, pos);
             } else if (state.is(common.cn.kafei.simukraft.registry.ModBlocks.COMMERCIAL_CONTROL_BOX.get())) {
                 AutoRestockService.processCommercialRestock(level, pos);
-            } else if (state.is(ModBlocks.MINING_CONTROL_BOX.get())) {
-                AutoRestockService.storeMiningOutputs(level, pos);
             } else if (state.is(ModBlocks.BREEDING_CONTROL_BOX.get())) {
                 AutoRestockService.restockBreedingInputs(level, pos);
                 AutoRestockService.storeBreedingOutputs(level, pos);

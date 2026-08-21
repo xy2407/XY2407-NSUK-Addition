@@ -18,6 +18,7 @@ import com.lowdragmc.lowdraglib2.gui.ui.elements.ScrollerView;
 import com.lowdragmc.lowdraglib2.gui.ui.elements.Tab;
 import com.lowdragmc.lowdraglib2.gui.ui.elements.TextField;
 import com.lowdragmc.lowdraglib2.gui.ui.data.ScrollerMode;
+import com.xy2407.nsukaddition.common.network.colony.ColonyCitizenReleasePacket;
 import com.xy2407.nsukaddition.common.network.colony.ColonyCitizenRelocatePacket;
 import com.xy2407.nsukaddition.common.network.colony.ColonyCoreOpenResponsePacket;
 import com.xy2407.nsukaddition.common.network.colony.ColonyCreatePacket;
@@ -119,9 +120,9 @@ public final class ColonyCoreScreenOpener {
             menu.addChild(menuButton("gui.xy2407_nsuk_addition.colony.menu_edit",
                     () -> window.openTab("edit", "gui.xy2407_nsuk_addition.colony.menu_edit", scrollable(editPanel(packet)))));
             menu.addChild(menuButton("gui.xy2407_nsuk_addition.colony.menu_citizens",
-                    () -> window.openTab("citizens", "gui.xy2407_nsuk_addition.colony.menu_citizens", scrollable(citizensPanel(packet)))));
+                    () -> window.openTab("citizens", "gui.xy2407_nsuk_addition.colony.menu_citizens", scrollable(citizensPanel(packet, window)))));
             menu.addChild(menuButton("gui.xy2407_nsuk_addition.colony.menu_relocate",
-                    () -> window.openTab("relocate", "gui.xy2407_nsuk_addition.colony.menu_relocate", scrollable(relocatePanel(packet)))));
+                    () -> window.openTab("relocate", "gui.xy2407_nsuk_addition.colony.menu_relocate", scrollable(relocatePanel(packet, window)))));
             menu.addChild(menuButton("gui.xy2407_nsuk_addition.colony.menu_move",
                     () -> window.openTab("move", "gui.xy2407_nsuk_addition.colony.menu_move", scrollable(movePanel(packet)))));
         } else {
@@ -198,13 +199,13 @@ public final class ColonyCoreScreenOpener {
         return panel;
     }
 
-    private static UIElement citizensPanel(ColonyCoreOpenResponsePacket packet) {
+    private static UIElement citizensPanel(ColonyCoreOpenResponsePacket packet, ColonyWindow window) {
         UIElement panel = basePanel();
         panel.addChild(line(Component.translatable("gui.xy2407_nsuk_addition.colony.citizens_count", packet.citizenCount())));
         panel.addChild(contentSpacer());
         if (packet.localCitizens() != null && !packet.localCitizens().isEmpty()) {
             for (var c : packet.localCitizens()) {
-                panel.addChild(citizenRow(c));
+                panel.addChild(citizenRow(c, packet, window));
             }
         } else {
             panel.addChild(line(Component.translatable("gui.xy2407_nsuk_addition.colony.citizens_empty")));
@@ -212,7 +213,8 @@ public final class ColonyCoreScreenOpener {
         return panel;
     }
 
-    private static UIElement citizenRow(ColonyCoreOpenResponsePacket.LocalCitizen citizen) {
+    private static UIElement citizenRow(ColonyCoreOpenResponsePacket.LocalCitizen citizen,
+                                        ColonyCoreOpenResponsePacket packet, ColonyWindow window) {
         UIElement row = new UIElement().layout(layout -> {
             layout.widthPercent(100);
             layout.height(44);
@@ -240,14 +242,27 @@ public final class ColonyCoreScreenOpener {
         info.addChild(line(Component.literal(citizen.citizenName() == null || citizen.citizenName().isBlank() ? "-" : citizen.citizenName())));
         row.addChild(info);
         if (citizen.hasHome() && citizen.homeName() != null && !citizen.homeName().isBlank()) {
-            row.addChild(line(Component.literal(citizen.homeName()).withStyle(s -> s.withColor(0xFF66FF66))));
+            row.addChild(rowText(Component.literal(citizen.homeName()).withStyle(s -> s.withColor(0xFF66FF66))));
         } else {
-            row.addChild(line(Component.translatable("gui.xy2407_nsuk_addition.colony.no_home").withStyle(s -> s.withColor(0xFFFF6666))));
+            row.addChild(noHomeText());
         }
+        Button releaseBtn = contentButton("gui.xy2407_nsuk_addition.colony.relocate_to_city_button", () -> {
+            PacketDistributor.sendToServer(new ColonyCitizenReleasePacket(citizen.citizenId()));
+            if (packet.localCitizens() != null) {
+                packet.localCitizens().remove(citizen);
+            }
+            window.refreshCitizensTab(packet);
+        });
+        releaseBtn.layout(layout -> {
+            layout.width(48);
+            layout.height(18);
+            layout.flexShrink(0);
+        });
+        row.addChild(releaseBtn);
         return row;
     }
 
-    private static UIElement relocatePanel(ColonyCoreOpenResponsePacket packet) {
+    private static UIElement relocatePanel(ColonyCoreOpenResponsePacket packet, ColonyWindow window) {
         UIElement panel = basePanel();
         panel.addChild(line(Component.translatable("gui.xy2407_nsuk_addition.colony.relocate_desc")));
         panel.addChild(contentSpacer());
@@ -257,14 +272,15 @@ public final class ColonyCoreScreenOpener {
         } else {
             panel.addChild(line(Component.translatable("gui.xy2407_nsuk_addition.colony.relocate_available", others.size())));
             for (var citizen : others) {
-                panel.addChild(relocateRow(packet, citizen));
+                panel.addChild(relocateRow(packet, citizen, window));
             }
         }
         return panel;
     }
 
     private static UIElement relocateRow(ColonyCoreOpenResponsePacket packet,
-                                           ColonyCoreOpenResponsePacket.OtherTerritoryCitizen citizen) {
+                                         ColonyCoreOpenResponsePacket.OtherTerritoryCitizen citizen,
+                                         ColonyWindow window) {
         UIElement row = new UIElement().layout(layout -> {
             layout.widthPercent(100);
             layout.height(44);
@@ -292,13 +308,16 @@ public final class ColonyCoreScreenOpener {
         info.addChild(line(jobComponent.copy().append(" · ").append(workComponent).append(" · ").append(sourceComponent)));
         row.addChild(info);
         if (citizen.hasHome() && citizen.homeName() != null && !citizen.homeName().isBlank()) {
-            row.addChild(line(Component.literal(citizen.homeName()).withStyle(s -> s.withColor(0xFF66FF66))));
+            row.addChild(rowText(Component.literal(citizen.homeName()).withStyle(s -> s.withColor(0xFF66FF66))));
         } else {
-            row.addChild(line(Component.translatable("gui.xy2407_nsuk_addition.colony.no_home").withStyle(s -> s.withColor(0xFFFF6666))));
+            row.addChild(noHomeText());
         }
         Button relocateBtn = contentButton("gui.xy2407_nsuk_addition.colony.relocate_button", () -> {
             PacketDistributor.sendToServer(new ColonyCitizenRelocatePacket(citizen.citizenId(), packet.colonyId()));
-            close();
+            if (packet.otherCitizens() != null) {
+                packet.otherCitizens().remove(citizen);
+            }
+            window.refreshRelocateTab(packet);
         });
         relocateBtn.layout(layout -> { layout.width(48); layout.height(18); layout.flexShrink(0); });
         row.addChild(relocateBtn);
@@ -353,6 +372,23 @@ public final class ColonyCoreScreenOpener {
             layout.height(13);
             layout.widthPercent(100);
         });
+        return label;
+    }
+
+    private static Label rowText(Component component) {
+        Label label = new Label();
+        label.setText(component);
+        label.layout(layout -> {
+            layout.height(13);
+            layout.flexShrink(0);
+        });
+        return label;
+    }
+
+    private static Label noHomeText() {
+        Label label = rowText(Component.translatable("gui.xy2407_nsuk_addition.colony.no_home")
+                .withStyle(s -> s.withColor(0xFFFF6666)));
+        label.layout(layout -> layout.marginRight(28));
         return label;
     }
 
@@ -492,6 +528,24 @@ public final class ColonyCoreScreenOpener {
             openedTabs.put(id, view);
             rightTabs.addView(view);
             rightTabs.selectView(view);
+        }
+
+        private void refreshRelocateTab(ColonyCoreOpenResponsePacket data) {
+            replaceTab("relocate", "gui.xy2407_nsuk_addition.colony.menu_relocate",
+                    scrollable(relocatePanel(data, this)));
+        }
+
+        private void refreshCitizensTab(ColonyCoreOpenResponsePacket data) {
+            replaceTab("citizens", "gui.xy2407_nsuk_addition.colony.menu_citizens",
+                    scrollable(citizensPanel(data, this)));
+        }
+
+        private void replaceTab(String id, String titleKey, UIElement content) {
+            View old = openedTabs.remove(id);
+            if (old != null) {
+                old.removeSelf();
+            }
+            openTab(id, titleKey, content);
         }
     }
 

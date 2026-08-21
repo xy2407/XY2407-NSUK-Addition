@@ -60,6 +60,14 @@
       "entityType": "wildernature:cassowary",
       "feedItem": "minecraft:wheat_seeds",
       "heldItem": "minecraft:wheat_seeds"
+    },
+    {
+      "id": "chicken_egg",
+      "name": "采集鸡蛋",
+      "type": "breeding_collect",
+      "entityType": "minecraft:chicken",
+      "feedItem": "minecraft:wheat_seeds",
+      "heldItem": "minecraft:wheat_seeds"
     }
   ]
 }

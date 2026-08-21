@@ -54,10 +54,13 @@ public abstract class CityChunkMapElementMixin {
 
     @Inject(method = "renderOwnedChunkBorders", at = @At("HEAD"), cancellable = true, remap = false)
     private void nsuk$renderOwnedChunkBorders(GUIContext guiContext, int startX, int startY, int width, int height, double centerX, double centerY, double chunkSize, int startChunkX, int endChunkX, int startChunkZ, int endChunkZ, CallbackInfo ci) {
+        ColonyChunkClientCache colonyCache = ColonyChunkClientCache.getInstance();
         for (int chunkX = startChunkX; chunkX <= endChunkX; chunkX++) {
             for (int chunkZ = startChunkZ; chunkZ <= endChunkZ; chunkZ++) {
                 long chunkLong = ChunkPos.asLong(chunkX, chunkZ);
-                if (!cache.isChunkOwned(chunkLong)) continue;
+                boolean isCityChunk = cache.isChunkOwned(chunkLong);
+                boolean isColonyChunk = colonyCache.getColonyOwner(chunkLong) != null;
+                if (!isCityChunk && !isColonyChunk) continue;
 
                 if (nsuk$isOwnColonyChunk(chunkLong)) {
                     drawChunkFill(guiContext, startX, startY, width, height, centerX, centerY, chunkSize, chunkX, chunkZ, NSUK_COLONY_ALLY_FILL);
@@ -65,7 +68,7 @@ public abstract class CityChunkMapElementMixin {
                 } else if (nsuk$isEnemyColonyChunk(chunkLong)) {
                     drawChunkFill(guiContext, startX, startY, width, height, centerX, centerY, chunkSize, chunkX, chunkZ, NSUK_COLONY_ENEMY_FILL);
                     drawChunkOwnershipBorder(guiContext, startX, startY, width, height, centerX, centerY, chunkSize, chunkX, chunkZ, NSUK_COLONY_ENEMY_BORDER);
-                } else if (cache.isChunkInCurrentCity(chunkLong)) {
+                } else if (isCityChunk && cache.isChunkInCurrentCity(chunkLong)) {
                     drawChunkFill(guiContext, startX, startY, width, height, centerX, centerY, chunkSize, chunkX, chunkZ, 0x5500DD00);
                     drawChunkOwnershipBorder(guiContext, startX, startY, width, height, centerX, centerY, chunkSize, chunkX, chunkZ, 0xCC00DD00);
                 } else {

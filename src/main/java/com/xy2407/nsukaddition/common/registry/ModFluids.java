@@ -21,7 +21,6 @@ public final class ModFluids {
     public static final DeferredRegister<Fluid> FLUIDS = DeferredRegister.create(BuiltInRegistries.FLUID, NsukAddition.MOD_ID);
     public static final DeferredRegister.Items BUCKETS = DeferredRegister.createItems(NsukAddition.MOD_ID);
 
-    /** 9 种果汁流体定义（8 种葡萄汁 + 1 种苹果汁，与 Vinery 对应，排除地狱 warped/crimson）。 */
     public enum GrapeJuice {
         RED_GENERAL("red_grape_juice", "red_general", 0xFF8B0000),
         RED_SAVANNA("red_savanna_grape_juice", "red_savanna", 0xFFA52A2A),
@@ -48,7 +47,6 @@ public final class ModFluids {
         }
     }
 
-    /** 每种葡萄汁对应的注册项。 */
     public static final Map<GrapeJuice, JuiceEntry> ENTRIES = new HashMap<>();
 
     static {
@@ -81,7 +79,6 @@ public final class ModFluids {
         return ResourceLocation.fromNamespaceAndPath(NsukAddition.MOD_ID, "flowing_" + juice.name);
     }
 
-    /** 单个葡萄汁流体的所有注册项。 */
     public record JuiceEntry(
             Supplier<FluidType> type,
             Supplier<BaseFlowingFluid.Source> source,
@@ -99,7 +96,6 @@ public final class ModFluids {
         BUCKETS.register(modEventBus);
     }
 
-    /** 通过 Vinery juice 类型字符串获取对应 Source Fluid。 */
     public static Fluid getByVineryJuiceType(String vineryType) {
         for (GrapeJuice juice : GrapeJuice.values()) {
             if (juice.vineryType.equals(vineryType)) {
@@ -110,7 +106,6 @@ public final class ModFluids {
         return null;
     }
 
-    /** 通过名称获取葡萄汁 Source Fluid。 */
     public static Fluid getSourceByName(String name) {
         for (GrapeJuice juice : GrapeJuice.values()) {
             if (juice.name.equals(name)) {

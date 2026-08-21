@@ -18,7 +18,7 @@ public final class SidebarDataSnapshot {
     public record BuildTaskMaterial(String categoryKey, int required, int available) {
     }
 
-    public record BuildTask(String displayName, String citizenId, int progressPercent,
+    public record BuildTask(String taskId, String displayName, String citizenId, int progressPercent,
                             String statusKey, boolean tracked,
                             List<BuildTaskMaterial> materials) {
     }
@@ -37,6 +37,7 @@ public final class SidebarDataSnapshot {
 
     private final UUID cityId;
     private final int shopCount, factoryCount, residenceCount, farmCount, ranchCount, mineCount;
+    private final long prosperity;
     private final List<Officer> officers;
     private final List<MaterialStock> reserveMaterials;
     private final List<BuildTask> buildTasks;
@@ -44,13 +45,13 @@ public final class SidebarDataSnapshot {
     private final List<CitizenRecord> citizens;
 
     public SidebarDataSnapshot() {
-        this(null, List.of(), 0, 0, 0, 0, 0, 0, List.of(), List.of(), List.of(), List.of());
+        this(null, List.of(), 0, 0, 0, 0, 0, 0, 0L, List.of(), List.of(), List.of(), List.of());
     }
 
     public SidebarDataSnapshot(UUID cityId,
                                List<Officer> officers,
                                int shopCount, int factoryCount, int residenceCount, int farmCount, int ranchCount,
-                               int mineCount,
+                               int mineCount, long prosperity,
                                List<MaterialStock> reserveMaterials, List<BuildTask> buildTasks,
                                List<FinanceRecord> financeRecords,
                                List<CitizenRecord> citizens) {
@@ -62,6 +63,7 @@ public final class SidebarDataSnapshot {
         this.farmCount = farmCount;
         this.ranchCount = ranchCount;
         this.mineCount = mineCount;
+        this.prosperity = prosperity;
         this.reserveMaterials = List.copyOf(reserveMaterials);
         this.buildTasks = List.copyOf(buildTasks);
         this.financeRecords = List.copyOf(financeRecords);
@@ -106,6 +108,10 @@ public final class SidebarDataSnapshot {
 
     public int mineCount() {
         return mineCount;
+    }
+
+    public long prosperity() {
+        return prosperity;
     }
 
     public List<MaterialStock> reserveMaterials() {

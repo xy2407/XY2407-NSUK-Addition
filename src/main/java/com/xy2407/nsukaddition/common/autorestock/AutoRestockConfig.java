@@ -52,9 +52,4 @@ public final class AutoRestockConfig {
             AutoRestockSqliteStorage.delete(level, pos);
         }
     }
-
-    public static void syncFromMiningBox(ServerLevel level, BlockPos pos) {
-        if (pos == null) return;
-        ENABLED.add(pos.immutable());
-    }
 }

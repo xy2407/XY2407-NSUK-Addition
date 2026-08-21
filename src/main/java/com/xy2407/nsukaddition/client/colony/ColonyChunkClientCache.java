@@ -26,6 +26,7 @@ public final class ColonyChunkClientCache {
 
     public void updateFromPacket(UUID colonyId, String colonyName, String parentCityName,
                                   List<ColonyCoreOpenResponsePacket.ChunkCoord> chunks) {
+        chunkToColony.entrySet().removeIf(e -> colonyId.equals(e.getValue()));
         colonyEntries.put(colonyId, new ColonyEntry(colonyName, parentCityName));
         for (ColonyCoreOpenResponsePacket.ChunkCoord cc : chunks) {
             chunkToColony.put(ChunkPos.asLong(cc.x(), cc.z()), colonyId);
@@ -34,6 +35,7 @@ public final class ColonyChunkClientCache {
 
     public void updateFromSync(UUID colonyId, String colonyName, UUID parentCityId,
                                 List<ColonyCoreOpenResponsePacket.ChunkCoord> chunks) {
+        chunkToColony.entrySet().removeIf(e -> colonyId.equals(e.getValue()));
         colonyEntries.put(colonyId, new ColonyEntry(colonyName, null, parentCityId));
         for (ColonyCoreOpenResponsePacket.ChunkCoord cc : chunks) {
             chunkToColony.put(ChunkPos.asLong(cc.x(), cc.z()), colonyId);

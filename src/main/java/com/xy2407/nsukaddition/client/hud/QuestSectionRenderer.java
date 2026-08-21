@@ -28,7 +28,8 @@ final class QuestSectionRenderer {
         int leftX = padX;
         int y = startY;
 
-        textRenderer.drawText(mc.font, CACHE.title, leftX, y, SidebarHudLayer.TEXT_PRIMARY, false);
+        SidebarHudLayer.drawTitleWithBackground(textRenderer, rectRenderer, mc.font,
+                CACHE.title, leftX, y, SidebarHudLayer.TEXT_PRIMARY);
         y += SidebarLayout.TITLE_LINE_H + SidebarLayout.TITLE_CONTENT_GAP;
 
         if (!CACHE.hasTask) {
@@ -53,12 +54,16 @@ final class QuestSectionRenderer {
 
         int rowH = mc.font.lineHeight + 4;
         int maxPerCol = 6;
+        int cols = 3;
+        int colGap = 4;
+        float colWidth = (barW - colGap * (cols - 1)) / cols;
 
-        for (int i = 0; i < CACHE.materialRows.size() && i < maxPerCol * 2; i++) {
+        for (int i = 0; i < CACHE.materialRows.size() && i < maxPerCol * cols; i++) {
             MaterialRowCache row = CACHE.materialRows.get(i);
             int rowIndex = i % maxPerCol;
-            float colX = i < maxPerCol ? leftX : leftX + barW / 2 + 4;
-            renderMaterialRow(gg, mc, textRenderer, row, colX, y + rowIndex * rowH, barW / 2 - 4);
+            int col = i / maxPerCol;
+            float colX = leftX + col * (colWidth + colGap);
+            renderMaterialRow(gg, mc, textRenderer, row, colX, y + rowIndex * rowH, colWidth);
         }
     }
 
@@ -120,7 +125,7 @@ final class QuestSectionRenderer {
 
             int shown = 0;
             for (SidebarDataSnapshot.BuildTaskMaterial material : task.materials()) {
-                if (shown >= 12) break;
+                if (shown >= 18) break;
                 materialRows.add(new MaterialRowCache(material));
                 shown++;
             }

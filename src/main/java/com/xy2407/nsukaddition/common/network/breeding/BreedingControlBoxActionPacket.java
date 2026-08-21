@@ -2,7 +2,6 @@ package com.xy2407.nsukaddition.common.network.breeding;
 
 import com.xy2407.nsukaddition.NsukAddition;
 import com.xy2407.nsukaddition.common.breeding.BreedingControlBoxService;
-import com.xy2407.nsukaddition.common.breeding.BreedingConstants;
 import com.xy2407.nsukaddition.common.registry.ModBlocks;
 import common.cn.kafei.simukraft.building.BuildingIntegrityService;
 import common.cn.kafei.simukraft.building.PlacedBuildingRecord;
@@ -15,8 +14,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
-
-import java.util.Locale;
 
 /** 繁育控制箱操作网络包，处理客户端发送的配方选择、运行切换、解雇、修复等操作。 */
 @SuppressWarnings("null")

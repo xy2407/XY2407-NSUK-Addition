@@ -18,12 +18,10 @@ public class CityLevelUpTrigger extends SimpleCriterionTrigger<CityLevelUpTrigge
         return TriggerInstance.CODEC;
     }
 
-    /** 当城市升级成功时调用，检查所有玩家的该条件实例。 */
     public void trigger(ServerPlayer player, int newLevel) {
         trigger(player, instance -> instance.matches(newLevel));
     }
 
-    /** 成就条件实例：匹配目标城市等级。 */
     public record TriggerInstance(Optional<ContextAwarePredicate> player, int targetLevel) implements SimpleInstance {
 
         public static final Codec<TriggerInstance> CODEC = RecordCodecBuilder.create(

@@ -1,5 +1,7 @@
 package com.xy2407.nsukaddition.mixin.simukraft;
 
+import com.xy2407.nsukaddition.common.industrial.FlowerFertilizeService;
+import com.xy2407.nsukaddition.common.industrial.JumpRescueSkipHolder;
 import com.xy2407.nsukaddition.common.industrial.StepResultAccess;
 import common.cn.kafei.simukraft.building.PlacedBuildingRecord;
 import common.cn.kafei.simukraft.citizen.CitizenData;
@@ -10,6 +12,7 @@ import common.cn.kafei.simukraft.industrial.IndustrialControlBoxService;
 import common.cn.kafei.simukraft.industrial.IndustrialCoordinateResolver;
 import common.cn.kafei.simukraft.industrial.IndustrialDefinition;
 import common.cn.kafei.simukraft.industrial.IndustrialWorkService;
+import common.cn.kafei.simukraft.path.CitizenNavigationService;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -47,6 +50,8 @@ import java.util.concurrent.ConcurrentHashMap;
 public class IndustrialStepExtensionMixin {
 
     private static final Map<UUID, long[]> JUMP_STATE = new ConcurrentHashMap<>();
+    private static final Map<String, Integer> RIGHT_CLICK_FAIL_COUNT = new ConcurrentHashMap<>();
+    private static final int RIGHT_CLICK_MAX_RETRIES = 3;
 
     @SuppressWarnings({"unchecked", "rawtypes"})
     @Inject(method = "executeStep", at = @At("HEAD"), cancellable = true, remap = false)
@@ -60,10 +65,30 @@ public class IndustrialStepExtensionMixin {
                                             long gameTime, CallbackInfoReturnable cir) {
         String type = step.type().toLowerCase(Locale.ROOT);
         if ("right_click".equals(type)) {
+            String failKey = entity.getUUID() + ":" + data.currentStep();
             boolean ok = handleRightClick(level, building, definition, entity, step);
-            cir.setReturnValue(ok ? StepResultAccess.progressed() : StepResultAccess.waitingRetry());
+            if (ok) {
+                RIGHT_CLICK_FAIL_COUNT.remove(failKey);
+                cir.setReturnValue(StepResultAccess.progressed());
+            } else {
+                int fails = RIGHT_CLICK_FAIL_COUNT.merge(failKey, 1, Integer::sum);
+                if (fails >= RIGHT_CLICK_MAX_RETRIES) {
+                    RIGHT_CLICK_FAIL_COUNT.remove(failKey);
+                    cir.setReturnValue(StepResultAccess.progressed());
+                } else {
+                    cir.setReturnValue(StepResultAccess.waitingRetry());
+                }
+            }
         } else if ("jump".equals(type)) {
             cir.setReturnValue(handleJump(level, building, definition, worker, entity, step, gameTime));
+        } else if ("fertilize_flowers".equals(type)) {
+            FlowerFertilizeService.Result result = FlowerFertilizeService.execute(
+                    level, manager, data, building, definition, step, worker, entity);
+            cir.setReturnValue(switch (result) {
+                case PROGRESSED -> StepResultAccess.progressed();
+                case WAITING -> StepResultAccess.waiting();
+                case WAITING_RETRY -> StepResultAccess.waitingRetry();
+            });
         }
     }
 
@@ -155,24 +180,30 @@ public class IndustrialStepExtensionMixin {
         }
         if (state[1] >= total) {
             JUMP_STATE.remove(id);
+            JumpRescueSkipHolder.setSkip(id, false);
             entity.setPose(Pose.STANDING);
             return StepResultAccess.progressed();
         }
 
+        JumpRescueSkipHolder.setSkip(id, true);
+
+        CitizenNavigationService.stop(level, entity.getUUID());
+        entity.getNavigation().stop();
+
+        BlockPos targetPos = null;
         if (!step.positions().isEmpty()) {
             List<BlockPos> resolved = IndustrialCoordinateResolver.resolvePositions(building, step.positions());
             if (!resolved.isEmpty()) {
-                BlockPos worldPos = resolved.getFirst();
-                Vec3 targetCenter = new Vec3(worldPos.getX() + 0.5, worldPos.getY(), worldPos.getZ() + 0.5);
-                if (entity.position().distanceToSqr(targetCenter) > 0.25) {
-                    entity.teleportTo(targetCenter.x, targetCenter.y, targetCenter.z);
-                    return StepResultAccess.waitingRetry();
-                }
+                targetPos = resolved.getFirst();
             }
-        } else if (state[1] == 0) {
-            BlockPos jumpTarget = resolveStepPosition(building, definition, entity, step);
-            if (jumpTarget != null && entity.position().distanceToSqr(Vec3.atBottomCenterOf(jumpTarget)) > 2.0) {
-                entity.teleportTo(jumpTarget.getX() + 0.5, jumpTarget.getY(), jumpTarget.getZ() + 0.5);
+        } else {
+            targetPos = resolveStepPosition(building, definition, entity, step);
+        }
+        if (targetPos != null) {
+            Vec3 standTarget = new Vec3(targetPos.getX() + 0.5, targetPos.getY() + 1.0, targetPos.getZ() + 0.5);
+            if (entity.position().distanceToSqr(standTarget) > 0.01) {
+                entity.teleportTo(standTarget.x, standTarget.y, standTarget.z);
+                entity.setDeltaMovement(Vec3.ZERO);
             }
         }
 
@@ -183,6 +214,7 @@ public class IndustrialStepExtensionMixin {
 
         if (gameTime - state[2] >= 10 || state[1] == 0) {
             entity.getJumpControl().jump();
+            entity.setDeltaMovement(entity.getDeltaMovement().x, 0.49, entity.getDeltaMovement().z);
             state[1]++;
             state[2] = gameTime;
         }

@@ -12,8 +12,8 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import java.util.UUID;
 
-/** 建造任务操作网络包，处理客户端发送的建造任务暂停、恢复、追踪操作。 */
-public record BuildTaskActionPacket(UUID citizenId, Action action) implements CustomPacketPayload {
+/** 建造任务操作网络包，携带市民与任务 ID，处理暂停、恢复、追踪和终止建造任务操作。 */
+public record BuildTaskActionPacket(UUID citizenId, UUID taskId, Action action) implements CustomPacketPayload {
 
     public static final Type<BuildTaskActionPacket> TYPE = new Type<>(
             ResourceLocation.fromNamespaceAndPath(NsukAddition.MOD_ID, "build_task_action"));
@@ -25,18 +25,19 @@ public record BuildTaskActionPacket(UUID citizenId, Action action) implements Cu
 
     public static void encode(RegistryFriendlyByteBuf b, BuildTaskActionPacket p) {
         b.writeUUID(p.citizenId);
+        b.writeUUID(p.taskId);
         b.writeEnum(p.action);
     }
 
     public static BuildTaskActionPacket decode(RegistryFriendlyByteBuf b) {
-        return new BuildTaskActionPacket(b.readUUID(), b.readEnum(Action.class));
+        return new BuildTaskActionPacket(b.readUUID(), b.readUUID(), b.readEnum(Action.class));
     }
 
     public static void handle(BuildTaskActionPacket p, IPayloadContext ctx) {
         if (ctx.player() instanceof ServerPlayer player && player.level() instanceof ServerLevel level) {
-            BuildTaskActionHandler.handle(level, player, p.citizenId, p.action);
+            BuildTaskActionHandler.handle(level, player, p.citizenId, p.taskId, p.action);
         }
     }
 
-    public enum Action { PAUSE, RESUME, TRACK }
+    public enum Action { PAUSE, RESUME, TRACK, ABORT }
 }

@@ -2,7 +2,6 @@ package com.xy2407.nsukaddition.common.network.clientbound;
 
 import com.xy2407.nsukaddition.common.network.cooking.DiningOrderSyncPacket;
 
-import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 /** 就餐订单桥接，解耦公共包对客户端 DiningOrderClientHandler 的直接依赖。 */

@@ -2,6 +2,7 @@ package com.xy2407.nsukaddition.client.hud;
 
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.LayeredDraw;
 import net.minecraft.network.chat.Component;
@@ -11,7 +12,7 @@ import java.util.List;
 
 /** 侧边栏 HUD 主图层。 */
 public final class SidebarHudLayer implements LayeredDraw.Layer {
-    static final int REF_WIDTH = 320;
+    static final int REF_WIDTH = 288;
 
     static final int PANEL_BG = 0xDD444444;
     static final int PANEL_BORDER = 0xFF555555;
@@ -134,16 +135,11 @@ public final class SidebarHudLayer implements LayeredDraw.Layer {
         int bg = FastColor.ARGB32.color((int) (alpha * 0.867f), 0x44, 0x44, 0x44);
         int border = FastColor.ARGB32.color(alpha, 0x55, 0x55, 0x55);
         int titleBar = FastColor.ARGB32.color((int) (alpha * 0.8f), 0x30, 0x30, 0x30);
-        int textColor = FastColor.ARGB32.color(alpha, 0xFF, 0xFF, 0xFF);
 
         RECT_RENDERER.fill(0, 0, REF_WIDTH, designH, bg);
         RECT_RENDERER.outline(0, 0, REF_WIDTH, designH, border);
         RECT_RENDERER.fill(1, 1, REF_WIDTH - 2, SidebarLayout.TOP_BAR_H - 1, titleBar);
         RECT_RENDERER.fill(1, SidebarLayout.TOP_BAR_H, REF_WIDTH - 2, 1, border);
-
-        String title = Component.translatable("hud.xy2407_nsuk_addition.sidebar.title").getString()
-                + "  " + HeaderSectionRenderer.buildTitleExtra(mc);
-        TEXT_RENDERER.drawText(mc.font, title, SidebarLayout.PAD_X, 6, textColor, false);
     }
 
     private static void renderFooter(float designH, Minecraft mc) {
@@ -154,7 +150,7 @@ public final class SidebarHudLayer implements LayeredDraw.Layer {
         float totalContentW = REF_WIDTH - padX * 2;
         float buttonW = (totalContentW - buttonGap * 3) / 4f;
 
-        float footerY = designH - SidebarLayout.FOOTER_H;
+        float footerY = designH - SidebarLayout.FOOTER_H - SidebarLayout.FOOTER_NOTE_H;
         float buttonY = footerY + buttonTopGap;
 
         RECT_RENDERER.fill(padX, footerY, REF_WIDTH - padX * 2, 1, DIVIDER);
@@ -188,6 +184,11 @@ public final class SidebarHudLayer implements LayeredDraw.Layer {
                 }
             }
         }
+
+        String note = "整合包永久免费，意见反馈请进群1061156620";
+        int noteW = TEXT_RENDERER.calcWidth(mc.font, note);
+        float noteY = designH - SidebarLayout.FOOTER_NOTE_H + 2;
+        TEXT_RENDERER.drawText(mc.font, note, (REF_WIDTH - noteW) / 2f, noteY, TEXT_MUTED, false);
     }
 
     static float cs() {
@@ -210,6 +211,20 @@ public final class SidebarHudLayer implements LayeredDraw.Layer {
 
     private static int clampAlpha(float progress) {
         return Math.clamp((int) (progress * 255f), 0, 255);
+    }
+
+    static void drawTitleWithBackground(BatchTextRenderer textRenderer, BatchRectRenderer rectRenderer,
+                                         Font font, String text, float x, float y, int textColor) {
+        if (text == null || text.isEmpty()) return;
+        int textW = textRenderer.calcWidth(font, text);
+        int textH = font.lineHeight;
+        int padX = 4;
+        int padY = 2;
+        int bgW = textW + padX * 2;
+        int bgH = textH + padY * 2;
+        rectRenderer.fill(x, y, bgW, bgH, 0x80303030);
+        rectRenderer.outline(x, y, bgW, bgH, DIVIDER);
+        textRenderer.drawText(font, text, x + padX, y + padY, textColor, false);
     }
 
     private static final class FooterCache {

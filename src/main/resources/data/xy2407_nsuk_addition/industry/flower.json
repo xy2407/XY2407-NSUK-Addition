@@ -1,0 +1,77 @@
+{
+  "id": "xy2407_nsuk_addition:flower",
+  "name": "花棚",
+  "jobType": "florist",
+  "jobName": "花匠",
+  "heldItem": "minecraft:bone_meal",
+  "points": {
+    "work": {
+      "type": "structure_pos",
+      "positions": [[7, 1, 11]],
+      "select": "nearest"
+    }
+  },
+  "containers": {
+    "input": {
+      "type": "structure_pos",
+      "positions": [[1, 2, 20], [2, 2, 20], [4, 2, 20], [5, 2, 20]]
+    },
+    "output": {
+      "type": "structure_pos",
+      "positions": [[9, 2, 20], [10, 2, 20], [12, 2, 20], [13, 2, 20]]
+    }
+  },
+  "workArea": {
+    "type": "building_bounds",
+    "radius": 0,
+    "minYOffset": 1,
+    "maxYOffset": 2,
+    "excludeBuilding": false,
+    "scanColumnsPerTick": 16
+  },
+  "recipes": [
+    {
+      "id": "fertilize_flowers",
+      "name": "花卉培育",
+      "heldItem": "minecraft:bone_meal",
+      "inputs": [
+        {
+          "item": "minecraft:bone_meal",
+          "count": 1,
+          "consume": true
+        }
+      ],
+      "outputs": [
+        {
+          "item": "minecraft:poppy",
+          "baseAmount": 1,
+          "probability": 1.0,
+          "ignoreMultiplier": true
+        }
+      ],
+      "steps": [
+        {"type": "set_held_item", "item": "minecraft:bone_meal"},
+        {"type": "move_to", "point": "work"},
+        {
+          "type": "fertilize_flowers",
+          "targetBlockTag": "#minecraft:flowers",
+          "count": 8,
+          "range": 2.0,
+          "ticks": 30,
+          "swing": true,
+          "timeoutTicks": 12000
+        },
+        {"type": "set_held_item", "item": "minecraft:poppy"},
+        {"type": "move_to_container", "container": "output", "range": 1.2},
+        {"type": "look_at_container", "container": "output"},
+        {"type": "inspect_container", "ticks": 20, "container": "output"},
+        {
+          "type": "deposit_carried_items",
+          "container": "output",
+          "ticks": 20,
+          "itemSpecs": ["#minecraft:flowers"]
+        }
+      ]
+    }
+  ]
+}

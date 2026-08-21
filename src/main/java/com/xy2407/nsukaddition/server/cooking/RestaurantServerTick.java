@@ -2,12 +2,12 @@ package com.xy2407.nsukaddition.server.cooking;
 
 import com.xy2407.nsukaddition.NsukAddition;
 import com.xy2407.nsukaddition.common.cooking.CookingWorkService;
+import com.xy2407.nsukaddition.common.cooking.HospitalMealOrderService;
 import com.xy2407.nsukaddition.common.cooking.RestaurantBoxSqliteStorage;
 import com.xy2407.nsukaddition.common.cooking.RestaurantControlBoxViewSyncService;
 import com.xy2407.nsukaddition.common.cooking.RestaurantDefinitionLoader;
 import com.xy2407.nsukaddition.common.cooking.RestaurantDiningService;
 import com.xy2407.nsukaddition.common.entity.SitEntity;
-import com.xy2407.nsukaddition.common.storage.NsukWriteExecutor;
 import common.cn.kafei.simukraft.citizen.CitizenManager;
 import common.cn.kafei.simukraft.citizen.CitizenService;
 import common.cn.kafei.simukraft.entity.CitizenEntity;
@@ -36,6 +36,8 @@ public final class RestaurantServerTick {
         if (level != null) {
             CookingWorkService.tick(level);
             RestaurantDiningService.tick(level);
+            HospitalMealOrderService.tick(level);
+            com.xy2407.nsukaddition.common.compat.maid.MaidWaiterWorkService.tick(level);
         }
     }
 
@@ -66,10 +68,11 @@ public final class RestaurantServerTick {
         if (level != null) {
             RestaurantDiningService.cleanupAllDiners(level);
         }
-        NsukWriteExecutor.shutdown();
         MinecraftServer server = event.getServer();
         RestaurantControlBoxViewSyncService.clearServerCaches(server);
         RestaurantDefinitionLoader.clearCache();
+        HospitalMealOrderService.clearServerCaches();
+        com.xy2407.nsukaddition.common.compat.maid.MaidWaiterWorkService.clearAll();
     }
 
     private static void resetDiningStatus(ServerLevel level, Entity entity) {

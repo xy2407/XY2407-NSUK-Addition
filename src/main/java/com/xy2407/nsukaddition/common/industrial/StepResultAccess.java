@@ -3,6 +3,7 @@ package com.xy2407.nsukaddition.common.industrial;
 /** 工业步骤结果枚举的反射访问器，解耦对上游内部类的直接依赖。 */
 public final class StepResultAccess {
     private static final Enum<?> PROGRESSED;
+    private static final Enum<?> WAITING;
     private static final Enum<?> WAITING_RETRY;
     private static final Enum<?> WAITING_MOVE;
 
@@ -12,6 +13,7 @@ public final class StepResultAccess {
             @SuppressWarnings({"unchecked", "rawtypes"})
             Class<Enum> cls = (Class<Enum>) rawCls;
             PROGRESSED = Enum.valueOf(cls, "PROGRESSED");
+            WAITING = Enum.valueOf(cls, "WAITING");
             WAITING_RETRY = Enum.valueOf(cls, "WAITING_RETRY");
             WAITING_MOVE = Enum.valueOf(cls, "WAITING_MOVE");
         } catch (Exception e) {
@@ -24,6 +26,11 @@ public final class StepResultAccess {
     @SuppressWarnings("unchecked")
     public static <T> T progressed() {
         return (T) PROGRESSED;
+    }
+
+    @SuppressWarnings("unchecked")
+    public static <T> T waiting() {
+        return (T) WAITING;
     }
 
     @SuppressWarnings("unchecked")

@@ -9,12 +9,15 @@ import org.jetbrains.annotations.NotNull;
 
 import java.util.*;
 
-/** 建造任务追踪状态，持久化存储每个城市当前追踪和暂停的居民建造任务。 */
+/**
+ * 建造任务追踪状态(持久化)：每个城市唯一追踪一个建筑任务(追踪任务=正在施工的任务)，
+ * 暂停按市民记录。服务端重启后恢复关闭前正在追踪的任务。
+ */
 public final class BuildTaskTrackedState extends SavedData {
 
     private static final String NAME = NsukAddition.MOD_ID + "_build_task_tracked";
 
-    private final Map<UUID, UUID> trackedByCity = new HashMap<>();
+    private final Map<UUID, UUID> trackedTaskByCity = new HashMap<>();
     private final Map<UUID, Set<UUID>> pausedByCity = new HashMap<>();
 
     public static BuildTaskTrackedState get(ServerLevel level) {
@@ -22,19 +25,32 @@ public final class BuildTaskTrackedState extends SavedData {
                 new Factory<>(BuildTaskTrackedState::new, BuildTaskTrackedState::load), NAME);
     }
 
-    public static void set(ServerLevel level, UUID cityId, UUID citizenId) {
+    public static UUID getTrackedTask(ServerLevel level, UUID cityId) {
+        return get(level).trackedTaskByCity.get(cityId);
+    }
+
+    public static void setTrackedTask(ServerLevel level, UUID cityId, UUID taskId) {
+        if (cityId == null || taskId == null) {
+            return;
+        }
         BuildTaskTrackedState state = get(level);
-        state.trackedByCity.put(cityId, citizenId);
+        state.trackedTaskByCity.put(cityId, taskId);
         state.setDirty();
     }
 
-    public static UUID get(ServerLevel level, UUID cityId) {
-        return get(level).trackedByCity.get(cityId);
+    public static void clearTrackedTask(ServerLevel level, UUID cityId) {
+        if (cityId == null) {
+            return;
+        }
+        BuildTaskTrackedState state = get(level);
+        if (state.trackedTaskByCity.remove(cityId) != null) {
+            state.setDirty();
+        }
     }
 
     public static void remove(ServerLevel level, UUID cityId) {
         BuildTaskTrackedState state = get(level);
-        boolean changed = state.trackedByCity.remove(cityId) != null;
+        boolean changed = state.trackedTaskByCity.remove(cityId) != null;
         if (state.pausedByCity.remove(cityId) != null) {
             changed = true;
         }
@@ -82,11 +98,12 @@ public final class BuildTaskTrackedState extends SavedData {
     public static BuildTaskTrackedState load(CompoundTag tag, HolderLookup.Provider registries) {
         BuildTaskTrackedState state = new BuildTaskTrackedState();
 
-        CompoundTag tracked = tag.getCompound("tracked");
+        CompoundTag tracked = tag.getCompound("tracked_task");
         for (String key : tracked.getAllKeys()) {
             try {
-                state.trackedByCity.put(UUID.fromString(key), tracked.getUUID(key));
-            } catch (Exception ignored) {
+                state.trackedTaskByCity.put(UUID.fromString(key), tracked.getUUID(key));
+            } catch (Exception e) {
+                NsukAddition.LOGGER.warn("BuildTaskTrackedState: 非法追踪任务记录 key={}", key, e);
             }
         }
 
@@ -99,13 +116,15 @@ public final class BuildTaskTrackedState extends SavedData {
                 for (String idx : citizenTag.getAllKeys()) {
                     try {
                         set.add(citizenTag.getUUID(idx));
-                    } catch (Exception ignored) {
+                    } catch (Exception e) {
+                        NsukAddition.LOGGER.warn("BuildTaskTrackedState: 非法暂停记录 city={} idx={}", cityKey, idx, e);
                     }
                 }
                 if (!set.isEmpty()) {
                     state.pausedByCity.put(cityId, set);
                 }
-            } catch (Exception ignored) {
+            } catch (Exception e) {
+                NsukAddition.LOGGER.warn("BuildTaskTrackedState: 非法暂停城市 key={}", cityKey, e);
             }
         }
 
@@ -115,10 +134,10 @@ public final class BuildTaskTrackedState extends SavedData {
     @Override
     public @NotNull CompoundTag save(@NotNull CompoundTag tag, HolderLookup.Provider registries) {
         CompoundTag tracked = new CompoundTag();
-        for (Map.Entry<UUID, UUID> e : trackedByCity.entrySet()) {
+        for (Map.Entry<UUID, UUID> e : trackedTaskByCity.entrySet()) {
             tracked.putUUID(e.getKey().toString(), e.getValue());
         }
-        tag.put("tracked", tracked);
+        tag.put("tracked_task", tracked);
 
         CompoundTag paused = new CompoundTag();
         for (Map.Entry<UUID, Set<UUID>> e : pausedByCity.entrySet()) {

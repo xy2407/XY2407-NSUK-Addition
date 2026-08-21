@@ -1,13 +1,13 @@
 package com.xy2407.nsukaddition.common.city;
 
-import com.xy2407.nsukaddition.common.mining.MiningBoxData;
-import com.xy2407.nsukaddition.common.mining.MiningBoxManager;
-import com.xy2407.nsukaddition.common.mining.MiningControlBoxBlock;
 import common.cn.kafei.simukraft.building.PlacedBuildingRecord;
 import common.cn.kafei.simukraft.building.PlacedBuildingService;
+import common.cn.kafei.simukraft.block.MineralDrillingControlBoxBlock;
 import common.cn.kafei.simukraft.city.CityChunkManager;
 import common.cn.kafei.simukraft.city.poi.CityPoiManager;
 import common.cn.kafei.simukraft.city.poi.CityPoiType;
+import common.cn.kafei.simukraft.mineraldrilling.MineralDrillingBoxData;
+import common.cn.kafei.simukraft.mineraldrilling.MineralDrillingBoxManager;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
 
@@ -47,8 +47,8 @@ public record CityBuildingStats(
 
         int mine = 0;
         CityChunkManager chunkManager = CityChunkManager.get(level);
-        for (MiningBoxData box : MiningBoxManager.get(level).all()) {
-            if (level.getBlockState(box.boxPos()).getBlock() instanceof MiningControlBoxBlock
+        for (MineralDrillingBoxData box : MineralDrillingBoxManager.get(level).all()) {
+            if (level.getBlockState(box.boxPos()).getBlock() instanceof MineralDrillingControlBoxBlock
                     && cityId.equals(chunkManager.getChunkOwner(new ChunkPos(box.boxPos()).toLong()))) {
                 mine++;
             }

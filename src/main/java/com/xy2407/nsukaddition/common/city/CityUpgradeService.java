@@ -17,6 +17,7 @@ import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 import java.util.function.Predicate;
@@ -173,7 +174,7 @@ public final class CityUpgradeService {
         return UpgradeResult.SUCCESS;
     }
 
-    private static int countMatchingInWarehouses(ServerLevel level, UUID cityId, Predicate<ItemStack> matcher) {
+    public static int countMatchingInWarehouses(ServerLevel level, UUID cityId, Predicate<ItemStack> matcher) {
         int count = 0;
         List<LogisticsWarehouseData> warehouses = LogisticsManager.get(level).warehouses(cityId);
         for (LogisticsWarehouseData warehouse : warehouses) {
@@ -188,7 +189,7 @@ public final class CityUpgradeService {
         return count;
     }
 
-    private static int countMatchingInInventory(ServerPlayer player, Predicate<ItemStack> matcher) {
+    public static int countMatchingInInventory(ServerPlayer player, Predicate<ItemStack> matcher) {
         if (player == null) return 0;
         int count = 0;
         for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
@@ -200,7 +201,7 @@ public final class CityUpgradeService {
         return count;
     }
 
-    private static int deductFromWarehouses(ServerLevel level, UUID cityId, Predicate<ItemStack> matcher, int required) {
+    public static int deductFromWarehouses(ServerLevel level, UUID cityId, Predicate<ItemStack> matcher, int required) {
         if (required <= 0) return 0;
         int remaining = required;
         List<LogisticsWarehouseData> warehouses = LogisticsManager.get(level).warehouses(cityId);
@@ -215,7 +216,50 @@ public final class CityUpgradeService {
         return remaining;
     }
 
-    private static int deductFromContainer(ServerLevel level, BlockPos containerPos,
+    public static List<ItemStack> deductFromWarehousesCollect(ServerLevel level, UUID cityId,
+                                                              Predicate<ItemStack> matcher, int required) {
+        List<ItemStack> removed = new ArrayList<>();
+        int remaining = required;
+        List<LogisticsWarehouseData> warehouses = LogisticsManager.get(level).warehouses(cityId);
+        for (LogisticsWarehouseData warehouse : warehouses) {
+            if (remaining <= 0) break;
+            List<BlockPos> containers = LogisticsWarehouseInventoryService.containers(level, warehouse.boxPos());
+            for (BlockPos containerPos : containers) {
+                if (remaining <= 0) break;
+                List<ItemStack> got = deductFromContainerCollect(level, containerPos, matcher, remaining);
+                for (ItemStack stack : got) {
+                    if (remaining <= 0) break;
+                    removed.add(stack);
+                    remaining -= stack.getCount();
+                }
+            }
+        }
+        return removed;
+    }
+
+    public static List<ItemStack> deductFromContainerCollect(ServerLevel level, BlockPos containerPos,
+                                                             Predicate<ItemStack> matcher, int maxToDeduct) {
+        List<ItemStack> removed = new ArrayList<>();
+        int deducted = 0;
+        List<GenericContainerAccess.SlotSnapshot> snapshots = GenericContainerAccess.snapshotSlots(level, containerPos);
+        for (GenericContainerAccess.SlotSnapshot snapshot : snapshots) {
+            if (deducted >= maxToDeduct) break;
+            ItemStack stack = snapshot.stack();
+            if (stack.isEmpty() || !matcher.test(stack)) continue;
+            int toTake = Math.min(maxToDeduct - deducted, stack.getCount());
+            ItemStack extracted = GenericContainerAccess.extractFromSlot(
+                    level, containerPos, snapshot.slot(), snapshot.access(), snapshot.side(),
+                    toTake, matcher::test
+            );
+            if (!extracted.isEmpty()) {
+                deducted += extracted.getCount();
+                removed.add(extracted);
+            }
+        }
+        return removed;
+    }
+
+    public static int deductFromContainer(ServerLevel level, BlockPos containerPos,
                                             Predicate<ItemStack> matcher, int maxToDeduct) {
         int deducted = 0;
         List<GenericContainerAccess.SlotSnapshot> snapshots = GenericContainerAccess.snapshotSlots(level, containerPos);
@@ -236,7 +280,7 @@ public final class CityUpgradeService {
         return deducted;
     }
 
-    private static int deductFromPlayer(ServerPlayer player, Predicate<ItemStack> matcher, int remaining) {
+    public static int deductFromPlayer(ServerPlayer player, Predicate<ItemStack> matcher, int remaining) {
         if (player == null || remaining <= 0) return remaining;
         for (int i = 0; i < 36 && remaining > 0; i++) {
             ItemStack stack = player.getInventory().getItem(i);

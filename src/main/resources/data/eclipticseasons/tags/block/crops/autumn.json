@@ -9,6 +9,7 @@
     {"id": "vinery:taiga_grape_bush_red", "required": false},
     {"id": "vinery:taiga_grape_bush_white", "required": false},
     {"id": "kaleidoscope_tavern:grape_crop", "required": false},
-    {"id": "kaleidoscope_tavern:gold_grape_crop", "required": false}
+    {"id": "kaleidoscope_tavern:gold_grape_crop", "required": false},
+    {"id": "kawaiidishes:coffee_bush", "required": false}
   ]
 }

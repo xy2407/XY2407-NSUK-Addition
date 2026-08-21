@@ -1,6 +1,5 @@
 package com.xy2407.nsukaddition.common.breeding;
 
-import com.xy2407.nsukaddition.NsukAddition;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
@@ -8,13 +7,10 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.saveddata.SavedData;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
 
 /** 繁殖控制箱管理器，基于 SavedData 管理所有繁殖箱数据并提供异步 SQLite 持久化。 */
 @SuppressWarnings("null")
@@ -22,14 +18,8 @@ public final class BreedingBoxManager extends SavedData {
     private static final String DATA_NAME = BreedingConstants.DATA_NAME;
     private static final Factory<BreedingBoxManager> FACTORY = new Factory<>(BreedingBoxManager::new, BreedingBoxManager::load, null);
 
-    private static final Executor IO_EXECUTOR = Executors.newSingleThreadExecutor(r -> {
-        Thread t = new Thread(r, "NSukAddition-Breeding-SQLite");
-        t.setDaemon(true);
-        return t;
-    });
-
     private final ConcurrentMap<BlockPos, BreedingBoxData> boxes = new ConcurrentHashMap<>();
-    private final Set<BlockPos> pendingSaves = new HashSet<>();
+    private final Set<BlockPos> pendingSaves = ConcurrentHashMap.newKeySet();
     private volatile ServerLevel level;
     private volatile boolean sqliteLoaded;
 
@@ -65,7 +55,6 @@ public final class BreedingBoxManager extends SavedData {
         if (lv == null) return;
         synchronized (this) {
             if (sqliteLoaded) return;
-            sqliteLoaded = true;
         }
         CompoundTag sqliteData = BreedingBoxSqliteStorage.loadAll(lv);
         if (sqliteData != null) {
@@ -75,6 +64,7 @@ public final class BreedingBoxManager extends SavedData {
                 boxes.put(data.boxPos(), data);
             }
         }
+        sqliteLoaded = true;
     }
 
     public ServerLevel level() {
@@ -98,18 +88,8 @@ public final class BreedingBoxManager extends SavedData {
         ServerLevel lv = level;
         if (lv == null) return;
         BlockPos key = data.boxPos().immutable();
-        synchronized (pendingSaves) {
-            if (!pendingSaves.add(key)) return;
-        }
-        IO_EXECUTOR.execute(() -> {
-            try {
-                BreedingBoxSqliteStorage.saveBox(lv, data);
-            } finally {
-                synchronized (pendingSaves) {
-                    pendingSaves.remove(key);
-                }
-            }
-        });
+        if (!pendingSaves.add(key)) return;
+        BreedingBoxSqliteStorage.saveBox(lv, data, () -> pendingSaves.remove(key));
     }
 
     public void remove(BlockPos boxPos) {
@@ -119,7 +99,7 @@ public final class BreedingBoxManager extends SavedData {
             setDirty();
             ServerLevel lv = level;
             if (lv != null) {
-                IO_EXECUTOR.execute(() -> BreedingBoxSqliteStorage.deleteBox(lv, key.asLong()));
+                BreedingBoxSqliteStorage.deleteBox(lv, key.asLong());
             }
         }
     }

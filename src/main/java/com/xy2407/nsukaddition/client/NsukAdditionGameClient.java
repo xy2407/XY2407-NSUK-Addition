@@ -1,13 +1,16 @@
 package com.xy2407.nsukaddition.client;
 
 import com.xy2407.nsukaddition.NsukAddition;
+import com.xy2407.nsukaddition.client.citycore.CityCorePlacerKeyHandler;
+import com.xy2407.nsukaddition.client.citycore.CityGhostRenderer;
 import com.xy2407.nsukaddition.client.city.CityCoreMovePreview;
 import com.xy2407.nsukaddition.client.colony.ColonyCoreMovePreview;
 import com.xy2407.nsukaddition.client.container.ContainerRoleQueryHandler;
 import com.xy2407.nsukaddition.client.data.SidebarDataClient;
 import com.xy2407.nsukaddition.client.keybind.ModKeyMappings;
+import com.xy2407.nsukaddition.client.rts.RtsInputHandler;
+import com.xy2407.nsukaddition.client.rts.RtsModeManager;
 import com.xy2407.nsukaddition.client.title.ModTitleScreen;
-import com.xy2407.nsukaddition.client.vein.OreVeinClientCache;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.screens.TitleScreen;
 import net.neoforged.api.distmarker.Dist;
@@ -24,6 +27,8 @@ public final class NsukAdditionGameClient {
 
     private static boolean prevEnter = false;
     private static boolean prevEscape = false;
+    private static boolean prevTilde = false;
+    private static boolean prevPlayerDead = false;
 
     private NsukAdditionGameClient() {
     }
@@ -33,10 +38,46 @@ public final class NsukAdditionGameClient {
         while (ModKeyMappings.OPEN_SIDEBAR.consumeClick()) {
             SidebarHudTicker.toggle();
         }
+        while (ModKeyMappings.TOGGLE_RTS_MODE.consumeClick()) {
+            RtsModeManager.toggle();
+        }
+        while (ModKeyMappings.TOGGLE_RTS_ORTHO.consumeClick()) {
+            if (RtsModeManager.isActive()) {
+                RtsModeManager.setOrthoEnabled(!RtsModeManager.isOrthoEnabled());
+            }
+        }
+
+        Minecraft mc = Minecraft.getInstance();
+        if (RtsModeManager.isActive() && mc.player != null) {
+            boolean deadNow = mc.player.isDeadOrDying();
+            if (deadNow && !prevPlayerDead) {
+                RtsModeManager.onPlayerDeath();
+            } else if (!deadNow && prevPlayerDead) {
+                RtsModeManager.syncCameraToRespawn();
+            }
+            prevPlayerDead = deadNow;
+        } else {
+            prevPlayerDead = false;
+        }
+
+        RtsModeManager.tickCamera();
+        RtsInputHandler.onTick();
+
+        CityCorePlacerKeyHandler.onTick();
+
+        CityGhostRenderer.onClientTick();
+
+        RtsModeManager.setCtrlHeld(isKeyDown(GLFW.GLFW_KEY_LEFT_CONTROL));
+
+        boolean tildeNow = isKeyDown(GLFW.GLFW_KEY_GRAVE_ACCENT);
+        if (tildeNow && !prevTilde && RtsModeManager.isActive()) {
+            RtsModeManager.clearAllAttackTargets();
+        }
+        prevTilde = tildeNow;
+
         ContainerRoleQueryHandler.onClientTick();
 
         if (CityCoreMovePreview.isActive() || ColonyCoreMovePreview.isActive()) {
-            Minecraft mc = Minecraft.getInstance();
             while (mc.options.keyInventory.consumeClick()) {}
 
             boolean enterNow = isKeyDown(GLFW.GLFW_KEY_ENTER);
@@ -68,14 +109,13 @@ public final class NsukAdditionGameClient {
     public static void onPlayerLoggedOut(ClientPlayerNetworkEvent.LoggingOut event) {
         CityCoreMovePreview.exit();
         ColonyCoreMovePreview.exit();
-        OreVeinClientCache.getInstance().forceSaveToDisk();
-        OreVeinClientCache.getInstance().clear();
+        RtsModeManager.onLogout();
         SidebarDataClient.reset();
+        CityGhostRenderer.onLogout();
     }
 
     @SubscribeEvent
     public static void onPlayerLoggedIn(ClientPlayerNetworkEvent.LoggingIn event) {
-        OreVeinClientCache.getInstance().loadFromDisk();
     }
 
     @SubscribeEvent

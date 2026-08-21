@@ -1,6 +1,10 @@
 package com.xy2407.nsukaddition.server.village;
 
+import com.xy2407.nsukaddition.NsukAddition;
+import com.xy2407.nsukaddition.common.citycore.VillageCityConversionTrigger;
+import com.xy2407.nsukaddition.common.foreigntrade.VillageCityTypeStorage;
 import com.xy2407.nsukaddition.common.village.VillageNamePool;
+import com.xy2407.nsukaddition.server.city.CityCorePositionsSync;
 import common.cn.kafei.simukraft.citizen.CitizenService;
 import common.cn.kafei.simukraft.city.CityChunkManager;
 import common.cn.kafei.simukraft.city.CityData;
@@ -41,7 +45,52 @@ public final class VillageCityConverter {
 
     private static long lastTickTime = 0;
 
+    static {
+        VillageCityConversionTrigger.install(VillageCityConverter::onCityCorePlaced);
+    }
+
     private VillageCityConverter() {}
+
+    public static void onCityCorePlaced(ServerLevel level, BlockPos corePos) {
+        if (level == null || corePos == null) {
+            return;
+        }
+        try {
+            ChunkPos chunkPos = new ChunkPos(corePos);
+            var chunk = level.getChunk(chunkPos.x, chunkPos.z);
+            var structureRegistry = level.registryAccess()
+                    .registryOrThrow(net.minecraft.core.registries.Registries.STRUCTURE);
+            for (var entry : chunk.getAllStarts().entrySet()) {
+                ResourceLocation id = structureRegistry.getKey(entry.getKey());
+                if (!isVillageStructure(id)) {
+                    continue;
+                }
+                StructureStart start = entry.getValue();
+                if (start == StructureStart.INVALID_START || !start.isValid()) {
+                    continue;
+                }
+                BoundingBox box = start.getBoundingBox();
+                if (!inside(corePos, box)) {
+                    continue;
+                }
+                String villageType = id.getPath().substring("village_".length());
+                String coreKey = dimensionId(level) + "@" + corePos.asLong();
+                if (CLAIMED_CORES.putIfAbsent(coreKey, Boolean.TRUE) != null) {
+                    continue;
+                }
+                createVillageCity(level, corePos.immutable(), box, villageType);
+                break;
+            }
+        } catch (Exception e) {
+            NsukAddition.LOGGER.warn("VillageCityConverter: failed to convert village city at {}", corePos, e);
+        }
+    }
+
+    private static boolean inside(BlockPos pos, BoundingBox box) {
+        return pos.getX() >= box.minX() && pos.getX() <= box.maxX()
+                && pos.getY() >= box.minY() && pos.getY() <= box.maxY()
+                && pos.getZ() >= box.minZ() && pos.getZ() <= box.maxZ();
+    }
 
     @SubscribeEvent
     public static void onChunkLoad(ChunkEvent.Load event) {
@@ -53,7 +102,7 @@ public final class VillageCityConverter {
         String chunkKey = dimensionId(level) + "@" + chunkPos.toLong();
         if (PROCESSED.containsKey(chunkKey)) return;
 
-        List<BoundingBox> boxes = new ArrayList<>();
+        List<VillageBox> boxes = new ArrayList<>();
         var structureRegistry = level.registryAccess()
                 .registryOrThrow(net.minecraft.core.registries.Registries.STRUCTURE);
         for (var entry : chunk.getAllStarts().entrySet()) {
@@ -61,7 +110,8 @@ public final class VillageCityConverter {
             if (isVillageStructure(id)) {
                 StructureStart start = entry.getValue();
                 if (start != StructureStart.INVALID_START && start.isValid()) {
-                    boxes.add(start.getBoundingBox());
+                    String villageType = id.getPath().substring("village_".length());
+                    boxes.add(new VillageBox(start.getBoundingBox(), villageType));
                 }
             }
         }
@@ -93,15 +143,15 @@ public final class VillageCityConverter {
             }
         }
 
-        if (currentTick - lastTickTime < 100) return;
+        if (currentTick - lastTickTime < 200) return;
         lastTickTime = currentTick;
 
-        for (int i = 0; i < 5; i++) {
+        while (true) {
             PendingChunk pc;
             synchronized (PENDING) {
                 pc = PENDING.pollFirst();
             }
-            if (pc == null) return;
+            if (pc == null) break;
 
             if (PROCESSED.putIfAbsent(pc.chunkKey, Boolean.TRUE) != null) continue;
 
@@ -110,12 +160,13 @@ public final class VillageCityConverter {
     }
 
     private static void processChunk(PendingChunk pc) {
-        for (BoundingBox box : pc.villageBoxes) {
-            findCityCores(pc.level, box);
+        for (VillageBox vb : pc.villageBoxes) {
+            findCityCores(pc.level, vb);
         }
     }
 
-    private static void findCityCores(ServerLevel level, BoundingBox box) {
+    private static void findCityCores(ServerLevel level, VillageBox vb) {
+        BoundingBox box = vb.box();
         for (int x = box.minX(); x <= box.maxX(); x++) {
             for (int z = box.minZ(); z <= box.maxZ(); z++) {
                 if (!level.hasChunk(x >> 4, z >> 4)) continue;
@@ -126,23 +177,34 @@ public final class VillageCityConverter {
                         BlockPos corePos = pos.immutable();
                         String coreKey = dimensionId(level) + "@" + corePos.asLong();
                         if (CLAIMED_CORES.putIfAbsent(coreKey, Boolean.TRUE) != null) continue;
-                        createVillageCity(level, corePos, box);
+                        createVillageCity(level, corePos, box, vb.villageType());
                     }
                 }
             }
         }
     }
 
-    private static void createVillageCity(ServerLevel level, BlockPos corePos, BoundingBox box) {
-        if (CityService.hasCityAtCorePos(level, corePos)) return;
+    private static void createVillageCity(ServerLevel level, BlockPos corePos, BoundingBox box, String villageType) {
+        if (CityService.hasCityAtCorePos(level, corePos)) {
+            var existing = CityService.findCityByCorePos(level, corePos);
+            if (existing.isPresent() && VillageCityTypeStorage.getVillageType(level, existing.get().cityId()) == null) {
+                VillageCityTypeStorage.saveVillageType(level, existing.get().cityId(), villageType);
+            }
+            return;
+        }
 
         String cityName = generateUniqueName(level);
         CityData city = CityService.createCity(level, cityName, SYSTEM_MAYOR_ID, SYSTEM_MAYOR_NAME, corePos);
         if (city == null) return;
 
+        VillageCityTypeStorage.saveVillageType(level, city.cityId(), villageType);
         claimTerritoryChunks(level, city.cityId(), box);
 
         CityChunkSyncService.syncToAll(level);
+
+        level.getServer().getPlayerList().getPlayers().forEach(p -> {
+            if (p.serverLevel() == level) CityCorePositionsSync.sendPositionsToPlayer(p);
+        });
 
         assignNpcsInTerritory(level, city.cityId(), box);
 
@@ -173,6 +235,7 @@ public final class VillageCityConverter {
                 chunkManager.claimChunk(cityId, ChunkPos.asLong(cx, cz));
             }
         }
+        chunkManager.saveToSqlite(level);
     }
 
     private static boolean isVillageStructure(ResourceLocation id) {
@@ -193,7 +256,9 @@ public final class VillageCityConverter {
         return level.dimension().location().toString();
     }
 
-    private record PendingChunk(ServerLevel level, ChunkPos chunkPos, String chunkKey, List<BoundingBox> villageBoxes) {}
+    private record PendingChunk(ServerLevel level, ChunkPos chunkPos, String chunkKey, List<VillageBox> villageBoxes) {}
+
+    private record VillageBox(BoundingBox box, String villageType) {}
 
     private record DeferredAssign(long executeAtTick, ServerLevel level, UUID cityId, BoundingBox box) {}
 }

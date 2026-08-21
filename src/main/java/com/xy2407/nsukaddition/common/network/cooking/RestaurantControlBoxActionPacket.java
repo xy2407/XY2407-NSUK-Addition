@@ -61,7 +61,6 @@ public record RestaurantControlBoxActionPacket(BlockPos pos, Action action, Stri
         BuildingIntegrityService.repair(level, player, building);
     }
 
-    /** 切换餐厅自动补货开关。 */
     private static void toggleAutoRestock(ServerLevel level, BlockPos pos) {
         AutoRestockConfig.setEnabled(level, pos, !AutoRestockConfig.isEnabled(pos));
     }

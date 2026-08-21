@@ -2,6 +2,7 @@ package com.xy2407.nsukaddition.common.network.city;
 
 import com.xy2407.nsukaddition.NsukAddition;
 import com.xy2407.nsukaddition.common.city.CityCoreMoveService;
+import com.xy2407.nsukaddition.server.city.CityCorePositionsSync;
 import common.cn.kafei.simukraft.network.toast.InfoToastService;
 import net.minecraft.core.BlockPos;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -43,8 +44,14 @@ public record CityCoreMovePacket(BlockPos oldCorePos, BlockPos newCorePos, UUID 
 
         CityCoreMoveService.MoveResult result = CityCoreMoveService.executeMove(level, player, p.cityId(), p.oldCorePos(), p.newCorePos());
         switch (result) {
-            case SUCCESS ->
+            case SUCCESS -> {
                 InfoToastService.success(player, Component.translatable("message.xy2407_nsuk_addition.city_core_move.success"));
+                for (ServerPlayer sp : level.getServer().getPlayerList().getPlayers()) {
+                    if (sp.level().dimension().equals(level.dimension())) {
+                        CityCorePositionsSync.sendPositionsToPlayer(sp);
+                    }
+                }
+            }
             case FAIL_NO_PERMISSION ->
                 InfoToastService.warning(player, Component.translatable("message.xy2407_nsuk_addition.city_core_move.no_permission"));
             case FAIL_CITY_NOT_FOUND ->

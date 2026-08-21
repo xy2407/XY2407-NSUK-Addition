@@ -1,0 +1,9 @@
+{
+  "id": "big",
+  "name": "外贸大驿站",
+  "caravanCount": 3,
+  "maxWorkers": 12,
+  "points": {
+    "work": { "type": "structure_pos", "positions": [[24, 2, 13]] }
+  }
+}

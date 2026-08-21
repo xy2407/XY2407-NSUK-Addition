@@ -2,6 +2,8 @@ package com.xy2407.nsukaddition.server.city;
 
 import com.xy2407.nsukaddition.common.city.CityLevel;
 import com.xy2407.nsukaddition.common.city.ImmigrantData;
+import com.xy2407.nsukaddition.common.storage.DailyMarkerStorage;
+import com.xy2407.nsukaddition.common.storage.ImmigrationSqliteStorage;
 import common.cn.kafei.simukraft.citizen.CitizenData;
 import common.cn.kafei.simukraft.citizen.CitizenManager;
 import common.cn.kafei.simukraft.citizen.CitizenService;
@@ -20,16 +22,35 @@ import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 
-/** 城镇移民服务，管理移民的生成、审批、拒绝及过期清理。 */
+/** 城镇移民服务，管理移民的生成、审批、拒绝及过期清理，SQLite 持久化审批队列。 */
 public final class TownImmigrationService {
 
     private TownImmigrationService() {}
 
     private static final ConcurrentHashMap<UUID, CopyOnWriteArrayList<ImmigrantData>> PENDING = new ConcurrentHashMap<>();
 
-    private static final Set<UUID> SPAWNED_THIS_DAY = ConcurrentHashMap.newKeySet();
+    private static final Map<UUID, Long> SPAWNED_THIS_DAY = new ConcurrentHashMap<>();
 
     private static final ConcurrentHashMap<UUID, Vec3> SPAWN_POSITIONS = new ConcurrentHashMap<>();
+
+    public static void loadFromStorage(ServerLevel level) {
+        if (level == null) return;
+        List<ImmigrantData> stored = ImmigrationSqliteStorage.loadAll(level);
+        for (ImmigrantData immigrant : stored) {
+            PENDING.computeIfAbsent(immigrant.cityId(), k -> new CopyOnWriteArrayList<>()).add(immigrant);
+        }
+        Map<UUID, Vec3> spawns = ImmigrationSqliteStorage.loadSpawnPositions(level);
+        for (Map.Entry<UUID, Vec3> e : spawns.entrySet()) {
+            SPAWN_POSITIONS.put(e.getKey(), e.getValue());
+        }
+        SPAWNED_THIS_DAY.clear();
+        long today = level.getDayTime() / 24000L;
+        for (Map.Entry<UUID, Long> e : DailyMarkerStorage.loadMarkers(level, "immigration_spawn").entrySet()) {
+            if (e.getValue() == today) {
+                SPAWNED_THIS_DAY.put(e.getKey(), e.getValue());
+            }
+        }
+    }
 
     public static void onServerTick(ServerLevel level) {
         if (level == null || level.isClientSide()) return;
@@ -44,13 +65,14 @@ public final class TownImmigrationService {
     }
 
     public static void trySpawnImmigrant(ServerLevel level, UUID cityId, long day) {
-        if (SPAWNED_THIS_DAY.contains(cityId)) return;
+        if (SPAWNED_THIS_DAY.getOrDefault(cityId, -1L) == day) return;
         CityData city = CityService.findCity(level, cityId).orElse(null);
         if (city == null) return;
         if (!CityLevel.fromLevel(city.cityLevel()).atLeast(CityLevel.TOWN)) return;
 
         if (level.random.nextDouble() >= 0.3) return;
-        SPAWNED_THIS_DAY.add(cityId);
+        SPAWNED_THIS_DAY.put(cityId, day);
+        DailyMarkerStorage.save(level, cityId, "immigration_spawn", day);
 
         BlockPos core = city.cityCorePos();
         if (core == null) return;
@@ -63,13 +85,18 @@ public final class TownImmigrationService {
         CitizenData data = CitizenService.findCitizen(level, entity.getUUID()).orElse(null);
         if (data == null) return;
 
+        data.setCityId(null);
+        CitizenService.save(level, data.uuid());
+
         double grant = 10.0 + level.random.nextDouble() * 90.0;
         ImmigrantData immigrant = new ImmigrantData(
                 UUID.randomUUID(), cityId, entity.getUUID(),
                 entity.getCitizenName(), grant, day
         );
         PENDING.computeIfAbsent(cityId, k -> new CopyOnWriteArrayList<>()).add(immigrant);
-        SPAWN_POSITIONS.put(entity.getUUID(), entity.position());
+        Vec3 entityPos = entity.position();
+        SPAWN_POSITIONS.put(entity.getUUID(), entityPos);
+        ImmigrationSqliteStorage.save(level, immigrant, entityPos);
 
         CitizenService.setWorkplace(level, data.uuid(), null);
     }
@@ -83,6 +110,7 @@ public final class TownImmigrationService {
 
         CitizenService.setCity(level, immigrant.citizenId(), cityId);
         SPAWN_POSITIONS.remove(immigrant.citizenId());
+        ImmigrationSqliteStorage.delete(level, requestId);
 
         if (player != null && immigrant.grantFunds() > 0) {
             EconomyService.depositCityFunds(level, cityId, player, immigrant.grantFunds(), "immigrant_grant", true);
@@ -101,6 +129,7 @@ public final class TownImmigrationService {
         }
         CitizenManager.get(level).removeCitizen(immigrant.citizenId());
         SPAWN_POSITIONS.remove(immigrant.citizenId());
+        ImmigrationSqliteStorage.delete(level, requestId);
         return true;
     }
 
@@ -130,6 +159,7 @@ public final class TownImmigrationService {
             SPAWN_POSITIONS.remove(immigrant.citizenId());
         }
         SPAWNED_THIS_DAY.remove(cityId);
+        ImmigrationSqliteStorage.deleteAllForCity(level, cityId);
     }
 
     private static ImmigrantData removeRequest(UUID cityId, UUID requestId) {

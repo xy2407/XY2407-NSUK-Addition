@@ -23,10 +23,11 @@ import java.util.concurrent.TimeUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.concurrent.atomic.AtomicReference;
 
-/** 侧边栏 HUD 的 SQLite 数据缓存，每 40 tick 后台刷新一次，显示只读缓存。 */
+/** 侧边栏 HUD 的 SQLite 数据缓存，每 20 tick（1秒）后台异步刷新，防重入。 */
 public final class SidebarDataCache {
 
     private static final AtomicBoolean SHUTDOWN = new AtomicBoolean(false);
+    private static final AtomicBoolean REFRESH_IN_PROGRESS = new AtomicBoolean(false);
     private static final ExecutorService READ_EXECUTOR = Executors.newSingleThreadExecutor(r -> {
         Thread t = new Thread(r, "nsuk-sidebar-cache-read");
         t.setDaemon(true);
@@ -42,19 +43,38 @@ public final class SidebarDataCache {
     public static void refreshAsync(ServerLevel level) {
         if (SHUTDOWN.get()) return;
         if (READ_EXECUTOR.isShutdown()) return;
+        if (!REFRESH_IN_PROGRESS.compareAndSet(false, true)) return;
         List<UUID> cityIds = new ArrayList<>();
         for (CityData city : CityManager.get(level).allCities()) {
             cityIds.add(city.cityId());
         }
         try {
-            READ_EXECUTOR.execute(() -> refresh(level, cityIds));
+            READ_EXECUTOR.execute(() -> {
+                try {
+                    refresh(level, cityIds);
+                } finally {
+                    REFRESH_IN_PROGRESS.set(false);
+                }
+            });
         } catch (java.util.concurrent.RejectedExecutionException ignored) {
+            REFRESH_IN_PROGRESS.set(false);
         }
     }
 
     private static void refresh(ServerLevel level, List<UUID> cityIds) {
         try {
             List<BuildingTaskData> allTasks = SimuSqliteStorage.loadBuildingTasks(level);
+            Map<UUID, BuildingTaskData> byId = new java.util.LinkedHashMap<>();
+            for (BuildingTaskData t : allTasks) {
+                byId.put(t.taskId(), t);
+            }
+            for (BuildingTaskData t : com.xy2407.nsukaddition.server.building.BuildingTaskQueueService.allQueued(level)) {
+                byId.put(t.taskId(), t);
+            }
+            for (BuildingTaskData t : com.xy2407.nsukaddition.server.building.BuildingTaskQueueService.runningTasks(level)) {
+                byId.put(t.taskId(), t);
+            }
+            allTasks = new ArrayList<>(byId.values());
             Map<UUID, CitySqliteCache> next = new ConcurrentHashMap<>();
             for (UUID cityId : cityIds) {
                 List<BuildingTaskData> cityTasks = new ArrayList<>();
@@ -94,25 +114,33 @@ public final class SidebarDataCache {
 
     private static List<SidebarCacheCitizenEntry> collectCitizens(ServerLevel level, UUID cityId) {
         List<SidebarCacheCitizenEntry> entries = new ArrayList<>();
+        Map<UUID, String> colonyNames = new HashMap<>();
         try {
-            Map<UUID, String> colonyNames = new HashMap<>();
             for (com.xy2407.nsukaddition.common.colony.ColonyData cd
                     : com.xy2407.nsukaddition.common.colony.ColonySqliteStorage.loadColoniesByParentCity(level, cityId)) {
                 colonyNames.put(cd.colonyId(), cd.name());
             }
+        } catch (Exception e) {
+            NsukAddition.LOGGER.warn("Failed to load colony names for sidebar cache", e);
+        }
 
+        try {
             for (CitizenData citizen : CitizenService.listCitizensByCity(level, cityId)) {
-                String jobType = citizen.jobType() != null ? citizen.jobType().name() : "UNEMPLOYED";
-                boolean hasHome = citizen.homeId() != null;
-                String skinPath = citizen.skinPath() != null ? citizen.skinPath() : "";
-                UUID colonyId = com.xy2407.nsukaddition.common.colony.ColonySqliteStorage
-                        .getColonyForCitizen(level, citizen.uuid());
-                String colonyName = colonyId != null ? colonyNames.getOrDefault(colonyId, "") : "";
-                entries.add(new SidebarCacheCitizenEntry(
-                        citizen.name(), citizen.uuid(), jobType, hasHome, skinPath, colonyName));
+                try {
+                    String jobType = citizen.jobType() != null ? citizen.jobType().name() : "UNEMPLOYED";
+                    boolean hasHome = citizen.homeId() != null;
+                    String skinPath = citizen.skinPath() != null ? citizen.skinPath() : "";
+                    UUID colonyId = com.xy2407.nsukaddition.common.colony.ColonySqliteStorage
+                            .getColonyForCitizen(level, citizen.uuid());
+                    String colonyName = colonyId != null ? colonyNames.getOrDefault(colonyId, "") : "";
+                    entries.add(new SidebarCacheCitizenEntry(
+                            citizen.name(), citizen.uuid(), jobType, hasHome, skinPath, colonyName));
+                } catch (Exception e) {
+                    NsukAddition.LOGGER.warn("Failed to collect citizen {} for sidebar cache", citizen.uuid(), e);
+                }
             }
         } catch (Exception e) {
-            NsukAddition.LOGGER.warn("Failed to collect citizens for sidebar cache", e);
+            NsukAddition.LOGGER.warn("Failed to list citizens for sidebar cache", e);
         }
         return entries;
     }

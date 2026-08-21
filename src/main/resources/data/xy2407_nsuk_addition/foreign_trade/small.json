@@ -1,0 +1,9 @@
+{
+  "id": "small",
+  "name": "外贸小驿站",
+  "caravanCount": 1,
+  "maxWorkers": 5,
+  "points": {
+    "work": { "type": "structure_pos", "positions": [[10, 1, 7]] }
+  }
+}

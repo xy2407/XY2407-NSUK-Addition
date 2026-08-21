@@ -81,7 +81,6 @@ public final class VineryFluidCompat {
         return item == net.minecraft.world.item.Items.AIR ? null : item;
     }
 
-    /** Vinery 酒瓶/果汁瓶的 IFluidHandlerItem 实现。 */
     private static class VineryBottleFluidHandler implements IFluidHandlerItem {
         private final ItemStack container;
         private final boolean isFilled;

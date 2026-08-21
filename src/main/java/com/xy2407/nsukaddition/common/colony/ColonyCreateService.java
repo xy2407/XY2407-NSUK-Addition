@@ -99,12 +99,14 @@ public final class ColonyCreateService {
         BlockPos cityCorePos = parentCity != null ? parentCity.cityCorePos() : null;
 
         List<UUID> citizenIds = ColonySqliteStorage.loadCitizensByColony(level, colony.colonyId());
-        for (UUID citizenUuid : citizenIds) {
+        int total = citizenIds.size();
+        for (int i = 0; i < total; i++) {
+            UUID citizenUuid = citizenIds.get(i);
             CitizenService.clearEmployment(level, citizenUuid);
             CitizenService.setHome(level, citizenUuid, null);
             ColonySqliteStorage.removeCitizen(level, citizenUuid);
             if (cityCorePos != null) {
-                teleportCitizenToCityCore(level, citizenUuid, cityCorePos);
+                teleportCitizenToCityCore(level, citizenUuid, cityCorePos, i, total);
             }
         }
 
@@ -121,9 +123,14 @@ public final class ColonyCreateService {
         CityChunkSyncService.syncToAll(level);
     }
 
-    private static void teleportCitizenToCityCore(ServerLevel level, UUID citizenUuid, BlockPos cityCorePos) {
+    private static void teleportCitizenToCityCore(ServerLevel level, UUID citizenUuid, BlockPos cityCorePos,
+                                                  int index, int total) {
+        double radius = total <= 1 ? 2.0D : Math.min(8.0D, 2.0D + index * 0.5D);
+        double angle = total <= 1 ? 0.0D : (Math.PI * 2.0D * index / total);
+        int x = cityCorePos.getX() + (int) Math.round(Math.cos(angle) * radius);
+        int z = cityCorePos.getZ() + (int) Math.round(Math.sin(angle) * radius);
         CitizenTeleportService.teleportCitizen(level, citizenUuid,
-                new Vec3(cityCorePos.getX() + 0.5, cityCorePos.getY(), cityCorePos.getZ() + 0.5));
+                new Vec3(x + 0.5, cityCorePos.getY(), z + 0.5));
     }
 
     private static CityData findPlayerCity(ServerLevel level, ServerPlayer player) {

@@ -23,6 +23,7 @@ public final class BreedingConstants {
     public static final String STATUS_IDLE = "gui.xy2407_nsuk_addition.breeding.status.idle";
     public static final String STATUS_RESTING = "gui.xy2407_nsuk_addition.breeding.status.resting";
     public static final String STATUS_FEEDING = "gui.xy2407_nsuk_addition.breeding.status.feeding";
+    public static final String STATUS_REACHED_CAP = "gui.xy2407_nsuk_addition.breeding.status.reached_cap";
 
     public static final String TOO_FAR_MESSAGE = "message.xy2407_nsuk_addition.breeding.too_far";
 }

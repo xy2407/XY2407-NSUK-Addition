@@ -7,13 +7,10 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.saveddata.SavedData;
 
-import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
 
 /** 餐厅控制箱管理器，基于 SavedData 管理所有餐厅箱数据并提供异步 SQLite 持久化。 */
 @SuppressWarnings("null")
@@ -21,14 +18,8 @@ public final class RestaurantBoxManager extends SavedData {
     private static final String DATA_NAME = RestaurantConstants.DATA_NAME;
     private static final Factory<RestaurantBoxManager> FACTORY = new Factory<>(RestaurantBoxManager::new, RestaurantBoxManager::load, null);
 
-    private static final Executor IO_EXECUTOR = Executors.newSingleThreadExecutor(r -> {
-        Thread t = new Thread(r, "NSukAddition-Restaurant-SQLite");
-        t.setDaemon(true);
-        return t;
-    });
-
     private final ConcurrentMap<BlockPos, RestaurantBoxData> boxes = new ConcurrentHashMap<>();
-    private final Set<BlockPos> pendingSaves = new HashSet<>();
+    private final Set<BlockPos> pendingSaves = ConcurrentHashMap.newKeySet();
     private volatile ServerLevel level;
     private volatile boolean sqliteLoaded;
 
@@ -64,7 +55,6 @@ public final class RestaurantBoxManager extends SavedData {
         if (lv == null) return;
         synchronized (this) {
             if (sqliteLoaded) return;
-            sqliteLoaded = true;
         }
         CompoundTag sqliteData = RestaurantBoxSqliteStorage.loadAll(lv);
         if (sqliteData != null) {
@@ -74,6 +64,7 @@ public final class RestaurantBoxManager extends SavedData {
                 boxes.put(data.boxPos(), data);
             }
         }
+        sqliteLoaded = true;
     }
 
     public ServerLevel level() { return level; }
@@ -92,18 +83,8 @@ public final class RestaurantBoxManager extends SavedData {
         ServerLevel lv = level;
         if (lv == null) return;
         BlockPos key = data.boxPos().immutable();
-        synchronized (pendingSaves) {
-            if (!pendingSaves.add(key)) return;
-        }
-        IO_EXECUTOR.execute(() -> {
-            try {
-                RestaurantBoxSqliteStorage.saveBox(lv, data);
-            } finally {
-                synchronized (pendingSaves) {
-                    pendingSaves.remove(key);
-                }
-            }
-        });
+        if (!pendingSaves.add(key)) return;
+        RestaurantBoxSqliteStorage.saveBox(lv, data, () -> pendingSaves.remove(key));
     }
 
     public void remove(BlockPos boxPos) {
@@ -113,7 +94,7 @@ public final class RestaurantBoxManager extends SavedData {
             setDirty();
             ServerLevel lv = level;
             if (lv != null) {
-                IO_EXECUTOR.execute(() -> RestaurantBoxSqliteStorage.deleteBox(lv, key.asLong()));
+                RestaurantBoxSqliteStorage.deleteBox(lv, key.asLong());
             }
         }
     }

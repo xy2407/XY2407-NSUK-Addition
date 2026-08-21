@@ -1,7 +1,7 @@
 package com.xy2407.nsukaddition.common.foreigntrade;
 
 import com.xy2407.nsukaddition.common.storage.NsukSqliteDatabase;
-import com.xy2407.nsukaddition.common.storage.NsukWriteExecutor;
+import com.xy2407.nsukaddition.common.storage.WriteBatchBuffer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
@@ -43,37 +43,33 @@ public final class ForeignTradeSqliteStorage {
 
     public static void save(ServerLevel level, BlockPos pos, boolean running, String statusKey, String statusText, String selectedTradeId) {
         if (level == null || pos == null) return;
-        NsukWriteExecutor.submit(() -> {
-            NsukSqliteDatabase db = NsukSqliteDatabase.get(level.getServer());
-            if (db == null) return;
-            try (Connection conn = db.openConnection();
-                 PreparedStatement ps = conn.prepareStatement(
-                         "INSERT OR REPLACE INTO foreign_trade_boxes(box_pos_long, running, status_key, status_text, selected_trade_id, updated_at) " +
-                                 "VALUES(?, ?, ?, ?, ?, strftime('%s','now'))")) {
-                ps.setLong(1, pos.asLong());
+        NsukSqliteDatabase db = NsukSqliteDatabase.get(level.getServer());
+        if (db == null) return;
+        long posLong = pos.asLong();
+        WriteBatchBuffer.submit(db, "foreign_trade_boxes", "foreign_trade_box:" + posLong, connection -> {
+            try (PreparedStatement ps = connection.prepareStatement(
+                    "INSERT OR REPLACE INTO foreign_trade_boxes(box_pos_long, running, status_key, status_text, selected_trade_id, updated_at) " +
+                            "VALUES(?, ?, ?, ?, ?, strftime('%s','now'))")) {
+                ps.setLong(1, posLong);
                 ps.setBoolean(2, running);
                 ps.setString(3, statusKey != null ? statusKey : "");
                 ps.setString(4, statusText != null ? statusText : "");
                 ps.setString(5, selectedTradeId != null ? selectedTradeId : "");
                 ps.executeUpdate();
-            } catch (SQLException e) {
-                throw new RuntimeException("Failed to save foreign trade box data", e);
             }
         });
     }
 
     public static void delete(ServerLevel level, BlockPos pos) {
         if (level == null || pos == null) return;
-        NsukWriteExecutor.submit(() -> {
-            NsukSqliteDatabase db = NsukSqliteDatabase.get(level.getServer());
-            if (db == null) return;
-            try (Connection conn = db.openConnection();
-                 PreparedStatement ps = conn.prepareStatement(
-                         "DELETE FROM foreign_trade_boxes WHERE box_pos_long = ?")) {
-                ps.setLong(1, pos.asLong());
+        NsukSqliteDatabase db = NsukSqliteDatabase.get(level.getServer());
+        if (db == null) return;
+        long posLong = pos.asLong();
+        WriteBatchBuffer.submitPriority(db, "foreign_trade_boxes", "foreign_trade_box:" + posLong, connection -> {
+            try (PreparedStatement ps = connection.prepareStatement(
+                    "DELETE FROM foreign_trade_boxes WHERE box_pos_long = ?")) {
+                ps.setLong(1, posLong);
                 ps.executeUpdate();
-            } catch (SQLException e) {
-                throw new RuntimeException("Failed to delete foreign trade box data", e);
             }
         });
     }

@@ -3,2889 +3,12 @@
     {
       "item_id": "minecraft:oak_log",
       "count": 1,
-      "buy": 1.2,
-      "sell": 1.2,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:oak_wood",
-      "count": 1,
-      "buy": 1.1,
-      "sell": 0.9,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:stripped_oak_log",
-      "count": 1,
-      "buy": 1.2,
-      "sell": 1.1,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:stripped_oak_wood",
-      "count": 1,
-      "buy": 1.2,
-      "sell": 1.1,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:oak_planks",
-      "count": 1,
-      "buy": 0.9,
-      "sell": 0.8,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:oak_stairs",
-      "count": 1,
-      "buy": 0.9,
-      "sell": 0.8,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:oak_slab",
-      "count": 1,
-      "buy": 0.5,
-      "sell": 0.5,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:oak_fence",
-      "count": 1,
-      "buy": 0.5,
-      "sell": 0.5,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:oak_fence_gate",
-      "count": 1,
-      "buy": 2.5,
-      "sell": 2.4,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:oak_door",
-      "count": 1,
-      "buy": 1.9,
-      "sell": 1.6,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:oak_trapdoor",
-      "count": 1,
-      "buy": 1.1,
-      "sell": 0.9,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:oak_pressure_plate",
-      "count": 1,
-      "buy": 0.8,
-      "sell": 0.7,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:oak_button",
-      "count": 1,
-      "buy": 0.2,
-      "sell": 0.2,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:spruce_log",
-      "count": 1,
-      "buy": 1.2,
-      "sell": 1.1,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:spruce_wood",
-      "count": 1,
-      "buy": 1.3,
-      "sell": 1.3,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:stripped_spruce_log",
-      "count": 1,
-      "buy": 1.5,
-      "sell": 1.4,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:stripped_spruce_wood",
-      "count": 1,
-      "buy": 1.6,
-      "sell": 1.4,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:spruce_planks",
-      "count": 1,
-      "buy": 0.9,
-      "sell": 0.9,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:spruce_stairs",
-      "count": 1,
-      "buy": 0.9,
-      "sell": 0.8,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:spruce_slab",
-      "count": 1,
-      "buy": 0.6,
-      "sell": 0.6,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:spruce_fence",
-      "count": 1,
-      "buy": 0.6,
-      "sell": 0.6,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:spruce_fence_gate",
-      "count": 1,
-      "buy": 2.9,
-      "sell": 2.8,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:spruce_door",
-      "count": 1,
-      "buy": 1.7,
-      "sell": 1.5,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:spruce_trapdoor",
-      "count": 1,
-      "buy": 1.4,
-      "sell": 1.2,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:spruce_pressure_plate",
-      "count": 1,
-      "buy": 0.7,
-      "sell": 0.6,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:spruce_button",
-      "count": 1,
-      "buy": 0.2,
-      "sell": 0.2,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:birch_log",
-      "count": 1,
-      "buy": 1.1,
-      "sell": 1.0,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:birch_wood",
-      "count": 1,
-      "buy": 1.3,
-      "sell": 1.2,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:stripped_birch_log",
-      "count": 1,
-      "buy": 1.6,
-      "sell": 1.4,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:stripped_birch_wood",
-      "count": 1,
-      "buy": 1.4,
-      "sell": 1.3,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:birch_planks",
-      "count": 1,
-      "buy": 0.8,
-      "sell": 0.7,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:birch_stairs",
-      "count": 1,
-      "buy": 1.1,
-      "sell": 1.1,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:birch_slab",
-      "count": 1,
-      "buy": 0.6,
-      "sell": 0.6,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:birch_fence",
-      "count": 1,
-      "buy": 0.7,
-      "sell": 0.6,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:birch_fence_gate",
-      "count": 1,
-      "buy": 2.9,
-      "sell": 2.4,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:birch_door",
-      "count": 1,
-      "buy": 1.3,
-      "sell": 1.2,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:birch_trapdoor",
-      "count": 1,
-      "buy": 1.3,
-      "sell": 1.2,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:birch_pressure_plate",
-      "count": 1,
-      "buy": 1.0,
-      "sell": 0.9,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:birch_button",
-      "count": 1,
-      "buy": 0.2,
-      "sell": 0.2,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:jungle_log",
-      "count": 1,
-      "buy": 1.1,
-      "sell": 1.0,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:jungle_wood",
-      "count": 1,
-      "buy": 1.4,
-      "sell": 1.3,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:stripped_jungle_log",
-      "count": 1,
-      "buy": 1.4,
-      "sell": 1.4,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:stripped_jungle_wood",
-      "count": 1,
-      "buy": 1.4,
-      "sell": 1.3,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:jungle_planks",
-      "count": 1,
-      "buy": 1.2,
-      "sell": 1.0,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:jungle_stairs",
-      "count": 1,
-      "buy": 0.9,
-      "sell": 0.9,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:jungle_slab",
-      "count": 1,
-      "buy": 0.6,
-      "sell": 0.5,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:jungle_fence",
-      "count": 1,
-      "buy": 0.7,
-      "sell": 0.7,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:jungle_fence_gate",
-      "count": 1,
-      "buy": 2.7,
-      "sell": 2.6,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:jungle_door",
-      "count": 1,
-      "buy": 1.4,
-      "sell": 1.3,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:jungle_trapdoor",
-      "count": 1,
-      "buy": 1.5,
-      "sell": 1.2,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:jungle_pressure_plate",
-      "count": 1,
-      "buy": 0.7,
-      "sell": 0.7,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:jungle_button",
-      "count": 1,
-      "buy": 0.2,
-      "sell": 0.2,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:acacia_log",
-      "count": 1,
-      "buy": 1.1,
-      "sell": 1.0,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:acacia_wood",
-      "count": 1,
-      "buy": 1.3,
-      "sell": 1.2,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:stripped_acacia_log",
-      "count": 1,
-      "buy": 1.7,
-      "sell": 1.5,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:stripped_acacia_wood",
-      "count": 1,
-      "buy": 1.2,
-      "sell": 1.1,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:acacia_planks",
-      "count": 1,
-      "buy": 0.8,
-      "sell": 0.8,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:acacia_stairs",
-      "count": 1,
-      "buy": 1.2,
-      "sell": 1.1,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:acacia_slab",
-      "count": 1,
-      "buy": 0.6,
-      "sell": 0.5,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:acacia_fence",
-      "count": 1,
-      "buy": 0.9,
-      "sell": 0.8,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:acacia_fence_gate",
-      "count": 1,
-      "buy": 3.2,
-      "sell": 2.8,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:acacia_door",
-      "count": 1,
-      "buy": 1.4,
-      "sell": 1.3,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:acacia_trapdoor",
-      "count": 1,
-      "buy": 1.7,
-      "sell": 1.4,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:acacia_pressure_plate",
-      "count": 1,
-      "buy": 0.6,
-      "sell": 0.6,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:acacia_button",
-      "count": 1,
-      "buy": 0.3,
-      "sell": 0.2,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:dark_oak_log",
-      "count": 1,
-      "buy": 1.1,
-      "sell": 0.9,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:dark_oak_wood",
-      "count": 1,
-      "buy": 1.2,
-      "sell": 1.0,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:stripped_dark_oak_log",
-      "count": 1,
-      "buy": 1.6,
-      "sell": 1.3,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:stripped_dark_oak_wood",
-      "count": 1,
-      "buy": 1.4,
-      "sell": 1.3,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:dark_oak_planks",
-      "count": 1,
-      "buy": 1.0,
-      "sell": 0.9,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:dark_oak_stairs",
-      "count": 1,
-      "buy": 1.2,
-      "sell": 1.0,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:dark_oak_slab",
-      "count": 1,
-      "buy": 0.6,
-      "sell": 0.5,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:dark_oak_fence",
-      "count": 1,
-      "buy": 0.8,
-      "sell": 0.8,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:dark_oak_fence_gate",
-      "count": 1,
-      "buy": 2.6,
-      "sell": 2.2,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:dark_oak_door",
-      "count": 1,
-      "buy": 1.8,
-      "sell": 1.7,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:dark_oak_trapdoor",
-      "count": 1,
-      "buy": 1.3,
-      "sell": 1.2,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:dark_oak_pressure_plate",
-      "count": 1,
-      "buy": 0.8,
-      "sell": 0.7,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:dark_oak_button",
-      "count": 1,
-      "buy": 0.2,
-      "sell": 0.2,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:mangrove_log",
-      "count": 1,
-      "buy": 0.9,
-      "sell": 0.9,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:mangrove_wood",
-      "count": 1,
-      "buy": 1.4,
-      "sell": 1.2,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:stripped_mangrove_log",
-      "count": 1,
-      "buy": 1.2,
-      "sell": 1.1,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:stripped_mangrove_wood",
-      "count": 1,
-      "buy": 1.5,
-      "sell": 1.5,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:mangrove_planks",
-      "count": 1,
-      "buy": 1.1,
-      "sell": 1.0,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:mangrove_stairs",
-      "count": 1,
-      "buy": 1.2,
-      "sell": 1.1,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:mangrove_slab",
-      "count": 1,
-      "buy": 0.6,
-      "sell": 0.5,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:mangrove_fence",
-      "count": 1,
-      "buy": 0.6,
-      "sell": 0.6,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:mangrove_fence_gate",
-      "count": 1,
-      "buy": 2.6,
-      "sell": 2.3,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:mangrove_door",
-      "count": 1,
-      "buy": 1.7,
-      "sell": 1.6,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:mangrove_trapdoor",
-      "count": 1,
-      "buy": 1.5,
-      "sell": 1.2,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:mangrove_pressure_plate",
-      "count": 1,
-      "buy": 0.6,
-      "sell": 0.6,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:mangrove_button",
-      "count": 1,
-      "buy": 0.2,
-      "sell": 0.2,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:cherry_log",
-      "count": 1,
-      "buy": 1.0,
-      "sell": 1.0,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:cherry_wood",
-      "count": 1,
-      "buy": 1.2,
-      "sell": 1.0,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:stripped_cherry_log",
-      "count": 1,
-      "buy": 1.5,
-      "sell": 1.5,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:stripped_cherry_wood",
-      "count": 1,
-      "buy": 1.2,
-      "sell": 1.0,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:cherry_planks",
-      "count": 1,
-      "buy": 1.0,
-      "sell": 0.9,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:cherry_stairs",
-      "count": 1,
-      "buy": 1.3,
-      "sell": 1.1,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:cherry_slab",
-      "count": 1,
-      "buy": 0.6,
-      "sell": 0.6,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:cherry_fence",
-      "count": 1,
-      "buy": 0.7,
-      "sell": 0.6,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:cherry_fence_gate",
-      "count": 1,
-      "buy": 3.5,
-      "sell": 2.9,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:cherry_door",
-      "count": 1,
-      "buy": 1.4,
-      "sell": 1.3,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:cherry_trapdoor",
-      "count": 1,
-      "buy": 1.7,
-      "sell": 1.4,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:cherry_pressure_plate",
-      "count": 1,
-      "buy": 0.7,
-      "sell": 0.7,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:cherry_button",
-      "count": 1,
-      "buy": 0.3,
-      "sell": 0.2,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:bamboo_block",
-      "count": 1,
-      "buy": 0.9,
-      "sell": 0.8,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:stripped_bamboo_block",
-      "count": 1,
-      "buy": 0.9,
-      "sell": 0.8,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:bamboo_planks",
-      "count": 1,
-      "buy": 1.1,
-      "sell": 0.9,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:bamboo_mosaic",
-      "count": 1,
-      "buy": 1.1,
-      "sell": 1.0,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:bamboo_stairs",
-      "count": 1,
-      "buy": 1.1,
-      "sell": 1.0,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:bamboo_mosaic_stairs",
-      "count": 1,
-      "buy": 1.0,
-      "sell": 1.0,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:bamboo_slab",
-      "count": 1,
-      "buy": 0.5,
-      "sell": 0.5,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:bamboo_mosaic_slab",
-      "count": 1,
-      "buy": 0.5,
-      "sell": 0.4,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:bamboo_fence",
-      "count": 1,
-      "buy": 0.6,
-      "sell": 0.5,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:bamboo_fence_gate",
-      "count": 1,
-      "buy": 2.8,
-      "sell": 2.4,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:bamboo_door",
-      "count": 1,
-      "buy": 1.4,
-      "sell": 1.3,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:bamboo_trapdoor",
-      "count": 1,
-      "buy": 1.2,
-      "sell": 1.0,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:bamboo_pressure_plate",
-      "count": 1,
-      "buy": 0.9,
-      "sell": 0.9,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:bamboo_button",
-      "count": 1,
-      "buy": 0.2,
-      "sell": 0.2,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:crimson_stem",
-      "count": 1,
-      "buy": 1.3,
-      "sell": 1.1,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:crimson_hyphae",
-      "count": 1,
-      "buy": 1.4,
-      "sell": 1.4,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:stripped_crimson_stem",
-      "count": 1,
-      "buy": 1.7,
-      "sell": 1.6,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:stripped_crimson_hyphae",
-      "count": 1,
-      "buy": 1.6,
-      "sell": 1.3,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:crimson_planks",
-      "count": 1,
-      "buy": 1.3,
-      "sell": 1.3,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:crimson_stairs",
-      "count": 1,
-      "buy": 1.7,
-      "sell": 1.5,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:crimson_slab",
-      "count": 1,
-      "buy": 1.8,
-      "sell": 1.5,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:crimson_fence",
-      "count": 1,
-      "buy": 1.3,
-      "sell": 1.2,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:crimson_fence_gate",
-      "count": 1,
-      "buy": 1.3,
-      "sell": 1.2,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:crimson_door",
-      "count": 1,
-      "buy": 1.7,
-      "sell": 1.5,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:crimson_trapdoor",
-      "count": 1,
-      "buy": 1.7,
-      "sell": 1.5,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:crimson_pressure_plate",
-      "count": 1,
-      "buy": 1.5,
-      "sell": 1.5,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:crimson_button",
-      "count": 1,
-      "buy": 1.2,
-      "sell": 1.2,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:warped_stem",
-      "count": 1,
-      "buy": 1.6,
-      "sell": 1.5,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:warped_hyphae",
-      "count": 1,
-      "buy": 1.2,
-      "sell": 1.2,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:stripped_warped_stem",
-      "count": 1,
-      "buy": 1.4,
-      "sell": 1.2,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:stripped_warped_hyphae",
-      "count": 1,
-      "buy": 1.6,
-      "sell": 1.5,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:warped_planks",
-      "count": 1,
-      "buy": 1.6,
-      "sell": 1.5,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:warped_stairs",
-      "count": 1,
-      "buy": 1.6,
-      "sell": 1.3,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:warped_slab",
-      "count": 1,
-      "buy": 1.3,
-      "sell": 1.3,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:warped_fence",
-      "count": 1,
-      "buy": 1.8,
-      "sell": 1.5,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:warped_fence_gate",
-      "count": 1,
-      "buy": 1.2,
-      "sell": 1.2,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:warped_door",
-      "count": 1,
-      "buy": 1.1,
-      "sell": 1.1,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:warped_trapdoor",
-      "count": 1,
-      "buy": 1.4,
-      "sell": 1.3,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:warped_pressure_plate",
-      "count": 1,
-      "buy": 1.7,
-      "sell": 1.5,
-      "category": "wood"
-    },
-    {
-      "item_id": "minecraft:warped_button",
-      "count": 1,
-      "buy": 1.6,
-      "sell": 1.5,
-      "category": "wood"
-    },
-    {
-      "item_id": "beachparty:palm_log",
-      "count": 1,
-      "buy": 1.4,
-      "sell": 1.2,
-      "category": "wood"
-    },
-    {
-      "item_id": "beachparty:palm_wood",
-      "count": 1,
-      "buy": 0.9,
-      "sell": 0.8,
-      "category": "wood"
-    },
-    {
-      "item_id": "beachparty:stripped_palm_log",
-      "count": 1,
-      "buy": 1.2,
-      "sell": 1.2,
-      "category": "wood"
-    },
-    {
-      "item_id": "beachparty:stripped_palm_wood",
-      "count": 1,
-      "buy": 1.2,
-      "sell": 1.2,
-      "category": "wood"
-    },
-    {
-      "item_id": "beachparty:palm_floorboard",
-      "count": 1,
-      "buy": 1.3,
-      "sell": 1.2,
-      "category": "wood"
-    },
-    {
-      "item_id": "beachparty:palm_planks",
-      "count": 1,
-      "buy": 1.4,
-      "sell": 1.2,
-      "category": "wood"
-    },
-    {
-      "item_id": "beachparty:palm_stairs",
-      "count": 1,
-      "buy": 1.6,
-      "sell": 1.3,
-      "category": "wood"
-    },
-    {
-      "item_id": "beachparty:palm_slab",
-      "count": 1,
-      "buy": 1.0,
-      "sell": 0.9,
-      "category": "wood"
-    },
-    {
-      "item_id": "beachparty:palm_fence",
-      "count": 1,
-      "buy": 1.1,
-      "sell": 1.1,
-      "category": "wood"
-    },
-    {
-      "item_id": "beachparty:palm_fence_gate",
-      "count": 1,
       "buy": 1.0,
       "sell": 0.8,
-      "category": "wood"
-    },
-    {
-      "item_id": "beachparty:palm_door",
-      "count": 1,
-      "buy": 1.3,
-      "sell": 1.3,
-      "category": "wood"
-    },
-    {
-      "item_id": "beachparty:palm_trapdoor",
-      "count": 1,
-      "buy": 1.1,
-      "sell": 1.1,
-      "category": "wood"
-    },
-    {
-      "item_id": "beachparty:palm_pressure_plate",
-      "count": 1,
-      "buy": 1.0,
-      "sell": 0.8,
-      "category": "wood"
-    },
-    {
-      "item_id": "beachparty:palm_button",
-      "count": 1,
-      "buy": 1.3,
-      "sell": 1.2,
-      "category": "wood"
-    },
-    {
-      "item_id": "culturaldelights:avocado_log",
-      "count": 1,
-      "buy": 1.0,
-      "sell": 0.8,
-      "category": "wood"
-    },
-    {
-      "item_id": "culturaldelights:avocado_wood",
-      "count": 1,
-      "buy": 0.9,
-      "sell": 0.9,
-      "category": "wood"
-    },
-    {
-      "item_id": "meadow:alpine_birch_log",
-      "count": 1,
-      "buy": 1.0,
-      "sell": 0.8,
-      "category": "wood"
-    },
-    {
-      "item_id": "meadow:pine_log",
-      "count": 1,
-      "buy": 0.9,
-      "sell": 0.8,
-      "category": "wood"
-    },
-    {
-      "item_id": "meadow:stripped_pine_log",
-      "count": 1,
-      "buy": 1.2,
-      "sell": 1.2,
-      "category": "wood"
-    },
-    {
-      "item_id": "meadow:pine_wood",
-      "count": 1,
-      "buy": 1.5,
-      "sell": 1.3,
-      "category": "wood"
-    },
-    {
-      "item_id": "meadow:stripped_pine_wood",
-      "count": 1,
-      "buy": 1.4,
-      "sell": 1.4,
-      "category": "wood"
-    },
-    {
-      "item_id": "meadow:pine_planks",
-      "count": 1,
-      "buy": 1.4,
-      "sell": 1.4,
-      "category": "wood"
-    },
-    {
-      "item_id": "meadow:pine_stairs",
-      "count": 1,
-      "buy": 1.4,
-      "sell": 1.2,
-      "category": "wood"
-    },
-    {
-      "item_id": "meadow:pine_slab",
-      "count": 1,
-      "buy": 1.6,
-      "sell": 1.4,
-      "category": "wood"
-    },
-    {
-      "item_id": "meadow:reclaimed_pine_planks",
-      "count": 1,
-      "buy": 1.2,
-      "sell": 1.1,
-      "category": "wood"
-    },
-    {
-      "item_id": "meadow:reclaimed_pine_stairs",
-      "count": 1,
-      "buy": 1.2,
-      "sell": 1.0,
-      "category": "wood"
-    },
-    {
-      "item_id": "meadow:reclaimed_pine_slab",
-      "count": 1,
-      "buy": 1.2,
-      "sell": 1.1,
-      "category": "wood"
-    },
-    {
-      "item_id": "meadow:pine_fence",
-      "count": 1,
-      "buy": 1.1,
-      "sell": 1.0,
-      "category": "wood"
-    },
-    {
-      "item_id": "meadow:pine_fence_gate",
-      "count": 1,
-      "buy": 1.1,
-      "sell": 0.9,
-      "category": "wood"
-    },
-    {
-      "item_id": "meadow:pine_door",
-      "count": 1,
-      "buy": 1.2,
-      "sell": 1.1,
-      "category": "wood"
-    },
-    {
-      "item_id": "meadow:pine_trapdoor",
-      "count": 1,
-      "buy": 1.3,
-      "sell": 1.1,
-      "category": "wood"
-    },
-    {
-      "item_id": "meadow:reclaimed_pine_door",
-      "count": 1,
-      "buy": 0.9,
-      "sell": 0.8,
-      "category": "wood"
-    },
-    {
-      "item_id": "meadow:reclaimed_pine_trapdoor",
-      "count": 1,
-      "buy": 1.4,
-      "sell": 1.2,
-      "category": "wood"
-    },
-    {
-      "item_id": "meadow:pine_pressure_plate",
-      "count": 1,
-      "buy": 1.4,
-      "sell": 1.3,
-      "category": "wood"
-    },
-    {
-      "item_id": "meadow:pine_button",
-      "count": 1,
-      "buy": 1.0,
-      "sell": 0.8,
-      "category": "wood"
-    },
-    {
-      "item_id": "vinery:dark_cherry_log",
-      "count": 1,
-      "buy": 1.1,
-      "sell": 1.0,
-      "category": "wood"
-    },
-    {
-      "item_id": "vinery:dark_cherry_wood",
-      "count": 1,
-      "buy": 1.1,
-      "sell": 1.0,
-      "category": "wood"
-    },
-    {
-      "item_id": "vinery:stripped_dark_cherry_log",
-      "count": 1,
-      "buy": 1.2,
-      "sell": 1.1,
-      "category": "wood"
-    },
-    {
-      "item_id": "vinery:stripped_dark_cherry_wood",
-      "count": 1,
-      "buy": 1.1,
-      "sell": 1.0,
-      "category": "wood"
-    },
-    {
-      "item_id": "vinery:dark_cherry_beam",
-      "count": 1,
-      "buy": 1.1,
-      "sell": 1.1,
-      "category": "wood"
-    },
-    {
-      "item_id": "vinery:dark_cherry_planks",
-      "count": 1,
-      "buy": 1.4,
-      "sell": 1.2,
-      "category": "wood"
-    },
-    {
-      "item_id": "vinery:dark_cherry_floorboard",
-      "count": 1,
-      "buy": 1.5,
-      "sell": 1.3,
-      "category": "wood"
-    },
-    {
-      "item_id": "vinery:dark_cherry_stairs",
-      "count": 1,
-      "buy": 1.7,
-      "sell": 1.4,
-      "category": "wood"
-    },
-    {
-      "item_id": "vinery:dark_cherry_slab",
-      "count": 1,
-      "buy": 0.9,
-      "sell": 0.8,
-      "category": "wood"
-    },
-    {
-      "item_id": "vinery:dark_cherry_fence",
-      "count": 1,
-      "buy": 1.2,
-      "sell": 1.1,
-      "category": "wood"
-    },
-    {
-      "item_id": "vinery:dark_cherry_fence_gate",
-      "count": 1,
-      "buy": 0.9,
-      "sell": 0.9,
-      "category": "wood"
-    },
-    {
-      "item_id": "vinery:dark_cherry_door",
-      "count": 1,
-      "buy": 1.1,
-      "sell": 1.0,
-      "category": "wood"
-    },
-    {
-      "item_id": "vinery:dark_cherry_trapdoor",
-      "count": 1,
-      "buy": 1.0,
-      "sell": 0.9,
-      "category": "wood"
-    },
-    {
-      "item_id": "vinery:dark_cherry_pressure_plate",
-      "count": 1,
-      "buy": 1.0,
-      "sell": 0.9,
-      "category": "wood"
-    },
-    {
-      "item_id": "vinery:dark_cherry_button",
-      "count": 1,
-      "buy": 1.2,
-      "sell": 1.1,
-      "category": "wood"
-    },
-    {
-      "item_id": "mysticsbiomes:strawberry_log",
-      "count": 1,
-      "buy": 1.2,
-      "sell": 1.0,
-      "category": "wood"
-    },
-    {
-      "item_id": "mysticsbiomes:strawberry_wood",
-      "count": 1,
-      "buy": 1.2,
-      "sell": 1.1,
-      "category": "wood"
-    },
-    {
-      "item_id": "mysticsbiomes:stripped_strawberry_log",
-      "count": 1,
-      "buy": 1.5,
-      "sell": 1.4,
-      "category": "wood"
-    },
-    {
-      "item_id": "mysticsbiomes:stripped_strawberry_wood",
-      "count": 1,
-      "buy": 1.5,
-      "sell": 1.3,
-      "category": "wood"
-    },
-    {
-      "item_id": "mysticsbiomes:strawberry_planks",
-      "count": 1,
-      "buy": 1.0,
-      "sell": 1.0,
-      "category": "wood"
-    },
-    {
-      "item_id": "mysticsbiomes:strawberry_stairs",
-      "count": 1,
-      "buy": 1.0,
-      "sell": 0.9,
-      "category": "wood"
-    },
-    {
-      "item_id": "mysticsbiomes:strawberry_slab",
-      "count": 1,
-      "buy": 1.4,
-      "sell": 1.2,
-      "category": "wood"
-    },
-    {
-      "item_id": "mysticsbiomes:strawberry_fence",
-      "count": 1,
-      "buy": 1.1,
-      "sell": 1.0,
-      "category": "wood"
-    },
-    {
-      "item_id": "mysticsbiomes:strawberry_fence_gate",
-      "count": 1,
-      "buy": 0.9,
-      "sell": 0.8,
-      "category": "wood"
-    },
-    {
-      "item_id": "mysticsbiomes:strawberry_button",
-      "count": 1,
-      "buy": 1.1,
-      "sell": 0.9,
-      "category": "wood"
-    },
-    {
-      "item_id": "mysticsbiomes:strawberry_pressure_plate",
-      "count": 1,
-      "buy": 1.1,
-      "sell": 1.0,
-      "category": "wood"
-    },
-    {
-      "item_id": "mysticsbiomes:strawberry_trapdoor",
-      "count": 1,
-      "buy": 1.4,
-      "sell": 1.2,
-      "category": "wood"
-    },
-    {
-      "item_id": "mysticsbiomes:strawberry_door",
-      "count": 1,
-      "buy": 1.3,
-      "sell": 1.2,
-      "category": "wood"
-    },
-    {
-      "item_id": "mysticsbiomes:black_cherry_log",
-      "count": 1,
-      "buy": 0.8,
-      "sell": 0.8,
-      "category": "wood"
-    },
-    {
-      "item_id": "mysticsbiomes:black_cherry_wood",
-      "count": 1,
-      "buy": 0.9,
-      "sell": 0.8,
-      "category": "wood"
-    },
-    {
-      "item_id": "mysticsbiomes:stripped_black_cherry_log",
-      "count": 1,
-      "buy": 1.3,
-      "sell": 1.3,
-      "category": "wood"
-    },
-    {
-      "item_id": "mysticsbiomes:stripped_black_cherry_wood",
-      "count": 1,
-      "buy": 1.3,
-      "sell": 1.1,
-      "category": "wood"
-    },
-    {
-      "item_id": "mysticsbiomes:black_cherry_planks",
-      "count": 1,
-      "buy": 1.4,
-      "sell": 1.3,
-      "category": "wood"
-    },
-    {
-      "item_id": "mysticsbiomes:black_cherry_stairs",
-      "count": 1,
-      "buy": 1.2,
-      "sell": 1.2,
-      "category": "wood"
-    },
-    {
-      "item_id": "mysticsbiomes:black_cherry_slab",
-      "count": 1,
-      "buy": 0.9,
-      "sell": 0.8,
-      "category": "wood"
-    },
-    {
-      "item_id": "mysticsbiomes:black_cherry_fence",
-      "count": 1,
-      "buy": 1.3,
-      "sell": 1.1,
-      "category": "wood"
-    },
-    {
-      "item_id": "mysticsbiomes:black_cherry_fence_gate",
-      "count": 1,
-      "buy": 0.9,
-      "sell": 0.8,
-      "category": "wood"
-    },
-    {
-      "item_id": "mysticsbiomes:black_cherry_button",
-      "count": 1,
-      "buy": 1.2,
-      "sell": 1.0,
-      "category": "wood"
-    },
-    {
-      "item_id": "mysticsbiomes:black_cherry_pressure_plate",
-      "count": 1,
-      "buy": 1.2,
-      "sell": 1.0,
-      "category": "wood"
-    },
-    {
-      "item_id": "mysticsbiomes:black_cherry_trapdoor",
-      "count": 1,
-      "buy": 1.0,
-      "sell": 0.9,
-      "category": "wood"
-    },
-    {
-      "item_id": "mysticsbiomes:black_cherry_door",
-      "count": 1,
-      "buy": 1.5,
-      "sell": 1.3,
-      "category": "wood"
-    },
-    {
-      "item_id": "mysticsbiomes:lavender_log",
-      "count": 1,
-      "buy": 1.5,
-      "sell": 1.4,
-      "category": "wood"
-    },
-    {
-      "item_id": "mysticsbiomes:lavender_wood",
-      "count": 1,
-      "buy": 1.1,
-      "sell": 1.0,
-      "category": "wood"
-    },
-    {
-      "item_id": "mysticsbiomes:stripped_lavender_log",
-      "count": 1,
-      "buy": 1.1,
-      "sell": 1.0,
-      "category": "wood"
-    },
-    {
-      "item_id": "mysticsbiomes:stripped_lavender_wood",
-      "count": 1,
-      "buy": 0.8,
-      "sell": 0.8,
-      "category": "wood"
-    },
-    {
-      "item_id": "mysticsbiomes:lavender_planks",
-      "count": 1,
-      "buy": 1.3,
-      "sell": 1.1,
-      "category": "wood"
-    },
-    {
-      "item_id": "mysticsbiomes:lavender_stairs",
-      "count": 1,
-      "buy": 1.4,
-      "sell": 1.2,
-      "category": "wood"
-    },
-    {
-      "item_id": "mysticsbiomes:lavender_slab",
-      "count": 1,
-      "buy": 1.1,
-      "sell": 1.0,
-      "category": "wood"
-    },
-    {
-      "item_id": "mysticsbiomes:lavender_fence",
-      "count": 1,
-      "buy": 1.1,
-      "sell": 0.9,
-      "category": "wood"
-    },
-    {
-      "item_id": "mysticsbiomes:lavender_fence_gate",
-      "count": 1,
-      "buy": 1.0,
-      "sell": 0.9,
-      "category": "wood"
-    },
-    {
-      "item_id": "mysticsbiomes:lavender_button",
-      "count": 1,
-      "buy": 0.9,
-      "sell": 0.8,
-      "category": "wood"
-    },
-    {
-      "item_id": "mysticsbiomes:lavender_pressure_plate",
-      "count": 1,
-      "buy": 1.1,
-      "sell": 1.0,
-      "category": "wood"
-    },
-    {
-      "item_id": "mysticsbiomes:lavender_trapdoor",
-      "count": 1,
-      "buy": 1.3,
-      "sell": 1.2,
-      "category": "wood"
-    },
-    {
-      "item_id": "mysticsbiomes:lavender_door",
-      "count": 1,
-      "buy": 1.3,
-      "sell": 1.1,
-      "category": "wood"
-    },
-    {
-      "item_id": "mysticsbiomes:peach_log",
-      "count": 1,
-      "buy": 1.1,
-      "sell": 1.0,
-      "category": "wood"
-    },
-    {
-      "item_id": "mysticsbiomes:peach_wood",
-      "count": 1,
-      "buy": 0.9,
-      "sell": 0.8,
-      "category": "wood"
-    },
-    {
-      "item_id": "mysticsbiomes:stripped_peach_log",
-      "count": 1,
-      "buy": 1.3,
-      "sell": 1.2,
-      "category": "wood"
-    },
-    {
-      "item_id": "mysticsbiomes:stripped_peach_wood",
-      "count": 1,
-      "buy": 1.1,
-      "sell": 1.0,
-      "category": "wood"
-    },
-    {
-      "item_id": "mysticsbiomes:peach_planks",
-      "count": 1,
-      "buy": 1.1,
-      "sell": 1.0,
-      "category": "wood"
-    },
-    {
-      "item_id": "mysticsbiomes:peach_stairs",
-      "count": 1,
-      "buy": 1.5,
-      "sell": 1.3,
-      "category": "wood"
-    },
-    {
-      "item_id": "mysticsbiomes:peach_slab",
-      "count": 1,
-      "buy": 1.5,
-      "sell": 1.3,
-      "category": "wood"
-    },
-    {
-      "item_id": "mysticsbiomes:peach_fence",
-      "count": 1,
-      "buy": 0.8,
-      "sell": 0.8,
-      "category": "wood"
-    },
-    {
-      "item_id": "mysticsbiomes:peach_fence_gate",
-      "count": 1,
-      "buy": 1.1,
-      "sell": 1.0,
-      "category": "wood"
-    },
-    {
-      "item_id": "mysticsbiomes:peach_button",
-      "count": 1,
-      "buy": 1.5,
-      "sell": 1.4,
-      "category": "wood"
-    },
-    {
-      "item_id": "mysticsbiomes:peach_pressure_plate",
-      "count": 1,
-      "buy": 0.8,
-      "sell": 0.8,
-      "category": "wood"
-    },
-    {
-      "item_id": "mysticsbiomes:peach_trapdoor",
-      "count": 1,
-      "buy": 1.6,
-      "sell": 1.4,
-      "category": "wood"
-    },
-    {
-      "item_id": "mysticsbiomes:peach_door",
-      "count": 1,
-      "buy": 1.3,
-      "sell": 1.1,
-      "category": "wood"
-    },
-    {
-      "item_id": "mysticsbiomes:maple_log",
-      "count": 1,
-      "buy": 1.2,
-      "sell": 1.1,
-      "category": "wood"
-    },
-    {
-      "item_id": "mysticsbiomes:maple_wood",
-      "count": 1,
-      "buy": 1.6,
-      "sell": 1.4,
-      "category": "wood"
-    },
-    {
-      "item_id": "mysticsbiomes:white_maple_log",
-      "count": 1,
-      "buy": 1.0,
-      "sell": 0.9,
-      "category": "wood"
-    },
-    {
-      "item_id": "mysticsbiomes:white_maple_wood",
-      "count": 1,
-      "buy": 1.5,
-      "sell": 1.3,
-      "category": "wood"
-    },
-    {
-      "item_id": "mysticsbiomes:stripped_maple_log",
-      "count": 1,
-      "buy": 1.0,
-      "sell": 1.0,
-      "category": "wood"
-    },
-    {
-      "item_id": "mysticsbiomes:stripped_maple_wood",
-      "count": 1,
-      "buy": 1.2,
-      "sell": 1.2,
-      "category": "wood"
-    },
-    {
-      "item_id": "mysticsbiomes:maple_planks",
-      "count": 1,
-      "buy": 1.4,
-      "sell": 1.3,
-      "category": "wood"
-    },
-    {
-      "item_id": "mysticsbiomes:maple_stairs",
-      "count": 1,
-      "buy": 1.2,
-      "sell": 1.1,
-      "category": "wood"
-    },
-    {
-      "item_id": "mysticsbiomes:maple_slab",
-      "count": 1,
-      "buy": 0.9,
-      "sell": 0.8,
-      "category": "wood"
-    },
-    {
-      "item_id": "mysticsbiomes:maple_fence",
-      "count": 1,
-      "buy": 1.6,
-      "sell": 1.4,
-      "category": "wood"
-    },
-    {
-      "item_id": "mysticsbiomes:maple_fence_gate",
-      "count": 1,
-      "buy": 1.0,
-      "sell": 0.9,
-      "category": "wood"
-    },
-    {
-      "item_id": "mysticsbiomes:maple_button",
-      "count": 1,
-      "buy": 1.4,
-      "sell": 1.3,
-      "category": "wood"
-    },
-    {
-      "item_id": "mysticsbiomes:maple_pressure_plate",
-      "count": 1,
-      "buy": 1.3,
-      "sell": 1.2,
-      "category": "wood"
-    },
-    {
-      "item_id": "mysticsbiomes:maple_trapdoor",
-      "count": 1,
-      "buy": 1.4,
-      "sell": 1.2,
-      "category": "wood"
-    },
-    {
-      "item_id": "mysticsbiomes:maple_door",
-      "count": 1,
-      "buy": 1.2,
-      "sell": 1.1,
-      "category": "wood"
-    },
-    {
-      "item_id": "mysticsbiomes:sea_foam_log",
-      "count": 1,
-      "buy": 1.0,
-      "sell": 0.9,
-      "category": "wood"
-    },
-    {
-      "item_id": "mysticsbiomes:sea_foam_wood",
-      "count": 1,
-      "buy": 1.4,
-      "sell": 1.2,
-      "category": "wood"
-    },
-    {
-      "item_id": "mysticsbiomes:stripped_sea_foam_log",
-      "count": 1,
-      "buy": 1.3,
-      "sell": 1.2,
-      "category": "wood"
-    },
-    {
-      "item_id": "mysticsbiomes:stripped_sea_foam_wood",
-      "count": 1,
-      "buy": 1.1,
-      "sell": 1.0,
-      "category": "wood"
-    },
-    {
-      "item_id": "mysticsbiomes:sea_foam_planks",
-      "count": 1,
-      "buy": 1.5,
-      "sell": 1.3,
-      "category": "wood"
-    },
-    {
-      "item_id": "mysticsbiomes:sea_foam_stairs",
-      "count": 1,
-      "buy": 1.3,
-      "sell": 1.2,
-      "category": "wood"
-    },
-    {
-      "item_id": "mysticsbiomes:sea_foam_slab",
-      "count": 1,
-      "buy": 0.9,
-      "sell": 0.8,
-      "category": "wood"
-    },
-    {
-      "item_id": "mysticsbiomes:sea_foam_fence",
-      "count": 1,
-      "buy": 1.1,
-      "sell": 1.1,
-      "category": "wood"
-    },
-    {
-      "item_id": "mysticsbiomes:sea_foam_fence_gate",
-      "count": 1,
-      "buy": 1.4,
-      "sell": 1.2,
-      "category": "wood"
-    },
-    {
-      "item_id": "mysticsbiomes:sea_foam_button",
-      "count": 1,
-      "buy": 1.5,
-      "sell": 1.4,
-      "category": "wood"
-    },
-    {
-      "item_id": "mysticsbiomes:sea_foam_pressure_plate",
-      "count": 1,
-      "buy": 1.4,
-      "sell": 1.2,
-      "category": "wood"
-    },
-    {
-      "item_id": "mysticsbiomes:sea_foam_trapdoor",
-      "count": 1,
-      "buy": 1.4,
-      "sell": 1.2,
-      "category": "wood"
-    },
-    {
-      "item_id": "mysticsbiomes:sea_foam_door",
-      "count": 1,
-      "buy": 1.1,
-      "sell": 1.0,
-      "category": "wood"
-    },
-    {
-      "item_id": "mysticsbiomes:tropical_log",
-      "count": 1,
-      "buy": 1.3,
-      "sell": 1.2,
-      "category": "wood"
-    },
-    {
-      "item_id": "mysticsbiomes:tropical_wood",
-      "count": 1,
-      "buy": 0.9,
-      "sell": 0.9,
-      "category": "wood"
-    },
-    {
-      "item_id": "mysticsbiomes:stripped_tropical_log",
-      "count": 1,
-      "buy": 1.5,
-      "sell": 1.3,
-      "category": "wood"
-    },
-    {
-      "item_id": "mysticsbiomes:stripped_tropical_wood",
-      "count": 1,
-      "buy": 0.9,
-      "sell": 0.9,
-      "category": "wood"
-    },
-    {
-      "item_id": "mysticsbiomes:tropical_planks",
-      "count": 1,
-      "buy": 1.1,
-      "sell": 1.1,
-      "category": "wood"
-    },
-    {
-      "item_id": "mysticsbiomes:tropical_stairs",
-      "count": 1,
-      "buy": 1.0,
-      "sell": 1.0,
-      "category": "wood"
-    },
-    {
-      "item_id": "mysticsbiomes:tropical_slab",
-      "count": 1,
-      "buy": 0.8,
-      "sell": 0.8,
-      "category": "wood"
-    },
-    {
-      "item_id": "mysticsbiomes:tropical_fence",
-      "count": 1,
-      "buy": 1.1,
-      "sell": 1.0,
-      "category": "wood"
-    },
-    {
-      "item_id": "mysticsbiomes:tropical_fence_gate",
-      "count": 1,
-      "buy": 1.4,
-      "sell": 1.4,
-      "category": "wood"
-    },
-    {
-      "item_id": "mysticsbiomes:tropical_button",
-      "count": 1,
-      "buy": 1.3,
-      "sell": 1.2,
-      "category": "wood"
-    },
-    {
-      "item_id": "mysticsbiomes:tropical_pressure_plate",
-      "count": 1,
-      "buy": 1.5,
-      "sell": 1.4,
-      "category": "wood"
-    },
-    {
-      "item_id": "mysticsbiomes:tropical_trapdoor",
-      "count": 1,
-      "buy": 1.3,
-      "sell": 1.2,
-      "category": "wood"
-    },
-    {
-      "item_id": "mysticsbiomes:tropical_door",
-      "count": 1,
-      "buy": 1.2,
-      "sell": 1.2,
-      "category": "wood"
-    },
-    {
-      "item_id": "mysticsbiomes:vanilla_log",
-      "count": 1,
-      "buy": 1.1,
-      "sell": 0.9,
-      "category": "wood"
-    },
-    {
-      "item_id": "mysticsbiomes:vanilla_wood",
-      "count": 1,
-      "buy": 0.8,
-      "sell": 0.8,
-      "category": "wood"
-    },
-    {
-      "item_id": "mysticsbiomes:stripped_vanilla_log",
-      "count": 1,
-      "buy": 1.3,
-      "sell": 1.2,
-      "category": "wood"
-    },
-    {
-      "item_id": "mysticsbiomes:stripped_vanilla_wood",
-      "count": 1,
-      "buy": 1.1,
-      "sell": 1.0,
-      "category": "wood"
-    },
-    {
-      "item_id": "mysticsbiomes:vanilla_planks",
-      "count": 1,
-      "buy": 1.5,
-      "sell": 1.3,
-      "category": "wood"
-    },
-    {
-      "item_id": "mysticsbiomes:vanilla_stairs",
-      "count": 1,
-      "buy": 1.0,
-      "sell": 0.8,
-      "category": "wood"
-    },
-    {
-      "item_id": "mysticsbiomes:vanilla_slab",
-      "count": 1,
-      "buy": 1.0,
-      "sell": 1.0,
-      "category": "wood"
-    },
-    {
-      "item_id": "mysticsbiomes:vanilla_fence",
-      "count": 1,
-      "buy": 1.3,
-      "sell": 1.2,
-      "category": "wood"
-    },
-    {
-      "item_id": "mysticsbiomes:vanilla_fence_gate",
-      "count": 1,
-      "buy": 1.4,
-      "sell": 1.2,
-      "category": "wood"
-    },
-    {
-      "item_id": "mysticsbiomes:vanilla_button",
-      "count": 1,
-      "buy": 1.5,
-      "sell": 1.3,
-      "category": "wood"
-    },
-    {
-      "item_id": "mysticsbiomes:vanilla_pressure_plate",
-      "count": 1,
-      "buy": 1.4,
-      "sell": 1.2,
-      "category": "wood"
-    },
-    {
-      "item_id": "mysticsbiomes:vanilla_trapdoor",
-      "count": 1,
-      "buy": 1.5,
-      "sell": 1.3,
-      "category": "wood"
-    },
-    {
-      "item_id": "mysticsbiomes:vanilla_door",
-      "count": 1,
-      "buy": 1.6,
-      "sell": 1.3,
-      "category": "wood"
-    },
-    {
-      "item_id": "mysticsbiomes:spring_bamboo_block",
-      "count": 1,
-      "buy": 0.9,
-      "sell": 0.8,
-      "category": "wood"
-    },
-    {
-      "item_id": "mysticsbiomes:stripped_spring_bamboo_block",
-      "count": 1,
-      "buy": 0.9,
-      "sell": 0.8,
-      "category": "wood"
-    },
-    {
-      "item_id": "mysticsbiomes:spring_planks",
-      "count": 1,
-      "buy": 1.1,
-      "sell": 0.9,
-      "category": "wood"
-    },
-    {
-      "item_id": "mysticsbiomes:spring_mosaic",
-      "count": 1,
-      "buy": 1.5,
-      "sell": 1.2,
-      "category": "wood"
-    },
-    {
-      "item_id": "mysticsbiomes:spring_stairs",
-      "count": 1,
-      "buy": 1.2,
-      "sell": 1.0,
-      "category": "wood"
-    },
-    {
-      "item_id": "mysticsbiomes:spring_mosaic_stairs",
-      "count": 1,
-      "buy": 1.2,
-      "sell": 1.0,
-      "category": "wood"
-    },
-    {
-      "item_id": "mysticsbiomes:spring_slab",
-      "count": 1,
-      "buy": 1.2,
-      "sell": 1.0,
-      "category": "wood"
-    },
-    {
-      "item_id": "mysticsbiomes:spring_mosaic_slab",
-      "count": 1,
-      "buy": 1.5,
-      "sell": 1.3,
-      "category": "wood"
-    },
-    {
-      "item_id": "mysticsbiomes:spring_fence",
-      "count": 1,
-      "buy": 1.5,
-      "sell": 1.4,
-      "category": "wood"
-    },
-    {
-      "item_id": "mysticsbiomes:spring_fence_gate",
-      "count": 1,
-      "buy": 1.2,
-      "sell": 1.0,
-      "category": "wood"
-    },
-    {
-      "item_id": "mysticsbiomes:spring_button",
-      "count": 1,
-      "buy": 0.9,
-      "sell": 0.8,
-      "category": "wood"
-    },
-    {
-      "item_id": "mysticsbiomes:spring_pressure_plate",
-      "count": 1,
-      "buy": 1.1,
-      "sell": 1.0,
-      "category": "wood"
-    },
-    {
-      "item_id": "mysticsbiomes:spring_trapdoor",
-      "count": 1,
-      "buy": 1.2,
-      "sell": 1.1,
-      "category": "wood"
-    },
-    {
-      "item_id": "mysticsbiomes:spring_door",
-      "count": 1,
-      "buy": 1.4,
-      "sell": 1.3,
       "category": "wood"
     },
     {
       "item_id": "minecraft:stone",
-      "count": 1,
-      "buy": 0.3,
-      "sell": 0.3,
-      "category": "stone"
-    },
-    {
-      "item_id": "minecraft:stone_stairs",
-      "count": 1,
-      "buy": 0.4,
-      "sell": 0.4,
-      "category": "stone"
-    },
-    {
-      "item_id": "minecraft:stone_slab",
-      "count": 1,
-      "buy": 0.2,
-      "sell": 0.2,
-      "category": "stone"
-    },
-    {
-      "item_id": "minecraft:stone_pressure_plate",
-      "count": 1,
-      "buy": 0.9,
-      "sell": 0.8,
-      "category": "stone"
-    },
-    {
-      "item_id": "minecraft:stone_button",
-      "count": 1,
-      "buy": 0.2,
-      "sell": 0.2,
-      "category": "stone"
-    },
-    {
-      "item_id": "minecraft:cobblestone",
-      "count": 1,
-      "buy": 0.4,
-      "sell": 0.4,
-      "category": "stone"
-    },
-    {
-      "item_id": "minecraft:cobblestone_stairs",
-      "count": 1,
-      "buy": 0.4,
-      "sell": 0.4,
-      "category": "stone"
-    },
-    {
-      "item_id": "minecraft:cobblestone_slab",
-      "count": 1,
-      "buy": 0.2,
-      "sell": 0.2,
-      "category": "stone"
-    },
-    {
-      "item_id": "minecraft:cobblestone_wall",
-      "count": 1,
-      "buy": 0.4,
-      "sell": 0.4,
-      "category": "stone"
-    },
-    {
-      "item_id": "minecraft:mossy_cobblestone",
-      "count": 1,
-      "buy": 0.6,
-      "sell": 0.5,
-      "category": "stone"
-    },
-    {
-      "item_id": "minecraft:mossy_cobblestone_stairs",
-      "count": 1,
-      "buy": 0.5,
-      "sell": 0.5,
-      "category": "stone"
-    },
-    {
-      "item_id": "minecraft:mossy_cobblestone_slab",
-      "count": 1,
-      "buy": 0.2,
-      "sell": 0.2,
-      "category": "stone"
-    },
-    {
-      "item_id": "minecraft:mossy_cobblestone_wall",
-      "count": 1,
-      "buy": 0.5,
-      "sell": 0.4,
-      "category": "stone"
-    },
-    {
-      "item_id": "minecraft:smooth_stone",
-      "count": 1,
-      "buy": 0.8,
-      "sell": 0.7,
-      "category": "stone"
-    },
-    {
-      "item_id": "minecraft:smooth_stone_slab",
-      "count": 1,
-      "buy": 0.5,
-      "sell": 0.4,
-      "category": "stone"
-    },
-    {
-      "item_id": "minecraft:granite",
-      "count": 1,
-      "buy": 0.3,
-      "sell": 0.3,
-      "category": "stone"
-    },
-    {
-      "item_id": "minecraft:granite_stairs",
-      "count": 1,
-      "buy": 0.4,
-      "sell": 0.4,
-      "category": "stone"
-    },
-    {
-      "item_id": "minecraft:granite_slab",
-      "count": 1,
-      "buy": 0.3,
-      "sell": 0.2,
-      "category": "stone"
-    },
-    {
-      "item_id": "minecraft:granite_wall",
-      "count": 1,
-      "buy": 0.3,
-      "sell": 0.3,
-      "category": "stone"
-    },
-    {
-      "item_id": "minecraft:polished_granite",
-      "count": 1,
-      "buy": 0.7,
-      "sell": 0.6,
-      "category": "stone"
-    },
-    {
-      "item_id": "minecraft:polished_granite_stairs",
-      "count": 1,
-      "buy": 0.8,
-      "sell": 0.7,
-      "category": "stone"
-    },
-    {
-      "item_id": "minecraft:polished_granite_slab",
-      "count": 1,
-      "buy": 0.4,
-      "sell": 0.3,
-      "category": "stone"
-    },
-    {
-      "item_id": "minecraft:diorite",
-      "count": 1,
-      "buy": 0.3,
-      "sell": 0.3,
-      "category": "stone"
-    },
-    {
-      "item_id": "minecraft:diorite_stairs",
-      "count": 1,
-      "buy": 0.5,
-      "sell": 0.4,
-      "category": "stone"
-    },
-    {
-      "item_id": "minecraft:diorite_slab",
-      "count": 1,
-      "buy": 0.3,
-      "sell": 0.2,
-      "category": "stone"
-    },
-    {
-      "item_id": "minecraft:diorite_wall",
-      "count": 1,
-      "buy": 0.4,
-      "sell": 0.4,
-      "category": "stone"
-    },
-    {
-      "item_id": "minecraft:polished_diorite",
-      "count": 1,
-      "buy": 0.6,
-      "sell": 0.5,
-      "category": "stone"
-    },
-    {
-      "item_id": "minecraft:polished_diorite_stairs",
-      "count": 1,
-      "buy": 0.7,
-      "sell": 0.7,
-      "category": "stone"
-    },
-    {
-      "item_id": "minecraft:polished_diorite_slab",
-      "count": 1,
-      "buy": 0.4,
-      "sell": 0.4,
-      "category": "stone"
-    },
-    {
-      "item_id": "minecraft:andesite",
-      "count": 1,
-      "buy": 0.3,
-      "sell": 0.2,
-      "category": "stone"
-    },
-    {
-      "item_id": "minecraft:andesite_stairs",
-      "count": 1,
-      "buy": 0.5,
-      "sell": 0.4,
-      "category": "stone"
-    },
-    {
-      "item_id": "minecraft:andesite_slab",
-      "count": 1,
-      "buy": 0.2,
-      "sell": 0.2,
-      "category": "stone"
-    },
-    {
-      "item_id": "minecraft:andesite_wall",
-      "count": 1,
-      "buy": 0.4,
-      "sell": 0.4,
-      "category": "stone"
-    },
-    {
-      "item_id": "minecraft:polished_andesite",
-      "count": 1,
-      "buy": 0.8,
-      "sell": 0.7,
-      "category": "stone"
-    },
-    {
-      "item_id": "minecraft:polished_andesite_stairs",
-      "count": 1,
-      "buy": 0.7,
-      "sell": 0.6,
-      "category": "stone"
-    },
-    {
-      "item_id": "minecraft:polished_andesite_slab",
-      "count": 1,
-      "buy": 0.4,
-      "sell": 0.3,
-      "category": "stone"
-    },
-    {
-      "item_id": "minecraft:deepslate",
-      "count": 1,
-      "buy": 0.8,
-      "sell": 0.8,
-      "category": "stone"
-    },
-    {
-      "item_id": "minecraft:cobbled_deepslate",
-      "count": 1,
-      "buy": 0.7,
-      "sell": 0.6,
-      "category": "stone"
-    },
-    {
-      "item_id": "minecraft:cobbled_deepslate_stairs",
-      "count": 1,
-      "buy": 0.6,
-      "sell": 0.6,
-      "category": "stone"
-    },
-    {
-      "item_id": "minecraft:cobbled_deepslate_slab",
-      "count": 1,
-      "buy": 0.3,
-      "sell": 0.3,
-      "category": "stone"
-    },
-    {
-      "item_id": "minecraft:cobbled_deepslate_wall",
-      "count": 1,
-      "buy": 0.5,
-      "sell": 0.5,
-      "category": "stone"
-    },
-    {
-      "item_id": "minecraft:chiseled_deepslate",
-      "count": 1,
-      "buy": 1.0,
-      "sell": 0.9,
-      "category": "stone"
-    },
-    {
-      "item_id": "minecraft:polished_deepslate",
-      "count": 1,
-      "buy": 0.9,
-      "sell": 0.9,
-      "category": "stone"
-    },
-    {
-      "item_id": "minecraft:polished_deepslate_stairs",
-      "count": 1,
-      "buy": 0.9,
-      "sell": 0.9,
-      "category": "stone"
-    },
-    {
-      "item_id": "minecraft:polished_deepslate_slab",
-      "count": 1,
-      "buy": 0.5,
-      "sell": 0.4,
-      "category": "stone"
-    },
-    {
-      "item_id": "minecraft:polished_deepslate_wall",
-      "count": 1,
-      "buy": 0.8,
-      "sell": 0.8,
-      "category": "stone"
-    },
-    {
-      "item_id": "minecraft:deepslate_tiles",
-      "count": 1,
-      "buy": 0.9,
-      "sell": 0.8,
-      "category": "stone"
-    },
-    {
-      "item_id": "minecraft:cracked_deepslate_tiles",
-      "count": 1,
-      "buy": 0.9,
-      "sell": 0.8,
-      "category": "stone"
-    },
-    {
-      "item_id": "minecraft:deepslate_tile_stairs",
-      "count": 1,
-      "buy": 1.0,
-      "sell": 0.9,
-      "category": "stone"
-    },
-    {
-      "item_id": "minecraft:deepslate_tile_slab",
-      "count": 1,
-      "buy": 0.6,
-      "sell": 0.5,
-      "category": "stone"
-    },
-    {
-      "item_id": "minecraft:deepslate_tile_wall",
-      "count": 1,
-      "buy": 0.8,
-      "sell": 0.8,
-      "category": "stone"
-    },
-    {
-      "item_id": "minecraft:reinforced_deepslate",
-      "count": 1,
-      "buy": 2.9,
-      "sell": 2.8,
-      "category": "stone"
-    },
-    {
-      "item_id": "minecraft:tuff",
-      "count": 1,
-      "buy": 0.6,
-      "sell": 0.6,
-      "category": "stone"
-    },
-    {
-      "item_id": "minecraft:tuff_stairs",
-      "count": 1,
-      "buy": 0.8,
-      "sell": 0.8,
-      "category": "stone"
-    },
-    {
-      "item_id": "minecraft:tuff_slab",
-      "count": 1,
-      "buy": 0.4,
-      "sell": 0.4,
-      "category": "stone"
-    },
-    {
-      "item_id": "minecraft:tuff_wall",
-      "count": 1,
-      "buy": 0.7,
-      "sell": 0.7,
-      "category": "stone"
-    },
-    {
-      "item_id": "minecraft:chiseled_tuff",
-      "count": 1,
-      "buy": 0.8,
-      "sell": 0.7,
-      "category": "stone"
-    },
-    {
-      "item_id": "minecraft:polished_tuff",
-      "count": 1,
-      "buy": 0.7,
-      "sell": 0.6,
-      "category": "stone"
-    },
-    {
-      "item_id": "minecraft:polished_tuff_stairs",
-      "count": 1,
-      "buy": 1.0,
-      "sell": 0.8,
-      "category": "stone"
-    },
-    {
-      "item_id": "minecraft:polished_tuff_slab",
-      "count": 1,
-      "buy": 0.4,
-      "sell": 0.4,
-      "category": "stone"
-    },
-    {
-      "item_id": "minecraft:polished_tuff_wall",
-      "count": 1,
-      "buy": 0.9,
-      "sell": 0.8,
-      "category": "stone"
-    },
-    {
-      "item_id": "minecraft:tuff_bricks",
-      "count": 1,
-      "buy": 0.9,
-      "sell": 0.8,
-      "category": "stone"
-    },
-    {
-      "item_id": "minecraft:tuff_brick_stairs",
-      "count": 1,
-      "buy": 0.9,
-      "sell": 0.8,
-      "category": "stone"
-    },
-    {
-      "item_id": "minecraft:tuff_brick_slab",
-      "count": 1,
-      "buy": 0.6,
-      "sell": 0.5,
-      "category": "stone"
-    },
-    {
-      "item_id": "minecraft:tuff_brick_wall",
-      "count": 1,
-      "buy": 0.8,
-      "sell": 0.7,
-      "category": "stone"
-    },
-    {
-      "item_id": "minecraft:chiseled_tuff_bricks",
-      "count": 1,
-      "buy": 1.0,
-      "sell": 1.0,
-      "category": "stone"
-    },
-    {
-      "item_id": "minecraft:netherrack",
-      "count": 1,
-      "buy": 0.3,
-      "sell": 0.3,
-      "category": "stone"
-    },
-    {
-      "item_id": "minecraft:basalt",
-      "count": 1,
-      "buy": 0.7,
-      "sell": 0.6,
-      "category": "stone"
-    },
-    {
-      "item_id": "minecraft:smooth_basalt",
-      "count": 1,
-      "buy": 0.6,
-      "sell": 0.5,
-      "category": "stone"
-    },
-    {
-      "item_id": "minecraft:polished_basalt",
-      "count": 1,
-      "buy": 0.4,
-      "sell": 0.3,
-      "category": "stone"
-    },
-    {
-      "item_id": "minecraft:blackstone",
-      "count": 1,
-      "buy": 0.6,
-      "sell": 0.5,
-      "category": "stone"
-    },
-    {
-      "item_id": "minecraft:gilded_blackstone",
-      "count": 1,
-      "buy": 9.0,
-      "sell": 7.7,
-      "category": "stone"
-    },
-    {
-      "item_id": "minecraft:blackstone_stairs",
-      "count": 1,
-      "buy": 0.8,
-      "sell": 0.6,
-      "category": "stone"
-    },
-    {
-      "item_id": "minecraft:blackstone_slab",
-      "count": 1,
-      "buy": 0.4,
-      "sell": 0.4,
-      "category": "stone"
-    },
-    {
-      "item_id": "minecraft:blackstone_wall",
-      "count": 1,
-      "buy": 0.8,
-      "sell": 0.8,
-      "category": "stone"
-    },
-    {
-      "item_id": "minecraft:chiseled_polished_blackstone",
-      "count": 1,
-      "buy": 0.7,
-      "sell": 0.7,
-      "category": "stone"
-    },
-    {
-      "item_id": "minecraft:polished_blackstone",
-      "count": 1,
-      "buy": 0.8,
-      "sell": 0.8,
-      "category": "stone"
-    },
-    {
-      "item_id": "minecraft:polished_blackstone_stairs",
-      "count": 1,
-      "buy": 0.8,
-      "sell": 0.7,
-      "category": "stone"
-    },
-    {
-      "item_id": "minecraft:polished_blackstone_slab",
-      "count": 1,
-      "buy": 0.8,
-      "sell": 0.6,
-      "category": "stone"
-    },
-    {
-      "item_id": "minecraft:polished_blackstone_wall",
-      "count": 1,
-      "buy": 0.8,
-      "sell": 0.7,
-      "category": "stone"
-    },
-    {
-      "item_id": "minecraft:polished_blackstone_pressure_plate",
-      "count": 1,
-      "buy": 0.7,
-      "sell": 0.7,
-      "category": "stone"
-    },
-    {
-      "item_id": "minecraft:polished_blackstone_button",
-      "count": 1,
-      "buy": 0.8,
-      "sell": 0.7,
-      "category": "stone"
-    },
-    {
-      "item_id": "minecraft:polished_blackstone_bricks",
-      "count": 1,
-      "buy": 0.8,
-      "sell": 0.7,
-      "category": "brick"
-    },
-    {
-      "item_id": "minecraft:cracked_polished_blackstone_bricks",
-      "count": 1,
-      "buy": 0.8,
-      "sell": 0.7,
-      "category": "brick"
-    },
-    {
-      "item_id": "minecraft:polished_blackstone_brick_stairs",
-      "count": 1,
-      "buy": 1.0,
-      "sell": 0.9,
-      "category": "brick"
-    },
-    {
-      "item_id": "minecraft:polished_blackstone_brick_slab",
-      "count": 1,
-      "buy": 0.8,
-      "sell": 0.8,
-      "category": "brick"
-    },
-    {
-      "item_id": "minecraft:polished_blackstone_brick_wall",
-      "count": 1,
-      "buy": 0.9,
-      "sell": 0.8,
-      "category": "brick"
-    },
-    {
-      "item_id": "meadow:cobbled_limestone",
-      "count": 1,
-      "buy": 0.5,
-      "sell": 0.5,
-      "category": "stone"
-    },
-    {
-      "item_id": "meadow:cobbled_limestone_stairs",
-      "count": 1,
-      "buy": 0.5,
-      "sell": 0.5,
-      "category": "stone"
-    },
-    {
-      "item_id": "meadow:cobbled_limestone_slab",
-      "count": 1,
-      "buy": 0.4,
-      "sell": 0.4,
-      "category": "stone"
-    },
-    {
-      "item_id": "meadow:cobbled_limestone_wall",
-      "count": 1,
-      "buy": 0.6,
-      "sell": 0.5,
-      "category": "stone"
-    },
-    {
-      "item_id": "meadow:mossy_cobbled_limestone",
-      "count": 1,
-      "buy": 0.5,
-      "sell": 0.5,
-      "category": "stone"
-    },
-    {
-      "item_id": "meadow:mossy_cobbled_limestone_stairs",
-      "count": 1,
-      "buy": 0.6,
-      "sell": 0.5,
-      "category": "stone"
-    },
-    {
-      "item_id": "meadow:mossy_cobbled_limestone_slab",
-      "count": 1,
-      "buy": 0.6,
-      "sell": 0.5,
-      "category": "stone"
-    },
-    {
-      "item_id": "meadow:mossy_cobbled_limestone_wall",
-      "count": 1,
-      "buy": 0.6,
-      "sell": 0.5,
-      "category": "stone"
-    },
-    {
-      "item_id": "meadow:limestone",
-      "count": 1,
-      "buy": 0.6,
-      "sell": 0.5,
-      "category": "stone"
-    },
-    {
-      "item_id": "meadow:limestone_stairs",
-      "count": 1,
-      "buy": 0.6,
-      "sell": 0.6,
-      "category": "stone"
-    },
-    {
-      "item_id": "meadow:limestone_slab",
-      "count": 1,
-      "buy": 0.3,
-      "sell": 0.2,
-      "category": "stone"
-    },
-    {
-      "item_id": "meadow:limestone_wall",
       "count": 1,
       "buy": 0.5,
       "sell": 0.4,
@@ -2894,2970 +17,2010 @@
     {
       "item_id": "minecraft:stone_bricks",
       "count": 1,
-      "buy": 0.8,
-      "sell": 0.7,
+      "buy": 1.4,
+      "sell": 1.12,
       "category": "brick"
-    },
-    {
-      "item_id": "minecraft:cracked_stone_bricks",
-      "count": 1,
-      "buy": 0.6,
-      "sell": 0.5,
-      "category": "brick"
-    },
-    {
-      "item_id": "minecraft:stone_brick_stairs",
-      "count": 1,
-      "buy": 0.9,
-      "sell": 0.8,
-      "category": "brick"
-    },
-    {
-      "item_id": "minecraft:stone_brick_slab",
-      "count": 1,
-      "buy": 0.5,
-      "sell": 0.4,
-      "category": "brick"
-    },
-    {
-      "item_id": "minecraft:stone_brick_wall",
-      "count": 1,
-      "buy": 0.8,
-      "sell": 0.6,
-      "category": "brick"
-    },
-    {
-      "item_id": "minecraft:chiseled_stone_bricks",
-      "count": 1,
-      "buy": 0.9,
-      "sell": 0.8,
-      "category": "brick"
-    },
-    {
-      "item_id": "minecraft:mossy_stone_bricks",
-      "count": 1,
-      "buy": 0.9,
-      "sell": 0.8,
-      "category": "brick"
-    },
-    {
-      "item_id": "minecraft:mossy_stone_brick_stairs",
-      "count": 1,
-      "buy": 0.8,
-      "sell": 0.8,
-      "category": "brick"
-    },
-    {
-      "item_id": "minecraft:mossy_stone_brick_slab",
-      "count": 1,
-      "buy": 0.4,
-      "sell": 0.4,
-      "category": "brick"
-    },
-    {
-      "item_id": "minecraft:mossy_stone_brick_wall",
-      "count": 1,
-      "buy": 0.8,
-      "sell": 0.7,
-      "category": "brick"
-    },
-    {
-      "item_id": "minecraft:deepslate_bricks",
-      "count": 1,
-      "buy": 0.7,
-      "sell": 0.7,
-      "category": "brick"
-    },
-    {
-      "item_id": "minecraft:cracked_deepslate_bricks",
-      "count": 1,
-      "buy": 0.7,
-      "sell": 0.6,
-      "category": "brick"
-    },
-    {
-      "item_id": "minecraft:deepslate_brick_stairs",
-      "count": 1,
-      "buy": 1.0,
-      "sell": 0.9,
-      "category": "brick"
-    },
-    {
-      "item_id": "minecraft:deepslate_brick_slab",
-      "count": 1,
-      "buy": 0.6,
-      "sell": 0.5,
-      "category": "brick"
-    },
-    {
-      "item_id": "minecraft:deepslate_brick_wall",
-      "count": 1,
-      "buy": 1.1,
-      "sell": 0.9,
-      "category": "brick"
-    },
-    {
-      "item_id": "minecraft:bricks",
-      "count": 1,
-      "buy": 1.0,
-      "sell": 1.0,
-      "category": "brick"
-    },
-    {
-      "item_id": "minecraft:brick_stairs",
-      "count": 1,
-      "buy": 1.1,
-      "sell": 1.0,
-      "category": "brick"
-    },
-    {
-      "item_id": "minecraft:brick_slab",
-      "count": 1,
-      "buy": 0.6,
-      "sell": 0.5,
-      "category": "brick"
-    },
-    {
-      "item_id": "minecraft:brick_wall",
-      "count": 1,
-      "buy": 1.1,
-      "sell": 1.0,
-      "category": "brick"
-    },
-    {
-      "item_id": "minecraft:packed_mud",
-      "count": 1,
-      "buy": 0.3,
-      "sell": 0.3,
-      "category": "brick"
-    },
-    {
-      "item_id": "minecraft:mud_bricks",
-      "count": 1,
-      "buy": 0.5,
-      "sell": 0.4,
-      "category": "brick"
-    },
-    {
-      "item_id": "minecraft:mud_brick_stairs",
-      "count": 1,
-      "buy": 0.5,
-      "sell": 0.4,
-      "category": "brick"
-    },
-    {
-      "item_id": "minecraft:mud_brick_slab",
-      "count": 1,
-      "buy": 0.3,
-      "sell": 0.3,
-      "category": "brick"
-    },
-    {
-      "item_id": "minecraft:mud_brick_wall",
-      "count": 1,
-      "buy": 0.5,
-      "sell": 0.4,
-      "category": "brick"
-    },
-    {
-      "item_id": "minecraft:nether_bricks",
-      "count": 1,
-      "buy": 0.8,
-      "sell": 0.8,
-      "category": "brick"
-    },
-    {
-      "item_id": "minecraft:cracked_nether_bricks",
-      "count": 1,
-      "buy": 1.0,
-      "sell": 0.9,
-      "category": "brick"
-    },
-    {
-      "item_id": "minecraft:nether_brick_stairs",
-      "count": 1,
-      "buy": 1.2,
-      "sell": 1.1,
-      "category": "brick"
-    },
-    {
-      "item_id": "minecraft:nether_brick_slab",
-      "count": 1,
-      "buy": 0.5,
-      "sell": 0.5,
-      "category": "brick"
-    },
-    {
-      "item_id": "minecraft:nether_brick_wall",
-      "count": 1,
-      "buy": 0.9,
-      "sell": 0.9,
-      "category": "brick"
-    },
-    {
-      "item_id": "minecraft:nether_brick_fence",
-      "count": 1,
-      "buy": 1.0,
-      "sell": 0.9,
-      "category": "brick"
-    },
-    {
-      "item_id": "minecraft:chiseled_nether_bricks",
-      "count": 1,
-      "buy": 1.1,
-      "sell": 1.0,
-      "category": "brick"
-    },
-    {
-      "item_id": "minecraft:red_nether_bricks",
-      "count": 1,
-      "buy": 1.0,
-      "sell": 1.0,
-      "category": "brick"
-    },
-    {
-      "item_id": "minecraft:red_nether_brick_stairs",
-      "count": 1,
-      "buy": 1.3,
-      "sell": 1.2,
-      "category": "brick"
-    },
-    {
-      "item_id": "minecraft:red_nether_brick_slab",
-      "count": 1,
-      "buy": 0.6,
-      "sell": 0.6,
-      "category": "brick"
-    },
-    {
-      "item_id": "minecraft:red_nether_brick_wall",
-      "count": 1,
-      "buy": 1.0,
-      "sell": 0.9,
-      "category": "brick"
-    },
-    {
-      "item_id": "minecraft:polished_blackstone_bricks",
-      "count": 1,
-      "buy": 1.0,
-      "sell": 0.9,
-      "category": "brick"
-    },
-    {
-      "item_id": "minecraft:cracked_polished_blackstone_bricks",
-      "count": 1,
-      "buy": 0.7,
-      "sell": 0.7,
-      "category": "brick"
-    },
-    {
-      "item_id": "minecraft:polished_blackstone_brick_stairs",
-      "count": 1,
-      "buy": 0.9,
-      "sell": 0.8,
-      "category": "brick"
-    },
-    {
-      "item_id": "minecraft:polished_blackstone_brick_slab",
-      "count": 1,
-      "buy": 0.6,
-      "sell": 0.6,
-      "category": "brick"
-    },
-    {
-      "item_id": "minecraft:polished_blackstone_brick_wall",
-      "count": 1,
-      "buy": 0.9,
-      "sell": 0.8,
-      "category": "brick"
-    },
-    {
-      "item_id": "minecraft:end_stone_bricks",
-      "count": 1,
-      "buy": 1.2,
-      "sell": 1.1,
-      "category": "brick"
-    },
-    {
-      "item_id": "minecraft:end_stone_brick_stairs",
-      "count": 1,
-      "buy": 1.2,
-      "sell": 1.2,
-      "category": "brick"
-    },
-    {
-      "item_id": "minecraft:end_stone_brick_slab",
-      "count": 1,
-      "buy": 1.3,
-      "sell": 1.2,
-      "category": "brick"
-    },
-    {
-      "item_id": "minecraft:end_stone_brick_wall",
-      "count": 1,
-      "buy": 1.2,
-      "sell": 1.1,
-      "category": "brick"
-    },
-    {
-      "item_id": "minecraft:purpur_block",
-      "count": 1,
-      "buy": 1.3,
-      "sell": 1.3,
-      "category": "brick"
-    },
-    {
-      "item_id": "minecraft:purpur_pillar",
-      "count": 1,
-      "buy": 1.5,
-      "sell": 1.4,
-      "category": "brick"
-    },
-    {
-      "item_id": "minecraft:purpur_stairs",
-      "count": 1,
-      "buy": 1.3,
-      "sell": 1.2,
-      "category": "brick"
-    },
-    {
-      "item_id": "minecraft:purpur_slab",
-      "count": 1,
-      "buy": 0.7,
-      "sell": 0.6,
-      "category": "brick"
-    },
-    {
-      "item_id": "minecraft:sandstone",
-      "count": 1,
-      "buy": 0.5,
-      "sell": 0.4,
-      "category": "sand"
-    },
-    {
-      "item_id": "minecraft:sandstone_stairs",
-      "count": 1,
-      "buy": 0.4,
-      "sell": 0.4,
-      "category": "sand"
-    },
-    {
-      "item_id": "minecraft:sandstone_slab",
-      "count": 1,
-      "buy": 0.2,
-      "sell": 0.2,
-      "category": "sand"
-    },
-    {
-      "item_id": "minecraft:sandstone_wall",
-      "count": 1,
-      "buy": 0.4,
-      "sell": 0.3,
-      "category": "sand"
-    },
-    {
-      "item_id": "minecraft:chiseled_sandstone",
-      "count": 1,
-      "buy": 0.6,
-      "sell": 0.5,
-      "category": "sand"
-    },
-    {
-      "item_id": "minecraft:smooth_sandstone",
-      "count": 1,
-      "buy": 0.8,
-      "sell": 0.6,
-      "category": "sand"
-    },
-    {
-      "item_id": "minecraft:smooth_sandstone_stairs",
-      "count": 1,
-      "buy": 0.6,
-      "sell": 0.6,
-      "category": "sand"
-    },
-    {
-      "item_id": "minecraft:smooth_sandstone_slab",
-      "count": 1,
-      "buy": 0.3,
-      "sell": 0.3,
-      "category": "sand"
-    },
-    {
-      "item_id": "minecraft:cut_sandstone",
-      "count": 1,
-      "buy": 0.6,
-      "sell": 0.5,
-      "category": "sand"
-    },
-    {
-      "item_id": "minecraft:cut_sandstone_slab",
-      "count": 1,
-      "buy": 0.3,
-      "sell": 0.3,
-      "category": "sand"
-    },
-    {
-      "item_id": "minecraft:red_sandstone",
-      "count": 1,
-      "buy": 0.5,
-      "sell": 0.4,
-      "category": "sand"
-    },
-    {
-      "item_id": "minecraft:red_sandstone_stairs",
-      "count": 1,
-      "buy": 0.6,
-      "sell": 0.6,
-      "category": "sand"
-    },
-    {
-      "item_id": "minecraft:red_sandstone_slab",
-      "count": 1,
-      "buy": 0.3,
-      "sell": 0.2,
-      "category": "sand"
-    },
-    {
-      "item_id": "minecraft:red_sandstone_wall",
-      "count": 1,
-      "buy": 0.4,
-      "sell": 0.3,
-      "category": "sand"
-    },
-    {
-      "item_id": "minecraft:chiseled_red_sandstone",
-      "count": 1,
-      "buy": 0.6,
-      "sell": 0.6,
-      "category": "sand"
-    },
-    {
-      "item_id": "minecraft:smooth_red_sandstone",
-      "count": 1,
-      "buy": 0.8,
-      "sell": 0.7,
-      "category": "sand"
-    },
-    {
-      "item_id": "minecraft:smooth_red_sandstone_stairs",
-      "count": 1,
-      "buy": 0.8,
-      "sell": 0.7,
-      "category": "sand"
-    },
-    {
-      "item_id": "minecraft:smooth_red_sandstone_slab",
-      "count": 1,
-      "buy": 0.3,
-      "sell": 0.3,
-      "category": "sand"
-    },
-    {
-      "item_id": "minecraft:cut_red_sandstone",
-      "count": 1,
-      "buy": 0.5,
-      "sell": 0.4,
-      "category": "sand"
-    },
-    {
-      "item_id": "minecraft:cut_red_sandstone_slab",
-      "count": 1,
-      "buy": 0.3,
-      "sell": 0.3,
-      "category": "sand"
     },
     {
       "item_id": "minecraft:sand",
       "count": 1,
-      "buy": 0.1,
-      "sell": 0.1,
-      "category": "sand"
-    },
-    {
-      "item_id": "minecraft:red_sand",
-      "count": 1,
-      "buy": 0.2,
-      "sell": 0.2,
-      "category": "sand"
-    },
-    {
-      "item_id": "mysticsbiomes:lush_sand",
-      "count": 1,
-      "buy": 0.5,
-      "sell": 0.5,
-      "category": "sand"
-    },
-    {
-      "item_id": "mysticsbiomes:grassy_lush_sand",
-      "count": 1,
-      "buy": 0.4,
-      "sell": 0.4,
-      "category": "sand"
-    },
-    {
-      "item_id": "mysticsbiomes:lush_sandstone",
-      "count": 1,
-      "buy": 0.4,
-      "sell": 0.4,
-      "category": "sand"
-    },
-    {
-      "item_id": "mysticsbiomes:lush_sandstone_stairs",
-      "count": 1,
-      "buy": 0.6,
-      "sell": 0.5,
-      "category": "sand"
-    },
-    {
-      "item_id": "mysticsbiomes:lush_sandstone_slab",
-      "count": 1,
-      "buy": 0.4,
-      "sell": 0.3,
-      "category": "sand"
-    },
-    {
-      "item_id": "mysticsbiomes:lush_sandstone_wall",
-      "count": 1,
-      "buy": 0.6,
-      "sell": 0.5,
-      "category": "sand"
-    },
-    {
-      "item_id": "mysticsbiomes:chiseled_lush_sandstone",
-      "count": 1,
-      "buy": 0.5,
-      "sell": 0.5,
-      "category": "sand"
-    },
-    {
-      "item_id": "mysticsbiomes:cut_lush_sandstone",
-      "count": 1,
-      "buy": 0.5,
-      "sell": 0.5,
-      "category": "sand"
-    },
-    {
-      "item_id": "mysticsbiomes:cut_lush_sandstone_slab",
-      "count": 1,
-      "buy": 0.6,
-      "sell": 0.5,
-      "category": "sand"
-    },
-    {
-      "item_id": "mysticsbiomes:smooth_lush_sandstone",
-      "count": 1,
-      "buy": 0.8,
-      "sell": 0.7,
-      "category": "sand"
-    },
-    {
-      "item_id": "mysticsbiomes:smooth_lush_sandstone_stairs",
-      "count": 1,
       "buy": 0.7,
-      "sell": 0.7,
-      "category": "sand"
-    },
-    {
-      "item_id": "mysticsbiomes:smooth_lush_sandstone_slab",
-      "count": 1,
-      "buy": 0.8,
-      "sell": 0.7,
+      "sell": 0.56,
       "category": "sand"
     },
     {
       "item_id": "minecraft:prismarine",
       "count": 1,
-      "buy": 3.6,
-      "sell": 3.1,
-      "category": "prismarine"
-    },
-    {
-      "item_id": "minecraft:prismarine_stairs",
-      "count": 1,
-      "buy": 3.7,
-      "sell": 3.4,
-      "category": "prismarine"
-    },
-    {
-      "item_id": "minecraft:prismarine_slab",
-      "count": 1,
       "buy": 1.6,
-      "sell": 1.4,
-      "category": "prismarine"
-    },
-    {
-      "item_id": "minecraft:prismarine_wall",
-      "count": 1,
-      "buy": 3.6,
-      "sell": 3.5,
-      "category": "prismarine"
-    },
-    {
-      "item_id": "minecraft:prismarine_bricks",
-      "count": 1,
-      "buy": 3.8,
-      "sell": 3.4,
-      "category": "prismarine"
-    },
-    {
-      "item_id": "minecraft:prismarine_brick_stairs",
-      "count": 1,
-      "buy": 3.7,
-      "sell": 3.3,
-      "category": "prismarine"
-    },
-    {
-      "item_id": "minecraft:prismarine_brick_slab",
-      "count": 1,
-      "buy": 1.6,
-      "sell": 1.6,
-      "category": "prismarine"
-    },
-    {
-      "item_id": "minecraft:dark_prismarine",
-      "count": 1,
-      "buy": 3.3,
-      "sell": 3.0,
-      "category": "prismarine"
-    },
-    {
-      "item_id": "minecraft:dark_prismarine_stairs",
-      "count": 1,
-      "buy": 3.8,
-      "sell": 3.3,
-      "category": "prismarine"
-    },
-    {
-      "item_id": "minecraft:dark_prismarine_slab",
-      "count": 1,
-      "buy": 1.7,
-      "sell": 1.5,
+      "sell": 1.28,
       "category": "prismarine"
     },
     {
       "item_id": "minecraft:quartz_block",
       "count": 1,
-      "buy": 4.3,
-      "sell": 4.2,
-      "category": "quartz"
-    },
-    {
-      "item_id": "minecraft:quartz_stairs",
-      "count": 1,
-      "buy": 4.3,
-      "sell": 4.2,
-      "category": "quartz"
-    },
-    {
-      "item_id": "minecraft:quartz_slab",
-      "count": 1,
-      "buy": 2.1,
-      "sell": 2.0,
-      "category": "quartz"
-    },
-    {
-      "item_id": "minecraft:chiseled_quartz_block",
-      "count": 1,
-      "buy": 4.4,
-      "sell": 4.2,
-      "category": "quartz"
-    },
-    {
-      "item_id": "minecraft:quartz_bricks",
-      "count": 1,
-      "buy": 4.8,
-      "sell": 4.2,
-      "category": "quartz"
-    },
-    {
-      "item_id": "minecraft:quartz_pillar",
-      "count": 1,
-      "buy": 3.9,
-      "sell": 3.3,
-      "category": "quartz"
-    },
-    {
-      "item_id": "minecraft:smooth_quartz",
-      "count": 1,
-      "buy": 4.6,
-      "sell": 4.1,
-      "category": "quartz"
-    },
-    {
-      "item_id": "minecraft:smooth_quartz_stairs",
-      "count": 1,
-      "buy": 3.7,
-      "sell": 3.5,
-      "category": "quartz"
-    },
-    {
-      "item_id": "minecraft:smooth_quartz_slab",
-      "count": 1,
-      "buy": 2.4,
-      "sell": 2.2,
+      "buy": 1.6,
+      "sell": 1.28,
       "category": "quartz"
     },
     {
       "item_id": "minecraft:white_wool",
       "count": 1,
-      "buy": 0.7,
-      "sell": 0.6,
-      "category": "wool"
-    },
-    {
-      "item_id": "minecraft:light_gray_wool",
-      "count": 1,
-      "buy": 0.7,
-      "sell": 0.6,
-      "category": "wool"
-    },
-    {
-      "item_id": "minecraft:gray_wool",
-      "count": 1,
-      "buy": 0.7,
-      "sell": 0.6,
-      "category": "wool"
-    },
-    {
-      "item_id": "minecraft:black_wool",
-      "count": 1,
-      "buy": 0.5,
-      "sell": 0.5,
-      "category": "wool"
-    },
-    {
-      "item_id": "minecraft:brown_wool",
-      "count": 1,
-      "buy": 0.6,
-      "sell": 0.5,
-      "category": "wool"
-    },
-    {
-      "item_id": "minecraft:red_wool",
-      "count": 1,
-      "buy": 0.5,
-      "sell": 0.5,
-      "category": "wool"
-    },
-    {
-      "item_id": "minecraft:orange_wool",
-      "count": 1,
-      "buy": 0.7,
-      "sell": 0.6,
-      "category": "wool"
-    },
-    {
-      "item_id": "minecraft:yellow_wool",
-      "count": 1,
-      "buy": 0.6,
-      "sell": 0.6,
-      "category": "wool"
-    },
-    {
-      "item_id": "minecraft:lime_wool",
-      "count": 1,
-      "buy": 0.6,
-      "sell": 0.5,
-      "category": "wool"
-    },
-    {
-      "item_id": "minecraft:green_wool",
-      "count": 1,
-      "buy": 0.7,
-      "sell": 0.6,
-      "category": "wool"
-    },
-    {
-      "item_id": "minecraft:cyan_wool",
-      "count": 1,
-      "buy": 0.6,
-      "sell": 0.5,
-      "category": "wool"
-    },
-    {
-      "item_id": "minecraft:light_blue_wool",
-      "count": 1,
-      "buy": 0.5,
-      "sell": 0.5,
-      "category": "wool"
-    },
-    {
-      "item_id": "minecraft:blue_wool",
-      "count": 1,
-      "buy": 0.6,
-      "sell": 0.6,
-      "category": "wool"
-    },
-    {
-      "item_id": "minecraft:purple_wool",
-      "count": 1,
-      "buy": 0.7,
-      "sell": 0.6,
-      "category": "wool"
-    },
-    {
-      "item_id": "minecraft:magenta_wool",
-      "count": 1,
-      "buy": 0.5,
-      "sell": 0.5,
-      "category": "wool"
-    },
-    {
-      "item_id": "minecraft:pink_wool",
-      "count": 1,
-      "buy": 0.7,
-      "sell": 0.7,
-      "category": "wool"
-    },
-    {
-      "item_id": "minecraft:white_carpet",
-      "count": 1,
-      "buy": 0.3,
-      "sell": 0.3,
-      "category": "wool"
-    },
-    {
-      "item_id": "minecraft:light_gray_carpet",
-      "count": 1,
-      "buy": 0.4,
-      "sell": 0.4,
-      "category": "wool"
-    },
-    {
-      "item_id": "minecraft:gray_carpet",
-      "count": 1,
-      "buy": 0.4,
-      "sell": 0.3,
-      "category": "wool"
-    },
-    {
-      "item_id": "minecraft:black_carpet",
-      "count": 1,
-      "buy": 0.4,
-      "sell": 0.3,
-      "category": "wool"
-    },
-    {
-      "item_id": "minecraft:brown_carpet",
-      "count": 1,
-      "buy": 0.4,
-      "sell": 0.3,
-      "category": "wool"
-    },
-    {
-      "item_id": "minecraft:red_carpet",
-      "count": 1,
-      "buy": 0.4,
-      "sell": 0.3,
-      "category": "wool"
-    },
-    {
-      "item_id": "minecraft:orange_carpet",
-      "count": 1,
-      "buy": 0.4,
-      "sell": 0.3,
-      "category": "wool"
-    },
-    {
-      "item_id": "minecraft:yellow_carpet",
-      "count": 1,
-      "buy": 0.3,
-      "sell": 0.3,
-      "category": "wool"
-    },
-    {
-      "item_id": "minecraft:lime_carpet",
-      "count": 1,
-      "buy": 0.4,
-      "sell": 0.4,
-      "category": "wool"
-    },
-    {
-      "item_id": "minecraft:green_carpet",
-      "count": 1,
-      "buy": 0.3,
-      "sell": 0.2,
-      "category": "wool"
-    },
-    {
-      "item_id": "minecraft:cyan_carpet",
-      "count": 1,
-      "buy": 0.4,
-      "sell": 0.3,
-      "category": "wool"
-    },
-    {
-      "item_id": "minecraft:light_blue_carpet",
-      "count": 1,
-      "buy": 0.4,
-      "sell": 0.3,
-      "category": "wool"
-    },
-    {
-      "item_id": "minecraft:blue_carpet",
-      "count": 1,
-      "buy": 0.2,
-      "sell": 0.2,
-      "category": "wool"
-    },
-    {
-      "item_id": "minecraft:purple_carpet",
-      "count": 1,
-      "buy": 0.3,
-      "sell": 0.3,
-      "category": "wool"
-    },
-    {
-      "item_id": "minecraft:magenta_carpet",
-      "count": 1,
-      "buy": 0.4,
-      "sell": 0.4,
-      "category": "wool"
-    },
-    {
-      "item_id": "minecraft:pink_carpet",
-      "count": 1,
-      "buy": 0.3,
-      "sell": 0.2,
-      "category": "wool"
-    },
-    {
-      "item_id": "minecraft:white_banner",
-      "count": 1,
-      "buy": 4.3,
-      "sell": 3.8,
-      "category": "wool"
-    },
-    {
-      "item_id": "minecraft:light_gray_banner",
-      "count": 1,
-      "buy": 3.8,
-      "sell": 3.4,
-      "category": "wool"
-    },
-    {
-      "item_id": "minecraft:gray_banner",
-      "count": 1,
-      "buy": 4.4,
-      "sell": 3.8,
-      "category": "wool"
-    },
-    {
-      "item_id": "minecraft:black_banner",
-      "count": 1,
-      "buy": 4.0,
-      "sell": 3.5,
-      "category": "wool"
-    },
-    {
-      "item_id": "minecraft:brown_banner",
-      "count": 1,
-      "buy": 3.6,
-      "sell": 3.4,
-      "category": "wool"
-    },
-    {
-      "item_id": "minecraft:red_banner",
-      "count": 1,
-      "buy": 3.8,
-      "sell": 3.2,
-      "category": "wool"
-    },
-    {
-      "item_id": "minecraft:orange_banner",
-      "count": 1,
-      "buy": 3.8,
-      "sell": 3.5,
-      "category": "wool"
-    },
-    {
-      "item_id": "minecraft:yellow_banner",
-      "count": 1,
-      "buy": 3.6,
-      "sell": 3.6,
-      "category": "wool"
-    },
-    {
-      "item_id": "minecraft:lime_banner",
-      "count": 1,
-      "buy": 3.9,
-      "sell": 3.4,
-      "category": "wool"
-    },
-    {
-      "item_id": "minecraft:green_banner",
-      "count": 1,
-      "buy": 3.9,
-      "sell": 3.5,
-      "category": "wool"
-    },
-    {
-      "item_id": "minecraft:cyan_banner",
-      "count": 1,
-      "buy": 4.2,
-      "sell": 4.0,
-      "category": "wool"
-    },
-    {
-      "item_id": "minecraft:light_blue_banner",
-      "count": 1,
-      "buy": 3.8,
-      "sell": 3.7,
-      "category": "wool"
-    },
-    {
-      "item_id": "minecraft:blue_banner",
-      "count": 1,
-      "buy": 3.6,
-      "sell": 3.0,
-      "category": "wool"
-    },
-    {
-      "item_id": "minecraft:purple_banner",
-      "count": 1,
-      "buy": 4.2,
-      "sell": 3.9,
-      "category": "wool"
-    },
-    {
-      "item_id": "minecraft:magenta_banner",
-      "count": 1,
-      "buy": 3.4,
-      "sell": 2.9,
-      "category": "wool"
-    },
-    {
-      "item_id": "minecraft:pink_banner",
-      "count": 1,
-      "buy": 3.5,
-      "sell": 2.9,
+      "buy": 2.2,
+      "sell": 1.76,
       "category": "wool"
     },
     {
       "item_id": "minecraft:terracotta",
       "count": 1,
-      "buy": 0.5,
-      "sell": 0.5,
-      "category": "terracotta"
-    },
-    {
-      "item_id": "minecraft:white_terracotta",
-      "count": 1,
-      "buy": 0.3,
-      "sell": 0.2,
-      "category": "terracotta"
-    },
-    {
-      "item_id": "minecraft:light_gray_terracotta",
-      "count": 1,
-      "buy": 0.3,
-      "sell": 0.3,
-      "category": "terracotta"
-    },
-    {
-      "item_id": "minecraft:gray_terracotta",
-      "count": 1,
-      "buy": 0.5,
-      "sell": 0.5,
-      "category": "terracotta"
-    },
-    {
-      "item_id": "minecraft:black_terracotta",
-      "count": 1,
-      "buy": 0.3,
-      "sell": 0.3,
-      "category": "terracotta"
-    },
-    {
-      "item_id": "minecraft:brown_terracotta",
-      "count": 1,
-      "buy": 0.5,
-      "sell": 0.4,
-      "category": "terracotta"
-    },
-    {
-      "item_id": "minecraft:red_terracotta",
-      "count": 1,
-      "buy": 0.4,
-      "sell": 0.3,
-      "category": "terracotta"
-    },
-    {
-      "item_id": "minecraft:orange_terracotta",
-      "count": 1,
-      "buy": 0.4,
-      "sell": 0.4,
-      "category": "terracotta"
-    },
-    {
-      "item_id": "minecraft:yellow_terracotta",
-      "count": 1,
-      "buy": 0.5,
-      "sell": 0.5,
-      "category": "terracotta"
-    },
-    {
-      "item_id": "minecraft:lime_terracotta",
-      "count": 1,
-      "buy": 0.5,
-      "sell": 0.5,
-      "category": "terracotta"
-    },
-    {
-      "item_id": "minecraft:green_terracotta",
-      "count": 1,
-      "buy": 0.4,
-      "sell": 0.3,
-      "category": "terracotta"
-    },
-    {
-      "item_id": "minecraft:cyan_terracotta",
-      "count": 1,
-      "buy": 0.5,
-      "sell": 0.4,
-      "category": "terracotta"
-    },
-    {
-      "item_id": "minecraft:light_blue_terracotta",
-      "count": 1,
-      "buy": 0.5,
-      "sell": 0.5,
-      "category": "terracotta"
-    },
-    {
-      "item_id": "minecraft:blue_terracotta",
-      "count": 1,
-      "buy": 0.3,
-      "sell": 0.2,
-      "category": "terracotta"
-    },
-    {
-      "item_id": "minecraft:purple_terracotta",
-      "count": 1,
-      "buy": 0.3,
-      "sell": 0.3,
-      "category": "terracotta"
-    },
-    {
-      "item_id": "minecraft:magenta_terracotta",
-      "count": 1,
-      "buy": 0.5,
-      "sell": 0.4,
-      "category": "terracotta"
-    },
-    {
-      "item_id": "minecraft:pink_terracotta",
-      "count": 1,
-      "buy": 0.3,
-      "sell": 0.3,
-      "category": "terracotta"
-    },
-    {
-      "item_id": "minecraft:white_glazed_terracotta",
-      "count": 1,
-      "buy": 0.8,
-      "sell": 0.7,
-      "category": "terracotta"
-    },
-    {
-      "item_id": "minecraft:light_gray_glazed_terracotta",
-      "count": 1,
-      "buy": 0.8,
-      "sell": 0.7,
-      "category": "terracotta"
-    },
-    {
-      "item_id": "minecraft:gray_glazed_terracotta",
-      "count": 1,
-      "buy": 1.0,
-      "sell": 0.9,
-      "category": "terracotta"
-    },
-    {
-      "item_id": "minecraft:black_glazed_terracotta",
-      "count": 1,
-      "buy": 0.8,
-      "sell": 0.8,
-      "category": "terracotta"
-    },
-    {
-      "item_id": "minecraft:brown_glazed_terracotta",
-      "count": 1,
-      "buy": 0.8,
-      "sell": 0.7,
-      "category": "terracotta"
-    },
-    {
-      "item_id": "minecraft:red_glazed_terracotta",
-      "count": 1,
-      "buy": 0.8,
-      "sell": 0.7,
-      "category": "terracotta"
-    },
-    {
-      "item_id": "minecraft:orange_glazed_terracotta",
-      "count": 1,
-      "buy": 1.0,
-      "sell": 0.9,
-      "category": "terracotta"
-    },
-    {
-      "item_id": "minecraft:yellow_glazed_terracotta",
-      "count": 1,
-      "buy": 0.9,
-      "sell": 0.9,
-      "category": "terracotta"
-    },
-    {
-      "item_id": "minecraft:lime_glazed_terracotta",
-      "count": 1,
-      "buy": 0.9,
-      "sell": 0.8,
-      "category": "terracotta"
-    },
-    {
-      "item_id": "minecraft:green_glazed_terracotta",
-      "count": 1,
-      "buy": 1.0,
-      "sell": 0.9,
-      "category": "terracotta"
-    },
-    {
-      "item_id": "minecraft:cyan_glazed_terracotta",
-      "count": 1,
-      "buy": 0.8,
-      "sell": 0.8,
-      "category": "terracotta"
-    },
-    {
-      "item_id": "minecraft:light_blue_glazed_terracotta",
-      "count": 1,
-      "buy": 0.8,
-      "sell": 0.8,
-      "category": "terracotta"
-    },
-    {
-      "item_id": "minecraft:blue_glazed_terracotta",
-      "count": 1,
-      "buy": 1.1,
-      "sell": 1.0,
-      "category": "terracotta"
-    },
-    {
-      "item_id": "minecraft:purple_glazed_terracotta",
-      "count": 1,
       "buy": 1.2,
-      "sell": 1.0,
-      "category": "terracotta"
-    },
-    {
-      "item_id": "minecraft:magenta_glazed_terracotta",
-      "count": 1,
-      "buy": 0.9,
-      "sell": 0.8,
-      "category": "terracotta"
-    },
-    {
-      "item_id": "minecraft:pink_glazed_terracotta",
-      "count": 1,
-      "buy": 1.0,
-      "sell": 1.0,
+      "sell": 0.96,
       "category": "terracotta"
     },
     {
       "item_id": "minecraft:white_concrete",
       "count": 1,
-      "buy": 0.5,
-      "sell": 0.4,
-      "category": "concrete"
-    },
-    {
-      "item_id": "minecraft:light_gray_concrete",
-      "count": 1,
-      "buy": 0.5,
-      "sell": 0.5,
-      "category": "concrete"
-    },
-    {
-      "item_id": "minecraft:gray_concrete",
-      "count": 1,
-      "buy": 0.5,
-      "sell": 0.5,
-      "category": "concrete"
-    },
-    {
-      "item_id": "minecraft:black_concrete",
-      "count": 1,
-      "buy": 0.5,
-      "sell": 0.5,
-      "category": "concrete"
-    },
-    {
-      "item_id": "minecraft:brown_concrete",
-      "count": 1,
-      "buy": 0.7,
-      "sell": 0.6,
-      "category": "concrete"
-    },
-    {
-      "item_id": "minecraft:red_concrete",
-      "count": 1,
-      "buy": 0.5,
-      "sell": 0.5,
-      "category": "concrete"
-    },
-    {
-      "item_id": "minecraft:orange_concrete",
-      "count": 1,
-      "buy": 0.6,
-      "sell": 0.5,
-      "category": "concrete"
-    },
-    {
-      "item_id": "minecraft:yellow_concrete",
-      "count": 1,
-      "buy": 0.4,
-      "sell": 0.4,
-      "category": "concrete"
-    },
-    {
-      "item_id": "minecraft:lime_concrete",
-      "count": 1,
-      "buy": 0.5,
-      "sell": 0.5,
-      "category": "concrete"
-    },
-    {
-      "item_id": "minecraft:green_concrete",
-      "count": 1,
-      "buy": 0.5,
-      "sell": 0.5,
-      "category": "concrete"
-    },
-    {
-      "item_id": "minecraft:cyan_concrete",
-      "count": 1,
-      "buy": 0.6,
-      "sell": 0.5,
-      "category": "concrete"
-    },
-    {
-      "item_id": "minecraft:light_blue_concrete",
-      "count": 1,
-      "buy": 0.6,
-      "sell": 0.5,
-      "category": "concrete"
-    },
-    {
-      "item_id": "minecraft:blue_concrete",
-      "count": 1,
-      "buy": 0.5,
-      "sell": 0.5,
-      "category": "concrete"
-    },
-    {
-      "item_id": "minecraft:purple_concrete",
-      "count": 1,
-      "buy": 0.5,
-      "sell": 0.4,
-      "category": "concrete"
-    },
-    {
-      "item_id": "minecraft:magenta_concrete",
-      "count": 1,
-      "buy": 0.6,
-      "sell": 0.5,
-      "category": "concrete"
-    },
-    {
-      "item_id": "minecraft:pink_concrete",
-      "count": 1,
-      "buy": 0.4,
-      "sell": 0.4,
-      "category": "concrete"
-    },
-    {
-      "item_id": "minecraft:white_concrete_powder",
-      "count": 1,
-      "buy": 0.4,
-      "sell": 0.3,
-      "category": "concrete"
-    },
-    {
-      "item_id": "minecraft:light_gray_concrete_powder",
-      "count": 1,
-      "buy": 0.4,
-      "sell": 0.4,
-      "category": "concrete"
-    },
-    {
-      "item_id": "minecraft:gray_concrete_powder",
-      "count": 1,
-      "buy": 0.5,
-      "sell": 0.4,
-      "category": "concrete"
-    },
-    {
-      "item_id": "minecraft:black_concrete_powder",
-      "count": 1,
-      "buy": 0.3,
-      "sell": 0.2,
-      "category": "concrete"
-    },
-    {
-      "item_id": "minecraft:brown_concrete_powder",
-      "count": 1,
-      "buy": 0.4,
-      "sell": 0.3,
-      "category": "concrete"
-    },
-    {
-      "item_id": "minecraft:red_concrete_powder",
-      "count": 1,
-      "buy": 0.3,
-      "sell": 0.2,
-      "category": "concrete"
-    },
-    {
-      "item_id": "minecraft:orange_concrete_powder",
-      "count": 1,
-      "buy": 0.5,
-      "sell": 0.5,
-      "category": "concrete"
-    },
-    {
-      "item_id": "minecraft:yellow_concrete_powder",
-      "count": 1,
-      "buy": 0.5,
-      "sell": 0.5,
-      "category": "concrete"
-    },
-    {
-      "item_id": "minecraft:lime_concrete_powder",
-      "count": 1,
-      "buy": 0.5,
-      "sell": 0.4,
-      "category": "concrete"
-    },
-    {
-      "item_id": "minecraft:green_concrete_powder",
-      "count": 1,
-      "buy": 0.5,
-      "sell": 0.5,
-      "category": "concrete"
-    },
-    {
-      "item_id": "minecraft:cyan_concrete_powder",
-      "count": 1,
-      "buy": 0.5,
-      "sell": 0.4,
-      "category": "concrete"
-    },
-    {
-      "item_id": "minecraft:light_blue_concrete_powder",
-      "count": 1,
-      "buy": 0.4,
-      "sell": 0.4,
-      "category": "concrete"
-    },
-    {
-      "item_id": "minecraft:blue_concrete_powder",
-      "count": 1,
-      "buy": 0.3,
-      "sell": 0.3,
-      "category": "concrete"
-    },
-    {
-      "item_id": "minecraft:purple_concrete_powder",
-      "count": 1,
-      "buy": 0.3,
-      "sell": 0.3,
-      "category": "concrete"
-    },
-    {
-      "item_id": "minecraft:magenta_concrete_powder",
-      "count": 1,
-      "buy": 0.3,
-      "sell": 0.3,
-      "category": "concrete"
-    },
-    {
-      "item_id": "minecraft:pink_concrete_powder",
-      "count": 1,
-      "buy": 0.4,
-      "sell": 0.4,
+      "buy": 1.3,
+      "sell": 1.04,
       "category": "concrete"
     },
     {
       "item_id": "minecraft:glass",
       "count": 1,
-      "buy": 0.3,
-      "sell": 0.3,
-      "category": "glass"
-    },
-    {
-      "item_id": "minecraft:tinted_glass",
-      "count": 1,
-      "buy": 0.8,
-      "sell": 0.6,
-      "category": "glass"
-    },
-    {
-      "item_id": "minecraft:white_stained_glass",
-      "count": 1,
-      "buy": 0.3,
-      "sell": 0.3,
-      "category": "glass"
-    },
-    {
-      "item_id": "minecraft:light_gray_stained_glass",
-      "count": 1,
-      "buy": 0.5,
-      "sell": 0.4,
-      "category": "glass"
-    },
-    {
-      "item_id": "minecraft:gray_stained_glass",
-      "count": 1,
-      "buy": 0.3,
-      "sell": 0.3,
-      "category": "glass"
-    },
-    {
-      "item_id": "minecraft:black_stained_glass",
-      "count": 1,
-      "buy": 0.5,
-      "sell": 0.4,
-      "category": "glass"
-    },
-    {
-      "item_id": "minecraft:brown_stained_glass",
-      "count": 1,
-      "buy": 0.4,
-      "sell": 0.3,
-      "category": "glass"
-    },
-    {
-      "item_id": "minecraft:red_stained_glass",
-      "count": 1,
-      "buy": 0.4,
-      "sell": 0.3,
-      "category": "glass"
-    },
-    {
-      "item_id": "minecraft:orange_stained_glass",
-      "count": 1,
-      "buy": 0.6,
-      "sell": 0.5,
-      "category": "glass"
-    },
-    {
-      "item_id": "minecraft:yellow_stained_glass",
-      "count": 1,
-      "buy": 0.4,
-      "sell": 0.4,
-      "category": "glass"
-    },
-    {
-      "item_id": "minecraft:lime_stained_glass",
-      "count": 1,
-      "buy": 0.4,
-      "sell": 0.4,
-      "category": "glass"
-    },
-    {
-      "item_id": "minecraft:green_stained_glass",
-      "count": 1,
-      "buy": 0.4,
-      "sell": 0.4,
-      "category": "glass"
-    },
-    {
-      "item_id": "minecraft:cyan_stained_glass",
-      "count": 1,
-      "buy": 0.3,
-      "sell": 0.3,
-      "category": "glass"
-    },
-    {
-      "item_id": "minecraft:light_blue_stained_glass",
-      "count": 1,
-      "buy": 0.3,
-      "sell": 0.3,
-      "category": "glass"
-    },
-    {
-      "item_id": "minecraft:blue_stained_glass",
-      "count": 1,
-      "buy": 0.4,
-      "sell": 0.4,
-      "category": "glass"
-    },
-    {
-      "item_id": "minecraft:purple_stained_glass",
-      "count": 1,
-      "buy": 0.6,
-      "sell": 0.5,
-      "category": "glass"
-    },
-    {
-      "item_id": "minecraft:magenta_stained_glass",
-      "count": 1,
-      "buy": 0.3,
-      "sell": 0.3,
-      "category": "glass"
-    },
-    {
-      "item_id": "minecraft:pink_stained_glass",
-      "count": 1,
-      "buy": 0.3,
-      "sell": 0.2,
-      "category": "glass"
-    },
-    {
-      "item_id": "minecraft:glass_pane",
-      "count": 1,
-      "buy": 0.3,
-      "sell": 0.2,
-      "category": "glass"
-    },
-    {
-      "item_id": "minecraft:white_stained_glass_pane",
-      "count": 1,
-      "buy": 0.3,
-      "sell": 0.2,
-      "category": "glass"
-    },
-    {
-      "item_id": "minecraft:light_gray_stained_glass_pane",
-      "count": 1,
-      "buy": 0.3,
-      "sell": 0.3,
-      "category": "glass"
-    },
-    {
-      "item_id": "minecraft:gray_stained_glass_pane",
-      "count": 1,
-      "buy": 0.3,
-      "sell": 0.3,
-      "category": "glass"
-    },
-    {
-      "item_id": "minecraft:black_stained_glass_pane",
-      "count": 1,
-      "buy": 0.3,
-      "sell": 0.3,
-      "category": "glass"
-    },
-    {
-      "item_id": "minecraft:brown_stained_glass_pane",
-      "count": 1,
-      "buy": 0.4,
-      "sell": 0.3,
-      "category": "glass"
-    },
-    {
-      "item_id": "minecraft:red_stained_glass_pane",
-      "count": 1,
-      "buy": 0.2,
-      "sell": 0.1,
-      "category": "glass"
-    },
-    {
-      "item_id": "minecraft:orange_stained_glass_pane",
-      "count": 1,
-      "buy": 0.2,
-      "sell": 0.2,
-      "category": "glass"
-    },
-    {
-      "item_id": "minecraft:yellow_stained_glass_pane",
-      "count": 1,
-      "buy": 0.3,
-      "sell": 0.3,
-      "category": "glass"
-    },
-    {
-      "item_id": "minecraft:lime_stained_glass_pane",
-      "count": 1,
-      "buy": 0.2,
-      "sell": 0.2,
-      "category": "glass"
-    },
-    {
-      "item_id": "minecraft:green_stained_glass_pane",
-      "count": 1,
-      "buy": 0.3,
-      "sell": 0.3,
-      "category": "glass"
-    },
-    {
-      "item_id": "minecraft:cyan_stained_glass_pane",
-      "count": 1,
-      "buy": 0.3,
-      "sell": 0.3,
-      "category": "glass"
-    },
-    {
-      "item_id": "minecraft:light_blue_stained_glass_pane",
-      "count": 1,
-      "buy": 0.4,
-      "sell": 0.3,
-      "category": "glass"
-    },
-    {
-      "item_id": "minecraft:blue_stained_glass_pane",
-      "count": 1,
-      "buy": 0.3,
-      "sell": 0.3,
-      "category": "glass"
-    },
-    {
-      "item_id": "minecraft:purple_stained_glass_pane",
-      "count": 1,
-      "buy": 0.2,
-      "sell": 0.1,
-      "category": "glass"
-    },
-    {
-      "item_id": "minecraft:magenta_stained_glass_pane",
-      "count": 1,
-      "buy": 0.1,
-      "sell": 0.1,
-      "category": "glass"
-    },
-    {
-      "item_id": "minecraft:pink_stained_glass_pane",
-      "count": 1,
-      "buy": 0.2,
-      "sell": 0.2,
+      "buy": 1.0,
+      "sell": 0.8,
       "category": "glass"
     },
     {
       "item_id": "minecraft:oak_leaves",
       "count": 1,
-      "buy": 0.1,
-      "sell": 0.1,
-      "category": "leaves"
-    },
-    {
-      "item_id": "minecraft:spruce_leaves",
-      "count": 1,
-      "buy": 0.2,
-      "sell": 0.1,
-      "category": "leaves"
-    },
-    {
-      "item_id": "minecraft:birch_leaves",
-      "count": 1,
-      "buy": 0.2,
-      "sell": 0.2,
-      "category": "leaves"
-    },
-    {
-      "item_id": "minecraft:jungle_leaves",
-      "count": 1,
-      "buy": 0.2,
-      "sell": 0.2,
-      "category": "leaves"
-    },
-    {
-      "item_id": "minecraft:acacia_leaves",
-      "count": 1,
-      "buy": 0.2,
-      "sell": 0.2,
-      "category": "leaves"
-    },
-    {
-      "item_id": "minecraft:dark_oak_leaves",
-      "count": 1,
-      "buy": 0.2,
-      "sell": 0.2,
-      "category": "leaves"
-    },
-    {
-      "item_id": "minecraft:mangrove_leaves",
-      "count": 1,
-      "buy": 0.3,
-      "sell": 0.3,
-      "category": "leaves"
-    },
-    {
-      "item_id": "minecraft:cherry_leaves",
-      "count": 1,
       "buy": 0.4,
-      "sell": 0.3,
-      "category": "leaves"
-    },
-    {
-      "item_id": "minecraft:azalea_leaves",
-      "count": 1,
-      "buy": 0.1,
-      "sell": 0.1,
-      "category": "leaves"
-    },
-    {
-      "item_id": "minecraft:flowering_azalea_leaves",
-      "count": 1,
-      "buy": 0.4,
-      "sell": 0.3,
-      "category": "leaves"
-    },
-    {
-      "item_id": "culturaldelights:avocado_leaves",
-      "count": 1,
-      "buy": 0.2,
-      "sell": 0.2,
-      "category": "leaves"
-    },
-    {
-      "item_id": "culturaldelights:fruiting_avocado_leaves",
-      "count": 1,
-      "buy": 0.2,
-      "sell": 0.2,
-      "category": "leaves"
-    },
-    {
-      "item_id": "meadow:pine_leaves",
-      "count": 1,
-      "buy": 0.1,
-      "sell": 0.1,
-      "category": "leaves"
-    },
-    {
-      "item_id": "meadow:yellow_pine_leaves",
-      "count": 1,
-      "buy": 0.2,
-      "sell": 0.2,
-      "category": "leaves"
-    },
-    {
-      "item_id": "meadow:alpine_birch_leaves",
-      "count": 1,
-      "buy": 0.1,
-      "sell": 0.1,
-      "category": "leaves"
-    },
-    {
-      "item_id": "mysticsbiomes:strawberry_blossoms",
-      "count": 1,
-      "buy": 0.3,
-      "sell": 0.3,
-      "category": "leaves"
-    },
-    {
-      "item_id": "mysticsbiomes:pink_cherry_blossoms",
-      "count": 1,
-      "buy": 0.3,
-      "sell": 0.3,
-      "category": "leaves"
-    },
-    {
-      "item_id": "mysticsbiomes:white_cherry_blossoms",
-      "count": 1,
-      "buy": 0.3,
-      "sell": 0.3,
-      "category": "leaves"
-    },
-    {
-      "item_id": "mysticsbiomes:lavender_blossoms",
-      "count": 1,
-      "buy": 0.3,
-      "sell": 0.3,
-      "category": "leaves"
-    },
-    {
-      "item_id": "mysticsbiomes:peach_leaves",
-      "count": 1,
-      "buy": 0.2,
-      "sell": 0.2,
-      "category": "leaves"
-    },
-    {
-      "item_id": "mysticsbiomes:maple_leaves",
-      "count": 1,
-      "buy": 0.1,
-      "sell": 0.1,
-      "category": "leaves"
-    },
-    {
-      "item_id": "mysticsbiomes:orange_maple_leaves",
-      "count": 1,
-      "buy": 0.2,
-      "sell": 0.1,
-      "category": "leaves"
-    },
-    {
-      "item_id": "mysticsbiomes:yellow_maple_leaves",
-      "count": 1,
-      "buy": 0.2,
-      "sell": 0.2,
-      "category": "leaves"
-    },
-    {
-      "item_id": "mysticsbiomes:sea_shrub_leaves",
-      "count": 1,
-      "buy": 0.1,
-      "sell": 0.1,
-      "category": "leaves"
-    },
-    {
-      "item_id": "mysticsbiomes:tropical_leaves",
-      "count": 1,
-      "buy": 0.2,
-      "sell": 0.2,
-      "category": "leaves"
-    },
-    {
-      "item_id": "mysticsbiomes:vanilla_leaves",
-      "count": 1,
-      "buy": 0.2,
-      "sell": 0.2,
-      "category": "leaves"
-    },
-    {
-      "item_id": "mysticsbiomes:butterfly_nest",
-      "count": 1,
-      "buy": 0.4,
-      "sell": 0.4,
-      "category": "leaves"
-    },
-    {
-      "item_id": "mysticsbiomes:peony_leaves",
-      "count": 1,
-      "buy": 0.2,
-      "sell": 0.2,
-      "category": "leaves"
-    },
-    {
-      "item_id": "mysticsbiomes:hydrangea_leaves",
-      "count": 1,
-      "buy": 0.2,
-      "sell": 0.2,
+      "sell": 0.32,
       "category": "leaves"
     },
     {
       "item_id": "minecraft:torch",
       "count": 1,
-      "buy": 0.1,
-      "sell": 0.1,
-      "category": "lighting"
-    },
-    {
-      "item_id": "minecraft:soul_torch",
-      "count": 1,
-      "buy": 0.2,
-      "sell": 0.2,
-      "category": "lighting"
-    },
-    {
-      "item_id": "minecraft:redstone_torch",
-      "count": 1,
-      "buy": 0.1,
-      "sell": 0.1,
-      "category": "lighting"
-    },
-    {
-      "item_id": "minecraft:lantern",
-      "count": 1,
-      "buy": 1.3,
-      "sell": 1.3,
-      "category": "lighting"
-    },
-    {
-      "item_id": "minecraft:soul_lantern",
-      "count": 1,
-      "buy": 1.7,
-      "sell": 1.5,
-      "category": "lighting"
-    },
-    {
-      "item_id": "minecraft:end_rod",
-      "count": 1,
-      "buy": 3.8,
-      "sell": 3.4,
-      "category": "lighting"
-    },
-    {
-      "item_id": "minecraft:glowstone",
-      "count": 1,
-      "buy": 1.8,
-      "sell": 1.7,
-      "category": "lighting"
-    },
-    {
-      "item_id": "minecraft:shroomlight",
-      "count": 1,
-      "buy": 1.5,
-      "sell": 1.5,
-      "category": "lighting"
-    },
-    {
-      "item_id": "minecraft:sea_lantern",
-      "count": 1,
-      "buy": 1.5,
-      "sell": 1.3,
-      "category": "lighting"
-    },
-    {
-      "item_id": "minecraft:ochre_froglight",
-      "count": 1,
-      "buy": 9.2,
-      "sell": 8.9,
-      "category": "lighting"
-    },
-    {
-      "item_id": "minecraft:verdant_froglight",
-      "count": 1,
-      "buy": 10.0,
-      "sell": 9.8,
-      "category": "lighting"
-    },
-    {
-      "item_id": "minecraft:pearlescent_froglight",
-      "count": 1,
-      "buy": 9.7,
-      "sell": 8.8,
-      "category": "lighting"
-    },
-    {
-      "item_id": "minecraft:campfire",
-      "count": 1,
-      "buy": 2.8,
-      "sell": 2.4,
-      "category": "lighting"
-    },
-    {
-      "item_id": "minecraft:soul_campfire",
-      "count": 1,
-      "buy": 2.2,
-      "sell": 1.9,
-      "category": "lighting"
-    },
-    {
-      "item_id": "beachparty:palm_torch_item",
-      "count": 1,
-      "buy": 0.2,
-      "sell": 0.2,
-      "category": "lighting"
-    },
-    {
-      "item_id": "beachparty:tall_palm_torch",
-      "count": 1,
-      "buy": 0.2,
-      "sell": 0.2,
+      "buy": 0.3,
+      "sell": 0.24,
       "category": "lighting"
     },
     {
       "item_id": "kaleidoscope_tavern:molotov",
       "count": 1,
-      "buy": 144.4,
-      "sell": 140.9,
-      "category": "wine"
-    },
-    {
-      "item_id": "kaleidoscope_tavern:watermelon_juice",
-      "count": 1,
-      "buy": 110.3,
-      "sell": 101.6,
+      "buy": 17.30,
+      "sell": 16.40,
       "category": "wine"
     },
     {
       "item_id": "kaleidoscope_tavern:vinegar",
       "count": 1,
-      "buy": 122.8,
-      "sell": 115.6,
+      "buy": 16.70,
+      "sell": 15.80,
       "category": "wine"
     },
     {
       "item_id": "kaleidoscope_tavern:wine",
       "count": 1,
-      "buy": 112.1,
-      "sell": 108.9,
+      "buy": 18.10,
+      "sell": 17.20,
       "category": "wine"
     },
     {
       "item_id": "kaleidoscope_tavern:sakura_wine",
       "count": 1,
-      "buy": 166.9,
-      "sell": 143.2,
+      "buy": 22.80,
+      "sell": 21.60,
       "category": "wine"
     },
     {
       "item_id": "kaleidoscope_tavern:champagne",
       "count": 1,
-      "buy": 137.6,
-      "sell": 134.9,
+      "buy": 21.20,
+      "sell": 20.10,
       "category": "wine"
     },
     {
       "item_id": "kaleidoscope_tavern:brandy",
       "count": 1,
-      "buy": 151.2,
-      "sell": 137.8,
+      "buy": 20.50,
+      "sell": 19.40,
       "category": "wine"
     },
     {
       "item_id": "kaleidoscope_tavern:carignan",
       "count": 1,
-      "buy": 102.9,
-      "sell": 102.0,
+      "buy": 17.80,
+      "sell": 16.90,
       "category": "wine"
     },
     {
       "item_id": "kaleidoscope_tavern:ice_wine",
       "count": 1,
-      "buy": 112.9,
-      "sell": 105.9,
+      "buy": 19.90,
+      "sell": 18.80,
       "category": "wine"
     },
     {
       "item_id": "kaleidoscope_tavern:polaris_sweet_white",
       "count": 1,
-      "buy": 131.0,
-      "sell": 114.9,
+      "buy": 20.70,
+      "sell": 19.60,
       "category": "wine"
     },
     {
       "item_id": "kaleidoscope_tavern:sherry",
       "count": 1,
-      "buy": 139.3,
-      "sell": 138.5,
+      "buy": 18.60,
+      "sell": 17.60,
       "category": "wine"
     },
     {
       "item_id": "kaleidoscope_tavern:mother_snow",
       "count": 1,
-      "buy": 142.2,
-      "sell": 135.9,
+      "buy": 23.50,
+      "sell": 22.30,
       "category": "wine"
     },
     {
       "item_id": "kaleidoscope_tavern:miners_star",
       "count": 1,
-      "buy": 166.6,
-      "sell": 145.8,
+      "buy": 24.00,
+      "sell": 23.10,
       "category": "wine"
     },
     {
       "item_id": "kaleidoscope_tavern:honey_wine",
       "count": 1,
-      "buy": 162.3,
-      "sell": 144.9,
+      "buy": 22.20,
+      "sell": 21.10,
       "category": "wine"
     },
     {
       "item_id": "kaleidoscope_tavern:madame_shexiang",
       "count": 1,
-      "buy": 133.8,
-      "sell": 126.8,
+      "buy": 20.00,
+      "sell": 18.90,
       "category": "wine"
     },
     {
       "item_id": "kaleidoscope_tavern:sunset_glow",
       "count": 1,
-      "buy": 147.5,
-      "sell": 128.7,
+      "buy": 21.70,
+      "sell": 20.60,
       "category": "wine"
     },
     {
       "item_id": "kaleidoscope_tavern:sauvignon_blanc_dry_white",
       "count": 1,
-      "buy": 117.9,
-      "sell": 117.8,
+      "buy": 20.30,
+      "sell": 19.20,
       "category": "wine"
     },
     {
       "item_id": "kaleidoscope_tavern:riesling_dry_white",
       "count": 1,
-      "buy": 174.3,
-      "sell": 148.6,
+      "buy": 23.80,
+      "sell": 22.70,
       "category": "wine"
     },
     {
       "item_id": "kaleidoscope_tavern:luminous_bride",
       "count": 1,
-      "buy": 123.7,
-      "sell": 110.2,
+      "buy": 17.40,
+      "sell": 16.50,
       "category": "wine"
     },
     {
       "item_id": "kaleidoscope_tavern:glowflower_brew",
       "count": 1,
-      "buy": 130.6,
-      "sell": 121.8,
+      "buy": 21.90,
+      "sell": 20.80,
       "category": "wine"
     },
     {
       "item_id": "kaleidoscope_tavern:plum_wine",
       "count": 1,
-      "buy": 116.8,
-      "sell": 109.9,
+      "buy": 19.70,
+      "sell": 18.70,
       "category": "wine"
     },
     {
       "item_id": "kaleidoscope_tavern:sweet_berry_wine",
       "count": 1,
-      "buy": 159.6,
-      "sell": 148.8,
+      "buy": 23.00,
+      "sell": 21.80,
       "category": "wine"
     },
     {
       "item_id": "kaleidoscope_tavern:red_queen",
       "count": 1,
-      "buy": 109.4,
-      "sell": 106.5,
+      "buy": 16.50,
+      "sell": 15.60,
       "category": "wine"
     },
     {
       "item_id": "kaleidoscope_tavern:vodka",
       "count": 1,
-      "buy": 127.4,
-      "sell": 124.3,
+      "buy": 20.90,
+      "sell": 19.80,
       "category": "wine"
     },
     {
       "item_id": "kaleidoscope_tavern:whiskey",
       "count": 1,
-      "buy": 133.9,
-      "sell": 122.9,
+      "buy": 19.40,
+      "sell": 18.40,
       "category": "wine"
     },
     {
       "item_id": "kaleidoscope_tavern:rum",
       "count": 1,
-      "buy": 147.1,
-      "sell": 138.6,
+      "buy": 18.90,
+      "sell": 17.90,
       "category": "wine"
     },
     {
       "item_id": "vinery:mead",
       "count": 1,
-      "buy": 117.4,
-      "sell": 102.8,
+      "buy": 19.10,
+      "sell": 18.20,
       "category": "wine"
     },
     {
       "item_id": "vinery:apple_cider",
       "count": 1,
-      "buy": 138.2,
-      "sell": 134.3,
+      "buy": 17.60,
+      "sell": 16.70,
       "category": "wine"
     },
     {
       "item_id": "vinery:apple_wine",
       "count": 1,
-      "buy": 126.7,
-      "sell": 124.2,
+      "buy": 16.80,
+      "sell": 15.90,
       "category": "wine"
     },
     {
       "item_id": "vinery:mellohi_wine",
       "count": 1,
-      "buy": 144.7,
-      "sell": 135.3,
+      "buy": 23.20,
+      "sell": 22.00,
       "category": "wine"
     },
     {
       "item_id": "vinery:glowing_wine",
       "count": 1,
-      "buy": 159.9,
-      "sell": 140.2,
+      "buy": 24.00,
+      "sell": 23.40,
       "category": "wine"
     },
     {
       "item_id": "vinery:solaris_wine",
       "count": 1,
-      "buy": 141.6,
-      "sell": 123.1,
+      "buy": 21.50,
+      "sell": 20.40,
       "category": "wine"
     },
     {
       "item_id": "vinery:noir_wine",
       "count": 1,
-      "buy": 114.4,
-      "sell": 112.2,
+      "buy": 18.30,
+      "sell": 17.40,
       "category": "wine"
     },
     {
       "item_id": "vinery:red_wine",
       "count": 1,
-      "buy": 110.1,
-      "sell": 102.9,
+      "buy": 17.10,
+      "sell": 16.20,
       "category": "wine"
     },
     {
       "item_id": "vinery:strad_wine",
       "count": 1,
-      "buy": 158.7,
-      "sell": 149.4,
+      "buy": 22.40,
+      "sell": 21.30,
       "category": "wine"
     },
     {
       "item_id": "vinery:cherry_wine",
       "count": 1,
-      "buy": 112.5,
-      "sell": 105.1,
+      "buy": 19.50,
+      "sell": 18.50,
       "category": "wine"
     },
     {
       "item_id": "vinery:cristel_wine",
       "count": 1,
-      "buy": 118.6,
-      "sell": 106.4,
+      "buy": 20.10,
+      "sell": 19.00,
       "category": "wine"
     },
     {
       "item_id": "vinery:creepers_crush",
       "count": 1,
-      "buy": 132.2,
-      "sell": 117.8,
+      "buy": 21.30,
+      "sell": 20.20,
       "category": "wine"
     },
     {
       "item_id": "vinery:kelp_cider",
       "count": 1,
-      "buy": 167.3,
-      "sell": 140.6,
+      "buy": 23.60,
+      "sell": 22.50,
       "category": "wine"
     },
     {
       "item_id": "vinery:lilitu_wine",
       "count": 1,
-      "buy": 128.5,
-      "sell": 123.3,
+      "buy": 18.70,
+      "sell": 17.70,
       "category": "wine"
     },
     {
       "item_id": "vinery:jo_special_mixture",
       "count": 1,
-      "buy": 135.0,
-      "sell": 123.7,
+      "buy": 20.80,
+      "sell": 19.70,
       "category": "wine"
     },
     {
       "item_id": "vinery:eiswein",
       "count": 1,
-      "buy": 134.8,
-      "sell": 113.4,
+      "buy": 24.00,
+      "sell": 22.90,
       "category": "wine"
     },
     {
       "item_id": "vinery:aegis_wine",
       "count": 1,
-      "buy": 139.5,
-      "sell": 117.1,
+      "buy": 22.60,
+      "sell": 21.40,
       "category": "wine"
     },
     {
       "item_id": "vinery:bolvar_wine",
       "count": 1,
-      "buy": 164.4,
-      "sell": 143.7,
+      "buy": 24.00,
+      "sell": 23.70,
       "category": "wine"
     },
     {
       "item_id": "vinery:chorus_wine",
       "count": 1,
-      "buy": 124.0,
-      "sell": 104.6,
+      "buy": 21.60,
+      "sell": 20.50,
       "category": "wine"
     },
     {
       "item_id": "vinery:villagers_fright",
       "count": 1,
-      "buy": 146.1,
-      "sell": 140.6,
+      "buy": 22.00,
+      "sell": 20.90,
       "category": "wine"
     },
     {
       "item_id": "vinery:clark_wine",
       "count": 1,
-      "buy": 157.4,
-      "sell": 134.1,
+      "buy": 22.30,
+      "sell": 21.20,
       "category": "wine"
     },
     {
       "item_id": "vinery:magnetic_wine",
       "count": 1,
-      "buy": 120.8,
-      "sell": 115.6,
+      "buy": 19.30,
+      "sell": 18.30,
       "category": "wine"
     },
     {
       "item_id": "vinery:stal_wine",
       "count": 1,
-      "buy": 141.7,
-      "sell": 129.6,
+      "buy": 22.80,
+      "sell": 21.70,
       "category": "wine"
     },
     {
       "item_id": "vinery:chenet_wine",
       "count": 1,
-      "buy": 137.7,
-      "sell": 117.2,
+      "buy": 23.30,
+      "sell": 22.10,
       "category": "wine"
     },
     {
       "item_id": "vinery:bottle_mojang_noir",
       "count": 1,
-      "buy": 161.8,
-      "sell": 144.0,
+      "buy": 24.00,
+      "sell": 23.00,
       "category": "wine"
     },
     {
       "item_id": "vinery:jellie_wine",
       "count": 1,
-      "buy": 135.9,
-      "sell": 114.0,
+      "buy": 21.00,
+      "sell": 19.90,
       "category": "wine"
     },
     {
       "item_id": "minecraft:coal",
       "count": 1,
-      "buy": 2.9,
-      "sell": 2.6,
-      "category": "mineral"
-    },
-    {
-      "item_id": "minecraft:charcoal",
-      "count": 1,
-      "buy": 3.1,
-      "sell": 2.7,
-      "category": "mineral"
-    },
-    {
-      "item_id": "minecraft:flint",
-      "count": 1,
-      "buy": 3.1,
-      "sell": 3.0,
-      "category": "mineral"
-    },
-    {
-      "item_id": "minecraft:copper_ingot",
-      "count": 1,
-      "buy": 5.9,
-      "sell": 5.1,
-      "category": "mineral"
-    },
-    {
-      "item_id": "minecraft:quartz",
-      "count": 1,
-      "buy": 8.2,
-      "sell": 7.1,
-      "category": "mineral"
-    },
-    {
-      "item_id": "create:andesite_alloy",
-      "count": 1,
-      "buy": 7.0,
-      "sell": 6.3,
-      "category": "mineral"
-    },
-    {
-      "item_id": "create:zinc_ingot",
-      "count": 1,
-      "buy": 11.1,
-      "sell": 10.9,
-      "category": "mineral"
-    },
-    {
-      "item_id": "minecraft:amethyst_shard",
-      "count": 1,
-      "buy": 8.4,
-      "sell": 8.1,
+      "buy": 1.88,
+      "sell": 1.50,
       "category": "mineral"
     },
     {
       "item_id": "minecraft:iron_ingot",
       "count": 1,
-      "buy": 14.9,
-      "sell": 12.7,
+      "buy": 3.75,
+      "sell": 3.00,
       "category": "mineral"
     },
     {
-      "item_id": "minecraft:lapis_lazuli",
+      "item_id": "minecraft:copper_ingot",
       "count": 1,
-      "buy": 40.9,
-      "sell": 35.3,
-      "category": "mineral"
-    },
-    {
-      "item_id": "create:brass_ingot",
-      "count": 1,
-      "buy": 35.2,
-      "sell": 33.9,
+      "buy": 3.00,
+      "sell": 2.40,
       "category": "mineral"
     },
     {
       "item_id": "minecraft:gold_ingot",
       "count": 1,
-      "buy": 47.0,
-      "sell": 40.0,
+      "buy": 12.50,
+      "sell": 10.00,
       "category": "mineral"
     },
     {
       "item_id": "minecraft:emerald",
       "count": 1,
-      "buy": 152.3,
-      "sell": 149.5,
+      "buy": 3.13,
+      "sell": 2.50,
+      "category": "mineral"
+    },
+    {
+      "item_id": "minecraft:lapis_lazuli",
+      "count": 1,
+      "buy": 5.00,
+      "sell": 4.00,
       "category": "mineral"
     },
     {
       "item_id": "minecraft:diamond",
       "count": 1,
-      "buy": 300.6,
-      "sell": 276.5,
+      "buy": 50.00,
+      "sell": 40.00,
       "category": "mineral"
     },
     {
       "item_id": "minecraft:netherite_scrap",
       "count": 1,
-      "buy": 418.7,
-      "sell": 417.9,
+      "buy": 150.00,
+      "sell": 120.00,
       "category": "mineral"
     },
     {
-      "item_id": "minecraft:apple",
+      "item_id": "minecraft:quartz",
       "count": 1,
-      "buy": 8.0,
-      "sell": 6.0,
-      "category": "crop"
+      "buy": 1.50,
+      "sell": 1.20,
+      "category": "mineral"
     },
     {
-      "item_id": "minecraft:melon_slice",
+      "item_id": "minecraft:amethyst_shard",
       "count": 1,
-      "buy": 4.5,
-      "sell": 3.0,
-      "category": "crop"
+      "buy": 3.75,
+      "sell": 3.00,
+      "category": "mineral"
     },
     {
-      "item_id": "minecraft:sweet_berries",
+      "item_id": "minecraft:prismarine_shard",
       "count": 1,
-      "buy": 6.0,
-      "sell": 4.0,
-      "category": "crop"
+      "buy": 1.75,
+      "sell": 1.40,
+      "category": "mineral"
     },
     {
-      "item_id": "minecraft:glow_berries",
+      "item_id": "create:zinc_ingot",
       "count": 1,
-      "buy": 8.0,
-      "sell": 6.0,
-      "category": "crop"
+      "buy": 5.00,
+      "sell": 4.00,
+      "category": "mineral"
     },
     {
-      "item_id": "minecraft:chorus_fruit",
+      "item_id": "kaleidoscope_chinesefood:salt",
       "count": 1,
-      "buy": 12.0,
-      "sell": 9.0,
-      "category": "crop"
-    },
-    {
-      "item_id": "minecraft:carrot",
-      "count": 1,
-      "buy": 5.0,
-      "sell": 4.0,
-      "category": "crop"
-    },
-    {
-      "item_id": "minecraft:potato",
-      "count": 1,
-      "buy": 5.0,
-      "sell": 4.0,
-      "category": "crop"
-    },
-    {
-      "item_id": "minecraft:poisonous_potato",
-      "count": 1,
-      "buy": 3.0,
-      "sell": 2.0,
-      "category": "crop"
-    },
-    {
-      "item_id": "minecraft:beetroot",
-      "count": 1,
-      "buy": 5.0,
-      "sell": 4.0,
-      "category": "crop"
+      "buy": 1.88,
+      "sell": 1.50,
+      "category": "mineral"
     },
     {
       "item_id": "minecraft:wheat_seeds",
       "count": 1,
-      "buy": 3.0,
-      "sell": 2.0,
+      "buy": 0.45,
+      "sell": 0.30,
       "category": "crop"
     },
     {
-      "item_id": "minecraft:cocoa_beans",
+      "item_id": "minecraft:wheat",
       "count": 1,
-      "buy": 8.0,
-      "sell": 6.0,
+      "buy": 0.63,
+      "sell": 0.42,
       "category": "crop"
     },
     {
       "item_id": "minecraft:pumpkin_seeds",
       "count": 1,
-      "buy": 4.0,
-      "sell": 3.0,
+      "buy": 0.48,
+      "sell": 0.32,
+      "category": "crop"
+    },
+    {
+      "item_id": "minecraft:pumpkin",
+      "count": 1,
+      "buy": 0.60,
+      "sell": 0.40,
       "category": "crop"
     },
     {
       "item_id": "minecraft:melon_seeds",
       "count": 1,
-      "buy": 4.0,
-      "sell": 3.0,
+      "buy": 0.48,
+      "sell": 0.32,
+      "category": "crop"
+    },
+    {
+      "item_id": "minecraft:melon",
+      "count": 1,
+      "buy": 0.68,
+      "sell": 0.45,
       "category": "crop"
     },
     {
       "item_id": "minecraft:beetroot_seeds",
       "count": 1,
-      "buy": 3.0,
-      "sell": 2.0,
+      "buy": 0.48,
+      "sell": 0.32,
       "category": "crop"
     },
     {
-      "item_id": "minecraft:nether_wart",
+      "item_id": "minecraft:beetroot",
       "count": 1,
-      "buy": 10.0,
-      "sell": 8.0,
+      "buy": 0.68,
+      "sell": 0.45,
       "category": "crop"
     },
     {
-      "item_id": "kaleidoscope_cookery:rice",
+      "item_id": "farmersdelight:rice",
       "count": 1,
-      "buy": 6.0,
-      "sell": 4.0,
-      "category": "crop"
-    },
-    {
-      "item_id": "kaleidoscope_cookery:tomato_seed",
-      "count": 1,
-      "buy": 4.5,
-      "sell": 3.0,
-      "category": "crop"
-    },
-    {
-      "item_id": "kaleidoscope_cookery:chili_seed",
-      "count": 1,
-      "buy": 5.0,
-      "sell": 4.0,
-      "category": "crop"
-    },
-    {
-      "item_id": "kaleidoscope_cookery:lettuce_seed",
-      "count": 1,
-      "buy": 3.0,
-      "sell": 2.0,
-      "category": "crop"
-    },
-    {
-      "item_id": "kaleidoscope_cookery:tomato",
-      "count": 1,
-      "buy": 7.0,
-      "sell": 5.0,
-      "category": "crop"
-    },
-    {
-      "item_id": "kaleidoscope_cookery:red_chili",
-      "count": 1,
-      "buy": 8.0,
-      "sell": 6.0,
-      "category": "crop"
-    },
-    {
-      "item_id": "kaleidoscope_cookery:green_chili",
-      "count": 1,
-      "buy": 8.0,
-      "sell": 6.0,
-      "category": "crop"
-    },
-    {
-      "item_id": "kaleidoscope_cookery:lettuce",
-      "count": 1,
-      "buy": 6.0,
-      "sell": 4.5,
+      "buy": 0.75,
+      "sell": 0.50,
       "category": "crop"
     },
     {
       "item_id": "kaleidoscope_cookery:rice_panicle",
       "count": 1,
-      "buy": 7.0,
-      "sell": 5.0,
+      "buy": 0.75,
+      "sell": 0.50,
       "category": "crop"
     },
     {
-      "item_id": "culturaldelights:corn_kernels",
+      "item_id": "kaleidoscope_cookery:tomato_seed",
       "count": 1,
-      "buy": 4.0,
-      "sell": 3.0,
+      "buy": 0.53,
+      "sell": 0.35,
       "category": "crop"
     },
     {
-      "item_id": "culturaldelights:corn_cob",
+      "item_id": "kaleidoscope_cookery:tomato",
       "count": 1,
-      "buy": 8.0,
-      "sell": 6.0,
+      "buy": 0.78,
+      "sell": 0.52,
       "category": "crop"
     },
     {
-      "item_id": "culturaldelights:cucumber_seeds",
+      "item_id": "kaleidoscope_cookery:lettuce_seed",
       "count": 1,
-      "buy": 4.0,
-      "sell": 3.0,
+      "buy": 0.53,
+      "sell": 0.35,
       "category": "crop"
     },
     {
-      "item_id": "culturaldelights:eggplant_seeds",
+      "item_id": "kaleidoscope_cookery:lettuce",
       "count": 1,
-      "buy": 4.0,
-      "sell": 3.0,
-      "category": "crop"
-    },
-    {
-      "item_id": "culturaldelights:cucumber",
-      "count": 1,
-      "buy": 7.0,
-      "sell": 5.0,
-      "category": "crop"
-    },
-    {
-      "item_id": "culturaldelights:eggplant",
-      "count": 1,
-      "buy": 7.0,
-      "sell": 5.0,
-      "category": "crop"
-    },
-    {
-      "item_id": "culturaldelights:white_eggplant",
-      "count": 1,
-      "buy": 8.0,
-      "sell": 6.0,
+      "buy": 0.78,
+      "sell": 0.52,
       "category": "crop"
     },
     {
       "item_id": "farm_and_charm:oat_seeds",
       "count": 1,
-      "buy": 3.0,
-      "sell": 2.0,
+      "buy": 0.45,
+      "sell": 0.30,
       "category": "crop"
     },
     {
       "item_id": "farm_and_charm:oat",
       "count": 1,
-      "buy": 5.0,
-      "sell": 4.0,
+      "buy": 0.68,
+      "sell": 0.45,
       "category": "crop"
     },
     {
       "item_id": "farm_and_charm:barley_seeds",
       "count": 1,
-      "buy": 3.0,
-      "sell": 2.0,
+      "buy": 0.45,
+      "sell": 0.30,
+      "category": "crop"
+    },
+    {
+      "item_id": "culturaldelights:cucumber_seeds",
+      "count": 1,
+      "buy": 0.48,
+      "sell": 0.32,
+      "category": "crop"
+    },
+    {
+      "item_id": "culturaldelights:cucumber",
+      "count": 1,
+      "buy": 0.75,
+      "sell": 0.50,
+      "category": "crop"
+    },
+    {
+      "item_id": "culturaldelights:corn_kernels",
+      "count": 1,
+      "buy": 0.51,
+      "sell": 0.34,
+      "category": "crop"
+    },
+    {
+      "item_id": "culturaldelights:corn_cob",
+      "count": 1,
+      "buy": 0.78,
+      "sell": 0.52,
       "category": "crop"
     },
     {
       "item_id": "farm_and_charm:barley",
       "count": 1,
-      "buy": 5.0,
-      "sell": 4.0,
+      "buy": 0.68,
+      "sell": 0.45,
       "category": "crop"
     },
     {
       "item_id": "farm_and_charm:strawberry_seeds",
       "count": 1,
-      "buy": 5.0,
-      "sell": 4.0,
+      "buy": 0.57,
+      "sell": 0.38,
       "category": "crop"
     },
     {
       "item_id": "farm_and_charm:strawberry",
       "count": 1,
-      "buy": 9.0,
-      "sell": 7.0,
-      "category": "crop"
-    },
-    {
-      "item_id": "farmersdelight:cabbage",
-      "count": 1,
-      "buy": 7.0,
-      "sell": 5.0,
+      "buy": 0.87,
+      "sell": 0.58,
       "category": "crop"
     },
     {
       "item_id": "farmersdelight:cabbage_seeds",
       "count": 1,
-      "buy": 4.5,
-      "sell": 3.0,
+      "buy": 0.53,
+      "sell": 0.35,
       "category": "crop"
     },
     {
-      "item_id": "farmersdelight:onion",
+      "item_id": "farmersdelight:cabbage",
       "count": 1,
-      "buy": 6.0,
-      "sell": 4.0,
-      "category": "crop"
-    },
-    {
-      "item_id": "kaleidoscope_tavern:grapevine",
-      "count": 1,
-      "buy": 10.0,
-      "sell": 8.0,
-      "category": "crop"
-    },
-    {
-      "item_id": "kaleidoscope_tavern:grape",
-      "count": 1,
-      "buy": 8.0,
-      "sell": 6.0,
-      "category": "crop"
-    },
-    {
-      "item_id": "kaleidoscope_tavern:ice_grape",
-      "count": 1,
-      "buy": 10.0,
-      "sell": 8.0,
-      "category": "crop"
-    },
-    {
-      "item_id": "kaleidoscope_tavern:gold_grape",
-      "count": 1,
-      "buy": 12.0,
-      "sell": 10.0,
-      "category": "crop"
-    },
-    {
-      "item_id": "kaleidoscope_tavern:green_grape",
-      "count": 1,
-      "buy": 9.0,
-      "sell": 7.0,
+      "buy": 0.78,
+      "sell": 0.52,
       "category": "crop"
     },
     {
       "item_id": "vinery:red_grape_seeds",
       "count": 1,
-      "buy": 6.0,
-      "sell": 4.0,
+      "buy": 0.54,
+      "sell": 0.36,
       "category": "crop"
     },
     {
       "item_id": "vinery:red_grape",
       "count": 1,
-      "buy": 8.0,
-      "sell": 6.0,
+      "buy": 0.83,
+      "sell": 0.55,
       "category": "crop"
     },
     {
       "item_id": "vinery:white_grape_seeds",
       "count": 1,
-      "buy": 6.0,
-      "sell": 4.0,
+      "buy": 0.54,
+      "sell": 0.36,
       "category": "crop"
     },
     {
       "item_id": "vinery:white_grape",
       "count": 1,
-      "buy": 8.0,
-      "sell": 6.0,
+      "buy": 0.83,
+      "sell": 0.55,
       "category": "crop"
     },
     {
       "item_id": "vinery:savanna_grape_seeds_red",
       "count": 1,
-      "buy": 7.0,
-      "sell": 5.0,
+      "buy": 0.57,
+      "sell": 0.38,
       "category": "crop"
     },
     {
       "item_id": "vinery:savanna_grapes_red",
       "count": 1,
-      "buy": 9.0,
-      "sell": 7.0,
+      "buy": 0.87,
+      "sell": 0.58,
       "category": "crop"
     },
     {
       "item_id": "vinery:savanna_grape_seeds_white",
       "count": 1,
-      "buy": 7.0,
-      "sell": 5.0,
+      "buy": 0.57,
+      "sell": 0.38,
       "category": "crop"
     },
     {
       "item_id": "vinery:savanna_grapes_white",
       "count": 1,
-      "buy": 9.0,
-      "sell": 7.0,
+      "buy": 0.87,
+      "sell": 0.58,
       "category": "crop"
     },
     {
       "item_id": "vinery:taiga_grape_seeds_red",
       "count": 1,
-      "buy": 7.0,
-      "sell": 5.0,
+      "buy": 0.57,
+      "sell": 0.38,
       "category": "crop"
     },
     {
       "item_id": "vinery:taiga_grapes_red",
       "count": 1,
-      "buy": 9.0,
-      "sell": 7.0,
+      "buy": 0.87,
+      "sell": 0.58,
       "category": "crop"
     },
     {
       "item_id": "vinery:taiga_grape_seeds_white",
       "count": 1,
-      "buy": 7.0,
-      "sell": 5.0,
+      "buy": 0.57,
+      "sell": 0.38,
       "category": "crop"
     },
     {
       "item_id": "vinery:taiga_grapes_white",
       "count": 1,
-      "buy": 9.0,
-      "sell": 7.0,
+      "buy": 0.87,
+      "sell": 0.58,
       "category": "crop"
     },
     {
       "item_id": "vinery:jungle_grape_seeds_red",
       "count": 1,
-      "buy": 7.0,
-      "sell": 5.0,
+      "buy": 0.57,
+      "sell": 0.38,
       "category": "crop"
     },
     {
       "item_id": "vinery:jungle_grapes_red",
       "count": 1,
-      "buy": 9.0,
-      "sell": 7.0,
+      "buy": 0.87,
+      "sell": 0.58,
       "category": "crop"
     },
     {
       "item_id": "vinery:jungle_grape_seeds_white",
       "count": 1,
-      "buy": 7.0,
-      "sell": 5.0,
+      "buy": 0.57,
+      "sell": 0.38,
       "category": "crop"
     },
     {
       "item_id": "vinery:jungle_grapes_white",
       "count": 1,
-      "buy": 9.0,
-      "sell": 7.0,
+      "buy": 0.87,
+      "sell": 0.58,
       "category": "crop"
     },
     {
-      "item_id": "vinery:cherry",
+      "item_id": "kaleidoscope_cookery:chili_seed",
       "count": 1,
-      "buy": 10.0,
-      "sell": 8.0,
+      "buy": 0.53,
+      "sell": 0.35,
       "category": "crop"
     },
     {
-      "item_id": "vinery:rotten_cherry",
+      "item_id": "kaleidoscope_cookery:red_chili",
       "count": 1,
-      "buy": 2.0,
-      "sell": 1.0,
+      "buy": 0.83,
+      "sell": 0.55,
       "category": "crop"
+    },
+    {
+      "item_id": "kaleidoscope_cookery:green_chili",
+      "count": 1,
+      "buy": 0.83,
+      "sell": 0.55,
+      "category": "crop"
+    },
+    {
+      "item_id": "culturaldelights:eggplant_seeds",
+      "count": 1,
+      "buy": 0.48,
+      "sell": 0.32,
+      "category": "crop"
+    },
+    {
+      "item_id": "culturaldelights:eggplant",
+      "count": 1,
+      "buy": 0.75,
+      "sell": 0.50,
+      "category": "crop"
+    },
+    {
+      "item_id": "culturaldelights:white_eggplant",
+      "count": 1,
+      "buy": 0.83,
+      "sell": 0.55,
+      "category": "crop"
+    },
+    {
+      "item_id": "kaleidoscope_tavern:grapevine",
+      "count": 1,
+      "buy": 0.90,
+      "sell": 0.60,
+      "category": "crop"
+    },
+    {
+      "item_id": "kaleidoscope_tavern:grape",
+      "count": 1,
+      "buy": 0.83,
+      "sell": 0.55,
+      "category": "crop"
+    },
+    {
+      "item_id": "kaleidoscope_tavern:ice_grape",
+      "count": 1,
+      "buy": 0.93,
+      "sell": 0.62,
+      "category": "crop"
+    },
+    {
+      "item_id": "kaleidoscope_tavern:gold_grape",
+      "count": 1,
+      "buy": 1.05,
+      "sell": 0.70,
+      "category": "crop"
+    },
+    {
+      "item_id": "minecraft:cocoa_beans",
+      "count": 1,
+      "buy": 0.68,
+      "sell": 0.45,
+      "category": "crop"
+    },
+    {
+      "item_id": "minecraft:glow_berries",
+      "count": 1,
+      "buy": 0.60,
+      "sell": 0.40,
+      "category": "crop"
+    },
+    {
+      "item_id": "minecraft:sweet_berries",
+      "count": 1,
+      "buy": 0.60,
+      "sell": 0.40,
+      "category": "crop"
+    },
+    {
+      "item_id": "minecraft:carrot",
+      "count": 1,
+      "buy": 0.60,
+      "sell": 0.40,
+      "category": "crop"
+    },
+    {
+      "item_id": "minecraft:potato",
+      "count": 1,
+      "buy": 0.60,
+      "sell": 0.40,
+      "category": "crop"
+    },
+    {
+      "item_id": "brewery:hops",
+      "count": 1,
+      "buy": 0.68,
+      "sell": 0.45,
+      "category": "crop"
+    },
+    {
+      "item_id": "farmersdelight:onion",
+      "count": 1,
+      "buy": 0.63,
+      "sell": 0.42,
+      "category": "crop"
+    },
+    {
+      "item_id": "kawaiidishes:coffee_berries",
+      "count": 1,
+      "buy": 0.83,
+      "sell": 0.55,
+      "category": "crop"
+    },
+    {
+      "item_id": "xy2407_nsuk_addition:entity_capture",
+      "count": 1,
+      "buy": 25.30,
+      "sell": 22.00,
+      "category": "animal",
+      "nbt": { "entity": "minecraft:chicken", "baby": false }
+    },
+    {
+      "item_id": "xy2407_nsuk_addition:entity_capture",
+      "count": 1,
+      "buy": 27.60,
+      "sell": 24.00,
+      "category": "animal",
+      "nbt": { "entity": "minecraft:rabbit", "baby": false }
+    },
+    {
+      "item_id": "xy2407_nsuk_addition:entity_capture",
+      "count": 1,
+      "buy": 29.90,
+      "sell": 26.00,
+      "category": "animal",
+      "nbt": { "entity": "wildernature:turkey", "baby": false }
+    },
+    {
+      "item_id": "xy2407_nsuk_addition:entity_capture",
+      "count": 1,
+      "buy": 32.20,
+      "sell": 28.00,
+      "category": "animal",
+      "nbt": { "entity": "wildernature:cassowary", "baby": false }
+    },
+    {
+      "item_id": "xy2407_nsuk_addition:entity_capture",
+      "count": 1,
+      "buy": 41.40,
+      "sell": 36.00,
+      "category": "animal",
+      "nbt": { "entity": "minecraft:pig", "baby": false }
+    },
+    {
+      "item_id": "xy2407_nsuk_addition:entity_capture",
+      "count": 1,
+      "buy": 43.70,
+      "sell": 38.00,
+      "category": "animal",
+      "nbt": { "entity": "minecraft:sheep", "baby": false }
+    },
+    {
+      "item_id": "xy2407_nsuk_addition:entity_capture",
+      "count": 1,
+      "buy": 46.00,
+      "sell": 40.00,
+      "category": "animal",
+      "nbt": { "entity": "wildernature:minisheep", "baby": false }
+    },
+    {
+      "item_id": "xy2407_nsuk_addition:entity_capture",
+      "count": 1,
+      "buy": 48.30,
+      "sell": 42.00,
+      "category": "animal",
+      "nbt": { "entity": "minecraft:cow", "baby": false }
+    },
+    {
+      "item_id": "xy2407_nsuk_addition:entity_capture",
+      "count": 1,
+      "buy": 50.60,
+      "sell": 44.00,
+      "category": "animal",
+      "nbt": { "entity": "wildernature:deer", "baby": false }
+    },
+    {
+      "item_id": "xy2407_nsuk_addition:entity_capture",
+      "count": 1,
+      "buy": 51.75,
+      "sell": 45.00,
+      "category": "animal",
+      "nbt": { "entity": "wildernature:boar", "baby": false }
+    },
+    {
+      "item_id": "xy2407_nsuk_addition:entity_capture",
+      "count": 1,
+      "buy": 52.90,
+      "sell": 46.00,
+      "category": "animal",
+      "nbt": { "entity": "meadow:water_buffalo", "baby": false }
+    },
+    {
+      "item_id": "xy2407_nsuk_addition:entity_capture",
+      "count": 1,
+      "buy": 55.20,
+      "sell": 48.00,
+      "category": "animal",
+      "nbt": { "entity": "minecraft:mooshroom", "baby": false }
+    },
+    {
+      "item_id": "xy2407_nsuk_addition:entity_capture",
+      "count": 1,
+      "buy": 57.50,
+      "sell": 50.00,
+      "category": "animal",
+      "nbt": { "entity": "wildernature:bison", "baby": false }
+    },
+    {
+      "item_id": "meadow:cheese_wheel",
+      "count": 1,
+      "buy": 13.80,
+      "sell": 12.00,
+      "category": "cheese"
+    },
+    {
+      "item_id": "meadow:sheep_cheese_wheel",
+      "count": 1,
+      "buy": 14.95,
+      "sell": 13.00,
+      "category": "cheese"
+    },
+    {
+      "item_id": "meadow:grain_cheese_wheel",
+      "count": 1,
+      "buy": 12.65,
+      "sell": 11.00,
+      "category": "cheese"
+    },
+    {
+      "item_id": "meadow:amethyst_cheese_wheel",
+      "count": 1,
+      "buy": 20.70,
+      "sell": 18.00,
+      "category": "cheese"
+    },
+    {
+      "item_id": "meadow:buffalo_cheese_wheel",
+      "count": 1,
+      "buy": 16.10,
+      "sell": 14.00,
+      "category": "cheese"
+    },
+    {
+      "item_id": "meadow:goat_cheese_wheel",
+      "count": 1,
+      "buy": 14.38,
+      "sell": 12.50,
+      "category": "cheese"
+    },
+    {
+      "item_id": "meadow:warped_cheese_wheel",
+      "count": 1,
+      "buy": 19.55,
+      "sell": 17.00,
+      "category": "cheese"
+    },
+    {
+      "item_id": "aquaculture:atlantic_cod",
+      "count": 1,
+      "buy": 12.00,
+      "sell": 10.00,
+      "category": "aquatic"
+    },
+    {
+      "item_id": "aquaculture:blackfish",
+      "count": 1,
+      "buy": 8.40,
+      "sell": 7.00,
+      "category": "aquatic"
+    },
+    {
+      "item_id": "aquaculture:pacific_halibut",
+      "count": 1,
+      "buy": 14.40,
+      "sell": 12.00,
+      "category": "aquatic"
+    },
+    {
+      "item_id": "aquaculture:atlantic_halibut",
+      "count": 1,
+      "buy": 14.40,
+      "sell": 12.00,
+      "category": "aquatic"
+    },
+    {
+      "item_id": "aquaculture:atlantic_herring",
+      "count": 1,
+      "buy": 6.60,
+      "sell": 5.50,
+      "category": "aquatic"
+    },
+    {
+      "item_id": "aquaculture:pink_salmon",
+      "count": 1,
+      "buy": 9.60,
+      "sell": 8.00,
+      "category": "aquatic"
+    },
+    {
+      "item_id": "aquaculture:pollock",
+      "count": 1,
+      "buy": 9.00,
+      "sell": 7.50,
+      "category": "aquatic"
+    },
+    {
+      "item_id": "aquaculture:rainbow_trout",
+      "count": 1,
+      "buy": 9.60,
+      "sell": 8.00,
+      "category": "aquatic"
+    },
+    {
+      "item_id": "aquaculture:bayad",
+      "count": 1,
+      "buy": 10.20,
+      "sell": 8.50,
+      "category": "aquatic"
+    },
+    {
+      "item_id": "aquaculture:boulti",
+      "count": 1,
+      "buy": 6.00,
+      "sell": 5.00,
+      "category": "aquatic"
+    },
+    {
+      "item_id": "aquaculture:capitaine",
+      "count": 1,
+      "buy": 15.00,
+      "sell": 12.50,
+      "category": "aquatic"
+    },
+    {
+      "item_id": "aquaculture:synodontis",
+      "count": 1,
+      "buy": 5.76,
+      "sell": 4.80,
+      "category": "aquatic"
+    },
+    {
+      "item_id": "aquaculture:smallmouth_bass",
+      "count": 1,
+      "buy": 9.60,
+      "sell": 8.00,
+      "category": "aquatic"
+    },
+    {
+      "item_id": "aquaculture:bluegill",
+      "count": 1,
+      "buy": 5.40,
+      "sell": 4.50,
+      "category": "aquatic"
+    },
+    {
+      "item_id": "aquaculture:brown_trout",
+      "count": 1,
+      "buy": 10.20,
+      "sell": 8.50,
+      "category": "aquatic"
+    },
+    {
+      "item_id": "aquaculture:carp",
+      "count": 1,
+      "buy": 10.80,
+      "sell": 9.00,
+      "category": "aquatic"
+    },
+    {
+      "item_id": "aquaculture:catfish",
+      "count": 1,
+      "buy": 11.40,
+      "sell": 9.50,
+      "category": "aquatic"
+    },
+    {
+      "item_id": "aquaculture:gar",
+      "count": 1,
+      "buy": 13.20,
+      "sell": 11.00,
+      "category": "aquatic"
+    },
+    {
+      "item_id": "aquaculture:minnow",
+      "count": 1,
+      "buy": 2.40,
+      "sell": 2.00,
+      "category": "aquatic"
+    },
+    {
+      "item_id": "aquaculture:muskellunge",
+      "count": 1,
+      "buy": 15.00,
+      "sell": 12.50,
+      "category": "aquatic"
+    },
+    {
+      "item_id": "aquaculture:perch",
+      "count": 1,
+      "buy": 7.20,
+      "sell": 6.00,
+      "category": "aquatic"
+    },
+    {
+      "item_id": "aquaculture:arapaima",
+      "count": 1,
+      "buy": 16.20,
+      "sell": 13.50,
+      "category": "aquatic"
+    },
+    {
+      "item_id": "aquaculture:piranha",
+      "count": 1,
+      "buy": 9.00,
+      "sell": 7.50,
+      "category": "aquatic"
+    },
+    {
+      "item_id": "aquaculture:tambaqui",
+      "count": 1,
+      "buy": 9.60,
+      "sell": 8.00,
+      "category": "aquatic"
+    },
+    {
+      "item_id": "aquaculture:brown_shrooma",
+      "count": 1,
+      "buy": 7.80,
+      "sell": 6.50,
+      "category": "aquatic"
+    },
+    {
+      "item_id": "aquaculture:red_shrooma",
+      "count": 1,
+      "buy": 7.80,
+      "sell": 6.50,
+      "category": "aquatic"
+    },
+    {
+      "item_id": "aquaculture:jellyfish",
+      "count": 1,
+      "buy": 9.60,
+      "sell": 8.00,
+      "category": "aquatic"
+    },
+    {
+      "item_id": "aquaculture:red_grouper",
+      "count": 1,
+      "buy": 12.60,
+      "sell": 10.50,
+      "category": "aquatic"
+    },
+    {
+      "item_id": "aquaculture:tuna",
+      "count": 1,
+      "buy": 15.60,
+      "sell": 13.00,
+      "category": "aquatic"
+    },
+    {
+      "item_id": "tide:rainbow_trout",
+      "count": 1,
+      "buy": 7.20,
+      "sell": 6.00,
+      "category": "aquatic"
+    },
+    {
+      "item_id": "tide:brook_trout",
+      "count": 1,
+      "buy": 7.20,
+      "sell": 6.00,
+      "category": "aquatic"
+    },
+    {
+      "item_id": "tide:largemouth_bass",
+      "count": 1,
+      "buy": 7.20,
+      "sell": 6.00,
+      "category": "aquatic"
+    },
+    {
+      "item_id": "tide:smallmouth_bass",
+      "count": 1,
+      "buy": 7.20,
+      "sell": 6.00,
+      "category": "aquatic"
+    },
+    {
+      "item_id": "tide:white_crappie",
+      "count": 1,
+      "buy": 6.00,
+      "sell": 5.00,
+      "category": "aquatic"
+    },
+    {
+      "item_id": "tide:black_crappie",
+      "count": 1,
+      "buy": 6.00,
+      "sell": 5.00,
+      "category": "aquatic"
+    },
+    {
+      "item_id": "tide:yellow_perch",
+      "count": 1,
+      "buy": 6.60,
+      "sell": 5.50,
+      "category": "aquatic"
+    },
+    {
+      "item_id": "tide:carp",
+      "count": 1,
+      "buy": 6.60,
+      "sell": 5.50,
+      "category": "aquatic"
+    },
+    {
+      "item_id": "tide:pike",
+      "count": 1,
+      "buy": 7.20,
+      "sell": 6.00,
+      "category": "aquatic"
+    },
+    {
+      "item_id": "tide:bluegill",
+      "count": 1,
+      "buy": 6.00,
+      "sell": 5.00,
+      "category": "aquatic"
+    },
+    {
+      "item_id": "tide:ocean_perch",
+      "count": 1,
+      "buy": 7.20,
+      "sell": 6.00,
+      "category": "aquatic"
+    },
+    {
+      "item_id": "tide:red_snapper",
+      "count": 1,
+      "buy": 8.40,
+      "sell": 7.00,
+      "category": "aquatic"
+    },
+    {
+      "item_id": "tide:flounder",
+      "count": 1,
+      "buy": 7.80,
+      "sell": 6.50,
+      "category": "aquatic"
+    },
+    {
+      "item_id": "tide:anchovy",
+      "count": 1,
+      "buy": 6.00,
+      "sell": 5.00,
+      "category": "aquatic"
+    },
+    {
+      "item_id": "tide:tuna",
+      "count": 1,
+      "buy": 9.00,
+      "sell": 7.50,
+      "category": "aquatic"
+    },
+    {
+      "item_id": "tide:mackerel",
+      "count": 1,
+      "buy": 7.80,
+      "sell": 6.50,
+      "category": "aquatic"
+    },
+    {
+      "item_id": "tide:snook",
+      "count": 1,
+      "buy": 8.40,
+      "sell": 7.00,
+      "category": "aquatic"
+    },
+    {
+      "item_id": "tide:cave_eel",
+      "count": 1,
+      "buy": 7.20,
+      "sell": 6.00,
+      "category": "aquatic"
+    },
+    {
+      "item_id": "tide:cave_crawler",
+      "count": 1,
+      "buy": 7.20,
+      "sell": 6.00,
+      "category": "aquatic"
+    },
+    {
+      "item_id": "tide:deep_grouper",
+      "count": 1,
+      "buy": 7.80,
+      "sell": 6.50,
+      "category": "aquatic"
+    },
+    {
+      "item_id": "tide:shadow_snapper",
+      "count": 1,
+      "buy": 8.40,
+      "sell": 7.00,
+      "category": "aquatic"
+    },
+    {
+      "item_id": "tide:midas_fish",
+      "count": 1,
+      "buy": 8.40,
+      "sell": 7.00,
+      "category": "aquatic"
+    },
+    {
+      "item_id": "tide:incandescent_larva",
+      "count": 1,
+      "buy": 7.80,
+      "sell": 6.50,
+      "category": "aquatic"
+    },
+    {
+      "item_id": "tide:bedrock_bug",
+      "count": 1,
+      "buy": 8.40,
+      "sell": 7.00,
+      "category": "aquatic"
+    },
+    {
+      "item_id": "tide:sleepy_carp",
+      "count": 1,
+      "buy": 6.00,
+      "sell": 5.00,
+      "category": "aquatic"
+    },
+    {
+      "item_id": "tide:pale_clubfish",
+      "count": 1,
+      "buy": 6.60,
+      "sell": 5.50,
+      "category": "aquatic"
+    },
+    {
+      "item_id": "tide:amber_rockfish",
+      "count": 1,
+      "buy": 7.20,
+      "sell": 6.00,
+      "category": "aquatic"
+    },
+    {
+      "item_id": "tide:enderfin",
+      "count": 1,
+      "buy": 7.20,
+      "sell": 6.00,
+      "category": "aquatic"
+    },
+    {
+      "item_id": "tide:guppy",
+      "count": 1,
+      "buy": 9.60,
+      "sell": 8.00,
+      "category": "aquatic"
+    },
+    {
+      "item_id": "tide:catfish",
+      "count": 1,
+      "buy": 9.60,
+      "sell": 8.00,
+      "category": "aquatic"
+    },
+    {
+      "item_id": "tide:walleye",
+      "count": 1,
+      "buy": 10.80,
+      "sell": 9.00,
+      "category": "aquatic"
+    },
+    {
+      "item_id": "tide:angelfish",
+      "count": 1,
+      "buy": 10.80,
+      "sell": 9.00,
+      "category": "aquatic"
+    },
+    {
+      "item_id": "tide:glowfish",
+      "count": 1,
+      "buy": 10.80,
+      "sell": 9.00,
+      "category": "aquatic"
+    },
+    {
+      "item_id": "tide:anglerfish",
+      "count": 1,
+      "buy": 10.80,
+      "sell": 9.00,
+      "category": "aquatic"
+    },
+    {
+      "item_id": "tide:abyss_angler",
+      "count": 1,
+      "buy": 12.00,
+      "sell": 10.00,
+      "category": "aquatic"
+    },
+    {
+      "item_id": "tide:iron_tetra",
+      "count": 1,
+      "buy": 12.00,
+      "sell": 10.00,
+      "category": "aquatic"
+    },
+    {
+      "item_id": "tide:lapis_lanternfish",
+      "count": 1,
+      "buy": 12.00,
+      "sell": 10.00,
+      "category": "aquatic"
+    },
+    {
+      "item_id": "tide:crystal_shrimp",
+      "count": 1,
+      "buy": 13.20,
+      "sell": 11.00,
+      "category": "aquatic"
+    },
+    {
+      "item_id": "tide:dripstone_darter",
+      "count": 1,
+      "buy": 12.00,
+      "sell": 10.00,
+      "category": "aquatic"
+    },
+    {
+      "item_id": "tide:blue_neonfish",
+      "count": 1,
+      "buy": 10.80,
+      "sell": 9.00,
+      "category": "aquatic"
+    },
+    {
+      "item_id": "tide:judgment_fish",
+      "count": 1,
+      "buy": 10.80,
+      "sell": 9.00,
+      "category": "aquatic"
+    },
+    {
+      "item_id": "tide:deep_blue",
+      "count": 1,
+      "buy": 12.00,
+      "sell": 10.00,
+      "category": "aquatic"
+    },
+    {
+      "item_id": "tide:chorus_cod",
+      "count": 1,
+      "buy": 12.00,
+      "sell": 10.00,
+      "category": "aquatic"
+    },
+    {
+      "item_id": "tide:ender_glider",
+      "count": 1,
+      "buy": 12.00,
+      "sell": 10.00,
+      "category": "aquatic"
+    },
+    {
+      "item_id": "tide:endergazer",
+      "count": 1,
+      "buy": 13.20,
+      "sell": 11.00,
+      "category": "aquatic"
+    },
+    {
+      "item_id": "tide:violet_carp",
+      "count": 1,
+      "buy": 12.00,
+      "sell": 10.00,
+      "category": "aquatic"
+    },
+    {
+      "item_id": "tide:obsidian_pike",
+      "count": 1,
+      "buy": 12.00,
+      "sell": 10.00,
+      "category": "aquatic"
+    },
+    {
+      "item_id": "tide:magma_mackerel",
+      "count": 1,
+      "buy": 8.40,
+      "sell": 7.00,
+      "category": "aquatic"
+    },
+    {
+      "item_id": "tide:ember_koi",
+      "count": 1,
+      "buy": 7.80,
+      "sell": 6.50,
+      "category": "aquatic"
+    },
+    {
+      "item_id": "tide:ash_perch",
+      "count": 1,
+      "buy": 7.20,
+      "sell": 6.00,
+      "category": "aquatic"
+    },
+    {
+      "item_id": "tide:volcano_tuna",
+      "count": 1,
+      "buy": 13.20,
+      "sell": 11.00,
+      "category": "aquatic"
+    },
+    {
+      "item_id": "tide:mahi_mahi",
+      "count": 1,
+      "buy": 16.80,
+      "sell": 14.00,
+      "category": "aquatic"
+    },
+    {
+      "item_id": "tide:sailfish",
+      "count": 1,
+      "buy": 18.00,
+      "sell": 15.00,
+      "category": "aquatic"
+    },
+    {
+      "item_id": "tide:swordfish",
+      "count": 1,
+      "buy": 19.20,
+      "sell": 16.00,
+      "category": "aquatic"
+    },
+    {
+      "item_id": "tide:manta_ray",
+      "count": 1,
+      "buy": 19.20,
+      "sell": 16.00,
+      "category": "aquatic"
+    },
+    {
+      "item_id": "tide:arapaima",
+      "count": 1,
+      "buy": 15.60,
+      "sell": 13.00,
+      "category": "aquatic"
+    },
+    {
+      "item_id": "tide:mirage_catfish",
+      "count": 1,
+      "buy": 15.60,
+      "sell": 13.00,
+      "category": "aquatic"
+    },
+    {
+      "item_id": "tide:sand_tiger_shark",
+      "count": 1,
+      "buy": 16.80,
+      "sell": 14.00,
+      "category": "aquatic"
+    },
+    {
+      "item_id": "tide:slimy_salmon",
+      "count": 1,
+      "buy": 16.80,
+      "sell": 14.00,
+      "category": "aquatic"
+    },
+    {
+      "item_id": "tide:frostbite_flounder",
+      "count": 1,
+      "buy": 18.00,
+      "sell": 15.00,
+      "category": "aquatic"
+    },
+    {
+      "item_id": "tide:sturgeon",
+      "count": 1,
+      "buy": 18.00,
+      "sell": 15.00,
+      "category": "aquatic"
+    },
+    {
+      "item_id": "tide:blossom_bass",
+      "count": 1,
+      "buy": 18.00,
+      "sell": 15.00,
+      "category": "aquatic"
+    },
+    {
+      "item_id": "tide:spore_stalker",
+      "count": 1,
+      "buy": 19.20,
+      "sell": 16.00,
+      "category": "aquatic"
+    },
+    {
+      "item_id": "tide:luminescent_jellyfish",
+      "count": 1,
+      "buy": 16.80,
+      "sell": 14.00,
+      "category": "aquatic"
+    },
+    {
+      "item_id": "tide:crystalline_carp",
+      "count": 1,
+      "buy": 16.80,
+      "sell": 14.00,
+      "category": "aquatic"
+    },
+    {
+      "item_id": "tide:gilded_minnow",
+      "count": 1,
+      "buy": 18.00,
+      "sell": 15.00,
+      "category": "aquatic"
+    },
+    {
+      "item_id": "tide:bedrock_tetra",
+      "count": 1,
+      "buy": 18.00,
+      "sell": 15.00,
+      "category": "aquatic"
+    },
+    {
+      "item_id": "tide:nephrosilu",
+      "count": 1,
+      "buy": 16.80,
+      "sell": 14.00,
+      "category": "aquatic"
+    },
+    {
+      "item_id": "tide:vengeance",
+      "count": 1,
+      "buy": 16.80,
+      "sell": 14.00,
+      "category": "aquatic"
+    },
+    {
+      "item_id": "tide:pentapus",
+      "count": 1,
+      "buy": 18.00,
+      "sell": 15.00,
+      "category": "aquatic"
+    },
+    {
+      "item_id": "tide:inferno_guppy",
+      "count": 1,
+      "buy": 16.80,
+      "sell": 14.00,
+      "category": "aquatic"
+    },
+    {
+      "item_id": "tide:warped_guppy",
+      "count": 1,
+      "buy": 16.80,
+      "sell": 14.00,
+      "category": "aquatic"
+    },
+    {
+      "item_id": "tide:crimson_fangjaw",
+      "count": 1,
+      "buy": 18.00,
+      "sell": 15.00,
+      "category": "aquatic"
+    },
+    {
+      "item_id": "tide:soulscale",
+      "count": 1,
+      "buy": 18.00,
+      "sell": 15.00,
+      "category": "aquatic"
+    },
+    {
+      "item_id": "tide:witherfin",
+      "count": 1,
+      "buy": 19.20,
+      "sell": 16.00,
+      "category": "aquatic"
+    },
+    {
+      "item_id": "tide:red_40",
+      "count": 1,
+      "buy": 18.00,
+      "sell": 15.00,
+      "category": "aquatic"
+    },
+    {
+      "item_id": "tide:dutchman_sock",
+      "count": 1,
+      "buy": 18.00,
+      "sell": 15.00,
+      "category": "aquatic"
+    },
+    {
+      "item_id": "tide:elytrout",
+      "count": 1,
+      "buy": 18.00,
+      "sell": 15.00,
+      "category": "aquatic"
+    },
+    {
+      "item_id": "tide:mooneye",
+      "count": 1,
+      "buy": 24.00,
+      "sell": 20.00,
+      "category": "aquatic"
+    },
+    {
+      "item_id": "tide:bull_shark",
+      "count": 1,
+      "buy": 26.40,
+      "sell": 22.00,
+      "category": "aquatic"
+    },
+    {
+      "item_id": "tide:aquathorn",
+      "count": 1,
+      "buy": 26.40,
+      "sell": 22.00,
+      "category": "aquatic"
+    },
+    {
+      "item_id": "tide:neptune_koi",
+      "count": 1,
+      "buy": 27.60,
+      "sell": 23.00,
+      "category": "aquatic"
+    },
+    {
+      "item_id": "tide:pluto_snail",
+      "count": 1,
+      "buy": 27.60,
+      "sell": 23.00,
+      "category": "aquatic"
+    },
+    {
+      "item_id": "tide:sun_emblem",
+      "count": 1,
+      "buy": 28.80,
+      "sell": 24.00,
+      "category": "aquatic"
+    },
+    {
+      "item_id": "tide:saturn_cuttlefish",
+      "count": 1,
+      "buy": 28.80,
+      "sell": 24.00,
+      "category": "aquatic"
+    },
+    {
+      "item_id": "tide:marstilus",
+      "count": 1,
+      "buy": 30.00,
+      "sell": 25.00,
+      "category": "aquatic"
+    },
+    {
+      "item_id": "tide:uranias_pisces",
+      "count": 1,
+      "buy": 30.00,
+      "sell": 25.00,
+      "category": "aquatic"
+    },
+    {
+      "item_id": "tide:great_white_shark",
+      "count": 1,
+      "buy": 31.20,
+      "sell": 26.00,
+      "category": "aquatic"
+    },
+    {
+      "item_id": "tide:chasm_eel",
+      "count": 1,
+      "buy": 26.40,
+      "sell": 22.00,
+      "category": "aquatic"
+    },
+    {
+      "item_id": "tide:echo_snapper",
+      "count": 1,
+      "buy": 27.60,
+      "sell": 23.00,
+      "category": "aquatic"
+    },
+    {
+      "item_id": "tide:windbass",
+      "count": 1,
+      "buy": 28.80,
+      "sell": 24.00,
+      "category": "aquatic"
+    },
+    {
+      "item_id": "tide:darkness_eater",
+      "count": 1,
+      "buy": 30.00,
+      "sell": 25.00,
+      "category": "aquatic"
+    },
+    {
+      "item_id": "tide:shadow_shark",
+      "count": 1,
+      "buy": 31.20,
+      "sell": 26.00,
+      "category": "aquatic"
+    },
+    {
+      "item_id": "tide:snatcher_squid",
+      "count": 1,
+      "buy": 31.20,
+      "sell": 26.00,
+      "category": "aquatic"
+    },
+    {
+      "item_id": "tide:blazing_swordfish",
+      "count": 1,
+      "buy": 31.20,
+      "sell": 26.00,
+      "category": "aquatic"
+    },
+    {
+      "item_id": "tide:mantyvern",
+      "count": 1,
+      "buy": 31.20,
+      "sell": 26.00,
+      "category": "aquatic"
+    },
+    {
+      "item_id": "tide:voidseeker",
+      "count": 1,
+      "buy": 28.80,
+      "sell": 24.00,
+      "category": "aquatic"
+    },
+    {
+      "item_id": "tide:shooting_starfish",
+      "count": 1,
+      "buy": 40.80,
+      "sell": 34.00,
+      "category": "aquatic"
+    },
+    {
+      "item_id": "tide:coelacanth",
+      "count": 1,
+      "buy": 43.20,
+      "sell": 36.00,
+      "category": "aquatic"
+    },
+    {
+      "item_id": "tide:devils_hole_pupfish",
+      "count": 1,
+      "buy": 45.60,
+      "sell": 38.00,
+      "category": "aquatic"
+    },
+    {
+      "item_id": "tide:alpha_fish",
+      "count": 1,
+      "buy": 48.00,
+      "sell": 40.00,
+      "category": "aquatic"
+    },
+    {
+      "item_id": "tide:dragon_fish",
+      "count": 1,
+      "buy": 48.00,
+      "sell": 40.00,
+      "category": "aquatic"
     }
   ]
 }

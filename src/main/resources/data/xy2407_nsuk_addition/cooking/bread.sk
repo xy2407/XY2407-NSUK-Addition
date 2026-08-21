@@ -1,0 +1,8 @@
+name: 面包店
+size: 14x8x12
+amount: 120
+author: xy2407
+description: 提供各类烘焙面包的面包店，NPC可在此购买面包补充饱食度。
+tags: price_middle,material_middle,stage_middle
+cooking: bread.json
+structure: bread.nbt

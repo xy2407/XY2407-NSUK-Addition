@@ -2,7 +2,7 @@ package com.xy2407.nsukaddition.common.cooking;
 
 import com.github.ysbbbbbb.kaleidoscopecookery.blockentity.decoration.TableBlockEntity;
 import com.xy2407.nsukaddition.common.city.CityLevel;
-import com.xy2407.nsukaddition.common.city.TourismConstants;
+import com.xy2407.nsukaddition.common.city.TouristNpcHelper;
 import com.xy2407.nsukaddition.common.cooking.RestaurantBoxData.OrderStatus;
 import com.xy2407.nsukaddition.common.entity.SitEntity;
 import com.xy2407.nsukaddition.common.network.cooking.DiningOrderSyncPacket;
@@ -49,7 +49,6 @@ public final class RestaurantDiningService {
 
     private static final Map<UUID, DiningRuntime> DINING = new ConcurrentHashMap<>();
     private static final Map<UUID, Long> RIDE_COOLDOWNS = new ConcurrentHashMap<>();
-    /** 记录 NPC 进入餐厅前的原始状态标签，就餐结束后恢复。 */
     private static final Map<UUID, String> PREVIOUS_STATUS = new ConcurrentHashMap<>();
 
     private RestaurantDiningService() {}
@@ -65,7 +64,6 @@ public final class RestaurantDiningService {
 
     public static boolean isDining(UUID citizenId) { return DINING.containsKey(citizenId); }
 
-    /** 查找占用指定座位的NPC ID，供兜底恢复使用。 */
     public static UUID findOccupantAt(BlockPos seatPos, BlockPos boxPos) {
         for (DiningRuntime rt : DINING.values()) {
             if (rt.seatPos.equals(seatPos) && rt.boxPos.equals(boxPos)) {
@@ -75,12 +73,30 @@ public final class RestaurantDiningService {
         return null;
     }
 
+    public static void reorderForMenu(ServerLevel level, BlockPos boxPos) {
+        if (level == null || boxPos == null) return;
+        RestaurantBoxManager manager = RestaurantBoxManager.get(level);
+        RestaurantBoxData data = manager.get(boxPos);
+        if (data == null) return;
+        for (DiningRuntime rt : DINING.values()) {
+            if (!rt.boxPos.equals(boxPos)) continue;
+            if (rt.state != DiningState.WAITING) continue;
+            data.removeOrder(rt.citizenId);
+            java.util.List<String> pool = data.selectedCookItems().isEmpty() ? rt.cook : new java.util.ArrayList<>(data.selectedCookItems());
+            String outputItemId = pool.isEmpty() ? "" : pool.get(level.random.nextInt(pool.size()));
+            if (!outputItemId.isEmpty()) {
+                data.addOrder(rt.citizenId, rt.seatPos, outputItemId);
+                syncOrderToClient(level, rt.citizenId, outputItemId, true, rt.isTourist);
+            }
+        }
+        manager.persist(data);
+    }
+
     public static boolean isOnRideCooldown(UUID citizenId, long gameTime) {
         Long cooldown = RIDE_COOLDOWNS.get(citizenId);
         return cooldown != null && cooldown > gameTime;
     }
 
-    /** 找空座位并开始就餐。返回 true 表示成功分配。 */
     public static boolean startDining(ServerLevel level, CitizenData citizen, PlacedBuildingRecord building,
                                        RestaurantDefinition definition, RestaurantBoxData data) {
         if (citizen == null || building == null || definition == null || data == null) return false;
@@ -93,10 +109,11 @@ public final class RestaurantDiningService {
 
         data.occupySeat(freeSeat);
         RestaurantBoxSqliteStorage.occupySeat(level, data.boxPos().asLong(), freeSeat.asLong());
-        DiningRuntime rt = new DiningRuntime(citizen.uuid(), data.boxPos(), freeSeat, definition.cook(),
-                building.cityId(), definition.cookPrices());
         CitizenEntity entity = CitizenTeleportService.findCitizenEntity(level, citizen.uuid());
         if (entity == null) return false;
+        boolean isTourist = TouristNpcHelper.isTouristEntity(entity);
+        DiningRuntime rt = new DiningRuntime(citizen.uuid(), data.boxPos(), freeSeat, definition.cook(),
+                building.cityId(), definition.cookPrices(), definition.isMaidWaiter(), isTourist);
         String current = citizen.statusLabel();
         PREVIOUS_STATUS.put(citizen.uuid(),
                 current != null && current.startsWith("gui.xy2407_nsuk_addition.cooking.dining.") ? "" : current);
@@ -116,14 +133,13 @@ public final class RestaurantDiningService {
         }
         DiningRuntime rt = DINING.remove(citizenId);
         if (rt != null) {
-            syncOrderToClient(level, citizenId, "", false);
+            syncOrderToClient(level, citizenId, "", false, rt.isTourist);
             freeSeatFor(level, rt.boxPos, rt.seatPos);
             CitizenData citizen = findCitizen(level, citizenId);
             if (citizen != null) { restoreStatus(level, citizen); CitizenNavigationService.stop(level, citizenId); }
         }
     }
 
-    /** 服务器关闭时清理所有就餐 NPC：释放座位、重置状态、逐出坐骑。 */
     public static void cleanupAllDiners(ServerLevel level) {
         for (DiningRuntime rt : new ArrayList<>(DINING.values())) {
             CitizenEntity entity = CitizenTeleportService.findCitizenEntity(level, rt.citizenId);
@@ -132,7 +148,7 @@ public final class RestaurantDiningService {
                 entity.setNoAi(false);
                 entity.getNavigation().stop();
             }
-            syncOrderToClient(level, rt.citizenId, "", false);
+            syncOrderToClient(level, rt.citizenId, "", false, rt.isTourist);
             freeSeatFor(level, rt.boxPos, rt.seatPos);
             CitizenData citizen = findCitizen(level, rt.citizenId);
             if (citizen != null) restoreStatus(level, citizen);
@@ -142,14 +158,41 @@ public final class RestaurantDiningService {
         RIDE_COOLDOWNS.clear();
     }
 
-    /** 计费：游客/商队付款入账城市资金，本地NPC免费。按城市等级溢价。 */
+    public static void cleanupForBox(ServerLevel level, BlockPos boxPos) {
+        if (level == null || boxPos == null) return;
+        boolean changed = false;
+        for (DiningRuntime rt : new ArrayList<>(DINING.values())) {
+            if (!rt.boxPos.equals(boxPos)) continue;
+            CitizenEntity entity = CitizenTeleportService.findCitizenEntity(level, rt.citizenId);
+            if (entity != null) {
+                entity.stopRiding();
+                entity.setNoAi(false);
+                entity.getNavigation().stop();
+            }
+            syncOrderToClient(level, rt.citizenId, "", false, rt.isTourist);
+            freeSeatFor(level, rt.boxPos, rt.seatPos);
+            CitizenData citizen = findCitizen(level, rt.citizenId);
+            if (citizen != null) restoreStatus(level, citizen);
+            RestaurantBoxManager mgr = RestaurantBoxManager.get(level);
+            RestaurantBoxData data = mgr.get(boxPos);
+            if (data != null) {
+                data.orders().removeIf(o -> o.customerId().equals(rt.citizenId));
+                mgr.persist(data);
+            }
+            DINING.remove(rt.citizenId);
+            PREVIOUS_STATUS.remove(rt.citizenId);
+            changed = true;
+        }
+        if (changed) {
+            RIDE_COOLDOWNS.clear();
+        }
+    }
+
     private static void chargeForMeal(ServerLevel level, DiningRuntime rt, CitizenData citizen, String dishItemId) {
         if (rt.restaurantCityId == null || dishItemId == null || dishItemId.isBlank()) return;
-        String status = citizen.statusLabel();
-        boolean isTourist = citizen.cityId() == null
-                || TourismConstants.TOURIST_STATUS_LABEL.equals(status);
-        boolean isCaravan = (status != null && status.startsWith(TourismConstants.CARAVAN_LEADER_STATUS))
-                || TourismConstants.CARAVAN_FOLLOWER_STATUS.equals(status);
+        CitizenEntity diningEntity = CitizenTeleportService.findCitizenEntity(level, citizen.uuid());
+        boolean isTourist = diningEntity != null && TouristNpcHelper.isTouristEntity(diningEntity);
+        boolean isCaravan = diningEntity != null && TouristNpcHelper.isCaravanEntity(diningEntity);
         boolean isLocal = !isTourist && !isCaravan && rt.restaurantCityId.equals(citizen.cityId());
         if (isLocal) return;
 
@@ -157,10 +200,12 @@ public final class RestaurantDiningService {
         if (basePrice <= 0) return;
         double multiplier = getCityLevelMultiplier(level, rt.restaurantCityId);
         double finalPrice = basePrice * multiplier;
+        if (rt.maidService) {
+            finalPrice += 3.0;
+        }
         EconomyService.depositCityFunds(level, rt.restaurantCityId, null, finalPrice, "餐厅收入");
     }
 
-    /** 获取城市等级对应的价格倍率：聚落/村庄1.0，城镇1.5，城邦2.0，都市2.5。 */
     private static double getCityLevelMultiplier(ServerLevel level, UUID cityId) {
         if (cityId == null) return 1.0;
         var opt = CityService.findCity(level, cityId);
@@ -174,7 +219,6 @@ public final class RestaurantDiningService {
         };
     }
 
-    /** NPC 走出餐厅后恢复状态、返回岗位。返回 true 表示就餐完成可移除。 */
     private static boolean finishDining(ServerLevel level, DiningRuntime rt, CitizenEntity entity, long gameTime) {
         if (entity.isPassenger()) {
             entity.stopRiding();
@@ -189,7 +233,6 @@ public final class RestaurantDiningService {
         return true;
     }
 
-    /** 计算走出建筑界限的目标点：建筑中心向外偏移 15 格。 */
     private static Vec3 computeLeaveTarget(ServerLevel level, DiningRuntime rt, CitizenEntity entity) {
         PlacedBuildingRecord building = RestaurantControlBoxService.resolveBuilding(level, rt.boxPos);
         if (building != null && building.minPos() != null && building.maxPos() != null) {
@@ -207,6 +250,13 @@ public final class RestaurantDiningService {
         CitizenEntity entity = CitizenTeleportService.findCitizenEntity(level, rt.citizenId);
         if (entity == null) {
             freeSeatFor(level, rt.boxPos, rt.seatPos);
+            syncOrderToClient(level, rt.citizenId, "", false, rt.isTourist);
+            RestaurantBoxManager mgr0 = RestaurantBoxManager.get(level);
+            RestaurantBoxData d0 = mgr0.get(rt.boxPos);
+            if (d0 != null) {
+                d0.orders().removeIf(o -> o.customerId().equals(rt.citizenId));
+                mgr0.persist(d0);
+            }
             CitizenData citizen = findCitizen(level, rt.citizenId);
             if (citizen != null) restoreStatus(level, citizen);
             return true;
@@ -214,6 +264,16 @@ public final class RestaurantDiningService {
 
         switch (rt.state) {
             case GOING -> {
+                if (!rt.isTourist && entity.getHungerValue() >= CitizenEntity.DEFAULT_HUNGER) {
+                    freeSeatFor(level, rt.boxPos, rt.seatPos);
+                    CitizenData citizen = findCitizen(level, rt.citizenId);
+                    if (citizen != null) {
+                        restoreStatus(level, citizen);
+                    }
+                    CitizenNavigationService.stop(level, rt.citizenId);
+                    syncOrderToClient(level, rt.citizenId, "", false, rt.isTourist);
+                    return true;
+                }
                 if (gameTime - rt.lastMoveTick < MOVE_RETRY) return false;
                 rt.lastMoveTick = gameTime;
                 if (entity.position().distanceToSqr(Vec3.atBottomCenterOf(rt.seatPos)) <= 4.0D) {
@@ -228,7 +288,7 @@ public final class RestaurantDiningService {
                         String outputItemId = pool.isEmpty() ? "" : pool.get(level.random.nextInt(pool.size()));
                         data.addOrder(rt.citizenId, rt.seatPos, outputItemId);
                         manager.persist(data);
-                        syncOrderToClient(level, rt.citizenId, outputItemId, true);
+                        syncOrderToClient(level, rt.citizenId, outputItemId, true, rt.isTourist);
                     }
                 } else {
                     CitizenNavigationService.requestMove(level, rt.citizenId, Vec3.atBottomCenterOf(rt.seatPos), MovementIntent.SELF_FEEDING);
@@ -239,17 +299,23 @@ public final class RestaurantDiningService {
                     freeSeatFor(level, rt.boxPos, rt.seatPos);
                     CitizenData citizen = findCitizen(level, rt.citizenId);
                     if (citizen != null) { restoreStatus(level, citizen); CitizenNavigationService.stop(level, rt.citizenId); }
-                    syncOrderToClient(level, rt.citizenId, "", false);
+                    syncOrderToClient(level, rt.citizenId, "", false, rt.isTourist);
+                    RestaurantBoxManager mgrExit = RestaurantBoxManager.get(level);
+                    RestaurantBoxData dExit = mgrExit.get(rt.boxPos);
+                    if (dExit != null) {
+                        dExit.orders().removeIf(o -> o.customerId().equals(rt.citizenId));
+                        mgrExit.persist(dExit);
+                    }
                     return true;
                 }
-                if (entity.getHungerValue() >= CitizenEntity.DEFAULT_HUNGER) {
+                if (!rt.isTourist && entity.getHungerValue() >= CitizenEntity.DEFAULT_HUNGER) {
                     RestaurantBoxManager mgr = RestaurantBoxManager.get(level);
                     RestaurantBoxData d = mgr.get(rt.boxPos);
                     if (d != null) {
                         d.orders().removeIf(o -> o.customerId().equals(rt.citizenId));
                         mgr.persist(d);
                     }
-                    syncOrderToClient(level, rt.citizenId, "", false);
+                    syncOrderToClient(level, rt.citizenId, "", false, rt.isTourist);
                     rt.state = DiningState.LEAVING;
                     rt.leavingStartTick = gameTime;
                     return false;
@@ -295,7 +361,7 @@ public final class RestaurantDiningService {
                     CitizenNavigationService.stop(level, rt.citizenId);
                     entity.getNavigation().stop();
                     RIDE_COOLDOWNS.put(rt.citizenId, gameTime + DINE_COOLDOWN_TICKS);
-                    syncOrderToClient(level, rt.citizenId, "", false);
+                    syncOrderToClient(level, rt.citizenId, "", false, rt.isTourist);
                     freeSeatFor(level, rt.boxPos, rt.seatPos);
                     Vec3 awayTarget = computeLeaveTarget(level, rt, entity);
                     CitizenNavigationService.requestMove(level, rt.citizenId, awayTarget, MovementIntent.WALK);
@@ -310,7 +376,6 @@ public final class RestaurantDiningService {
         return false;
     }
 
-    /** 检查相邻桌子是否有匹配所点菜品的食物，有则取走并返回。不限制订单状态，按物品注册id匹配。 */
     private static ItemStack checkAdjacentDesk(ServerLevel level, DiningRuntime rt) {
         RestaurantBoxManager manager = RestaurantBoxManager.get(level);
         RestaurantBoxData data = manager.get(rt.boxPos);
@@ -356,7 +421,6 @@ public final class RestaurantDiningService {
         return ItemStack.EMPTY;
     }
 
-    /** 释放指定餐厅的座位（内存 + SQLite）。 */
     private static void freeSeatFor(ServerLevel level, BlockPos boxPos, BlockPos seatPos) {
         RestaurantBoxData data = RestaurantBoxManager.get(level).get(boxPos);
         if (data != null) data.freeSeat(seatPos);
@@ -372,7 +436,6 @@ public final class RestaurantDiningService {
         if (entity != null) CitizenManager.get(level).syncEntity(entity);
     }
 
-    /** 恢复 NPC 进入餐厅前的原始状态标签。 */
     private static void restoreStatus(ServerLevel level, CitizenData citizen) {
         if (citizen == null) return;
         String prev = PREVIOUS_STATUS.remove(citizen.uuid());
@@ -383,7 +446,6 @@ public final class RestaurantDiningService {
         if (entity != null) CitizenManager.get(level).syncEntity(entity);
     }
 
-    /** NPC 坐下：生成不可见坐骑实体，NPC 骑上后触发坐船动画。 */
     private static void sitDown(CitizenEntity entity, BlockPos seatPos) {
         if (entity == null || entity.level().isClientSide) return;
         SitEntity sit = new SitEntity(entity.level(), seatPos);
@@ -405,28 +467,30 @@ public final class RestaurantDiningService {
         final List<String> cook;
         final UUID restaurantCityId;
         final Map<String, Double> cookPrices;
+        final boolean maidService;
+        final boolean isTourist;
         DiningState state = DiningState.GOING;
         long lastMoveTick, lastCheckTick;
         long leavingStartTick;
         boolean leavingInit;
         DiningRuntime(UUID citizenId, BlockPos boxPos, BlockPos seatPos, List<String> cook,
-                      UUID restaurantCityId, Map<String, Double> cookPrices) {
+                      UUID restaurantCityId, Map<String, Double> cookPrices, boolean maidService, boolean isTourist) {
             this.citizenId = citizenId; this.boxPos = boxPos.immutable(); this.seatPos = seatPos.immutable();
             this.cook = cook != null ? List.copyOf(cook) : List.of();
             this.restaurantCityId = restaurantCityId;
             this.cookPrices = cookPrices != null ? Map.copyOf(cookPrices) : Map.of();
+            this.maidService = maidService;
+            this.isTourist = isTourist;
         }
     }
 
-    /** 向附近玩家同步就餐订单（气泡显示用）。 */
-    private static void syncOrderToClient(ServerLevel level, UUID citizenId, String itemId, boolean start) {
-        var packet = new DiningOrderSyncPacket(citizenId, itemId, start);
+    private static void syncOrderToClient(ServerLevel level, UUID citizenId, String itemId, boolean start, boolean isTourist) {
+        var packet = new DiningOrderSyncPacket(citizenId, itemId, start, isTourist);
         for (ServerPlayer player : level.players()) {
             PacketDistributor.sendToPlayer(player, packet);
         }
     }
 
-    /** 订单 recipeId 现在直接是物品 id，直接返回。 */
     private static String resolveResultItem(String recipeId) {
         return recipeId != null ? recipeId : "";
     }

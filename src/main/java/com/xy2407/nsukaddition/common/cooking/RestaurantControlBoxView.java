@@ -34,7 +34,12 @@ public record RestaurantControlBoxView(BlockPos boxPos,
                                        List<PointMarker> pointMarkers,
                                        List<RecipeEntry> recipes,
                                        Set<String> selectedCookItems,
-                                       boolean autoRestock) {
+                                       boolean autoRestock,
+                                       String waiterType,
+                                       List<MaidWaiter> maidWaiters) {
+
+    public record MaidWaiter(UUID uuid, String name) {
+    }
 
     public record RecipeEntry(String id, String name, List<ItemEntry> inputs, List<ItemEntry> outputs) {
     }

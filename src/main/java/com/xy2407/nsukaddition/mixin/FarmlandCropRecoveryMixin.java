@@ -1,6 +1,5 @@
 package com.xy2407.nsukaddition.mixin;
 
-import com.xy2407.nsukaddition.NsukAddition;
 import com.xy2407.nsukaddition.common.farmland.ModFarmCropRegistry;
 import common.cn.kafei.simukraft.farmland.FarmCrop;
 import common.cn.kafei.simukraft.farmland.FarmlandBoxData;
@@ -35,8 +34,6 @@ public class FarmlandCropRecoveryMixin {
             if (crop != null) {
                 data.setCrop(crop);
                 manager.persist(data);
-                NsukAddition.LOGGER.info("[农田恢复] 恢复作物: boxPos={}, cropId={}",
-                        data.boxPos().toShortString(), cropId);
             }
         }
     }

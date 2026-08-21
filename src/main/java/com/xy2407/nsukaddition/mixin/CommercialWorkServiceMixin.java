@@ -20,27 +20,16 @@ import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Coerce;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
-import java.util.UUID;
 
-/** 修复商业员工自喂食死锁：员工饥饿时不阻塞商店经营，改为直接从附近容器取食。 */
+/** 商业员工自喂食时直接从附近容器取食，避免离开商店去买饭。新版本已不再用 isSelfFeeding 阻塞商店，此 Mixin 仅保留就近取食优化。 */
 @Mixin(CommercialWorkService.class)
 public abstract class CommercialWorkServiceMixin {
     private static final int FEED_RADIUS_XZ = 5;
     private static final int FEED_RADIUS_Y = 2;
-
-    @Redirect(
-            method = "tickBox",
-            at = @At(value = "INVOKE", target = "Lcommon/cn/kafei/simukraft/citizen/CitizenSelfFeedingService;isSelfFeeding(Lnet/minecraft/server/level/ServerLevel;Ljava/util/UUID;)Z"),
-            remap = false
-    )
-    private static boolean nsuk$bypassSelfFeedingBlock(ServerLevel level, UUID citizenId) {
-        return false;
-    }
 
     @Inject(
             method = "tickBox",

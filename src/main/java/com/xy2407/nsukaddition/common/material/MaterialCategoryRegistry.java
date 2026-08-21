@@ -14,6 +14,14 @@ public final class MaterialCategoryRegistry {
 
     public static final String OTHER_KEY = "other";
 
+    public static final String UPGRADE_LOGS_KEY = "upgrade:logs";
+
+    public static final String UPGRADE_STONE_KEY = "upgrade:stone";
+
+    public static final Set<String> BASIC_MATERIAL_KEYS = Set.of(
+            "iron", "gold", "diamond", "emerald", "copper",
+            "netherite", "lapis", "coal", "redstone");
+
     private static final Map<String, MaterialCategory> CATEGORIES = new LinkedHashMap<>();
     private static final Map<String, String> ITEM_TO_CATEGORY = new HashMap<>();
 
@@ -30,6 +38,15 @@ public final class MaterialCategoryRegistry {
         registerGlass();
         registerLeaves();
         registerLighting();
+        registerIron();
+        registerGold();
+        registerDiamond();
+        registerEmerald();
+        registerCopper();
+        registerNetherite();
+        registerLapis();
+        registerCoal();
+        registerRedstone();
     }
 
     private MaterialCategoryRegistry() {
@@ -398,5 +415,41 @@ public final class MaterialCategoryRegistry {
                 "minecraft:ochre_froglight", "minecraft:verdant_froglight", "minecraft:pearlescent_froglight",
                 "minecraft:campfire", "minecraft:soul_campfire",
                 "beachparty:palm_torch_item", "beachparty:tall_palm_torch");
+    }
+
+    private static void registerIron() {
+        register("iron", "铁块", "minecraft:iron_block");
+    }
+
+    private static void registerGold() {
+        register("gold", "金块", "minecraft:gold_block");
+    }
+
+    private static void registerDiamond() {
+        register("diamond", "钻石块", "minecraft:diamond_block");
+    }
+
+    private static void registerEmerald() {
+        register("emerald", "绿宝石块", "minecraft:emerald_block");
+    }
+
+    private static void registerCopper() {
+        register("copper", "铜块", "minecraft:copper_block");
+    }
+
+    private static void registerNetherite() {
+        register("netherite", "下界合金块", "minecraft:netherite_block");
+    }
+
+    private static void registerLapis() {
+        register("lapis", "青金石块", "minecraft:lapis_block");
+    }
+
+    private static void registerCoal() {
+        register("coal", "煤炭块", "minecraft:coal_block");
+    }
+
+    private static void registerRedstone() {
+        register("redstone", "红石块", "minecraft:redstone_block");
     }
 }

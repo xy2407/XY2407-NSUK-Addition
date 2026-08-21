@@ -1,5 +1,6 @@
 {
   "values": [
-    {"id": "kaleidoscope_tavern:ice_grape_crop", "required": false}
+    {"id": "kaleidoscope_tavern:ice_grape_crop", "required": false},
+    {"id": "kawaiidishes:coffee_bush", "required": false}
   ]
 }

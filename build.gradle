@@ -40,7 +40,7 @@ repositories {
 
 dependencies {
     // 编译+运行时依赖：New:Sim-U-Kraft 主模组（数据采集需要运行时调用其 API）
-    implementation files('libs/New-Sim-U-Kraft-2.0.1-fix-neoforge-1.21.1.jar')
+    implementation files('libs/New-Sim-U-Kraft-2.2.0-neoforge-1.21.1.jar')
     implementation files('libs/ldlib2-neoforge-1.21.1-2.2.26-all.jar')
 
     // lowdraglib2 依赖的布局引擎（AlignContent / FlexDirection 等）
@@ -64,7 +64,13 @@ dependencies {
     compileOnly files('libs/tide-neoforge-1.21.1-2.1.jar')
     compileOnly files('libs/Aquaculture-1.21.1-2.7.21.jar')
 
+    compileOnly files('libs/touhoulittlemaid-1.5.3-neoforge+mc1.21.1.jar')
+
     compileOnly files('libs/EclipticSeasons-1.21.1-neoforge-0.13.9.6.jar')
+    compileOnly files('libs/bakeries-1.21.1-NeoForge-1.0.1.jar')
+    compileOnly files('libs/kawaiidishes-1.13.jar')
+    compileOnly files('libs/letsdo-brewery-neoforge-2.1.9.jar')
+    compileOnly files('libs/Jade-1.21.1-NeoForge-15.10.5.jar')
 }
 
 base {

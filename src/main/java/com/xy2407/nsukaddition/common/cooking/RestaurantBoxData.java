@@ -25,10 +25,9 @@ public final class RestaurantBoxData {
     private String workState = "";
     private long updatedAt;
     private final List<OrderEntry> orders = new ArrayList<>();
-    /** 被占用的座位坐标（运行时内存状态，不持久化）。 */
     private final Set<BlockPos> occupiedSeats = new HashSet<>();
-    /** 玩家选择的菜品物品 id 列表（空表示全部可选）。 */
     private Set<String> selectedCookItems = new HashSet<>();
+    private final List<MaidEntry> maidWaiters = new ArrayList<>();
 
     public RestaurantBoxData(BlockPos boxPos) {
         this.boxPos = boxPos.immutable();
@@ -67,21 +66,35 @@ public final class RestaurantBoxData {
         return null;
     }
 
-    /** 占用一个座位。 */
     public void occupySeat(BlockPos worldSeat) { occupiedSeats.add(worldSeat.immutable()); }
 
-    /** 释放一个座位。 */
     public void freeSeat(BlockPos worldSeat) { occupiedSeats.remove(worldSeat.immutable()); }
 
-    /** 该座位是否空闲。 */
     public boolean isSeatFree(BlockPos worldSeat) { return !occupiedSeats.contains(worldSeat.immutable()); }
 
-    /** 当前被占用的座位数。 */
     public int occupiedSeatCount() { return occupiedSeats.size(); }
 
-    /** 是否有空座位。 */
     public boolean hasFreeSeats() {
         return true;
+    }
+
+    public List<MaidEntry> maidWaiters() {
+        return List.copyOf(maidWaiters);
+    }
+
+    public boolean hasMaid(UUID maidId) {
+        if (maidId == null) return false;
+        return maidWaiters.stream().anyMatch(m -> m.uuid().equals(maidId));
+    }
+
+    public void addMaid(UUID maidId, String name) {
+        if (maidId == null || hasMaid(maidId)) return;
+        maidWaiters.add(new MaidEntry(maidId, name != null ? name : ""));
+    }
+
+    public boolean removeMaid(UUID maidId) {
+        if (maidId == null) return false;
+        return maidWaiters.removeIf(m -> m.uuid().equals(maidId));
     }
 
     public CompoundTag toTag() {
@@ -107,6 +120,14 @@ public final class RestaurantBoxData {
         ListTag cookList = new ListTag();
         for (String item : selectedCookItems) { cookList.add(net.minecraft.nbt.StringTag.valueOf(item)); }
         tag.put("SelectedCookItems", cookList);
+        ListTag maidList = new ListTag();
+        for (MaidEntry m : maidWaiters) {
+            CompoundTag mt = new CompoundTag();
+            mt.putUUID("MaidId", m.uuid());
+            mt.putString("MaidName", m.name());
+            maidList.add(mt);
+        }
+        tag.put("MaidWaiters", maidList);
         return tag;
     }
 
@@ -132,7 +153,20 @@ public final class RestaurantBoxData {
         }
         ListTag cookList = tag.getList("SelectedCookItems", net.minecraft.nbt.Tag.TAG_STRING);
         for (int i = 0; i < cookList.size(); i++) { data.selectedCookItems.add(cookList.getString(i)); }
+        ListTag maidList = tag.getList("MaidWaiters", CompoundTag.TAG_COMPOUND);
+        for (int i = 0; i < maidList.size(); i++) {
+            CompoundTag mt = maidList.getCompound(i);
+            UUID maidId = mt.getUUID("MaidId");
+            if (maidId != null) data.maidWaiters.add(new MaidEntry(maidId, mt.getString("MaidName")));
+        }
         return data;
+    }
+
+    public record MaidEntry(UUID uuid, String name) {
+        public MaidEntry {
+            uuid = uuid != null ? uuid : UUID.randomUUID();
+            name = name != null ? name : "";
+        }
     }
 
     public record OrderEntry(UUID customerId, BlockPos seatPos, String recipeId, OrderStatus status) {

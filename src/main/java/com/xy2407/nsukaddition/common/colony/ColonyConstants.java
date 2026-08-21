@@ -43,9 +43,9 @@ public final class ColonyConstants {
 
     public static int totalChunkPool(int cityLevel) {
         return switch (cityLevel) {
-            case 3 -> 16;
-            case 4 -> 50;
-            case 5 -> 147;
+            case 3 -> 32;
+            case 4 -> 100;
+            case 5 -> 294;
             default -> 0;
         };
     }

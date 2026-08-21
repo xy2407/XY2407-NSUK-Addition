@@ -1,0 +1,9 @@
+name:相机店
+size:14 x 7 x 12
+amount:700
+author:xy2407
+description:出售相机、胶卷、相纸与相框等摄影器材的商店，仅直接出售、无需材料。
+tags:price_medium,material_low,stage_middle
+job_type:commercial
+structure:camera.nbt
+commercial:camera.json

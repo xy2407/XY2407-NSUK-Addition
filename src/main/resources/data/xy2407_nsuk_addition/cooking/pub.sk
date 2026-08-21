@@ -1,0 +1,8 @@
+name: 酒馆
+size: 17x24x23
+amount: 150
+author: xy2407
+description: 提供各类啤酒与威士忌的小酒馆，NPC可在此小酌补充饱食度。
+tags: price_middle,material_middle,stage_middle
+cooking: pub.json
+structure: pub.nbt

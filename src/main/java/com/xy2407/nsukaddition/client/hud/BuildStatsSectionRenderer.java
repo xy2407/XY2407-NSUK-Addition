@@ -43,8 +43,10 @@ final class BuildStatsSectionRenderer {
         int rowCount = Math.max(leftRowCount, rightCol1Count);
         int sectionH = titleH + lineH * rowCount + SidebarLayout.DIVIDER_BOTTOM_GAP;
 
-        textRenderer.drawText(mc.font, CACHE.leftTitle, leftX, startY, SidebarHudLayer.TEXT_PRIMARY, false);
-        textRenderer.drawText(mc.font, CACHE.rightTitle, rightContentX, startY, SidebarHudLayer.TEXT_PRIMARY, false);
+        SidebarHudLayer.drawTitleWithBackground(textRenderer, rectRenderer, mc.font,
+                CACHE.leftTitle, leftX, startY, SidebarHudLayer.TEXT_PRIMARY);
+        SidebarHudLayer.drawTitleWithBackground(textRenderer, rectRenderer, mc.font,
+                CACHE.rightTitle, rightContentX, startY, SidebarHudLayer.TEXT_PRIMARY);
 
         int rowY = startY + titleH;
         for (int i = 0; i < rowCount; i++) {
@@ -112,6 +114,9 @@ final class BuildStatsSectionRenderer {
 
             rightRows.clear();
             for (MaterialCategory category : MaterialCategoryRegistry.getAll()) {
+                if (MaterialCategoryRegistry.BASIC_MATERIAL_KEYS.contains(category.key())) {
+                    continue;
+                }
                 rightRows.add(new RowCache(textRenderer, mc,
                         "hud.xy2407_nsuk_addition.material." + category.key(),
                         current.reserveCount(category.key())));

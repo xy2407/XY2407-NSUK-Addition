@@ -1,0 +1,9 @@
+name:机械动力商店
+size:12 x 6 x 9
+amount:1200
+author:xy2407
+description:出售机械动力(Create)各类机械、机器、工具与材料的商店，仅直接出售、无需材料。
+tags:price_high,material_low,stage_late
+job_type:commercial
+structure:create_shop.nbt
+commercial:create_shop.json

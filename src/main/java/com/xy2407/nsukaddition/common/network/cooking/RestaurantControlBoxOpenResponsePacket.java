@@ -44,7 +44,9 @@ public record RestaurantControlBoxOpenResponsePacket(BlockPos boxPos,
                                                      List<PointMarkerEntry> pointMarkers,
                                                      List<RecipeEntry> recipes,
                                                      Set<String> selectedCookItems,
-                                                     boolean autoRestock) implements CustomPacketPayload {
+                                                     boolean autoRestock,
+                                                     String waiterType,
+                                                     List<MaidEntry> maidWaiters) implements CustomPacketPayload {
 
     public static final Type<RestaurantControlBoxOpenResponsePacket> TYPE = new Type<>(
             ResourceLocation.fromNamespaceAndPath(NsukAddition.MOD_ID, "restaurant_control_box_open_response"));
@@ -70,7 +72,11 @@ public record RestaurantControlBoxOpenResponsePacket(BlockPos boxPos,
                                 r.outputs().stream().map(i -> new ItemEntry(i.itemId(), i.potionId(), i.count(), i.connector(), i.itemSpec())).toList()))
                         .toList(),
                 new HashSet<>(view.selectedCookItems()),
-                view.autoRestock()
+                view.autoRestock(),
+                view.waiterType(),
+                view.maidWaiters().stream()
+                        .map(m -> new MaidEntry(m.uuid(), m.name()))
+                        .toList()
         );
     }
 
@@ -108,6 +114,12 @@ public record RestaurantControlBoxOpenResponsePacket(BlockPos boxPos,
         buf.writeVarInt(p.selectedCookItems().size());
         for (String s : p.selectedCookItems()) buf.writeUtf(s, 128);
         buf.writeBoolean(p.autoRestock());
+        buf.writeUtf(p.waiterType(), 16);
+        buf.writeVarInt(p.maidWaiters().size());
+        for (MaidEntry m : p.maidWaiters()) {
+            buf.writeUUID(m.uuid());
+            buf.writeUtf(m.name(), 64);
+        }
     }
 
     public static RestaurantControlBoxOpenResponsePacket decode(RegistryFriendlyByteBuf buf) {
@@ -144,11 +156,18 @@ public record RestaurantControlBoxOpenResponsePacket(BlockPos boxPos,
         Set<String> selectedCookItems = new HashSet<>();
         for (int i = 0; i < cookCount; i++) selectedCookItems.add(buf.readUtf(128));
         boolean autoRestock = buf.readBoolean();
+        String waiterType = buf.readUtf(16);
+        int maidListSize = buf.readVarInt();
+        List<MaidEntry> maidWaiters = new ArrayList<>();
+        for (int i = 0; i < maidListSize; i++) {
+            maidWaiters.add(new MaidEntry(buf.readUUID(), buf.readUtf(64)));
+        }
         return new RestaurantControlBoxOpenResponsePacket(boxPos, hasBuilding, buildingName,
                 definitionValid, definitionName, statusKey, statusText, running, selectedRecipeId,
                 hasWorker, workerId, workerName, hasWaiter, waiterId, waiterName, hasBuildingBounds, boundsMin, boundsMax,
                 integrityAvailable, integrityPercent, integrityRepairableBlocks, integrityManualRepairBlocks,
-                integrityRepairCost, List.copyOf(markers), List.copyOf(recipes), selectedCookItems, autoRestock);
+                integrityRepairCost, List.copyOf(markers), List.copyOf(recipes), selectedCookItems, autoRestock,
+                waiterType, List.copyOf(maidWaiters));
     }
 
     public static void handle(RestaurantControlBoxOpenResponsePacket p, IPayloadContext ctx) {
@@ -201,5 +220,8 @@ public record RestaurantControlBoxOpenResponsePacket(BlockPos boxPos,
         private static PointMarkerEntry decode(RegistryFriendlyByteBuf buf) {
             return new PointMarkerEntry(buf.readUtf(128), buf.readUtf(64), buf.readBlockPos(), buf.readInt());
         }
+    }
+
+    public record MaidEntry(UUID uuid, String name) {
     }
 }

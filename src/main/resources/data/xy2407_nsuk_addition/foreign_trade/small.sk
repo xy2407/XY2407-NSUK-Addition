@@ -1,0 +1,7 @@
+name: 外贸驿站（小）
+size: 14x3x10
+amount: 1200
+author: xy2407
+description: 小型外贸驿站，基础外贸交易场所。
+foreign_trade: small.json
+structure: small.nbt

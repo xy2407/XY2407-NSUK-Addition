@@ -1,6 +1,7 @@
 package com.xy2407.nsukaddition.common.cooking;
 
 import com.xy2407.nsukaddition.common.autorestock.AutoRestockConfig;
+import com.xy2407.nsukaddition.common.compat.maid.MaidWaiterBridge;
 
 import common.cn.kafei.simukraft.building.BuildingIntegrityService;
 import common.cn.kafei.simukraft.building.BuildingTransform;
@@ -72,8 +73,16 @@ public final class RestaurantControlBoxService {
                 pointMarkers(building, definition, boxPos),
                 recipes,
                 data.selectedCookItems(),
-                AutoRestockConfig.isEnabled(boxPos)
+                AutoRestockConfig.isEnabled(boxPos),
+                definition != null ? definition.waiterType() : RestaurantConstants.WAITER_TYPE_NSUK,
+                maidWaiters(data)
         );
+    }
+
+    private static List<RestaurantControlBoxView.MaidWaiter> maidWaiters(RestaurantBoxData data) {
+        return data.maidWaiters().stream()
+                .map(m -> new RestaurantControlBoxView.MaidWaiter(m.uuid(), m.name()))
+                .toList();
     }
 
     public static boolean selectRecipe(ServerLevel level, BlockPos boxPos, String recipeId) {
@@ -119,6 +128,14 @@ public final class RestaurantControlBoxService {
             setStatus(manager, data, RestaurantConstants.STATUS_INVALID_DEFINITION, String.join(",", loadResult.errors()));
             return false;
         }
+        if (definition != null && definition.isMaidWaiter()) {
+            boolean hasMaid = !data.maidWaiters().isEmpty();
+            boolean hasCitizenWaiter = findAssignedWorker(level, boxPos, RestaurantConstants.HIRE_ROLE_WAITER) != null;
+            if (!hasMaid && !(definition.isAndWaiter() && hasCitizenWaiter)) {
+                setStatus(manager, data, RestaurantConstants.STATUS_NO_MAID, "");
+                return false;
+            }
+        }
         String selectedRecipe = selectedRecipeId(data, definition);
         if (definition.recipeById(selectedRecipe) == null) {
             setStatus(manager, data, RestaurantConstants.STATUS_NO_RECIPE, "");
@@ -136,6 +153,16 @@ public final class RestaurantControlBoxService {
     }
 
     public static void fireRole(ServerLevel level, BlockPos boxPos, String role) {
+        if (RestaurantConstants.HIRE_ROLE_WAITER.equals(role)) {
+            RestaurantBoxData data = RestaurantBoxManager.get(level).getOrCreate(boxPos);
+            RestaurantDefinition definition = RestaurantDefinitionLoader.loadForBuilding(resolveBuilding(level, boxPos)).definition();
+            if (definition != null && "maid".equals(definition.waiterType())) {
+                if (!data.maidWaiters().isEmpty()) {
+                    fireMaid(level, boxPos, data.maidWaiters().getFirst().uuid());
+                }
+                return;
+            }
+        }
         CitizenData worker = findAssignedWorker(level, boxPos, role);
         if (worker != null) CitizenJobVisualService.clearMainHandOverride(worker.uuid());
         CitizenEmploymentService.fireAssigned(
@@ -144,7 +171,6 @@ public final class RestaurantControlBoxService {
                 RestaurantConstants.HIRE_SOURCE_TYPE, role, boxPos, "cooking_fired");
         RestaurantBoxData data = RestaurantBoxManager.get(level).getOrCreate(boxPos);
         if (RestaurantConstants.HIRE_ROLE_CHEF.equals(role)) {
-            // 解雇厨师时停止运行，防止订单无人处理
             data.setRunning(false);
             data.setProgressTicks(0);
             data.setCooldownTicks(0);
@@ -154,8 +180,43 @@ public final class RestaurantControlBoxService {
         RestaurantBoxManager.get(level).persist(data);
     }
 
+    public static boolean hireMaid(ServerLevel level, BlockPos boxPos, UUID maidId, UUID ownerId) {
+        if (level == null || boxPos == null || maidId == null) return false;
+        RestaurantBoxManager manager = RestaurantBoxManager.get(level);
+        RestaurantBoxData data = manager.getOrCreate(boxPos);
+        RestaurantDefinition definition = RestaurantDefinitionLoader.loadForBuilding(resolveBuilding(level, boxPos)).definition();
+        if (definition == null || !definition.isMaidWaiter()) return false;
+        if (!MaidWaiterBridge.isLoaded()) return false;
+        if (findAssignedWorker(level, boxPos, RestaurantConstants.HIRE_ROLE_WAITER) != null) return false;
+        if (!data.maidWaiters().isEmpty()) return false;
+        if (data.hasMaid(maidId)) return false;
+        var maid = MaidWaiterBridge.findMaid(level, maidId);
+        if (maid == null) return false;
+        if (!MaidWaiterBridge.isOwnedBy(maid, ownerId)) return false;
+        for (RestaurantBoxData other : manager.all()) {
+            if (other.boxPos().equals(boxPos)) continue;
+            if (other.hasMaid(maidId)) return false;
+        }
+        if (!MaidWaiterBridge.assignRestaurantJob(level, maid, boxPos)) return false;
+        data.addMaid(maidId, MaidWaiterBridge.displayName(maid));
+        data.setStatusKey(RestaurantConstants.STATUS_IDLE); data.setStatusText("");
+        manager.persist(data);
+        return true;
+    }
+
+    public static boolean fireMaid(ServerLevel level, BlockPos boxPos, UUID maidId) {
+        if (level == null || boxPos == null || maidId == null) return false;
+        RestaurantBoxManager manager = RestaurantBoxManager.get(level);
+        RestaurantBoxData data = manager.getOrCreate(boxPos);
+        if (!data.removeMaid(maidId)) return false;
+        var maid = MaidWaiterBridge.findMaid(level, maidId);
+        if (maid != null) MaidWaiterBridge.releaseRestaurantJob(level, maid);
+        data.setStatusKey(RestaurantConstants.STATUS_IDLE); data.setStatusText("");
+        manager.persist(data);
+        return true;
+    }
+
     public static void fireWorker(ServerLevel level, BlockPos boxPos) {
-        // 解雇所有角色（厨师+服务员）
         for (String role : new String[]{RestaurantConstants.HIRE_ROLE_CHEF, RestaurantConstants.HIRE_ROLE_WAITER}) {
             CitizenData worker = findAssignedWorker(level, boxPos, role);
             if (worker != null) CitizenJobVisualService.clearMainHandOverride(worker.uuid());
@@ -166,6 +227,9 @@ public final class RestaurantControlBoxService {
         }
         RestaurantBoxManager manager = RestaurantBoxManager.get(level);
         RestaurantBoxData data = manager.getOrCreate(boxPos);
+        for (RestaurantBoxData.MaidEntry entry : data.maidWaiters()) {
+            fireMaid(level, boxPos, entry.uuid());
+        }
         data.setRunning(false); data.setProgressTicks(0); data.setCooldownTicks(0);
         data.setWorkState(""); data.setStatusKey(RestaurantConstants.STATUS_WORKER_FIRED); data.setStatusText("");
         manager.persist(data);

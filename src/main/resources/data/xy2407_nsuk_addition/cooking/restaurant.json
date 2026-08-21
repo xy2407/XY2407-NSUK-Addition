@@ -1,5 +1,6 @@
 {
   "id": "restaurant",
+  "waiter": "and",
   "name": "中餐馆",
   "job": {
     "id": "chef",
@@ -9,60 +10,503 @@
   "points": {
     "work": {
       "type": "structure_pos",
-      "positions": [[11, 0, 8]]
+      "positions": [
+        [
+          11,
+          0,
+          8
+        ]
+      ]
     },
     "desk": {
       "type": "structure_pos",
-      "positions": [[2, 1, 4], [2, 1, 8], [6, 1, 4], [10, 1, 4], [14, 1, 4]]
+      "positions": [
+        [
+          2,
+          1,
+          4
+        ],
+        [
+          2,
+          1,
+          8
+        ],
+        [
+          6,
+          1,
+          4
+        ],
+        [
+          10,
+          1,
+          4
+        ],
+        [
+          14,
+          1,
+          4
+        ]
+      ]
     }
   },
   "containers": {
     "input": {
       "type": "structure_pos",
-      "positions": [[14, 1, 9]]
+      "positions": [
+        [
+          14,
+          1,
+          9
+        ]
+      ]
     },
     "output": {
       "type": "structure_pos",
-      "positions": [[7, 1, 8]]
+      "positions": [
+        [
+          7,
+          1,
+          8
+        ]
+      ]
     }
   },
   "seats": [
-    { "positions": [[2, 1, 3], [2, 1, 5]] },
-    { "positions": [[2, 1, 7], [2, 1, 9]] },
-    { "positions": [[5, 1, 4], [7, 1, 4]] },
-    { "positions": [[9, 1, 4], [11, 1, 4]] },
-    { "positions": [[14, 1, 3], [14, 1, 5]] }
+    {
+      "positions": [
+        [
+          2,
+          1,
+          3
+        ],
+        [
+          2,
+          1,
+          5
+        ]
+      ]
+    },
+    {
+      "positions": [
+        [
+          2,
+          1,
+          7
+        ],
+        [
+          2,
+          1,
+          9
+        ]
+      ]
+    },
+    {
+      "positions": [
+        [
+          5,
+          1,
+          4
+        ],
+        [
+          7,
+          1,
+          4
+        ]
+      ]
+    },
+    {
+      "positions": [
+        [
+          9,
+          1,
+          4
+        ],
+        [
+          11,
+          1,
+          4
+        ]
+      ]
+    },
+    {
+      "positions": [
+        [
+          14,
+          1,
+          3
+        ],
+        [
+          14,
+          1,
+          5
+        ]
+      ]
+    }
   ],
   "cook": [
-    { "item": "kaleidoscope_chinesefood:sichuan_wonton", "price": 35 },
-    { "item": "kaleidoscope_chinesefood:wonton_noodles", "price": 32 },
-    { "item": "kaleidoscope_chinesefood:yangrou_paomo", "price": 48 },
-    { "item": "kaleidoscope_chinesefood:sauerkraut_beef_noodles", "price": 42 },
-    { "item": "kaleidoscope_chinesefood:maocai", "price": 38 },
-    { "item": "kaleidoscope_chinesefood:seaweed_egg_drop_soup", "price": 30 },
-    { "item": "kaleidoscope_chinesefood:tomato_egg_drop_soup", "price": 30 },
-    { "item": "kaleidoscope_chinesefood:century_egg_congee", "price": 33 },
-    { "item": "kaleidoscope_chinesefood:pumpkin_porridge", "price": 31 },
-    { "item": "kaleidoscope_chinesefood:twice_cooked_pork", "price": 45 },
-    { "item": "kaleidoscope_chinesefood:stir_fried_yellow_beef", "price": 50 },
-    { "item": "kaleidoscope_chinesefood:beef_with_scrambled_eggs", "price": 40 },
-    { "item": "kaleidoscope_chinesefood:stir_fried_three_fresh_vegetables", "price": 35 },
-    { "item": "kaleidoscope_chinesefood:big_plate_chicken", "price": 48 },
-    { "item": "kaleidoscope_chinesefood:big_plate_chicken_noodles", "price": 46 },
-    { "item": "kaleidoscope_chinesefood:tomato_egg_noodles", "price": 34 },
-    { "item": "kaleidoscope_chinesefood:pork_chili_noodles", "price": 36 },
-    { "item": "kaleidoscope_chinesefood:four_joy_meatballs", "price": 44 },
-    { "item": "kaleidoscope_chinesefood:stuffed_eggplant", "price": 37 },
-    { "item": "kaleidoscope_chinesefood:dry_pot_potatoes", "price": 36 },
-    { "item": "kaleidoscope_chinesefood:dry_pot_chicken", "price": 42 },
-    { "item": "kaleidoscope_chinesefood:dry_pot_spare_ribs", "price": 45 },
-    { "item": "kaleidoscope_chinesefood:yangzhou_fried_rice", "price": 38 },
-    { "item": "kaleidoscope_chinesefood:lamb_pilaf", "price": 46 },
-    { "item": "kaleidoscope_chinesefood:steamed_rice_rolls", "price": 32 },
-    { "item": "kaleidoscope_chinesefood:yellow_croaker_tofu_soup", "price": 40 },
-    { "item": "kaleidoscope_chinesefood:red_rice_roll", "price": 33 },
-    { "item": "kaleidoscope_chinesefood:sichuan_boiled_pork_slices", "price": 43 },
-    { "item": "kaleidoscope_chinesefood:sichuan_boiled_fish", "price": 47 },
-    { "item": "kaleidoscope_chinesefood:yellow_croaker_soup", "price": 41 }
+    {
+      "item": "kaleidoscope_chinesefood:sichuan_wonton",
+      "price": 35
+    },
+    {
+      "item": "kaleidoscope_chinesefood:wonton_noodles",
+      "price": 32
+    },
+    {
+      "item": "kaleidoscope_chinesefood:yangrou_paomo",
+      "price": 48
+    },
+    {
+      "item": "kaleidoscope_chinesefood:sauerkraut_beef_noodles",
+      "price": 42
+    },
+    {
+      "item": "kaleidoscope_chinesefood:maocai",
+      "price": 38
+    },
+    {
+      "item": "kaleidoscope_chinesefood:seaweed_egg_drop_soup",
+      "price": 30
+    },
+    {
+      "item": "kaleidoscope_chinesefood:tomato_egg_drop_soup",
+      "price": 30
+    },
+    {
+      "item": "kaleidoscope_chinesefood:century_egg_congee",
+      "price": 33
+    },
+    {
+      "item": "kaleidoscope_chinesefood:pumpkin_porridge",
+      "price": 31
+    },
+    {
+      "item": "kaleidoscope_chinesefood:twice_cooked_pork",
+      "price": 45
+    },
+    {
+      "item": "kaleidoscope_chinesefood:stir_fried_yellow_beef",
+      "price": 50
+    },
+    {
+      "item": "kaleidoscope_chinesefood:beef_with_scrambled_eggs",
+      "price": 40
+    },
+    {
+      "item": "kaleidoscope_chinesefood:stir_fried_three_fresh_vegetables",
+      "price": 35
+    },
+    {
+      "item": "kaleidoscope_chinesefood:big_plate_chicken",
+      "price": 48
+    },
+    {
+      "item": "kaleidoscope_chinesefood:big_plate_chicken_noodles",
+      "price": 46
+    },
+    {
+      "item": "kaleidoscope_chinesefood:tomato_egg_noodles",
+      "price": 34
+    },
+    {
+      "item": "kaleidoscope_chinesefood:pork_chili_noodles",
+      "price": 36
+    },
+    {
+      "item": "kaleidoscope_chinesefood:four_joy_meatballs",
+      "price": 44
+    },
+    {
+      "item": "kaleidoscope_chinesefood:stuffed_eggplant",
+      "price": 37
+    },
+    {
+      "item": "kaleidoscope_chinesefood:dry_pot_potatoes",
+      "price": 36
+    },
+    {
+      "item": "kaleidoscope_chinesefood:dry_pot_chicken",
+      "price": 42
+    },
+    {
+      "item": "kaleidoscope_chinesefood:dry_pot_spare_ribs",
+      "price": 45
+    },
+    {
+      "item": "kaleidoscope_chinesefood:yangzhou_fried_rice",
+      "price": 38
+    },
+    {
+      "item": "kaleidoscope_chinesefood:lamb_pilaf",
+      "price": 46
+    },
+    {
+      "item": "kaleidoscope_chinesefood:steamed_rice_rolls",
+      "price": 32
+    },
+    {
+      "item": "kaleidoscope_chinesefood:yellow_croaker_tofu_soup",
+      "price": 40
+    },
+    {
+      "item": "kaleidoscope_chinesefood:red_rice_roll",
+      "price": 33
+    },
+    {
+      "item": "kaleidoscope_chinesefood:sichuan_boiled_pork_slices",
+      "price": 43
+    },
+    {
+      "item": "kaleidoscope_chinesefood:sichuan_boiled_fish",
+      "price": 47
+    },
+    {
+      "item": "kaleidoscope_chinesefood:yellow_croaker_soup",
+      "price": 41
+    },
+    {
+      "item": "bakeries:round_bread",
+      "price": 18
+    },
+    {
+      "item": "bakeries:bagel",
+      "price": 15
+    },
+    {
+      "item": "bakeries:whole_wheat_bagel",
+      "price": 16
+    },
+    {
+      "item": "bakeries:baguette",
+      "price": 22
+    },
+    {
+      "item": "bakeries:ciabatta",
+      "price": 20
+    },
+    {
+      "item": "bakeries:brown_sugar_roll",
+      "price": 16
+    },
+    {
+      "item": "bakeries:coffee_bean",
+      "price": 12
+    },
+    {
+      "item": "bakeries:croissant",
+      "price": 18
+    },
+    {
+      "item": "bakeries:focaccia",
+      "price": 21
+    },
+    {
+      "item": "bakeries:pineapple_bun",
+      "price": 17
+    },
+    {
+      "item": "bakeries:salt_croissant",
+      "price": 18
+    },
+    {
+      "item": "bakeries:toast",
+      "price": 14
+    },
+    {
+      "item": "bakeries:cheese_cocoa_toast",
+      "price": 19
+    },
+    {
+      "item": "bakeries:country_bread",
+      "price": 20
+    },
+    {
+      "item": "bakeries:rice_bread",
+      "price": 18
+    },
+    {
+      "item": "bakeries:egg_tart",
+      "price": 20
+    },
+    {
+      "item": "kaleidoscope_tavern:bloody_mary",
+      "price": 30
+    },
+    {
+      "item": "kaleidoscope_tavern:emerald",
+      "price": 32
+    },
+    {
+      "item": "kaleidoscope_tavern:grasshopper",
+      "price": 28
+    },
+    {
+      "item": "kaleidoscope_tavern:allium_garden",
+      "price": 28
+    },
+    {
+      "item": "kaleidoscope_tavern:depth_charge",
+      "price": 30
+    },
+    {
+      "item": "kaleidoscope_tavern:screwdriver",
+      "price": 26
+    },
+    {
+      "item": "kaleidoscope_tavern:godfather",
+      "price": 34
+    },
+    {
+      "item": "kaleidoscope_tavern:white_lady",
+      "price": 30
+    },
+    {
+      "item": "kaleidoscope_tavern:mojito",
+      "price": 28
+    },
+    {
+      "item": "kaleidoscope_tavern:brass_heart",
+      "price": 36
+    },
+    {
+      "item": "kaleidoscope_tavern:nether_special",
+      "price": 38
+    },
+    {
+      "item": "kaleidoscope_tavern:sculk_special",
+      "price": 40
+    },
+    {
+      "item": "kawaiidishes:dark_coffee",
+      "price": 15
+    },
+    {
+      "item": "kawaiidishes:espresso",
+      "price": 14
+    },
+    {
+      "item": "kawaiidishes:doppio",
+      "price": 16
+    },
+    {
+      "item": "kawaiidishes:macchiato",
+      "price": 17
+    },
+    {
+      "item": "kawaiidishes:latte",
+      "price": 18
+    },
+    {
+      "item": "kawaiidishes:capuccino",
+      "price": 18
+    },
+    {
+      "item": "kawaiidishes:mocha",
+      "price": 20
+    },
+    {
+      "item": "kawaiidishes:hot_cocoa",
+      "price": 16
+    },
+    {
+      "item": "kawaiidishes:steamed_milk",
+      "price": 10
+    },
+    {
+      "item": "kawaiidishes:cream_ice_cream",
+      "price": 18
+    },
+    {
+      "item": "kawaiidishes:chocolate_ice_cream",
+      "price": 20
+    },
+    {
+      "item": "kawaiidishes:sweet_berry_ice_cream",
+      "price": 20
+    },
+    {
+      "item": "kawaiidishes:glow_berry_ice_cream",
+      "price": 22
+    },
+    {
+      "item": "kawaiidishes:neapolitan_ice_cream",
+      "price": 24
+    },
+    {
+      "item": "kawaiidishes:mocha_ice_cream",
+      "price": 22
+    },
+    {
+      "item": "kawaiidishes:coffee_ice_cream",
+      "price": 20
+    },
+    {
+      "item": "kawaiidishes:cherry_ice_cream",
+      "price": 22
+    },
+    {
+      "item": "brewery:beer_wheat",
+      "price": 22
+    },
+    {
+      "item": "brewery:beer_hops",
+      "price": 24
+    },
+    {
+      "item": "brewery:beer_barley",
+      "price": 24
+    },
+    {
+      "item": "brewery:beer_oat",
+      "price": 24
+    },
+    {
+      "item": "brewery:beer_nettle",
+      "price": 26
+    },
+    {
+      "item": "brewery:beer_haley",
+      "price": 28
+    },
+    {
+      "item": "brewery:whiskey_maggoallan",
+      "price": 55
+    },
+    {
+      "item": "brewery:whiskey_carrasconlabel",
+      "price": 52
+    },
+    {
+      "item": "brewery:whiskey_lilitusinglemalt",
+      "price": 58
+    },
+    {
+      "item": "brewery:whiskey_jojannik",
+      "price": 50
+    },
+    {
+      "item": "brewery:whiskey_cristelwalker",
+      "price": 54
+    },
+    {
+      "item": "brewery:whiskey_ak",
+      "price": 60
+    },
+    {
+      "item": "brewery:whiskey_highland_hearth",
+      "price": 52
+    },
+    {
+      "item": "brewery:whiskey_jamesons_malt",
+      "price": 56
+    },
+    {
+      "item": "brewery:whiskey_smokey_reverie",
+      "price": 54
+    },
+    {
+      "item": "brewery:dark_brew",
+      "price": 50
+    }
   ]
 }

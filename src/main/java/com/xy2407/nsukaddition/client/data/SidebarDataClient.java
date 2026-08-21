@@ -34,7 +34,7 @@ public final class SidebarDataClient {
                 materials.add(new SidebarDataSnapshot.BuildTaskMaterial(req.categoryKey(), req.count(), available));
             }
             tasks.add(new SidebarDataSnapshot.BuildTask(
-                    task.displayName(), task.citizenId(), task.progressPercent(),
+                    task.taskId(), task.displayName(), task.citizenId(), task.progressPercent(),
                     task.statusKey(), task.tracked(), materials));
         }
 
@@ -54,6 +54,7 @@ public final class SidebarDataClient {
 
         SidebarDataSnapshot.set(new SidebarDataSnapshot(p.cityId(), officers,
                 p.shopCount(), p.factoryCount(), p.residenceCount(), p.farmCount(), p.ranchCount(), p.mineCount(),
+                p.prosperity(),
                 reserveMaterials, tasks, financeRecords, citizens));
     }
 

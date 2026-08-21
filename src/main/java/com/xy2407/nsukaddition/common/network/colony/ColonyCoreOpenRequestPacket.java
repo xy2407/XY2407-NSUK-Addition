@@ -155,7 +155,6 @@ public record ColonyCoreOpenRequestPacket(BlockPos pos) implements CustomPacketP
         ));
     }
 
-    /** 构建可迁移市民条目，附带皮肤、职业、住宅信息供客户端渲染头像和状态。 */
     private static ColonyCoreOpenResponsePacket.OtherTerritoryCitizen buildOtherCitizen(
             ServerLevel level, CitizenData cd, String sourceTerritory, CityPoiManager poiMgr) {
         String homeName = "";

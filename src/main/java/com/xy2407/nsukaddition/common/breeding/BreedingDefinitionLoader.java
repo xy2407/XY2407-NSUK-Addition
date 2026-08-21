@@ -55,7 +55,6 @@ public final class BreedingDefinitionLoader {
         }
     }
 
-    /** 将养殖文件从模组资源部署到外部目录（明文，不打包）。 */
     public static void deployFiles() {
         Path dirPath = FMLPaths.GAMEDIR.get().resolve(EXTERNAL_DIR);
         try {

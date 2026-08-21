@@ -2,7 +2,7 @@ package com.xy2407.nsukaddition.common.autorestock;
 
 import com.xy2407.nsukaddition.NsukAddition;
 import com.xy2407.nsukaddition.common.storage.NsukSqliteDatabase;
-import com.xy2407.nsukaddition.common.storage.NsukWriteExecutor;
+import com.xy2407.nsukaddition.common.storage.WriteBatchBuffer;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
@@ -14,9 +14,11 @@ import java.sql.SQLException;
 import java.util.HashSet;
 import java.util.Set;
 
-/** 自动补货方块位置的 SQLite 持久化存储，写操作异步执行避免SQLITE_BUSY。 */
+/** 自动补货方块位置的 SQLite 持久化存储，写入走 WriteBatchBuffer 20 tick 批量缓冲，删除立即落库。 */
 @SuppressWarnings("null")
 public final class AutoRestockSqliteStorage {
+
+    private static final String TABLE = "auto_restock";
 
     private AutoRestockSqliteStorage() {}
 
@@ -31,20 +33,16 @@ public final class AutoRestockSqliteStorage {
     public static void save(ServerLevel level, BlockPos pos) {
         if (level == null || pos == null) return;
         MinecraftServer server = level.getServer();
-        NsukWriteExecutor.submit(() -> {
-            try {
-                NsukSqliteDatabase db = openDatabase(server);
-                if (db == null) return;
-                try (Connection connection = db.openConnection();
-                     PreparedStatement ps = connection.prepareStatement(
-                             "INSERT INTO auto_restock(box_pos_long, updated_at) VALUES(?, ?) "
-                                     + "ON CONFLICT(box_pos_long) DO UPDATE SET updated_at = excluded.updated_at")) {
-                    ps.setLong(1, pos.asLong());
-                    ps.setLong(2, System.currentTimeMillis());
-                    ps.executeUpdate();
-                }
-            } catch (Exception e) {
-                NsukAddition.LOGGER.error("Failed to save auto restock data", e);
+        NsukSqliteDatabase db = openDatabase(server);
+        if (db == null) return;
+        long posLong = pos.asLong();
+        WriteBatchBuffer.submit(db, TABLE, TABLE + ":" + posLong, connection -> {
+            try (PreparedStatement ps = connection.prepareStatement(
+                    "INSERT INTO auto_restock(box_pos_long, updated_at) VALUES(?, ?) "
+                            + "ON CONFLICT(box_pos_long) DO UPDATE SET updated_at = excluded.updated_at")) {
+                ps.setLong(1, posLong);
+                ps.setLong(2, System.currentTimeMillis());
+                ps.executeUpdate();
             }
         });
     }
@@ -52,18 +50,14 @@ public final class AutoRestockSqliteStorage {
     public static void delete(ServerLevel level, BlockPos pos) {
         if (level == null || pos == null) return;
         MinecraftServer server = level.getServer();
-        NsukWriteExecutor.submit(() -> {
-            try {
-                NsukSqliteDatabase db = openDatabase(server);
-                if (db == null) return;
-                try (Connection connection = db.openConnection();
-                     PreparedStatement ps = connection.prepareStatement(
-                             "DELETE FROM auto_restock WHERE box_pos_long = ?")) {
-                    ps.setLong(1, pos.asLong());
-                    ps.executeUpdate();
-                }
-            } catch (Exception e) {
-                NsukAddition.LOGGER.error("Failed to delete auto restock data", e);
+        NsukSqliteDatabase db = openDatabase(server);
+        if (db == null) return;
+        long posLong = pos.asLong();
+        WriteBatchBuffer.submitPriority(db, TABLE, TABLE + ":" + posLong, connection -> {
+            try (PreparedStatement ps = connection.prepareStatement(
+                    "DELETE FROM auto_restock WHERE box_pos_long = ?")) {
+                ps.setLong(1, posLong);
+                ps.executeUpdate();
             }
         });
     }

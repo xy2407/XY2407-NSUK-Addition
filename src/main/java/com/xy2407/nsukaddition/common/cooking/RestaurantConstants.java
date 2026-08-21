@@ -7,6 +7,9 @@ public final class RestaurantConstants {
     public static final String HIRE_SOURCE_TYPE = "restaurant_control_box";
     public static final String HIRE_ROLE_CHEF = "chef";
     public static final String HIRE_ROLE_WAITER = "waiter";
+    public static final String WAITER_TYPE_NSUK = "nsuk";
+    public static final String WAITER_TYPE_MAID = "maid";
+    public static final String WAITER_TYPE_AND = "and";
     public static final String BUILDING_CATEGORY = "cooking";
     public static final String BUILDING_TYPE = "cooking";
     public static final String DATA_NAME = "xy2407_nsuk_addition_restaurant_boxes";
@@ -15,6 +18,7 @@ public final class RestaurantConstants {
     public static final String STATUS_INVALID_DEFINITION = "gui.xy2407_nsuk_addition.cooking.status.invalid_definition";
     public static final String STATUS_NO_CHEF = "gui.xy2407_nsuk_addition.cooking.status.no_chef";
     public static final String STATUS_NO_WAITER = "gui.xy2407_nsuk_addition.cooking.status.no_waiter";
+    public static final String STATUS_NO_MAID = "gui.xy2407_nsuk_addition.cooking.status.no_maid";
     public static final String STATUS_NO_RECIPE = "gui.xy2407_nsuk_addition.cooking.status.no_recipe";
     public static final String STATUS_NO_DEVICE = "gui.xy2407_nsuk_addition.cooking.status.no_device";
     public static final String STATUS_RUNNING = "gui.xy2407_nsuk_addition.cooking.status.running";

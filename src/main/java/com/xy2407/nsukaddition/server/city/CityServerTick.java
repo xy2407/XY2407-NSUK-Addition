@@ -17,6 +17,8 @@ public final class CityServerTick {
 
     private static long lastDispatchedDay = -1;
     private static boolean incomeLoaded = false;
+    private static boolean caravansLoaded = false;
+    private static boolean immigrationLoaded = false;
 
     @SubscribeEvent
     public static void onServerTick(ServerTickEvent.Post event) {
@@ -27,6 +29,14 @@ public final class CityServerTick {
         if (!incomeLoaded) {
             incomeLoaded = true;
             VillageTourismService.loadTouristIncome(server);
+        }
+        if (!caravansLoaded) {
+            caravansLoaded = true;
+            VillageTourismService.loadPersistedCaravans(overworld);
+        }
+        if (!immigrationLoaded) {
+            immigrationLoaded = true;
+            TownImmigrationService.loadFromStorage(overworld);
         }
 
         long day = overworld.getDayTime() / 24000L;

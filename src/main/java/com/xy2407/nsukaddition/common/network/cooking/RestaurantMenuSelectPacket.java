@@ -51,7 +51,10 @@ public record RestaurantMenuSelectPacket(BlockPos boxPos, Set<String> selectedCo
             RestaurantBoxManager manager = RestaurantBoxManager.get(level);
             RestaurantBoxData data = manager.getOrCreate(p.boxPos());
             data.setSelectedCookItems(p.selectedCookItems());
+            data.orders().clear();
             manager.persist(data);
+            com.xy2407.nsukaddition.common.cooking.RestaurantDiningService.reorderForMenu(level, p.boxPos());
+            com.xy2407.nsukaddition.common.cooking.CookingWorkService.resetBoxRuntime(p.boxPos());
             PacketDistributor.sendToPlayer(player,
                     RestaurantControlBoxOpenResponsePacket.from(RestaurantControlBoxService.buildView(level, p.boxPos())));
         }

@@ -1,6 +1,5 @@
 package com.xy2407.nsukaddition.common.block;
 
-import com.xy2407.nsukaddition.common.foreigntrade.ForeignTradeConstants;
 import com.xy2407.nsukaddition.common.network.foreigntrade.ForeignTradeControlBoxOpenRequestPacket;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;

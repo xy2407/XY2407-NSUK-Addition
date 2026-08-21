@@ -1,7 +1,10 @@
 package com.xy2407.nsukaddition.common.network.foreigntrade;
 
 import com.xy2407.nsukaddition.NsukAddition;
+import com.xy2407.nsukaddition.common.foreigntrade.ForeignTradeConfig;
+import com.xy2407.nsukaddition.common.foreigntrade.ForeignTradeConfig.TradeItemDef;
 import com.xy2407.nsukaddition.common.foreigntrade.ForeignTradeMarket;
+import com.xy2407.nsukaddition.common.foreigntrade.TradeItemResolver;
 import common.cn.kafei.simukraft.city.CityChunkManager;
 import common.cn.kafei.simukraft.city.CityPermissionLevel;
 import common.cn.kafei.simukraft.city.CityService;
@@ -50,7 +53,7 @@ public record ForeignTradeMarketRequestPacket(BlockPos boxPos) implements Custom
         if (!player.blockPosition().closerThan(p.boxPos(), 64.0D)) return;
 
         ForeignTradeMarket.ensureRefreshed();
-        var entries = ForeignTradeMarket.getMarketEntries();
+        var entries = ForeignTradeMarket.getMarketEntriesForPlayer(level, player.getUUID());
 
         UUID cityId = CityChunkManager.get(level).getChunkOwner(
                 new net.minecraft.world.level.ChunkPos(p.boxPos()).toLong());
@@ -79,11 +82,23 @@ public record ForeignTradeMarketRequestPacket(BlockPos boxPos) implements Custom
         }
 
         for (var entry : entries) {
-            int total = warehouseCounts.getOrDefault(entry.itemId(), 0);
-            ResourceLocation rl = ResourceLocation.tryParse(entry.itemId());
-            Item item = rl != null ? BuiltInRegistries.ITEM.get(rl) : null;
-            if (item != null) {
-                total += player.getInventory().countItem(item);
+            TradeItemDef def = ForeignTradeConfig.find(entry.itemId());
+            int total;
+            if (def != null && def.isAnimal()) {
+                total = 0;
+                for (int i = 0; i < player.getInventory().getContainerSize(); i++) {
+                    ItemStack s = player.getInventory().getItem(i);
+                    if (TradeItemResolver.matches(s, def)) {
+                        total += TradeItemResolver.countIn(s, def);
+                    }
+                }
+            } else {
+                total = warehouseCounts.getOrDefault(entry.itemId(), 0);
+                ResourceLocation rl = ResourceLocation.tryParse(entry.itemId());
+                Item item = rl != null ? BuiltInRegistries.ITEM.get(rl) : null;
+                if (item != null) {
+                    total += player.getInventory().countItem(item);
+                }
             }
             counts.put(entry.itemId(), total);
         }

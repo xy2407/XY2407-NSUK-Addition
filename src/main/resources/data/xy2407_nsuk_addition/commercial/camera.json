@@ -1,0 +1,139 @@
+{
+  "id": "camera",
+  "name": "相机店",
+  "job": {
+    "id": "commercial",
+    "name": "相机店主",
+    "heldItem": "exposure:camera"
+  },
+  "points": {
+    "work": {
+      "type": "structure_pos",
+      "positions": [
+        [4, 0, 10]
+      ]
+    }
+  },
+  "containers": {
+    "shop": {
+      "type": "structure_pos",
+      "positions": [
+        [4, 0, 10]
+      ]
+    }
+  },
+  "offers": [
+    {
+      "id": "sell_lightroom",
+      "name": "暗房",
+      "visibleTo": "mixed",
+      "cost": [{ "money": 1.0 }],
+      "result": [{ "item": "exposure:lightroom", "count": 1 }],
+      "stock": { "item": "exposure:lightroom", "max": 64, "initial": 32, "restockAmount": 32, "restockInterval": 12000 }
+    },
+    {
+      "id": "sell_camera",
+      "name": "相机",
+      "visibleTo": "mixed",
+      "cost": [{ "money": 1.0 }],
+      "result": [{ "item": "exposure:camera", "count": 1 }],
+      "stock": { "item": "exposure:camera", "max": 64, "initial": 32, "restockAmount": 32, "restockInterval": 12000 }
+    },
+    {
+      "id": "sell_camera_stand",
+      "name": "相机支架",
+      "visibleTo": "mixed",
+      "cost": [{ "money": 1.0 }],
+      "result": [{ "item": "exposure:camera_stand", "count": 1 }],
+      "stock": { "item": "exposure:camera_stand", "max": 64, "initial": 32, "restockAmount": 32, "restockInterval": 12000 }
+    },
+    {
+      "id": "sell_bw_film",
+      "name": "黑白胶卷",
+      "visibleTo": "mixed",
+      "cost": [{ "money": 1.0 }],
+      "result": [{ "item": "exposure:black_and_white_film", "count": 1 }],
+      "stock": { "item": "exposure:black_and_white_film", "max": 64, "initial": 32, "restockAmount": 32, "restockInterval": 12000 }
+    },
+    {
+      "id": "sell_color_film",
+      "name": "彩色胶卷",
+      "visibleTo": "mixed",
+      "cost": [{ "money": 1.0 }],
+      "result": [{ "item": "exposure:color_film", "count": 1 }],
+      "stock": { "item": "exposure:color_film", "max": 64, "initial": 32, "restockAmount": 32, "restockInterval": 12000 }
+    },
+    {
+      "id": "sell_hs_bw_film",
+      "name": "高感光度黑白胶卷",
+      "visibleTo": "mixed",
+      "cost": [{ "money": 1.0 }],
+      "result": [{ "item": "exposure:high_sensitivity_black_and_white_film", "count": 1 }],
+      "stock": { "item": "exposure:high_sensitivity_black_and_white_film", "max": 64, "initial": 32, "restockAmount": 32, "restockInterval": 12000 }
+    },
+    {
+      "id": "sell_hs_color_film",
+      "name": "高感光度彩色胶卷",
+      "visibleTo": "mixed",
+      "cost": [{ "money": 1.0 }],
+      "result": [{ "item": "exposure:high_sensitivity_color_film", "count": 1 }],
+      "stock": { "item": "exposure:high_sensitivity_color_film", "max": 64, "initial": 32, "restockAmount": 32, "restockInterval": 12000 }
+    },
+    {
+      "id": "sell_photograph",
+      "name": "照片",
+      "visibleTo": "mixed",
+      "cost": [{ "money": 1.0 }],
+      "result": [{ "item": "exposure:photograph", "count": 1 }],
+      "stock": { "item": "exposure:photograph", "max": 64, "initial": 32, "restockAmount": 32, "restockInterval": 12000 }
+    },
+    {
+      "id": "sell_aged_photograph",
+      "name": "泛黄照片",
+      "visibleTo": "mixed",
+      "cost": [{ "money": 1.0 }],
+      "result": [{ "item": "exposure:aged_photograph", "count": 1 }],
+      "stock": { "item": "exposure:aged_photograph", "max": 64, "initial": 32, "restockAmount": 32, "restockInterval": 12000 }
+    },
+    {
+      "id": "sell_stacked_photographs",
+      "name": "摞叠照片",
+      "visibleTo": "mixed",
+      "cost": [{ "money": 1.0 }],
+      "result": [{ "item": "exposure:stacked_photographs", "count": 1 }],
+      "stock": { "item": "exposure:stacked_photographs", "max": 64, "initial": 32, "restockAmount": 32, "restockInterval": 12000 }
+    },
+    {
+      "id": "sell_album",
+      "name": "相册",
+      "visibleTo": "mixed",
+      "cost": [{ "money": 1.0 }],
+      "result": [{ "item": "exposure:album", "count": 1 }],
+      "stock": { "item": "exposure:album", "max": 64, "initial": 32, "restockAmount": 32, "restockInterval": 12000 }
+    },
+    {
+      "id": "sell_photograph_frame",
+      "name": "相框",
+      "visibleTo": "mixed",
+      "cost": [{ "money": 1.0 }],
+      "result": [{ "item": "exposure:photograph_frame", "count": 1 }],
+      "stock": { "item": "exposure:photograph_frame", "max": 64, "initial": 32, "restockAmount": 32, "restockInterval": 12000 }
+    },
+    {
+      "id": "sell_glass_photograph_frame",
+      "name": "玻璃相框",
+      "visibleTo": "mixed",
+      "cost": [{ "money": 1.0 }],
+      "result": [{ "item": "exposure:glass_photograph_frame", "count": 1 }],
+      "stock": { "item": "exposure:glass_photograph_frame", "max": 64, "initial": 32, "restockAmount": 32, "restockInterval": 12000 }
+    },
+    {
+      "id": "sell_interplanar_projector",
+      "name": "平面间投影仪",
+      "visibleTo": "mixed",
+      "cost": [{ "money": 1.0 }],
+      "result": [{ "item": "exposure:interplanar_projector", "count": 1 }],
+      "stock": { "item": "exposure:interplanar_projector", "max": 64, "initial": 32, "restockAmount": 32, "restockInterval": 12000 }
+    }
+  ]
+}

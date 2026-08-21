@@ -1,0 +1,110 @@
+{
+  "id": "bar",
+  "waiter": "and",
+  "name": "酒吧",
+  "job": {
+    "id": "chef",
+    "name": "厨师",
+    "heldItem": "kaleidoscope_tavern:shaker"
+  },
+  "points": {
+    "work": {
+      "type": "structure_pos",
+      "positions": [
+        [
+          12,
+          0,
+          3
+        ]
+      ]
+    },
+    "desk": {
+      "type": "structure_pos",
+      "positions": [
+        [8, 1, 7],
+        [8, 1, 6],
+        [4, 1, 7],
+        [8, 5, 3],
+        [8, 5, 7],
+        [11, 5, 3]
+      ]
+    }
+  },
+  "containers": {
+    "input": {
+      "type": "structure_pos",
+      "positions": [
+        [
+          13,
+          3,
+          3
+        ],
+        [
+          12,
+          3,
+          3
+        ]
+      ]
+    }
+  },
+  "output_block": {
+    "type": "structure_pos",
+    "positions": [
+      [
+        12,
+        2,
+        4
+      ]
+    ]
+  },
+  "seats": [
+    {
+      "positions": [
+        [9, 1, 7],
+        [9, 1, 6]
+      ]
+    },
+    {
+      "positions": [
+        [7, 1, 7],
+        [7, 1, 6]
+      ]
+    },
+    {
+      "positions": [
+        [5, 1, 7]
+      ]
+    },
+    {
+      "positions": [
+        [7, 5, 7],
+        [9, 5, 7]
+      ]
+    },
+    {
+      "positions": [
+        [7, 5, 3],
+        [9, 5, 3]
+      ]
+    },
+    {
+      "positions": [
+        [12, 5, 3]
+      ]
+    }
+  ],
+  "cook": [
+    { "item": "kaleidoscope_tavern:bloody_mary", "price": 45 },
+    { "item": "kaleidoscope_tavern:emerald", "price": 40 },
+    { "item": "kaleidoscope_tavern:grasshopper", "price": 40 },
+    { "item": "kaleidoscope_tavern:allium_garden", "price": 42 },
+    { "item": "kaleidoscope_tavern:depth_charge", "price": 44 },
+    { "item": "kaleidoscope_tavern:screwdriver", "price": 38 },
+    { "item": "kaleidoscope_tavern:godfather", "price": 46 },
+    { "item": "kaleidoscope_tavern:white_lady", "price": 42 },
+    { "item": "kaleidoscope_tavern:mojito", "price": 38 },
+    { "item": "kaleidoscope_tavern:brass_heart", "price": 48 },
+    { "item": "kaleidoscope_tavern:nether_special", "price": 50 },
+    { "item": "kaleidoscope_tavern:sculk_special", "price": 55 }
+  ]
+}

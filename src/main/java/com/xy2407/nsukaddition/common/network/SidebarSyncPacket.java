@@ -13,7 +13,7 @@ import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
-/** 侧边栏同步网络包，将城市数据（官员、建筑、物资、任务、财务、市民）同步到客户端。 */
+/** 侧边栏同步网络包，将城市数据（官员、建筑、物资、任务、财务、市民、繁荣度）同步到客户端。 */
 public record SidebarSyncPacket(
         UUID cityId,
         List<String> officerNames,
@@ -24,6 +24,7 @@ public record SidebarSyncPacket(
         int farmCount,
         int ranchCount,
         int mineCount,
+        long prosperity,
         List<MaterialEntry> reserveMaterials,
         List<BuildTaskData> buildTasks,
         List<FinanceEntry> financeEntries,
@@ -44,6 +45,7 @@ public record SidebarSyncPacket(
     }
 
     public record BuildTaskData(
+            String taskId,
             String displayName,
             String citizenId,
             int progressPercent,
@@ -88,9 +90,11 @@ public record SidebarSyncPacket(
         b.writeInt(p.farmCount);
         b.writeInt(p.ranchCount);
         b.writeInt(p.mineCount);
+        b.writeLong(p.prosperity);
         writeMaterials(b, p.reserveMaterials);
         b.writeVarInt(p.buildTasks.size());
         for (BuildTaskData task : p.buildTasks) {
+            b.writeUtf(task.taskId(), 36);
             b.writeUtf(task.displayName(), 128);
             b.writeUtf(task.citizenId, 36);
             b.writeVarInt(task.progressPercent);
@@ -131,11 +135,13 @@ public record SidebarSyncPacket(
         int farmCount = b.readInt();
         int ranchCount = b.readInt();
         int mineCount = b.readInt();
+        long prosperity = b.readLong();
         List<MaterialEntry> reserveMaterials = readMaterials(b);
 
         int taskCount = b.readVarInt();
         List<BuildTaskData> buildTasks = new ArrayList<>(taskCount);
         for (int i = 0; i < taskCount; i++) {
+            String taskId = b.readUtf(36);
             String displayName = b.readUtf(128);
             String citizenId = b.readUtf(36);
             int progress = b.readVarInt();
@@ -143,7 +149,7 @@ public record SidebarSyncPacket(
             boolean tracked = b.readBoolean();
             List<MaterialEntry> required = readMaterials(b);
             List<MaterialEntry> available = readMaterials(b);
-            buildTasks.add(new BuildTaskData(displayName, citizenId, progress, status, tracked, required, available));
+            buildTasks.add(new BuildTaskData(taskId, displayName, citizenId, progress, status, tracked, required, available));
         }
 
         int financeCount = b.readVarInt();
@@ -171,7 +177,7 @@ public record SidebarSyncPacket(
 
         return new SidebarSyncPacket(
                 cityId, officerNames, officerPerms,
-                shopCount, factoryCount, residenceCount, farmCount, ranchCount, mineCount,
+                shopCount, factoryCount, residenceCount, farmCount, ranchCount, mineCount, prosperity,
                 reserveMaterials, buildTasks, financeEntries, citizens);
     }
 

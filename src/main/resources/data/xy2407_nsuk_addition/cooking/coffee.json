@@ -1,0 +1,363 @@
+{
+  "id": "coffee",
+  "waiter": "and",
+  "name": "咖啡馆",
+  "job": {
+    "id": "chef",
+    "name": "厨师",
+    "heldItem": "kaleidoscope_cookery:kitchen_shovel"
+  },
+  "points": {
+    "work": {
+      "type": "structure_pos",
+      "positions": [
+        [
+          4,
+          1,
+          4
+        ]
+      ]
+    },
+    "waiter_work": {
+      "type": "structure_pos",
+      "positions": [
+        [
+          4,
+          1,
+          5
+        ]
+      ]
+    },
+    "desk": {
+      "type": "structure_pos",
+      "positions": [
+        [
+          5,
+          1,
+          17
+        ],
+        [
+          10,
+          1,
+          11
+        ],
+        [
+          8,
+          1,
+          7
+        ],
+        [
+          8,
+          1,
+          11
+        ],
+        [
+          8,
+          1,
+          15
+        ],
+        [
+          5,
+          1,
+          15
+        ],
+        [
+          2,
+          1,
+          15
+        ],
+        [
+          2,
+          1,
+          9
+        ],
+        [
+          2,
+          1,
+          8
+        ]
+      ]
+    }
+  },
+  "containers": {
+    "input": {
+      "type": "structure_pos",
+      "positions": [
+        [
+          3,
+          1,
+          2
+        ],
+        [
+          4,
+          1,
+          2
+        ]
+      ]
+    },
+    "output": {
+      "type": "structure_pos",
+      "positions": [
+        [
+          3,
+          1,
+          2
+        ],
+        [
+          4,
+          1,
+          2
+        ]
+      ]
+    }
+  },
+  "seats": [
+    {
+      "positions": [
+        [
+          8,
+          1,
+          8
+        ]
+      ]
+    },
+    {
+      "positions": [
+        [
+          8,
+          1,
+          10
+        ]
+      ]
+    },
+    {
+      "positions": [
+        [
+          8,
+          1,
+          12
+        ]
+      ]
+    },
+    {
+      "positions": [
+        [
+          8,
+          1,
+          14
+        ]
+      ]
+    },
+    {
+      "positions": [
+        [
+          6,
+          1,
+          15
+        ]
+      ]
+    },
+    {
+      "positions": [
+        [
+          4,
+          1,
+          15
+        ]
+      ]
+    },
+    {
+      "positions": [
+        [
+          2,
+          1,
+          14
+        ]
+      ]
+    },
+    {
+      "positions": [
+        [
+          2,
+          1,
+          10
+        ]
+      ]
+    },
+    {
+      "positions": [
+        [
+          2,
+          1,
+          7
+        ]
+      ]
+    },
+    {
+      "positions": [
+        [
+          10,
+          1,
+          10
+        ]
+      ]
+    },
+    {
+      "positions": [
+        [
+          10,
+          1,
+          12
+        ]
+      ]
+    },
+    {
+      "positions": [
+        [
+          6,
+          1,
+          17
+        ]
+      ]
+    },
+    {
+      "positions": [
+        [
+          4,
+          1,
+          17
+        ]
+      ]
+    }
+  ],
+  "cook": [
+    {
+      "item": "kawaiidishes:mug",
+      "price": 7.4
+    },
+    {
+      "item": "kawaiidishes:dark_coffee",
+      "price": 8.7
+    },
+    {
+      "item": "kawaiidishes:espresso_coffee",
+      "price": 8.0
+    },
+    {
+      "item": "kawaiidishes:doppio_coffee",
+      "price": 7.0
+    },
+    {
+      "item": "kawaiidishes:macchiato_coffee",
+      "price": 8.5
+    },
+    {
+      "item": "kawaiidishes:latte_coffee",
+      "price": 8.3
+    },
+    {
+      "item": "kawaiidishes:capuccino_coffee",
+      "price": 7.9
+    },
+    {
+      "item": "kawaiidishes:mocha_coffee",
+      "price": 5.3
+    },
+    {
+      "item": "kawaiidishes:hot_cocoa",
+      "price": 8.3
+    },
+    {
+      "item": "kawaiidishes:cheese_cake",
+      "price": 6.9
+    },
+    {
+      "item": "kawaiidishes:chocolate_cheese_cake",
+      "price": 9.1
+    },
+    {
+      "item": "kawaiidishes:honey_cheese_cake",
+      "price": 9.1
+    },
+    {
+      "item": "kawaiidishes:apple_pie",
+      "price": 6.7
+    },
+    {
+      "item": "kawaiidishes:sweet_berry_pie",
+      "price": 6.7
+    },
+    {
+      "item": "kawaiidishes:glow_berry_pie",
+      "price": 5.9
+    },
+    {
+      "item": "kawaiidishes:cherry_pie",
+      "price": 8.3
+    },
+    {
+      "item": "kawaiidishes:waffle",
+      "price": 6.8
+    },
+    {
+      "item": "kawaiidishes:cream_ice_cream",
+      "price": 7.4
+    },
+    {
+      "item": "kawaiidishes:coffee_ice_cream",
+      "price": 9.2
+    },
+    {
+      "item": "kawaiidishes:chocolate_ice_cream",
+      "price": 7.9
+    },
+    {
+      "item": "kawaiidishes:sweet_berry_ice_cream",
+      "price": 7.6
+    },
+    {
+      "item": "kawaiidishes:glow_berry_ice_cream",
+      "price": 9.0
+    },
+    {
+      "item": "kawaiidishes:neapolitan_ice_cream",
+      "price": 6.2
+    },
+    {
+      "item": "kawaiidishes:mocha_ice_cream",
+      "price": 9.6
+    },
+    {
+      "item": "kawaiidishes:cherry_ice_cream",
+      "price": 9.2
+    },
+    {
+      "item": "bakeries:iced_american",
+      "price": 5.5
+    },
+    {
+      "item": "bakeries:iced_latte",
+      "price": 6.6
+    },
+    {
+      "item": "bakeries:brown_sugar_latte",
+      "price": 6.8
+    },
+    {
+      "item": "bakeries:cream_bingle_coffee",
+      "price": 9.5
+    },
+    {
+      "item": "bakeries:matcha_latte",
+      "price": 6.6
+    },
+    {
+      "item": "bakeries:matcha_parfait",
+      "price": 7.7
+    },
+    {
+      "item": "bakeries:taro_milk",
+      "price": 7.0
+    }
+  ]
+}

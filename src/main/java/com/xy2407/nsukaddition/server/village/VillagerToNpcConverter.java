@@ -7,8 +7,10 @@ import common.cn.kafei.simukraft.entity.CitizenEntity;
 import common.cn.kafei.simukraft.registry.ModEntities;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.npc.Villager;
 import net.minecraft.world.level.ChunkPos;
+import net.minecraft.world.phys.AABB;
 import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 
@@ -28,6 +30,10 @@ public final class VillagerToNpcConverter {
         event.setCanceled(true);
 
         BlockPos spawnPos = villager.blockPosition();
+        for (Entity e : level.getEntities((Entity) null, new AABB(spawnPos).inflate(0.5D), e -> e instanceof CitizenEntity)) {
+            return;
+        }
+
         float yRot = villager.getYRot();
         float xRot = villager.getXRot();
 
@@ -56,6 +62,10 @@ public final class VillagerToNpcConverter {
             CitizenService.setCity(level, data.uuid(), cityId);
         }
 
+        if (level.getEntity(npc.getUUID()) != null) {
+            npc.discard();
+            return;
+        }
         level.addFreshEntity(npc);
     }
 }

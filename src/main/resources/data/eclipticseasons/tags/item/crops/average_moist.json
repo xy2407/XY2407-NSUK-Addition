@@ -7,6 +7,7 @@
     {"id": "culturaldelights:eggplant_seeds", "required": false},
     {"id": "culturaldelights:corn_kernels", "required": false},
     {"id": "kaleidoscope_cookery:tomato_seed", "required": false},
-    {"id": "kaleidoscope_cookery:lettuce_seed", "required": false}
+    {"id": "kaleidoscope_cookery:lettuce_seed", "required": false},
+    {"id": "kawaiidishes:coffee_berries", "required": false}
   ]
 }

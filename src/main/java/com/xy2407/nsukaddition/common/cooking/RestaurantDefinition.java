@@ -4,6 +4,7 @@ import net.minecraft.core.BlockPos;
 
 import java.nio.file.Path;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 /** 餐厅定义，包含名称、职业、容器、座位、可选菜品列表及价格。 */
@@ -17,7 +18,9 @@ public record RestaurantDefinition(String id,
                                    List<String> cook,
                                    Map<String, Double> cookPrices,
                                    List<RecipeDefinition> recipes,
-                                   Path sourcePath) {
+                                   List<BlockPos> outputBlock,
+                                   Path sourcePath,
+                                   String waiterType) {
     public RestaurantDefinition {
         id = id != null && !id.isBlank() ? id.trim() : "restaurant";
         name = name != null && !name.isBlank() ? name.trim() : id;
@@ -28,19 +31,35 @@ public record RestaurantDefinition(String id,
         cook = cook != null ? List.copyOf(cook) : List.of();
         cookPrices = cookPrices != null ? Map.copyOf(cookPrices) : Map.of();
         recipes = recipes != null ? List.copyOf(recipes) : List.of();
+        outputBlock = outputBlock != null ? List.copyOf(outputBlock) : List.of();
+        String normalizedWaiter = waiterType == null ? "" : waiterType.trim().toLowerCase(Locale.ROOT);
+        waiterType = switch (normalizedWaiter) {
+            case "maid" -> "maid";
+            case "and" -> "and";
+            default -> "nsuk";
+        };
     }
 
-    /** cook 列表是否包含指定物品 id。 */
+    public boolean isMaidWaiter() {
+        return "maid".equals(waiterType) || "and".equals(waiterType);
+    }
+
+    public boolean isNsukWaiter() {
+        return "nsuk".equals(waiterType) || "and".equals(waiterType);
+    }
+
+    public boolean isAndWaiter() {
+        return "and".equals(waiterType);
+    }
+
     public boolean canCook(String itemId) {
         return itemId != null && cook.contains(itemId);
     }
 
-    /** 获取菜品基础价格，无价格返回0。 */
     public double cookPrice(String itemId) {
         return cookPrices.getOrDefault(itemId, 0.0);
     }
 
-    /** 随机选择一个菜品物品 id。 */
     public String randomCookItem(net.minecraft.util.RandomSource random) {
         if (cook.isEmpty()) return "";
         return cook.get(random.nextInt(cook.size()));
@@ -54,7 +73,6 @@ public record RestaurantDefinition(String id,
         return null;
     }
 
-    /** 所有座位坐标展开为平铺列表。 */
     public List<BlockPos> allSeatPositions() {
         return seats.stream().flatMap(s -> s.positions().stream()).toList();
     }
@@ -63,7 +81,6 @@ public record RestaurantDefinition(String id,
         return recipes.isEmpty() ? "" : recipes.getFirst().id();
     }
 
-    /** 随机选择一个配方 ID。 */
     public String randomRecipeId(net.minecraft.util.RandomSource random) {
         if (recipes.isEmpty()) return "";
         return recipes.get(random.nextInt(recipes.size())).id();
@@ -95,7 +112,6 @@ public record RestaurantDefinition(String id,
         }
     }
 
-    /** 座位定义：一组坐标表示多个座位。 */
     public record SeatDefinition(List<BlockPos> positions) {
         public SeatDefinition {
             positions = positions != null

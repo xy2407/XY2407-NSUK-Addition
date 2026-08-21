@@ -22,11 +22,14 @@ public final class IndustrialBuildingDeployer {
 
     private static final List<String> BUILDING_FILES = List.of(
             "smeltery.json", "smeltery.sk", "smeltery.nbt",
-            "winery.json", "winery.sk", "winery.nbt"
+            "winery.json", "winery.sk", "winery.nbt",
+            "flower.json", "flower.sk", "flower.nbt",
+            "basic_material.json", "basic_material.sk", "basic_material.nbt",
+            "material_conversion.json", "material_conversion.sk", "material_conversion.nbt"
     );
 
     private static final String VERSION_ENTRY = "_nsuk_version.txt";
-    private static final String CURRENT_VERSION = "1";
+    private static final String CURRENT_VERSION = "7";
 
     private IndustrialBuildingDeployer() {
     }

@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.Optional;
 
-/** 养殖控制箱受城市放置限制并注册为 POI。 */
+/** 养殖与外贸控制箱受城市放置限制并注册为 POI。 */
 @Mixin(value = CityPlacementRestrictionHandler.class, remap = false)
 public class CityPlacementRestrictionHandlerMixin {
 
@@ -22,7 +22,9 @@ public class CityPlacementRestrictionHandlerMixin {
             remap = false
     )
     private static void nsuk$isRestrictedBlock(Block block, CallbackInfoReturnable<Boolean> cir) {
-        if (!cir.getReturnValue() && block == ModBlocks.BREEDING_CONTROL_BOX.get()) {
+        if (cir.getReturnValue()) return;
+        if (block == ModBlocks.BREEDING_CONTROL_BOX.get()
+                || block == ModBlocks.FOREIGN_TRADE_CONTROL_BOX.get()) {
             cir.setReturnValue(true);
         }
     }
@@ -34,7 +36,9 @@ public class CityPlacementRestrictionHandlerMixin {
             remap = false
     )
     private static void nsuk$poiTypeForBlock(Block block, CallbackInfoReturnable<Optional<CityPoiType>> cir) {
-        if (cir.getReturnValue().isEmpty() && block == ModBlocks.BREEDING_CONTROL_BOX.get()) {
+        if (cir.getReturnValue().isPresent()) return;
+        if (block == ModBlocks.BREEDING_CONTROL_BOX.get()
+                || block == ModBlocks.FOREIGN_TRADE_CONTROL_BOX.get()) {
             cir.setReturnValue(Optional.of(CityPoiType.OTHER));
         }
     }

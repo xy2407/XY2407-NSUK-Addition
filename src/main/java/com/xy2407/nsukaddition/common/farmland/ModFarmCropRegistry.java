@@ -18,7 +18,6 @@ public final class ModFarmCropRegistry {
 
     private static final Map<String, FarmCrop> CROP_MAP = new ConcurrentHashMap<>();
 
-    /** 农田盒位置 → 最近一次已知的作物ID，防止 FarmCrop 实例为 null 时 crop ID 在持久化中丢失。 */
     private static final Map<BlockPos, String> PRESERVED_CROP_IDS = new ConcurrentHashMap<>();
 
     private ModFarmCropRegistry() {
@@ -37,19 +36,16 @@ public final class ModFarmCropRegistry {
         return CROP_MAP.get(id.toLowerCase(java.util.Locale.ROOT));
     }
 
-    /** 记录某个农田盒最近一次已知的作物ID。 */
     public static void preserveCropId(BlockPos boxPos, String cropId) {
         if (boxPos != null && cropId != null && !cropId.isBlank()) {
             PRESERVED_CROP_IDS.put(boxPos.immutable(), cropId);
         }
     }
 
-    /** 获取某个农田盒保留的作物ID，可能返回 null。 */
     public static String getPreservedCropId(BlockPos boxPos) {
         return boxPos == null ? null : PRESERVED_CROP_IDS.get(boxPos.immutable());
     }
 
-    /** 移除某个农田盒的保留作物ID（农田盒被删除时调用）。 */
     public static void removePreservedCropId(BlockPos boxPos) {
         if (boxPos != null) {
             PRESERVED_CROP_IDS.remove(boxPos.immutable());
@@ -84,6 +80,17 @@ public final class ModFarmCropRegistry {
         register("kt_grape",      "kaleidoscope_tavern:grapevine", "kaleidoscope_tavern:grape_crop",      FarmCrop.Layout.FULL, null);
         register("kt_ice_grape",  "kaleidoscope_tavern:grapevine", "kaleidoscope_tavern:ice_grape_crop",  FarmCrop.Layout.FULL, null);
         register("kt_gold_grape", "kaleidoscope_tavern:grapevine", "kaleidoscope_tavern:gold_grape_crop", FarmCrop.Layout.FULL, null);
+
+        register("vinery_jungle_grape_red",   "vinery:jungle_grape_seeds_red",   "vinery:jungle_grape_bush_red",   FarmCrop.Layout.FULL, null);
+        register("vinery_jungle_grape_white", "vinery:jungle_grape_seeds_white", "vinery:jungle_grape_bush_white", FarmCrop.Layout.FULL, null);
+        register("brewery_hops",   "brewery:hops",   "brewery:hops_crop",   FarmCrop.Layout.FULL, null);
+        register("kawaiidishes_coffee", "kawaiidishes:coffee_berries", "kawaiidishes:coffee_bush", FarmCrop.Layout.FULL, null);
+        register("minecraft_cocoa", "minecraft:cocoa_beans", "minecraft:cocoa", FarmCrop.Layout.FULL, null);
+        register("minecraft_sweet_berry", "minecraft:sweet_berries", "minecraft:sweet_berry_bush", FarmCrop.Layout.FULL, null);
+        register("minecraft_glow_berry", "minecraft:glow_berries", "minecraft:cave_vines", FarmCrop.Layout.FULL, null);
+
+        register("minecraft_brown_mushroom", "minecraft:brown_mushroom", "minecraft:brown_mushroom", FarmCrop.Layout.FULL, null);
+        register("minecraft_red_mushroom", "minecraft:red_mushroom", "minecraft:red_mushroom", FarmCrop.Layout.FULL, null);
 
         NsukAddition.LOGGER.info("[农田注册] 完成，已注册 {} 个自定义作物: {}", CROP_MAP.size(), CROP_MAP.keySet());
     }

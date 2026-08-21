@@ -48,6 +48,5 @@ public record ContainerRoleResponsePacket(BlockPos containerPos, List<RoleEntry>
         ctx.enqueueWork(() -> ContainerRoleBridge.handle(p));
     }
 
-    /** 单条角色记录：标识容器是 input/output/…，及所属建筑类型和相对坐标 */
     public record RoleEntry(String role, String boxType, int relativeX, int relativeY, int relativeZ) {}
 }

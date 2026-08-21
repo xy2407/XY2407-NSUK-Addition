@@ -1,0 +1,130 @@
+{
+  "id": "xy2407_nsuk_addition:basic_material",
+  "name": "基础材料加工厂",
+  "jobType": "materials_worker",
+  "jobName": "材料加工工人",
+  "heldItem": "minecraft:stone_pickaxe",
+  "points": {
+    "work": {
+      "type": "structure_pos",
+      "positions": [[4, 1, 1]],
+      "select": "nearest"
+    }
+  },
+  "containers": {
+    "input": {
+      "type": "structure_pos",
+      "positions": [[7, 1, 5], [7, 2, 6]]
+    },
+    "output": {
+      "type": "structure_pos",
+      "positions": [[6, 2, 4]]
+    }
+  },
+  "recipes": [
+    {
+      "id": "craft_gravel",
+      "name": "圆石粉碎成沙砾",
+      "heldItem": "minecraft:stone_pickaxe",
+      "inputs": [
+        {
+          "item": "minecraft:cobblestone",
+          "count": 16,
+          "consume": true
+        }
+      ],
+      "outputs": [
+        {
+          "item": "minecraft:gravel",
+          "baseAmount": 16,
+          "probability": 1.0,
+          "ignoreMultiplier": true
+        }
+      ],
+      "steps": [
+        {"type": "set_held_item", "item": "minecraft:stone_pickaxe"},
+        {"type": "move_to", "point": "work"},
+        {"type": "move_to_container", "container": "input"},
+        {"type": "require_inputs", "container": "input"},
+        {"type": "require_output_space", "container": "output"},
+        {"type": "move_to", "point": "work"},
+        {"type": "use_item", "ticks": 20, "swing": true},
+        {"type": "move_to_container", "container": "output"},
+        {"type": "look_at_container", "container": "output"},
+        {"type": "inspect_container", "ticks": 20, "container": "output"},
+        {"type": "craft_recipe", "input": "input", "output": "output"}
+      ]
+    },
+    {
+      "id": "craft_sand",
+      "name": "圆石粉碎成沙子",
+      "heldItem": "minecraft:stone_pickaxe",
+      "inputs": [
+        {
+          "item": "minecraft:cobblestone",
+          "count": 16,
+          "consume": true
+        }
+      ],
+      "outputs": [
+        {
+          "item": "minecraft:sand",
+          "baseAmount": 32,
+          "probability": 1.0,
+          "ignoreMultiplier": true
+        }
+      ],
+      "steps": [
+        {"type": "set_held_item", "item": "minecraft:stone_pickaxe"},
+        {"type": "move_to", "point": "work"},
+        {"type": "move_to_container", "container": "input"},
+        {"type": "require_inputs", "container": "input"},
+        {"type": "require_output_space", "container": "output"},
+        {"type": "move_to", "point": "work"},
+        {"type": "use_item", "ticks": 20, "swing": true},
+        {"type": "move_to_container", "container": "output"},
+        {"type": "look_at_container", "container": "output"},
+        {"type": "inspect_container", "ticks": 20, "container": "output"},
+        {"type": "craft_recipe", "input": "input", "output": "output"}
+      ]
+    },
+    {
+      "id": "craft_dirt",
+      "name": "圆石与小麦合成泥土",
+      "heldItem": "minecraft:stone_pickaxe",
+      "inputs": [
+        {
+          "item": "minecraft:cobblestone",
+          "count": 16,
+          "consume": true
+        },
+        {
+          "item": "minecraft:wheat",
+          "count": 16,
+          "consume": true
+        }
+      ],
+      "outputs": [
+        {
+          "item": "minecraft:dirt",
+          "baseAmount": 16,
+          "probability": 1.0,
+          "ignoreMultiplier": true
+        }
+      ],
+      "steps": [
+        {"type": "set_held_item", "item": "minecraft:stone_pickaxe"},
+        {"type": "move_to", "point": "work"},
+        {"type": "move_to_container", "container": "input"},
+        {"type": "require_inputs", "container": "input"},
+        {"type": "require_output_space", "container": "output"},
+        {"type": "move_to", "point": "work"},
+        {"type": "use_item", "ticks": 20, "swing": true},
+        {"type": "move_to_container", "container": "output"},
+        {"type": "look_at_container", "container": "output"},
+        {"type": "inspect_container", "ticks": 20, "container": "output"},
+        {"type": "craft_recipe", "input": "input", "output": "output"}
+      ]
+    }
+  ]
+}

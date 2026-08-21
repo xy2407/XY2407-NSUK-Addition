@@ -2,7 +2,8 @@ package com.xy2407.nsukaddition.client.renderer;
 
 import client.cn.kafei.simukraft.client.renderer.CitizenOverheadStatusRegistry;
 import client.cn.kafei.simukraft.client.renderer.CitizenWorkStatusDisplayRegistry;
-import com.xy2407.nsukaddition.common.city.TourismConstants;
+import com.xy2407.nsukaddition.client.network.DiningOrderClientHandler;
+import com.xy2407.nsukaddition.common.city.TouristNpcHelper;
 import common.cn.kafei.simukraft.entity.CitizenEntity;
 import net.minecraft.network.chat.Component;
 import net.neoforged.api.distmarker.Dist;
@@ -10,7 +11,7 @@ import net.neoforged.api.distmarker.OnlyIn;
 
 import java.util.Optional;
 
-/** 游客/商队头顶状态渲染器，覆盖工作状态和饥饿状态的显示逻辑，统一蓝色。 */
+/** 游客/商队头顶状态渲染器，覆盖工作状态和饥饿状态的显示逻辑，统一蓝色（含游客就餐期间）。 */
 @SuppressWarnings("null")
 @OnlyIn(Dist.CLIENT)
 public final class TouristStatusRenderer {
@@ -55,10 +56,9 @@ public final class TouristStatusRenderer {
     }
 
     private static boolean isTouristOrCaravan(CitizenEntity entity) {
-        String label = entity.getStatusLabel();
-        if (label == null) return false;
-        return label.startsWith(TourismConstants.TOURIST_STATUS_LABEL)
-                || label.startsWith(TourismConstants.CARAVAN_LEADER_STATUS)
-                || label.startsWith(TourismConstants.CARAVAN_FOLLOWER_STATUS);
+        if (TouristNpcHelper.isTouristEntity(entity) || TouristNpcHelper.isCaravanEntity(entity)) {
+            return true;
+        }
+        return DiningOrderClientHandler.isTouristDining(entity.getUUID());
     }
 }

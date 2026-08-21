@@ -16,6 +16,8 @@ public final class ModTitleScreen extends Screen {
 
     private static final int BG_MAIN = 0xFF444444;
     private static final int TEXT_MUTED = 0xFFBDBDBD;
+    private static final int LINK_HOVER_COLOR = 0xFFFFFFFF;
+    private static final String UPDATE_URL = "https://pan.quark.cn/s/6d1e155ba656";
 
     private static final ResourceLocation BG_DAY1 =
             ResourceLocation.fromNamespaceAndPath("xy2407_nsuk_addition", "textures/background/day1.png");
@@ -70,6 +72,12 @@ public final class ModTitleScreen extends Screen {
     private CelestialBody.Type prevBgType = CelestialBody.Type.SUN;
     private float bgTransition = 1f;
     private long bgLastMs;
+
+    private int linkX;
+    private int linkY;
+    private int linkW;
+    private int linkH;
+    private boolean overLink;
 
     private boolean sidebarTargetExpanded;
     private float sidebarProgress;
@@ -170,8 +178,16 @@ public final class ModTitleScreen extends Screen {
         int rightX = width - 4;
         int line2X = rightX - line2W;
         int line1X = rightX - line1W;
-        gg.drawString(minecraft.font, line2, line2X, height - 4 - minecraft.font.lineHeight, TEXT_MUTED, false);
+        linkX = line2X;
+        linkY = height - 4 - minecraft.font.lineHeight;
+        linkW = line2W;
+        linkH = minecraft.font.lineHeight;
+        overLink = mouseX >= linkX && mouseX <= linkX + linkW && mouseY >= linkY && mouseY <= linkY + linkH;
+        gg.drawString(minecraft.font, line2, linkX, linkY, overLink ? LINK_HOVER_COLOR : TEXT_MUTED, false);
         gg.drawString(minecraft.font, line1, line1X, height - 4 - minecraft.font.lineHeight * 2 - 1, TEXT_MUTED, false);
+        if (overLink) {
+            gg.hLine(linkX, linkX + linkW - 1, linkY + linkH, LINK_HOVER_COLOR);
+        }
     }
 
     @Override
@@ -334,6 +350,11 @@ public final class ModTitleScreen extends Screen {
     @Override
     public boolean mouseClicked(double mouseX, double mouseY, int button) {
         int mx = (int) mouseX, my = (int) mouseY;
+
+        if (overLink) {
+            Util.getPlatform().openUri(UPDATE_URL);
+            return true;
+        }
 
         if (sidebarProgress > 0.5f) {
             for (SidebarButton btn : menuButtons) {

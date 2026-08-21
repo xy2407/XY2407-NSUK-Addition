@@ -2,6 +2,7 @@ package com.xy2407.nsukaddition.mixin;
 
 import com.xy2407.nsukaddition.NsukAddition;
 import common.cn.kafei.simukraft.building.BuildingBlockData;
+import common.cn.kafei.simukraft.building.BuildingCatalog;
 import common.cn.kafei.simukraft.building.BuildingStructure;
 import common.cn.kafei.simukraft.building.BuildingStructureService;
 import net.minecraft.core.BlockPos;
@@ -30,12 +31,13 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.Optional;
 
-/** 拦截养殖与餐厅建筑结构加载，从文件系统直接读取 .nbt。 */
+/** 拦截养殖、餐厅与外贸建筑结构加载，从文件系统直接读取 .nbt。 */
 @Mixin(value = BuildingStructureService.class, remap = false)
 public class BuildingStructureServiceMixin {
 
     private static final Path BREEDING_DIR = FMLPaths.GAMEDIR.get().resolve("xy2407_nsuk_addition/breeding");
     private static final Path COOKING_DIR = FMLPaths.GAMEDIR.get().resolve("xy2407_nsuk_addition/cooking");
+    private static final Path FOREIGN_TRADE_DIR = FMLPaths.GAMEDIR.get().resolve("xy2407_nsuk_addition/foreign_trade");
     private static final Map<String, String> LEGACY_BLOCK_REMAPS = Map.of(
             "minecraft:grass", "minecraft:short_grass"
     );
@@ -43,11 +45,28 @@ public class BuildingStructureServiceMixin {
     @Inject(method = "loadStructure", at = @At("HEAD"), cancellable = true)
     private static void nsuk$loadBreedingStructure(String category, String buildingFileName,
                                                     CallbackInfoReturnable<Optional<BuildingStructure>> cir) {
+        loadLooseStructure(category, buildingFileName, cir);
+    }
+
+    @Inject(method = "loadStructure(Lcommon/cn/kafei/simukraft/building/BuildingCatalog$BuildingDefinition;)Ljava/util/Optional;",
+            at = @At("HEAD"), cancellable = true, remap = false)
+    private static void nsuk$loadLooseStructureFromDefinition(BuildingCatalog.BuildingDefinition definition,
+                                                               CallbackInfoReturnable<Optional<BuildingStructure>> cir) {
+        if (definition == null) {
+            return;
+        }
+        loadLooseStructure(definition.category(), definition.metaFileName(), cir);
+    }
+
+    private static void loadLooseStructure(String category, String buildingFileName,
+                                           CallbackInfoReturnable<Optional<BuildingStructure>> cir) {
         Path dir;
         if ("breeding".equalsIgnoreCase(category)) {
             dir = BREEDING_DIR;
         } else if ("cooking".equalsIgnoreCase(category)) {
             dir = COOKING_DIR;
+        } else if ("foreign_trade".equalsIgnoreCase(category)) {
+            dir = FOREIGN_TRADE_DIR;
         } else {
             return;
         }
@@ -106,7 +125,7 @@ public class BuildingStructureServiceMixin {
             return Optional.empty();
         }
 
-        List<BuildingBlockData> blocks = parseBlocks(rootTag);
+        List<BuildingBlockData> blocks = nsuk$parseBlocks(rootTag);
 
         if (blocks.isEmpty()) {
             return Optional.empty();
@@ -121,7 +140,7 @@ public class BuildingStructureServiceMixin {
         if (Files.isRegularFile(skPath)) {
             try {
                 String metaText = Files.readString(skPath);
-                displayName = findValue(metaText, "name", stripExtension(metaFileName));
+                displayName = findValue(metaText, "name", nsuk$stripExtension(metaFileName));
                 size = findValue(metaText, "size", "-");
                 amount = findValue(metaText, "amount", findValue(metaText, "price", "-"));
                 author = findValue(metaText, "author", "External");
@@ -133,19 +152,19 @@ public class BuildingStructureServiceMixin {
         BlockPos sizePos = parseSize(size);
 
         BuildingStructure structure = new BuildingStructure(
-                category, displayName, stripExtension(metaFileName),
+                category, displayName, nsuk$stripExtension(metaFileName),
                 amount, nbtFileName, author, size,
                 sizePos, List.copyOf(blocks),
-                List.of(), BlockPos.ZERO, blocks.size()
+                List.of(), List.of(), BlockPos.ZERO, blocks.size()
         );
 
         return Optional.of(structure);
     }
 
-    private static List<BuildingBlockData> parseBlocks(CompoundTag rootTag) {
+    private static List<BuildingBlockData> nsuk$parseBlocks(CompoundTag rootTag) {
         List<BuildingBlockData> blocks = new ArrayList<>();
         if (rootTag.contains("Schematic", Tag.TAG_COMPOUND)) {
-            return parseBlocks(rootTag.getCompound("Schematic"));
+            return nsuk$parseBlocks(rootTag.getCompound("Schematic"));
         }
         if (rootTag.contains("blocks", Tag.TAG_LIST) && rootTag.contains("palette", Tag.TAG_LIST)) {
             ListTag palette = rootTag.getList("palette", Tag.TAG_COMPOUND);
@@ -162,7 +181,7 @@ public class BuildingStructureServiceMixin {
                 int z = posList.getInt(2);
                 int stateIndex = blockTag.getInt("state");
                 if (stateIndex < 0 || stateIndex >= palette.size()) { skippedBadIndex++; continue; }
-                BlockState state = parseState(palette.getCompound(stateIndex));
+                BlockState state = nsuk$parseState(palette.getCompound(stateIndex));
                 if (state == null) { skippedNullState++; continue; }
                 BlockPos relative = new BlockPos(x, y, z);
                 blocks.add(new BuildingBlockData(relative, state, relative));
@@ -171,7 +190,7 @@ public class BuildingStructureServiceMixin {
         return blocks;
     }
 
-    private static BlockState parseState(CompoundTag stateTag) {
+    private static BlockState nsuk$parseState(CompoundTag stateTag) {
         String name = stateTag.getString("Name");
         if (name == null || name.isBlank()) return null;
         name = LEGACY_BLOCK_REMAPS.getOrDefault(name, name);
@@ -185,14 +204,14 @@ public class BuildingStructureServiceMixin {
             for (String key : properties.getAllKeys()) {
                 Property<?> property = state.getBlock().getStateDefinition().getProperty(key);
                 if (property == null) continue;
-                state = applyProperty(state, property, properties.getString(key));
+                state = nsuk$applyProperty(state, property, properties.getString(key));
             }
         }
         return state;
     }
 
     @SuppressWarnings("unchecked")
-    private static <T extends Comparable<T>> BlockState applyProperty(BlockState state, Property<T> property, String value) {
+    private static <T extends Comparable<T>> BlockState nsuk$applyProperty(BlockState state, Property<T> property, String value) {
         return property.getValue(value).map(parsed -> state.setValue(property, parsed)).orElse(state);
     }
 
@@ -219,7 +238,7 @@ public class BuildingStructureServiceMixin {
         return fallback;
     }
 
-    private static String stripExtension(String fileName) {
+    private static String nsuk$stripExtension(String fileName) {
         int index = fileName.lastIndexOf('.');
         return index > 0 ? fileName.substring(0, index) : fileName;
     }

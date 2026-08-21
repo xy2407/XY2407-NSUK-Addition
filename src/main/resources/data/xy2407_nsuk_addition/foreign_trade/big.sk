@@ -1,0 +1,7 @@
+name: 外贸驿站（大）
+size: 28x5x16
+amount: 1600
+author: xy2407
+description: 大型外贸驿站，支持多名NPC同时工作，提供更丰富的外贸商品。
+foreign_trade: big.json
+structure: big.nbt

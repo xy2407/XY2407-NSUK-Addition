@@ -1,10 +1,8 @@
 package com.xy2407.nsukaddition.common.network.clientbound;
 
 import com.xy2407.nsukaddition.common.foreigntrade.ForeignTradeMarket;
-import com.xy2407.nsukaddition.common.network.foreigntrade.ForeignTradeMarketDataPacket;
 
 import java.util.List;
-import java.util.function.BiConsumer;
 
 /** 外贸市场数据桥接，解耦公共包对客户端ScreenOpener的直接依赖。 */
 public final class ForeignTradeMarketDataBridge {

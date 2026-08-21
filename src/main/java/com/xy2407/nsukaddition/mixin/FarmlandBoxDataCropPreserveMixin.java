@@ -1,6 +1,5 @@
 package com.xy2407.nsukaddition.mixin;
 
-import com.xy2407.nsukaddition.NsukAddition;
 import com.xy2407.nsukaddition.common.farmland.ModFarmCropRegistry;
 import common.cn.kafei.simukraft.farmland.FarmCrop;
 import common.cn.kafei.simukraft.farmland.FarmlandBoxData;
@@ -23,7 +22,6 @@ public abstract class FarmlandBoxDataCropPreserveMixin {
         }
     }
 
-    // fromTag 加载时：记录 crop ID 并尝试兜底恢复 FarmCrop 实例
     @Inject(method = "fromTag", at = @At("RETURN"), remap = false)
     private static void xy2407$onFromTag(CompoundTag tag,
                                           CallbackInfoReturnable<FarmlandBoxData> cir) {
@@ -40,8 +38,6 @@ public abstract class FarmlandBoxDataCropPreserveMixin {
             FarmCrop crop = ModFarmCropRegistry.findById(cropId);
             if (crop != null) {
                 data.setCrop(crop);
-                NsukAddition.LOGGER.info("[农田加载] 兜底恢复作物: boxPos={}, cropId={}",
-                        data.boxPos().toShortString(), cropId);
             }
         }
     }

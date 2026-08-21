@@ -22,10 +22,28 @@ public final class ModKeyMappings {
             CATEGORY
     );
 
+    public static final KeyMapping TOGGLE_RTS_MODE = new KeyMapping(
+            "key.xy2407_nsuk_addition.toggle_rts_mode",
+            KeyConflictContext.IN_GAME,
+            InputConstants.Type.KEYSYM,
+            GLFW.GLFW_KEY_F6,
+            CATEGORY
+    );
+
+    public static final KeyMapping TOGGLE_RTS_ORTHO = new KeyMapping(
+            "key.xy2407_nsuk_addition.toggle_rts_ortho",
+            KeyConflictContext.IN_GAME,
+            InputConstants.Type.KEYSYM,
+            GLFW.GLFW_KEY_F7,
+            CATEGORY
+    );
+
     private ModKeyMappings() {
     }
 
     public static void register(RegisterKeyMappingsEvent event) {
         event.register(OPEN_SIDEBAR);
+        event.register(TOGGLE_RTS_MODE);
+        event.register(TOGGLE_RTS_ORTHO);
     }
 }

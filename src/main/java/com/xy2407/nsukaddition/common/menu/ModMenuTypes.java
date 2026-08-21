@@ -2,7 +2,6 @@ package com.xy2407.nsukaddition.common.menu;
 
 import com.lowdragmc.lowdraglib2.gui.holder.ModularUIContainerMenu;
 import com.xy2407.nsukaddition.NsukAddition;
-import com.xy2407.nsukaddition.common.mining.MiningControlBoxMenuProvider;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.inventory.MenuType;
 import net.neoforged.bus.api.IEventBus;
@@ -14,14 +13,6 @@ import net.neoforged.neoforge.registries.DeferredRegister;
 @SuppressWarnings("null")
 public final class ModMenuTypes {
     public static final DeferredRegister<MenuType<?>> MENUS = DeferredRegister.create(BuiltInRegistries.MENU, NsukAddition.MOD_ID);
-
-    public static final DeferredHolder<MenuType<?>, MenuType<ModularUIContainerMenu>> MINING_CONTROL_BOX = MENUS.register(
-            "mining_control_box",
-            () -> IMenuTypeExtension.create(MiningControlBoxMenuProvider::createClientMenu));
-
-    public static final DeferredHolder<MenuType<?>, MenuType<CitizenEquipmentMenu>> CITIZEN_EQUIPMENT = MENUS.register(
-            "citizen_equipment",
-            () -> IMenuTypeExtension.create(CitizenEquipmentMenu::new));
 
     private ModMenuTypes() {
     }

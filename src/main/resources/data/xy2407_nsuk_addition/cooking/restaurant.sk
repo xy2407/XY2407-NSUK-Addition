@@ -1,6 +1,6 @@
-name: 中餐馆
+name: 中餐厅
 size: 17x12x11
-amount: 100
+amount: 180
 author: xy2407
 description: 提供各类中式美食的餐厅，NPC可在此就餐补充饱食度。
 tags: price_high,material_high,stage_middle

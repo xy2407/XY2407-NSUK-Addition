@@ -1,0 +1,7 @@
+name:基础材料加工厂
+size:12 x 9 x 6
+amount:80元
+author:xy2407
+description:圆石粉碎成沙砾与沙子，圆石和小麦加工成泥土的基础材料工厂。
+tags:price_low,material_low,stage_early
+job_type:materials_worker

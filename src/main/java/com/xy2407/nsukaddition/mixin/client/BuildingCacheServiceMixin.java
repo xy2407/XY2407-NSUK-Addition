@@ -27,6 +27,7 @@ public class BuildingCacheServiceMixin {
 
     private static final Path BREEDING_DIR = FMLPaths.GAMEDIR.get().resolve("xy2407_nsuk_addition/breeding");
     private static final Path COOKING_DIR = FMLPaths.GAMEDIR.get().resolve("xy2407_nsuk_addition/cooking");
+    private static final Path FOREIGN_TRADE_DIR = FMLPaths.GAMEDIR.get().resolve("xy2407_nsuk_addition/foreign_trade");
 
     @Inject(method = "getBuildings", at = @At("HEAD"), cancellable = true)
     private static void nsuk$dynamicLoadBreeding(String category, CallbackInfoReturnable<List<BuildingCacheService.BuildingMeta>> cir) {
@@ -36,6 +37,8 @@ public class BuildingCacheServiceMixin {
             cir.setReturnValue(loadBuildingsFromDir(BREEDING_DIR, "breeding", "nsuk_breeding"));
         } else if ("cooking".equals(normalized)) {
             cir.setReturnValue(loadBuildingsFromDir(COOKING_DIR, "cooking", "nsuk_cooking"));
+        } else if ("foreign_trade".equals(normalized)) {
+            cir.setReturnValue(loadBuildingsFromDir(FOREIGN_TRADE_DIR, "foreign_trade", "nsuk_foreign_trade"));
         }
     }
 
@@ -96,10 +99,23 @@ public class BuildingCacheServiceMixin {
                 ? actualFileName(packageFiles, structureFile) : null;
         if (actualStructureFile == null) return null;
 
+        int unlockLevel = parseUnlockLevel(metaText);
+
         return new BuildingCacheService.BuildingMeta(
                 category, displayName, size, amount, author, description,
-                metaFile, actualStructureFile, packageSource
+                unlockLevel, metaFile, actualStructureFile, packageSource
         );
+    }
+
+    private static int parseUnlockLevel(String metaText) {
+        if (metaText == null) return 0;
+        String value = findValue(metaText, "unlockLevel", findValue(metaText, "unlock_level", ""));
+        if (value == null || value.isBlank()) return 0;
+        try {
+            return Integer.parseInt(value.trim());
+        } catch (NumberFormatException e) {
+            return 0;
+        }
     }
 
     private static boolean isSafePackageFileName(String fileName) {

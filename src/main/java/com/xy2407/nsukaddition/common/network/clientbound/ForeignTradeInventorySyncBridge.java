@@ -1,7 +1,5 @@
 package com.xy2407.nsukaddition.common.network.clientbound;
 
-import com.xy2407.nsukaddition.common.network.foreigntrade.ForeignTradeInventorySyncPacket;
-
 import java.util.Map;
 import java.util.function.Consumer;
 

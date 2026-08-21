@@ -1,0 +1,7 @@
+{
+  "values": [
+    {"id": "vinery:jungle_grape_bush_red", "required": false},
+    {"id": "vinery:jungle_grape_bush_white", "required": false},
+    {"id": "brewery:hops_crop", "required": false}
+  ]
+}

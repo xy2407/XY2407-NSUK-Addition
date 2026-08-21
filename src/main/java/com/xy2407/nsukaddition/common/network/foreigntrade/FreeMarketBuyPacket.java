@@ -1,8 +1,10 @@
 package com.xy2407.nsukaddition.common.network.foreigntrade;
 
 import com.xy2407.nsukaddition.NsukAddition;
+import com.xy2407.nsukaddition.common.capture.CaptureContainerUtil;
 import com.xy2407.nsukaddition.common.foreigntrade.FreeMarketRepository;
 import com.xy2407.nsukaddition.common.foreigntrade.ForeignTradeMarket;
+import com.xy2407.nsukaddition.common.item.EntityCaptureItem;
 import common.cn.kafei.simukraft.economy.EconomyService;
 import common.cn.kafei.simukraft.city.CityChunkManager;
 import common.cn.kafei.simukraft.city.CityPermissionLevel;
@@ -88,11 +90,22 @@ public record FreeMarketBuyPacket(BlockPos boxPos, long listingId) implements Cu
         }
         tradeStack.setCount(listing.count());
 
-        ItemStack remaining = tradeStack.copy();
         List<LogisticsWarehouseData> warehouses = LogisticsManager.get(level).warehouses(buyerCityId);
-        for (LogisticsWarehouseData wh : warehouses) {
-            if (remaining.isEmpty()) break;
-            remaining = LogisticsWarehouseInventoryService.insert(level, wh.boxPos(), remaining);
+        List<BlockPos> warehousePoses = new java.util.ArrayList<>();
+        for (LogisticsWarehouseData warehouse : warehouses) {
+            warehousePoses.add(warehouse.boxPos());
+        }
+
+        ItemStack deliver = tradeStack.copy();
+        if (deliver.getItem() instanceof EntityCaptureItem && EntityCaptureItem.getEntityType(deliver) != null) {
+            deliver = CaptureContainerUtil.mergeIntoWarehouses(level, warehousePoses, deliver);
+        }
+        ItemStack remaining = deliver.copy();
+        for (BlockPos warehousePos : warehousePoses) {
+            if (remaining.isEmpty()) {
+                break;
+            }
+            remaining = LogisticsWarehouseInventoryService.insert(level, warehousePos, remaining);
         }
         if (!remaining.isEmpty()) {
             LogisticsWarehouseInventoryService.insertIntoPlayerInventory(player.getInventory(), remaining);

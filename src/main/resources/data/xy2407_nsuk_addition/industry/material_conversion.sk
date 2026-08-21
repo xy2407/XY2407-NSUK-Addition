@@ -1,0 +1,7 @@
+name:材料转换站
+size:12 x 9 x 6
+amount:240元
+author:xy2407
+description:将组头建材转换为同组其它建材，每组一换一批 32 个。
+tags:price_low,material_low,stage_early
+job_type:material_converter

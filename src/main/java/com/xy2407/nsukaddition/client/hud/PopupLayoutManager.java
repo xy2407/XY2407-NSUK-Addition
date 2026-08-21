@@ -16,7 +16,7 @@ public final class PopupLayoutManager {
     }
 
     public static Rect compute(int screenW, int screenH, float animProgress) {
-        int width = Math.max(MIN_WIDTH, screenW / 3);
+        int width = Math.max(MIN_WIDTH, screenW * 3 / 10);
         int marginV = Math.max(4, (int) (screenH * VERTICAL_MARGIN_RATIO));
         int height = Math.max(MIN_HEIGHT, screenH - marginV * 2);
         int x = 0;

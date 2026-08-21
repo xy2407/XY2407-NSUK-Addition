@@ -6,6 +6,9 @@
     {"id": "vinery:savanna_grape_seeds_white", "required": false},
     {"id": "vinery:taiga_grape_seeds_red", "required": false},
     {"id": "vinery:taiga_grape_seeds_white", "required": false},
-    {"id": "kaleidoscope_tavern:grapevine", "required": false}
+    {"id": "kaleidoscope_tavern:grapevine", "required": false},
+    {"id": "vinery:jungle_grape_seeds_red", "required": false},
+    {"id": "vinery:jungle_grape_seeds_white", "required": false},
+    {"id": "brewery:hops", "required": false}
   ]
 }

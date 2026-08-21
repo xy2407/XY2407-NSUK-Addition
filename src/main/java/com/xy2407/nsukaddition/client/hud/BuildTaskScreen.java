@@ -1,5 +1,6 @@
 package com.xy2407.nsukaddition.client.hud;
 
+import com.xy2407.nsukaddition.NsukAddition;
 import com.xy2407.nsukaddition.client.data.SidebarDataSnapshot;
 import com.xy2407.nsukaddition.client.gui.ScrollablePanel;
 import com.xy2407.nsukaddition.common.network.building.BuildTaskActionPacket;
@@ -46,6 +47,8 @@ public final class BuildTaskScreen extends Screen {
     private final ScrollablePanel scrollPanel = new ScrollablePanel();
     private List<SidebarDataSnapshot.BuildTask> tasks;
     private List<Button> buttons = new ArrayList<>();
+    private SidebarDataSnapshot lastSnapshot;
+    private List<SidebarDataSnapshot.BuildTask> optimisticTasks;
 
     public BuildTaskScreen() {
         super(Component.translatable("gui.xy2407_nsuk_addition.build_tasks.title"));
@@ -54,7 +57,9 @@ public final class BuildTaskScreen extends Screen {
     @Override
     protected void init() {
         super.init();
-        tasks = SidebarDataSnapshot.get().buildTasks();
+        lastSnapshot = SidebarDataSnapshot.get();
+        optimisticTasks = null;
+        tasks = lastSnapshot.buildTasks();
         recalcScroll();
     }
 
@@ -66,6 +71,12 @@ public final class BuildTaskScreen extends Screen {
 
     @Override
     public void render(GuiGraphics gg, int mouseX, int mouseY, float partialTick) {
+        SidebarDataSnapshot snap = SidebarDataSnapshot.get();
+        if (snap != lastSnapshot) {
+            lastSnapshot = snap;
+            optimisticTasks = null;
+        }
+        tasks = optimisticTasks != null ? optimisticTasks : snap.buildTasks();
         buttons.clear();
         gg.fill(0, 0, width, height, 0xCC000000);
 
@@ -160,22 +171,29 @@ public final class BuildTaskScreen extends Screen {
         boolean paused = isPaused(task.statusKey());
 
         drawActionButton(gg, x + 8, btnTop, btnW, btnH, paused ? "恢复" : "暂停",
-                paused ? BuildTaskActionPacket.Action.RESUME : BuildTaskActionPacket.Action.PAUSE, task.citizenId(), false);
+                paused ? BuildTaskActionPacket.Action.RESUME : BuildTaskActionPacket.Action.PAUSE, task.taskId(), task.citizenId(), false, false);
         drawActionButton(gg, x + 8 + btnW + btnGap, btnTop, btnW, btnH, "追踪",
-                BuildTaskActionPacket.Action.TRACK, task.citizenId(), task.tracked());
+                BuildTaskActionPacket.Action.TRACK, task.taskId(), task.citizenId(), task.tracked(), false);
+        drawActionButton(gg, x + 8 + (btnW + btnGap) * 2, btnTop, btnW, btnH, "终止",
+                BuildTaskActionPacket.Action.ABORT, task.taskId(), task.citizenId(), false, true);
     }
 
     private void drawActionButton(GuiGraphics gg, int x, int y, int w, int h,
                                    String label, BuildTaskActionPacket.Action action,
-                                   String citizenId, boolean active) {
+                                   String taskId, String citizenId, boolean active, boolean danger) {
         boolean hovered = mouseIn(x, y, w, h);
-        int bg = active ? BTN_TRACKED_BG : (hovered ? BTN_BG_HOVER : BTN_BG);
+        int bg;
+        if (danger) {
+            bg = hovered ? 0xFFFF6B6B : 0xFFD9534F;
+        } else {
+            bg = active ? BTN_TRACKED_BG : (hovered ? BTN_BG_HOVER : BTN_BG);
+        }
         gg.fill(x, y, x + w, y + h, bg);
         gg.renderOutline(x, y, w, h, active ? 0xFFFFFFFF : BTN_BORDER);
         int tw = font.width(label);
         gg.drawString(font, Component.literal(label), x + (w - tw) / 2,
                 y + (h - font.lineHeight) / 2, BTN_TEXT, false);
-        buttons.add(new Button(x, y, w, h, citizenId, action));
+        buttons.add(new Button(x, y, w, h, taskId, citizenId, action));
     }
 
     private static boolean mouseIn(int x, int y, int w, int h) {
@@ -222,15 +240,42 @@ public final class BuildTaskScreen extends Screen {
         if (button == 0) {
             for (Button btn : buttons) {
                 if (mouseX >= btn.x && mouseX <= btn.x + btn.w && mouseY >= btn.y && mouseY <= btn.y + btn.h) {
+                    UUID citizenUuid;
+                    UUID taskUuid;
                     try {
-                        PacketDistributor.sendToServer(new BuildTaskActionPacket(UUID.fromString(btn.citizenId), btn.action));
-                    } catch (Exception ignored) {
+                        citizenUuid = UUID.fromString(btn.citizenId);
+                        taskUuid = UUID.fromString(btn.taskId);
+                    } catch (IllegalArgumentException e) {
+                        NsukAddition.LOGGER.error("建造任务按钮 UUID 非法: citizen={}, task={}", btn.citizenId, btn.taskId, e);
+                        return true;
                     }
+                    PacketDistributor.sendToServer(new BuildTaskActionPacket(citizenUuid, taskUuid, btn.action));
+                    optimisticTasks = applyOptimistic(tasks, btn.taskId, btn.action);
                     return true;
                 }
             }
         }
         return super.mouseClicked(mouseX, mouseY, button);
+    }
+
+    private static List<SidebarDataSnapshot.BuildTask> applyOptimistic(
+            List<SidebarDataSnapshot.BuildTask> list, String taskId, BuildTaskActionPacket.Action action) {
+        List<SidebarDataSnapshot.BuildTask> updated = new ArrayList<>(list);
+        for (int i = 0; i < updated.size(); i++) {
+            SidebarDataSnapshot.BuildTask t = updated.get(i);
+            if (!t.taskId().equals(taskId)) continue;
+            switch (action) {
+                case PAUSE -> updated.set(i, new SidebarDataSnapshot.BuildTask(
+                        t.taskId(), t.displayName(), t.citizenId(), t.progressPercent(), "paused_manual", t.tracked(), t.materials()));
+                case RESUME -> updated.set(i, new SidebarDataSnapshot.BuildTask(
+                        t.taskId(), t.displayName(), t.citizenId(), t.progressPercent(), "building", t.tracked(), t.materials()));
+                case TRACK -> updated.set(i, new SidebarDataSnapshot.BuildTask(
+                        t.taskId(), t.displayName(), t.citizenId(), t.progressPercent(), t.statusKey(), !t.tracked(), t.materials()));
+                case ABORT -> updated.remove(i);
+            }
+            break;
+        }
+        return updated;
     }
 
     @Override
@@ -263,5 +308,5 @@ public final class BuildTaskScreen extends Screen {
         Minecraft.getInstance().setScreen(new BuildTaskScreen());
     }
 
-    private record Button(int x, int y, int w, int h, String citizenId, BuildTaskActionPacket.Action action) {}
+    private record Button(int x, int y, int w, int h, String taskId, String citizenId, BuildTaskActionPacket.Action action) {}
 }
