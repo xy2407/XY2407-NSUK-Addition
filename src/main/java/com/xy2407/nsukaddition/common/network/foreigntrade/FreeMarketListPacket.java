@@ -3,6 +3,7 @@ package com.xy2407.nsukaddition.common.network.foreigntrade;
 import com.xy2407.nsukaddition.NsukAddition;
 import com.xy2407.nsukaddition.common.city.CityDataService;
 import com.xy2407.nsukaddition.common.foreigntrade.FreeMarketRepository;
+import com.xy2407.nsukaddition.common.item.EntityCaptureItem;
 import common.cn.kafei.simukraft.city.CityChunkManager;
 import common.cn.kafei.simukraft.city.CityData;
 import common.cn.kafei.simukraft.city.CityPermissionLevel;
@@ -82,15 +83,20 @@ public record FreeMarketListPacket(BlockPos boxPos, String itemId, int count, in
             ItemStack extracted = LogisticsWarehouseInventoryService.extract(level, wh.boxPos(), tradeStack, needed);
             if (!extracted.isEmpty()) needed -= extracted.getCount();
         }
-        if (needed > 0 && player.getInventory().countItem(item) >= needed) {
+        if (needed > 0) {
             int rem = needed;
             for (int i = 0; i < player.getInventory().getContainerSize() && rem > 0; i++) {
                 ItemStack slot = player.getInventory().getItem(i);
-                if (slot.is(item)) {
-                    int toRemove = Math.min(rem, slot.getCount());
-                    slot.shrink(toRemove);
-                    rem -= toRemove;
+                if (slot.isEmpty() || !slot.is(item)) {
+                    continue;
                 }
+                if (tradeStack.getItem() instanceof EntityCaptureItem
+                        && !EntityCaptureItem.isCompatibleCapture(slot, EntityCaptureItem.getEntityType(tradeStack))) {
+                    continue;
+                }
+                int toRemove = Math.min(rem, slot.getCount());
+                slot.shrink(toRemove);
+                rem -= toRemove;
             }
             needed = rem;
         }

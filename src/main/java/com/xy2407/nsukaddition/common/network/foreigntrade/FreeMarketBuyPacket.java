@@ -20,6 +20,7 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.neoforge.network.PacketDistributor;
@@ -98,7 +99,17 @@ public record FreeMarketBuyPacket(BlockPos boxPos, long listingId) implements Cu
 
         ItemStack deliver = tradeStack.copy();
         if (deliver.getItem() instanceof EntityCaptureItem && EntityCaptureItem.getEntityType(deliver) != null) {
+            EntityType<?> ctype = EntityCaptureItem.getEntityType(deliver);
+            boolean cbaby = EntityCaptureItem.isBaby(deliver);
+            ItemStack emptyDevice = new ItemStack(deliver.getItem());
             deliver = CaptureContainerUtil.mergeIntoWarehouses(level, warehousePoses, deliver);
+            int rem = EntityCaptureItem.getEntryCount(deliver);
+            if (rem > 0) {
+                int leftP = EntityCaptureItem.distributeCapture(player.getInventory().items, emptyDevice, ctype, cbaby, rem);
+                deliver = leftP > 0 ? EntityCaptureItem.createCapture(emptyDevice, ctype, cbaby, leftP) : ItemStack.EMPTY;
+            } else {
+                deliver = ItemStack.EMPTY;
+            }
         }
         ItemStack remaining = deliver.copy();
         for (BlockPos warehousePos : warehousePoses) {

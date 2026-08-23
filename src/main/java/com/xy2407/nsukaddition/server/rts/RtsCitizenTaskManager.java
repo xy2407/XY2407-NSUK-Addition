@@ -118,7 +118,6 @@ public final class RtsCitizenTaskManager {
         if (task.isComplete()) {
             task.onCancel();
             activeTasks.remove(id);
-            frozenCitizens.remove(id);
             return;
         }
         task.tick(citizen);

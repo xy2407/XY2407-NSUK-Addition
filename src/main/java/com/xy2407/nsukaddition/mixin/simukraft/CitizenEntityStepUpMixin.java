@@ -7,11 +7,8 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 /**
- * 提升市民步高（maxUpStep 0.6 → 1.1）：
- * Sable 物理结构碰撞的自动上台阶（SubLevelEntityCollision.tryStepUp）以实体 maxUpStep
- * 为抬升上限。原版默认 0.6 上不了 1 格高的台阶，导致 NPC 在"普通方块 ↔ 物理化结构"
- * 的 1 格高差边界卡住（快照合并后 A* 认为可走，实际迈不上去）。
- * 步高 1.1 后 NPC 能正常迈上 1 格台阶（普通世界与结构边界一致），副作用极小。
+ * 提升市民步高（maxUpStep 0.6 → 1.1）：让原版自动踏步能直接迈上 1 格台阶，
+ * 这样 NPC 可平稳登上 Sable 物理结构地板或平地额外 1 格高的位置。
  */
 @Mixin(CitizenEntity.class)
 public abstract class CitizenEntityStepUpMixin {

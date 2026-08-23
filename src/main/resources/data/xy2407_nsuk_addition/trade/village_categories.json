@@ -1,8 +1,8 @@
 {
   "village_categories": {
-    "plains": ["wood", "stone", "animal", "crop", "mineral", "wool", "concrete"],
+    "plains": ["wood", "stone", "brick", "animal", "crop", "mineral", "wool", "concrete", "cheese"],
     "snowy": ["wine", "animal", "stone", "lighting", "crop", "wool"],
-    "taiga": ["wood", "leaves", "animal", "crop", "mineral"],
+    "taiga": ["wood", "leaves", "brick", "animal", "crop", "mineral", "cheese"],
     "savanna": ["wood", "leaves", "animal", "crop", "mineral", "wine", "concrete", "terracotta"],
     "desert": ["sand", "glass", "terracotta", "wine", "crop", "mineral", "quartz"],
     "ocean": ["sand", "quartz", "wine", "aquatic", "prismarine"]

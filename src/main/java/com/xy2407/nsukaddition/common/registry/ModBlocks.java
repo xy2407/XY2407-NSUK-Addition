@@ -73,7 +73,7 @@ public final class ModBlocks {
     }
 
     private static void onCreativeTabBuild(BuildCreativeModeTabContentsEvent event) {
-        if (event.getTabKey() == common.cn.kafei.simukraft.registry.ModCreativeModeTabs.SIMUKRAFT_TAB.getKey()) {
+        if (event.getTabKey() == ModCreativeTabs.NSUK_TAB.getKey()) {
             event.accept(BREEDING_CONTROL_BOX_ITEM);
             event.accept(RESTAURANT_CONTROL_BOX_ITEM);
             event.accept(DYNAMIC_ROE_BLOCK_ITEM);

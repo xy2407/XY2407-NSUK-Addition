@@ -48,6 +48,15 @@ public final class TradeItemResolver {
     }
 
     public static ItemStack buildDisplay(String itemId, String category, int count) {
+        TradeItemDef def = ForeignTradeConfig.find(itemId);
+        if (def != null && def.isAnimal()) {
+            EntityType<?> type = resolveEntity(def);
+            if (type == null) {
+                return ItemStack.EMPTY;
+            }
+            ItemStack seed = new ItemStack(ModEntityItems.ENTITY_CAPTURE.get());
+            return EntityCaptureItem.createCapture(seed, type, def.captureBaby(), Math.max(1, count));
+        }
         if (category != null && category.equalsIgnoreCase("animal")) {
             EntityType<?> type = EntityType.byString(itemId).orElse(null);
             if (type == null) {

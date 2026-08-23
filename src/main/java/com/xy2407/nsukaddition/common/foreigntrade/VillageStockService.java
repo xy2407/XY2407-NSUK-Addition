@@ -1,8 +1,10 @@
 package com.xy2407.nsukaddition.common.foreigntrade;
 
+import com.xy2407.nsukaddition.common.city.CityLevel;
 import com.xy2407.nsukaddition.common.foreigntrade.ForeignTradeConfig.TradeItemDef;
 import com.xy2407.nsukaddition.common.storage.NsukSqliteDatabase;
 import com.xy2407.nsukaddition.common.storage.WriteBatchBuffer;
+import common.cn.kafei.simukraft.city.CityChunkManager;
 import net.minecraft.server.level.ServerLevel;
 
 import java.sql.Connection;
@@ -10,11 +12,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
-import java.util.Map;
-import java.util.Random;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -30,11 +30,28 @@ import java.util.concurrent.ConcurrentHashMap;
 @SuppressWarnings("null")
 public final class VillageStockService {
 
-    private static final int ITEMS_PER_CATEGORY = 6;
-
     private static final ConcurrentHashMap<String, Integer> STOCK_CACHE = new ConcurrentHashMap<>();
 
+    private static final java.util.Set<String> SYNCED_CITIES = ConcurrentHashMap.newKeySet();
+
     private VillageStockService() {
+    }
+
+    static CityLevel villageCityLevel(ServerLevel level, UUID cityId) {
+        if (cityId == null) {
+            return CityLevel.SETTLEMENT;
+        }
+        int chunks = level == null ? 0 : CityChunkManager.get(level).getCityChunks(cityId).size();
+        return switch (VillageCityGrade.gradeForChunks(chunks)) {
+            case VillageCityGrade.HAMLET -> CityLevel.SETTLEMENT;
+            case VillageCityGrade.VILLAGE -> CityLevel.VILLAGE;
+            case VillageCityGrade.TOWN -> CityLevel.TOWN;
+            default -> CityLevel.CITY_STATE;
+        };
+    }
+
+    public static int villageCap(ServerLevel level, UUID cityId, String category) {
+        return CaravanProductConfig.unitLimit(villageCityLevel(level, cityId), category) * 2;
     }
 
     private static void ensureTable(ServerLevel level) {
@@ -67,71 +84,26 @@ public final class VillageStockService {
             return;
         }
         ensureTable(level);
-        String cityKey = cityId.toString();
-        if (hasItems(level, cityKey)) {
+        if (!SYNCED_CITIES.add(cityId.toString())) {
             return;
         }
         List<StockItem> items = pickVillageItems(level, cityId, villageType);
         if (items.isEmpty()) {
             return;
         }
-        Random rng = new Random(cityId.hashCode() * 31L + villageType.hashCode());
-        NsukSqliteDatabase db = NsukSqliteDatabase.get(level.getServer());
-        if (db == null) {
-            return;
+        for (StockItem si : items) {
+            if (villageCap(level, cityId, si.category) > 0) {
+                ensureItemTradable(level, cityId, si.itemId, si.category);
+            }
         }
-        WriteBatchBuffer.submitPriority(db, "village_stock", "village:init:" + cityKey, connection -> {
-            try (PreparedStatement ps = connection.prepareStatement(
-                    "INSERT OR IGNORE INTO village_items(city_id, item_id, category) VALUES(?, ?, ?)")) {
-                for (StockItem si : items) {
-                    ps.setString(1, cityKey);
-                    ps.setString(2, si.itemId);
-                    ps.setString(3, si.category);
-                    ps.addBatch();
-                }
-                ps.executeBatch();
-            }
-            try (PreparedStatement ps = connection.prepareStatement(
-                    "INSERT OR IGNORE INTO village_stock(city_id, item_id, stock) VALUES(?, ?, ?)")) {
-                for (StockItem si : items) {
-                    int limit = VillageStockConfig.getCategoryLimit(si.category, si.itemId);
-                    if (limit <= 0) {
-                        continue;
-                    }
-                    int init;
-                    if (VillageStockConfig.isMaterialCategory(si.category)) {
-                        init = VillageStockConfig.MATERIAL_INIT_MIN
-                                + rng.nextInt(VillageStockConfig.MATERIAL_INIT_MAX - VillageStockConfig.MATERIAL_INIT_MIN + 1);
-                    } else {
-                        init = (int) Math.round(limit * VillageStockConfig.STOCK_CAP_RATIO);
-                    }
-                    ps.setString(1, cityKey);
-                    ps.setString(2, si.itemId);
-                    ps.setInt(3, init);
-                    ps.addBatch();
-                }
-                ps.executeBatch();
-            }
-        });
     }
 
     private static List<StockItem> pickVillageItems(ServerLevel level, UUID cityId, String villageType) {
-        Map<String, List<TradeItemDef>> byCategory = new HashMap<>();
-        for (TradeItemDef def : ForeignTradeConfig.getEntries()) {
-            byCategory.computeIfAbsent(def.category(), k -> new ArrayList<>()).add(def);
-        }
-        Random rng = new Random(cityId.hashCode() * 31L + villageType.hashCode());
+        Set<String> enabled = new HashSet<>(
+                ForeignTradeCategoryConfig.getVillageCategories(villageType));
         List<StockItem> result = new ArrayList<>();
-        for (String category : ForeignTradeCategoryConfig.getVillageCategories(villageType)) {
-            List<TradeItemDef> pool = byCategory.getOrDefault(category, List.of());
-            if (pool.isEmpty()) {
-                continue;
-            }
-            List<TradeItemDef> shuffled = new ArrayList<>(pool);
-            Collections.shuffle(shuffled, rng);
-            int n = Math.min(ITEMS_PER_CATEGORY, shuffled.size());
-            for (int i = 0; i < n; i++) {
-                TradeItemDef def = shuffled.get(i);
+        for (TradeItemDef def : ForeignTradeConfig.getEntries()) {
+            if (enabled.contains(def.category())) {
                 result.add(new StockItem(def.tradeKey(), def.category()));
             }
         }
@@ -159,14 +131,14 @@ public final class VillageStockService {
         if (level == null || cityId == null || itemId == null) {
             return 0;
         }
-        NsukSqliteDatabase db = NsukSqliteDatabase.get(level.getServer());
-        if (db == null) {
-            return 0;
-        }
         String cacheKey = cityId + ":" + itemId;
         Integer cached = STOCK_CACHE.get(cacheKey);
         if (cached != null) {
             return cached;
+        }
+        NsukSqliteDatabase db = NsukSqliteDatabase.get(level.getServer());
+        if (db == null) {
+            return 0;
         }
         try (Connection conn = db.openConnection();
              PreparedStatement ps = conn.prepareStatement(
@@ -174,24 +146,27 @@ public final class VillageStockService {
             ps.setString(1, cityId.toString());
             ps.setString(2, itemId);
             try (ResultSet rs = ps.executeQuery()) {
-                int stock = rs.next() ? rs.getInt("stock") : 0;
-                STOCK_CACHE.put(cacheKey, stock);
-                return stock;
+                if (rs.next()) {
+                    int stock = rs.getInt("stock");
+                    STOCK_CACHE.put(cacheKey, stock);
+                    return stock;
+                }
             }
         } catch (SQLException e) {
             throw new RuntimeException("Failed to load village stock", e);
         }
+        return 0;
     }
 
     public static boolean canSell(ServerLevel level, UUID cityId, String itemId, String category) {
         if (!isVillageItem(level, cityId, itemId)) {
             return false;
         }
-        int limit = VillageStockConfig.getCategoryLimit(category, itemId);
-        if (limit <= 0) {
+        int cap = villageCap(level, cityId, category);
+        if (cap <= 0) {
             return false;
         }
-        return getStock(level, cityId, itemId) < limit;
+        return getStock(level, cityId, itemId) < cap;
     }
 
     public static boolean canBuy(ServerLevel level, UUID cityId, String itemId) {
@@ -222,17 +197,57 @@ public final class VillageStockService {
         }
     }
 
+    public static void ensureItemTradable(ServerLevel level, UUID cityId, String itemId, String category) {
+        if (level == null || cityId == null || itemId == null || category == null) {
+            return;
+        }
+        if (isVillageItem(level, cityId, itemId)) {
+            return;
+        }
+        NsukSqliteDatabase db = NsukSqliteDatabase.get(level.getServer());
+        if (db == null) {
+            return;
+        }
+        int cap = villageCap(level, cityId, category);
+        if (cap <= 0) {
+            return;
+        }
+        int init = (int) Math.round(cap * 0.5D);
+        String cityKey = cityId.toString();
+        try (Connection conn = db.openConnection()) {
+            try (PreparedStatement ps = conn.prepareStatement(
+                    "INSERT OR IGNORE INTO village_items(city_id, item_id, category) VALUES(?, ?, ?)")) {
+                ps.setString(1, cityKey);
+                ps.setString(2, itemId);
+                ps.setString(3, category);
+                ps.executeUpdate();
+            }
+            try (PreparedStatement ps = conn.prepareStatement(
+                    "INSERT OR IGNORE INTO village_stock(city_id, item_id, stock) VALUES(?, ?, ?)")) {
+                ps.setString(1, cityKey);
+                ps.setString(2, itemId);
+                ps.setInt(3, init);
+                ps.executeUpdate();
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException("Failed to ensure village item stock", e);
+        }
+        STOCK_CACHE.put(cityId + ":" + itemId, init);
+    }
+
     public static void addStock(ServerLevel level, UUID cityId, String itemId, String category, int amount) {
         if (level == null || cityId == null || itemId == null || amount <= 0) {
             return;
         }
-        int limit = VillageStockConfig.getCategoryLimit(category, itemId);
+        int cap = villageCap(level, cityId, category);
+        String cacheKey = cityId + ":" + itemId;
+        STOCK_CACHE.put(cacheKey, Math.min(cap, getStock(level, cityId, itemId) + amount));
         NsukSqliteDatabase db = NsukSqliteDatabase.get(level.getServer());
         if (db == null) {
             return;
         }
         WriteBatchBuffer.submitPriority(db, "village_stock",
-                "village:add:" + cityId + ":" + itemId + ":" + System.nanoTime(), connection -> {
+                "village:add:" + cacheKey + ":" + System.nanoTime(), connection -> {
             try (PreparedStatement ps = connection.prepareStatement(
                     "INSERT INTO village_stock(city_id, item_id, stock) VALUES(?, ?, ?) "
                             + "ON CONFLICT(city_id, item_id) DO UPDATE SET stock = MIN(stock + ?, ?)")) {
@@ -240,23 +255,24 @@ public final class VillageStockService {
                 ps.setString(2, itemId);
                 ps.setInt(3, amount);
                 ps.setInt(4, amount);
-                ps.setInt(5, limit);
+                ps.setInt(5, cap);
                 ps.executeUpdate();
             }
         });
-        STOCK_CACHE.remove(cityId + ":" + itemId);
     }
 
     public static void removeStock(ServerLevel level, UUID cityId, String itemId, int amount) {
         if (level == null || cityId == null || itemId == null || amount <= 0) {
             return;
         }
+        String cacheKey = cityId + ":" + itemId;
+        STOCK_CACHE.put(cacheKey, Math.max(0, getStock(level, cityId, itemId) - amount));
         NsukSqliteDatabase db = NsukSqliteDatabase.get(level.getServer());
         if (db == null) {
             return;
         }
         WriteBatchBuffer.submitPriority(db, "village_stock",
-                "village:remove:" + cityId + ":" + itemId + ":" + System.nanoTime(), connection -> {
+                "village:remove:" + cacheKey + ":" + System.nanoTime(), connection -> {
             try (PreparedStatement ps = connection.prepareStatement(
                     "UPDATE village_stock SET stock = MAX(stock - ?, 0) WHERE city_id = ? AND item_id = ?")) {
                 ps.setInt(1, amount);
@@ -265,7 +281,6 @@ public final class VillageStockService {
                 ps.executeUpdate();
             }
         });
-        STOCK_CACHE.remove(cityId + ":" + itemId);
     }
 
     public static void tickDailyRestock(ServerLevel level) {
@@ -302,19 +317,24 @@ public final class VillageStockService {
             try (PreparedStatement ps = connection.prepareStatement(
                     "UPDATE village_stock SET stock = ? WHERE city_id = ? AND item_id = ?")) {
                 for (StockRow row : rows) {
-                    int limit = VillageStockConfig.getCategoryLimit(row.category, row.itemId);
-                    if (limit <= 0) {
+                    UUID cityUuid;
+                    try {
+                        cityUuid = UUID.fromString(row.cityId);
+                    } catch (IllegalArgumentException ignored) {
                         continue;
                     }
-                    int cap = (int) Math.round(limit * VillageStockConfig.STOCK_CAP_RATIO);
-                    int newStock;
-                    if (row.stock > cap) {
-                        newStock = cap;
-                    } else {
-                        int restock = (int) Math.round(limit * VillageStockConfig.RESTOCK_RATIO);
-                        newStock = Math.min(row.stock + restock, cap);
+                    int cap = villageCap(level, cityUuid, row.category);
+                    if (cap <= 0) {
+                        continue;
                     }
-                    if (newStock == row.stock) {
+                    int target = (int) Math.round(cap * 0.5D);
+                    int step = Math.max(1, (int) Math.round(cap * VillageStockConfig.RESTOCK_RATIO));
+                    int newStock;
+                    if (row.stock > target) {
+                        newStock = Math.max(target, row.stock - step);
+                    } else if (row.stock < target) {
+                        newStock = Math.min(target, row.stock + step);
+                    } else {
                         continue;
                     }
                     ps.setInt(1, newStock);

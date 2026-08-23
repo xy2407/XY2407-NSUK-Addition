@@ -47,8 +47,9 @@ public record EstablishDiplomacyRequestPacket(UUID cityId, int posX, int posZ) i
         if (!(ctx.player() instanceof ServerPlayer player) || !(player.level() instanceof ServerLevel level)) return;
         if (!DiplomacyStorage.hasRelation(level, player.getUUID(), p.posX(), p.posZ())) {
             String villageType = VillageCityTypeStorage.getVillageType(level, p.cityId());
-            if (villageType != null) {
-                String cityName = CityService.findCity(level, p.cityId()).map(CityData::cityName).orElse("");
+            var targetCity = CityService.findCity(level, p.cityId());
+            if (targetCity.isPresent()) {
+                String cityName = targetCity.map(CityData::cityName).orElse("");
                 DiplomacyStorage.establishRelation(level, player.getUUID(), villageType, p.posX(), p.posZ(), p.cityId().toString(), cityName);
             }
         }

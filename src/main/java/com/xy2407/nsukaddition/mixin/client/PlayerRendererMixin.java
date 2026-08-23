@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
-/** RTS 模式下隐藏本地玩家实体渲染（由假人替身代替显示）。 */
+/** RTS 模式下隐藏本地玩家实体渲染（由假人替身代替显示）。当前暂时禁用隐藏。 */
 @Mixin(PlayerRenderer.class)
 public abstract class PlayerRendererMixin {
 
@@ -19,7 +19,8 @@ public abstract class PlayerRendererMixin {
     private void nsukaddition$hideLocalPlayerInRts(
             AbstractClientPlayer entity, float entityYaw, float partialTicks,
             PoseStack poseStack, MultiBufferSource buffer, int packedLight, CallbackInfo ci) {
-        if (RtsModeManager.isActive() && entity == Minecraft.getInstance().player) {
+        if (RtsModeManager.isActive() && entity == Minecraft.getInstance().player
+                && Boolean.FALSE) {
             ci.cancel();
         }
     }

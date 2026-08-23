@@ -5,6 +5,9 @@ import com.xy2407.nsukaddition.common.foreigntrade.ForeignTradeConfig;
 import com.xy2407.nsukaddition.common.foreigntrade.ForeignTradeConfig.TradeItemDef;
 import com.xy2407.nsukaddition.common.foreigntrade.ForeignTradeMarket;
 import com.xy2407.nsukaddition.common.foreigntrade.TradeItemResolver;
+import com.xy2407.nsukaddition.common.foreigntrade.VillageStockService;
+import com.xy2407.nsukaddition.common.foreigntrade.VillageCityTypeStorage;
+import com.xy2407.nsukaddition.common.network.foreigntrade.ForeignTradeVillageStockSyncPacket.StockInfo;
 import common.cn.kafei.simukraft.city.CityChunkManager;
 import common.cn.kafei.simukraft.city.CityPermissionLevel;
 import common.cn.kafei.simukraft.city.CityService;
@@ -29,8 +32,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
-/** 客户端请求外贸市场数据，服务端返回当前浮动价格和操作权限。 */
-public record ForeignTradeMarketRequestPacket(BlockPos boxPos) implements CustomPacketPayload {
+/** 客户端请求外贸市场数据，服务端返回当前浮动价格和操作权限。cityId 为当前选中的目标村城，用于构建其对应库存。 */
+public record ForeignTradeMarketRequestPacket(BlockPos boxPos, String cityId) implements CustomPacketPayload {
 
     public static final Type<ForeignTradeMarketRequestPacket> TYPE = new Type<>(
             ResourceLocation.fromNamespaceAndPath(NsukAddition.MOD_ID, "foreign_trade_market_request"));
@@ -42,10 +45,11 @@ public record ForeignTradeMarketRequestPacket(BlockPos boxPos) implements Custom
 
     public static void encode(RegistryFriendlyByteBuf buf, ForeignTradeMarketRequestPacket p) {
         buf.writeBlockPos(p.boxPos());
+        buf.writeUtf(p.cityId() != null ? p.cityId() : "", 128);
     }
 
     public static ForeignTradeMarketRequestPacket decode(RegistryFriendlyByteBuf buf) {
-        return new ForeignTradeMarketRequestPacket(buf.readBlockPos());
+        return new ForeignTradeMarketRequestPacket(buf.readBlockPos(), buf.readUtf(128));
     }
 
     public static void handle(ForeignTradeMarketRequestPacket p, IPayloadContext ctx) {
@@ -65,6 +69,43 @@ public record ForeignTradeMarketRequestPacket(BlockPos boxPos) implements Custom
                 new ForeignTradeMarketDataPacket(p.boxPos(), entriesToSend, canOperate));
         PacketDistributor.sendToPlayer(player,
                 new ForeignTradeInventorySyncPacket(calcAvailableCounts(player, entries)));
+        PacketDistributor.sendToPlayer(player, buildVillageStockPacket(level, p.cityId(), entriesToSend));
+    }
+
+    /**
+     * 构建选中村城的外贸库存。直接以目标村城 cityId 读取库存，与交易包(VillageStockService.removeStock/addStock)
+     * 使用同一个村城，保证购买/出售后该村城库存能被实时反映到市场卡片。
+     */
+    static ForeignTradeVillageStockSyncPacket buildVillageStockPacket(ServerLevel level, String targetCityId,
+                                                                      List<ForeignTradeMarket.MarketEntry> entries) {
+        Map<String, StockInfo> stocks = new HashMap<>();
+        if (targetCityId == null || targetCityId.isEmpty()) {
+            return new ForeignTradeVillageStockSyncPacket(stocks);
+        }
+        UUID city;
+        try {
+            city = UUID.fromString(targetCityId);
+        } catch (IllegalArgumentException e) {
+            return new ForeignTradeVillageStockSyncPacket(stocks);
+        }
+        String villageType = VillageCityTypeStorage.getVillageType(level, city);
+        if (villageType == null || villageType.isEmpty()) {
+            return new ForeignTradeVillageStockSyncPacket(stocks);
+        }
+        VillageStockService.ensureVillage(level, city, villageType);
+        for (ForeignTradeMarket.MarketEntry entry : entries) {
+            if (entry.villageType() == null || !villageType.equals(entry.villageType())) {
+                continue;
+            }
+            TradeItemDef def = ForeignTradeConfig.find(entry.itemId());
+            if (def == null) {
+                continue;
+            }
+            stocks.put(entry.itemId(), new StockInfo(
+                    VillageStockService.villageCap(level, city, def.category()),
+                    VillageStockService.getStock(level, city, entry.itemId())));
+        }
+        return new ForeignTradeVillageStockSyncPacket(stocks);
     }
 
     static Map<String, Integer> calcAvailableCounts(ServerPlayer player, List<ForeignTradeMarket.MarketEntry> entries) {

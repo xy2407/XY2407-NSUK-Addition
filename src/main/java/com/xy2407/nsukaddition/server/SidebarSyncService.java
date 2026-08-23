@@ -53,13 +53,11 @@ public final class SidebarSyncService {
             return;
         }
 
-        SidebarDataCache.CitySqliteCache cached = SidebarDataCache.get(city.get().cityId());
-        if (cached == null) {
-            PacketDistributor.sendToPlayer(player, emptyPacket());
-            return;
-        }
-
         UUID cityId = city.get().cityId();
+        SidebarDataCache.CitySqliteCache cached = SidebarDataCache.get(cityId);
+        List<SidebarDataCache.SidebarCacheFinanceEntry> cachedFinance = cached != null ? cached.financeEntries() : List.of();
+        List<SidebarDataCache.SidebarCacheCitizenEntry> cachedCitizens = cached != null ? cached.citizens() : List.of();
+        List<BuildingTaskData> cachedTasks = cached != null ? cached.buildingTasks() : List.of();
 
         List<String> oNames = new ArrayList<>();
         List<String> oPerms = new ArrayList<>();
@@ -105,16 +103,16 @@ public final class SidebarSyncService {
         }
         List<SidebarSyncPacket.MaterialEntry> reserveMaterials = toSortedEntries(reserveCounts);
 
-        List<SidebarSyncPacket.BuildTaskData> buildTasks = collectBuildTasks(level, cityId, cached.buildingTasks(), reserveCounts);
+        List<SidebarSyncPacket.BuildTaskData> buildTasks = collectBuildTasks(level, cityId, cachedTasks, reserveCounts);
 
-        List<SidebarSyncPacket.FinanceEntry> financeEntries = new ArrayList<>(cached.financeEntries().size());
-        for (SidebarDataCache.SidebarCacheFinanceEntry e : cached.financeEntries()) {
+        List<SidebarSyncPacket.FinanceEntry> financeEntries = new ArrayList<>(cachedFinance.size());
+        for (SidebarDataCache.SidebarCacheFinanceEntry e : cachedFinance) {
             financeEntries.add(new SidebarSyncPacket.FinanceEntry(
                     e.time(), e.actorName(), e.amount(), e.balanceAfter(), e.type(), e.reason()));
         }
 
-        List<SidebarSyncPacket.CitizenEntry> citizens = new ArrayList<>(cached.citizens().size());
-        for (SidebarDataCache.SidebarCacheCitizenEntry c : cached.citizens()) {
+        List<SidebarSyncPacket.CitizenEntry> citizens = new ArrayList<>(cachedCitizens.size());
+        for (SidebarDataCache.SidebarCacheCitizenEntry c : cachedCitizens) {
             citizens.add(new SidebarSyncPacket.CitizenEntry(
                     c.name(), c.uuid().toString(), c.jobType(), c.hasHome(), c.skinPath(), c.colonyName()));
         }

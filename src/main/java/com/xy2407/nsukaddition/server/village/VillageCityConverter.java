@@ -2,9 +2,11 @@ package com.xy2407.nsukaddition.server.village;
 
 import com.xy2407.nsukaddition.NsukAddition;
 import com.xy2407.nsukaddition.common.citycore.VillageCityConversionTrigger;
+import com.xy2407.nsukaddition.common.foreigntrade.VillageCityGrade;
 import com.xy2407.nsukaddition.common.foreigntrade.VillageCityTypeStorage;
 import com.xy2407.nsukaddition.common.village.VillageNamePool;
 import com.xy2407.nsukaddition.server.city.CityCorePositionsSync;
+import com.xy2407.nsukaddition.mixin.simukraft.CityDataUpgradeInvoker;
 import common.cn.kafei.simukraft.citizen.CitizenService;
 import common.cn.kafei.simukraft.city.CityChunkManager;
 import common.cn.kafei.simukraft.city.CityData;
@@ -18,6 +20,7 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
+import net.minecraft.world.level.levelgen.structure.StructurePiece;
 import net.minecraft.world.level.levelgen.structure.StructureStart;
 import net.minecraft.world.phys.AABB;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -26,12 +29,14 @@ import net.neoforged.neoforge.event.tick.ServerTickEvent;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Random;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
-/** 村庄城市转换器：区块加载时直接提取村庄结构包围盒，服务端tick时非阻塞处理。 */
+/** 村庄城市转换器：只把真正包含村庄结构 piece 的区块列为城市领土，避免整块大矩形。 */
 public final class VillageCityConverter {
 
     private static final UUID SYSTEM_MAYOR_ID = UUID.nameUUIDFromBytes("nsuk:village_city_mayor".getBytes());
@@ -56,8 +61,8 @@ public final class VillageCityConverter {
             return;
         }
         try {
-            ChunkPos chunkPos = new ChunkPos(corePos);
-            var chunk = level.getChunk(chunkPos.x, chunkPos.z);
+            ChunkPos coreChunk = new ChunkPos(corePos);
+            var chunk = level.getChunk(coreChunk.x, coreChunk.z);
             var structureRegistry = level.registryAccess()
                     .registryOrThrow(net.minecraft.core.registries.Registries.STRUCTURE);
             for (var entry : chunk.getAllStarts().entrySet()) {
@@ -69,27 +74,21 @@ public final class VillageCityConverter {
                 if (start == StructureStart.INVALID_START || !start.isValid()) {
                     continue;
                 }
-                BoundingBox box = start.getBoundingBox();
-                if (!inside(corePos, box)) {
+                VillageBox vb = collectVillageBox(start,
+                        id.getPath().substring("village_".length()));
+                if (vb == null || !vb.chunks().contains(coreChunk.toLong())) {
                     continue;
                 }
-                String villageType = id.getPath().substring("village_".length());
                 String coreKey = dimensionId(level) + "@" + corePos.asLong();
                 if (CLAIMED_CORES.putIfAbsent(coreKey, Boolean.TRUE) != null) {
                     continue;
                 }
-                createVillageCity(level, corePos.immutable(), box, villageType);
+                createVillageCity(level, corePos.immutable(), vb);
                 break;
             }
         } catch (Exception e) {
             NsukAddition.LOGGER.warn("VillageCityConverter: failed to convert village city at {}", corePos, e);
         }
-    }
-
-    private static boolean inside(BlockPos pos, BoundingBox box) {
-        return pos.getX() >= box.minX() && pos.getX() <= box.maxX()
-                && pos.getY() >= box.minY() && pos.getY() <= box.maxY()
-                && pos.getZ() >= box.minZ() && pos.getZ() <= box.maxZ();
     }
 
     @SubscribeEvent
@@ -110,8 +109,11 @@ public final class VillageCityConverter {
             if (isVillageStructure(id)) {
                 StructureStart start = entry.getValue();
                 if (start != StructureStart.INVALID_START && start.isValid()) {
-                    String villageType = id.getPath().substring("village_".length());
-                    boxes.add(new VillageBox(start.getBoundingBox(), villageType));
+                    VillageBox vb = collectVillageBox(start,
+                            id.getPath().substring("village_".length()));
+                    if (vb != null) {
+                        boxes.add(vb);
+                    }
                 }
             }
         }
@@ -137,7 +139,7 @@ public final class VillageCityConverter {
                 while (iterator.hasNext()) {
                     DeferredAssign da = iterator.next();
                     if (currentTick < da.executeAtTick) continue;
-                    assignNpcsInTerritory(da.level, da.cityId, da.box);
+                    assignNpcsInTerritory(da.level, da.cityId, da.vb);
                     iterator.remove();
                 }
             }
@@ -166,29 +168,62 @@ public final class VillageCityConverter {
     }
 
     private static void findCityCores(ServerLevel level, VillageBox vb) {
-        BoundingBox box = vb.box();
-        for (int x = box.minX(); x <= box.maxX(); x++) {
-            for (int z = box.minZ(); z <= box.maxZ(); z++) {
-                if (!level.hasChunk(x >> 4, z >> 4)) continue;
-                for (int y = box.minY(); y <= box.maxY(); y++) {
-                    BlockPos pos = new BlockPos(x, y, z);
-                    BlockState state = level.getBlockState(pos);
-                    if (state.is(ModBlocks.CITY_CORE.get())) {
+        int yMin = Math.max(level.getMinBuildHeight(), vb.minY());
+        int yMax = Math.min(level.getMaxBuildHeight(), vb.maxY());
+        for (long chunkLong : vb.chunks()) {
+            int cx = ChunkPos.getX(chunkLong);
+            int cz = ChunkPos.getZ(chunkLong);
+            int baseX = cx << 4;
+            int baseZ = cz << 4;
+            for (int x = baseX; x < baseX + 16; x++) {
+                for (int z = baseZ; z < baseZ + 16; z++) {
+                    for (int y = yMin; y <= yMax; y++) {
+                        BlockPos pos = new BlockPos(x, y, z);
+                        if (!level.getBlockState(pos).is(ModBlocks.CITY_CORE.get())) {
+                            continue;
+                        }
                         BlockPos corePos = pos.immutable();
                         String coreKey = dimensionId(level) + "@" + corePos.asLong();
                         if (CLAIMED_CORES.putIfAbsent(coreKey, Boolean.TRUE) != null) continue;
-                        createVillageCity(level, corePos, box, vb.villageType());
+                        createVillageCity(level, corePos, vb);
                     }
                 }
             }
         }
     }
 
-    private static void createVillageCity(ServerLevel level, BlockPos corePos, BoundingBox box, String villageType) {
+    private static VillageBox collectVillageBox(StructureStart start, String villageType) {
+        Set<Long> chunks = new HashSet<>();
+        int minY = Integer.MAX_VALUE;
+        int maxY = Integer.MIN_VALUE;
+        for (StructurePiece piece : start.getPieces()) {
+            BoundingBox pb = piece.getBoundingBox();
+            int minCX = pb.minX() >> 4;
+            int minCZ = pb.minZ() >> 4;
+            int maxCX = pb.maxX() >> 4;
+            int maxCZ = pb.maxZ() >> 4;
+            for (int cx = minCX; cx <= maxCX; cx++) {
+                for (int cz = minCZ; cz <= maxCZ; cz++) {
+                    chunks.add(ChunkPos.asLong(cx, cz));
+                }
+            }
+            if (pb.minY() < minY) minY = pb.minY();
+            if (pb.maxY() > maxY) maxY = pb.maxY();
+        }
+        if (chunks.isEmpty()) {
+            return null;
+        }
+        return new VillageBox(chunks, minY, maxY, villageType);
+    }
+
+    private static void createVillageCity(ServerLevel level, BlockPos corePos, VillageBox vb) {
         if (CityService.hasCityAtCorePos(level, corePos)) {
             var existing = CityService.findCityByCorePos(level, corePos);
             if (existing.isPresent() && VillageCityTypeStorage.getVillageType(level, existing.get().cityId()) == null) {
-                VillageCityTypeStorage.saveVillageType(level, existing.get().cityId(), villageType);
+                VillageCityTypeStorage.saveVillageType(level, existing.get().cityId(), vb.villageType());
+            }
+            if (existing.isPresent()) {
+                VillageCityGrade.save(level, existing.get().cityId(), vb.chunks().size());
             }
             return;
         }
@@ -197,8 +232,9 @@ public final class VillageCityConverter {
         CityData city = CityService.createCity(level, cityName, SYSTEM_MAYOR_ID, SYSTEM_MAYOR_NAME, corePos);
         if (city == null) return;
 
-        VillageCityTypeStorage.saveVillageType(level, city.cityId(), villageType);
-        claimTerritoryChunks(level, city.cityId(), box);
+        VillageCityTypeStorage.saveVillageType(level, city.cityId(), vb.villageType());
+        applyGradeLevel(level, city.cityId(), vb.chunks().size());
+        claimTerritoryChunks(level, city.cityId(), vb.chunks());
 
         CityChunkSyncService.syncToAll(level);
 
@@ -206,34 +242,55 @@ public final class VillageCityConverter {
             if (p.serverLevel() == level) CityCorePositionsSync.sendPositionsToPlayer(p);
         });
 
-        assignNpcsInTerritory(level, city.cityId(), box);
-
+        assignNpcsInTerritory(level, city.cityId(), vb);
         if (DEFERRED_REGISTERED.putIfAbsent(city.cityId(), Boolean.TRUE) == null) {
             long executeAtTick = level.getServer().getTickCount() + 200;
             synchronized (DEFERRED_ASSIGN) {
-                DEFERRED_ASSIGN.addLast(new DeferredAssign(executeAtTick, level, city.cityId(), box));
+                DEFERRED_ASSIGN.addLast(new DeferredAssign(executeAtTick, level, city.cityId(), vb));
             }
         }
     }
 
-    private static void assignNpcsInTerritory(ServerLevel level, UUID cityId, BoundingBox box) {
-        AABB area = new AABB(box.minX(), box.minY(), box.minZ(), box.maxX(), box.maxY(), box.maxZ());
+    private static void applyGradeLevel(ServerLevel level, UUID cityId, int chunkCount) {
+        VillageCityGrade.save(level, cityId, chunkCount);
+        CityService.findCity(level, cityId).ifPresent(city -> {
+            int lvl = switch (VillageCityGrade.gradeForChunks(chunkCount)) {
+                case VillageCityGrade.HAMLET -> 1;
+                case VillageCityGrade.VILLAGE -> 2;
+                case VillageCityGrade.TOWN -> 3;
+                default -> 4;
+            };
+            ((CityDataUpgradeInvoker) (Object) city).nsuk$setCityLevel(lvl);
+        });
+    }
+
+    private static void assignNpcsInTerritory(ServerLevel level, UUID cityId, VillageBox vb) {
+        int minCX = Integer.MAX_VALUE;
+        int maxCX = Integer.MIN_VALUE;
+        int minCZ = Integer.MAX_VALUE;
+        int maxCZ = Integer.MIN_VALUE;
+        for (long chunkLong : vb.chunks()) {
+            int cx = ChunkPos.getX(chunkLong);
+            int cz = ChunkPos.getZ(chunkLong);
+            if (cx < minCX) minCX = cx;
+            if (cx > maxCX) maxCX = cx;
+            if (cz < minCZ) minCZ = cz;
+            if (cz > maxCZ) maxCZ = cz;
+        }
+        AABB area = new AABB(
+                minCX << 4, level.getMinBuildHeight(), minCZ << 4,
+                (maxCX + 1) << 4, level.getMaxBuildHeight(), (maxCZ + 1) << 4);
         for (CitizenEntity npc : level.getEntitiesOfClass(CitizenEntity.class, area)) {
             if (npc.getUUID() == null) continue;
+            if (!vb.chunks().contains(new ChunkPos(npc.blockPosition()).toLong())) continue;
             CitizenService.setCity(level, npc.getUUID(), cityId);
         }
     }
 
-    private static void claimTerritoryChunks(ServerLevel level, UUID cityId, BoundingBox box) {
+    private static void claimTerritoryChunks(ServerLevel level, UUID cityId, Set<Long> chunks) {
         CityChunkManager chunkManager = CityChunkManager.get(level);
-        int minCX = box.minX() >> 4;
-        int minCZ = box.minZ() >> 4;
-        int maxCX = box.maxX() >> 4;
-        int maxCZ = box.maxZ() >> 4;
-        for (int cx = minCX; cx <= maxCX; cx++) {
-            for (int cz = minCZ; cz <= maxCZ; cz++) {
-                chunkManager.claimChunk(cityId, ChunkPos.asLong(cx, cz));
-            }
+        for (long chunkLong : chunks) {
+            chunkManager.claimChunk(cityId, chunkLong);
         }
         chunkManager.saveToSqlite(level);
     }
@@ -258,7 +315,7 @@ public final class VillageCityConverter {
 
     private record PendingChunk(ServerLevel level, ChunkPos chunkPos, String chunkKey, List<VillageBox> villageBoxes) {}
 
-    private record VillageBox(BoundingBox box, String villageType) {}
+    private record VillageBox(Set<Long> chunks, int minY, int maxY, String villageType) {}
 
-    private record DeferredAssign(long executeAtTick, ServerLevel level, UUID cityId, BoundingBox box) {}
+    private record DeferredAssign(long executeAtTick, ServerLevel level, UUID cityId, VillageBox vb) {}
 }

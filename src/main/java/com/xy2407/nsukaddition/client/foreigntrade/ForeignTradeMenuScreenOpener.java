@@ -14,7 +14,9 @@ import com.lowdragmc.lowdraglib2.gui.ui.data.Horizontal;
 import com.lowdragmc.lowdraglib2.gui.ui.data.TextWrap;
 import com.lowdragmc.lowdraglib2.gui.ui.data.Vertical;
 import com.lowdragmc.lowdraglib2.gui.ui.event.UIEvents;
+import com.lowdragmc.lowdraglib2.gui.ui.event.HoverTooltips;
 import com.lowdragmc.lowdraglib2.gui.ui.rendering.GUIContext;
+import com.xy2407.nsukaddition.client.data.SidebarDataSnapshot;
 import com.xy2407.nsukaddition.common.foreigntrade.ForeignTradeMarket;
 import com.xy2407.nsukaddition.common.foreigntrade.TradeItemResolver;
 import com.xy2407.nsukaddition.common.foreigntrade.FreeMarketRepository;
@@ -106,6 +108,9 @@ public final class ForeignTradeMenuScreenOpener {
             {"crop", "gui.xy2407_nsuk_addition.foreign_trade.category.crop"},
             {"mineral", "gui.xy2407_nsuk_addition.foreign_trade.category.mineral"},
             {"wine", "gui.xy2407_nsuk_addition.foreign_trade.category.wine"},
+            {"animal", "gui.xy2407_nsuk_addition.foreign_trade.category.animal"},
+            {"aquatic", "gui.xy2407_nsuk_addition.foreign_trade.category.aquatic"},
+            {"cheese", "gui.xy2407_nsuk_addition.foreign_trade.category.cheese"},
             {"free_sell", "gui.xy2407_nsuk_addition.foreign_trade.category.free_sell"},
             {"free_buy", "gui.xy2407_nsuk_addition.foreign_trade.category.free_buy"},
     };
@@ -115,6 +120,7 @@ public final class ForeignTradeMenuScreenOpener {
     private static List<ForeignTradeMarket.MarketEntry> marketData = new ArrayList<>();
     private static List<ForeignTradeMarket.MarketEntry> filtered = new ArrayList<>();
     private static Map<String, Integer> availableCounts = new HashMap<>();
+    private static Map<String, com.xy2407.nsukaddition.common.network.foreigntrade.ForeignTradeVillageStockSyncPacket.StockInfo> villageStocks = new HashMap<>();
 
     private static int selectedCategoryIndex = 0;
     private static int categoryScrollOffset = 0;
@@ -197,13 +203,39 @@ public final class ForeignTradeMenuScreenOpener {
     private static UIElement gridContainer;
     private static ForeignTradeMenuScreen currentScreen;
     private static String currentCityId;
+    private static boolean isMyCityMode;
 
     private ForeignTradeMenuScreenOpener() {}
 
     public static void open(BlockPos pos, String cityId) {
         boxPos = pos != null ? pos.immutable() : null;
         currentCityId = cityId;
-        PacketDistributor.sendToServer(new ForeignTradeMarketRequestPacket(boxPos));
+        isMyCityMode = isOwnCity(cityId);
+        requestMarketAndListings();
+    }
+
+    public static void openMyCity(BlockPos pos) {
+        boxPos = pos != null ? pos.immutable() : null;
+        currentCityId = ownCityIdString();
+        isMyCityMode = true;
+        requestMarketAndListings();
+    }
+
+    private static void requestMarketAndListings() {
+        if (boxPos == null) return;
+        freeSellListings = new ArrayList<>();
+        freeBuyListings = new ArrayList<>();
+        PacketDistributor.sendToServer(new ForeignTradeMarketRequestPacket(boxPos, currentCityId));
+        PacketDistributor.sendToServer(new FreeMarketDataRequestPacket(boxPos));
+    }
+
+    private static boolean isOwnCity(String cityId) {
+        return cityId != null && cityId.equals(ownCityIdString());
+    }
+
+    private static String ownCityIdString() {
+        SidebarDataSnapshot snapshot = SidebarDataSnapshot.get();
+        return snapshot != null && snapshot.cityId() != null ? snapshot.cityId().toString() : null;
     }
 
     public static void openWithMarketData(BlockPos pos, List<ForeignTradeMarket.MarketEntry> entries, boolean canOperateFlag) {
@@ -219,11 +251,9 @@ public final class ForeignTradeMenuScreenOpener {
         searchText = "";
         scrollOffset = 0;
         categoryScrollOffset = 0;
-        selectedCategoryIndex = 0;
+        selectedCategoryIndex = isRestrictedMode() ? restrictedCategoryIndex() : 0;
         draggingScrollbar = false;
         canOperate = canOperateFlag;
-        freeSellListings = new ArrayList<>();
-        freeBuyListings = new ArrayList<>();
         warehouseItems = new ArrayList<>();
         mc.execute(() -> {
             currentScreen = new ForeignTradeMenuScreen(createUi(), Component.empty());
@@ -233,6 +263,11 @@ public final class ForeignTradeMenuScreenOpener {
 
     public static void updateAvailableCounts(Map<String, Integer> counts) {
         availableCounts = counts != null ? counts : new HashMap<>();
+        refreshGridCards();
+    }
+
+    public static void updateVillageStocks(Map<String, com.xy2407.nsukaddition.common.network.foreigntrade.ForeignTradeVillageStockSyncPacket.StockInfo> stocks) {
+        villageStocks = stocks != null ? stocks : new HashMap<>();
         refreshGridCards();
     }
 
@@ -246,6 +281,28 @@ public final class ForeignTradeMenuScreenOpener {
 
     private static String currentCategoryKey() {
         return CATEGORIES[selectedCategoryIndex][0];
+    }
+
+    private static int restrictedCategoryIndex() {
+        return indexOfCategory(isMyCityMode ? "free_sell" : "free_buy");
+    }
+
+    private static boolean isVillageCityMode() {
+        String villageType = currentCityId != null ? DiplomacyClientCache.getVillageTypeByCityId(currentCityId) : null;
+        return villageType != null && !villageType.isBlank();
+    }
+
+    private static boolean isRestrictedMode() {
+        return isMyCityMode || !isVillageCityMode();
+    }
+
+    private static int indexOfCategory(String key) {
+        for (int i = 0; i < CATEGORIES.length; i++) {
+            if (key.equals(CATEGORIES[i][0])) {
+                return i;
+            }
+        }
+        return 0;
     }
 
     private static boolean isFreeSellCategory() {
@@ -461,8 +518,14 @@ public final class ForeignTradeMenuScreenOpener {
         int maxCatScroll = Math.max(0, totalH - barH);
         categoryScrollOffset = Math.min(categoryScrollOffset, maxCatScroll);
 
+        int displayIdx = 0;
         for (int i = 0; i < CATEGORIES.length; i++) {
-            int itemY = barY + i * CATEGORY_ITEM_H - categoryScrollOffset;
+            if (isRestrictedMode()
+                    && (isMyCityMode ? !"free_sell".equals(CATEGORIES[i][0]) : !"free_buy".equals(CATEGORIES[i][0]))) {
+                continue;
+            }
+            int posIndex = isRestrictedMode() ? displayIdx : i;
+            int itemY = barY + posIndex * CATEGORY_ITEM_H - categoryScrollOffset;
             if (itemY + CATEGORY_ITEM_H < barY || itemY > barY + barH) continue;
 
             int drawY = Math.max(itemY, barY);
@@ -497,6 +560,9 @@ public final class ForeignTradeMenuScreenOpener {
                     gg.drawString(font, name, 0, 0, textColor, false);
                     pose.popPose();
                 }
+            }
+            if (isRestrictedMode()) {
+                displayIdx++;
             }
         }
     }
@@ -650,6 +716,15 @@ public final class ForeignTradeMenuScreenOpener {
                 new GuiTextureGroup(new ColorRectTexture(CARD_BG), new ColorBorderTexture(1, BORDER)))
         );
 
+        card.addEventListener(UIEvents.HOVER_TOOLTIPS, event -> {
+            var info = villageStocks.get(entry.itemId());
+            if (info == null) return;
+            event.hoverTooltips = new HoverTooltips(List.of(
+                    Component.translatable("gui.xy2407_nsuk_addition.foreign_trade.stock_cap", info.cap()),
+                    Component.translatable("gui.xy2407_nsuk_addition.foreign_trade.stock_current", info.current())
+            ), null, null, ItemStack.EMPTY);
+        });
+
         Label name = new Label();
         name.setText(stack.isEmpty() ? Component.literal(entry.itemId()) : stack.getHoverName());
         name.setOverflowVisible(false);
@@ -750,6 +825,14 @@ public final class ForeignTradeMenuScreenOpener {
         UIElement card = new UIElement() {
             @Override
             public void drawBackgroundAdditional(GUIContext ctx) {
+                if (isSellMode) {
+                    boolean lit = listing.highlighted();
+                    String glyph = lit ? "\u2605" : "\u2606";
+                    int starColor = lit ? 0xFFFFD700 : 0xFF8A8A8A;
+                    ctx.graphics.drawString(Minecraft.getInstance().font,
+                            Component.literal(glyph),
+                            Math.round(getPositionX() + 5), Math.round(getPositionY() + 4), starColor, false);
+                }
                 if (finalStack.isEmpty()) return;
                 float contentW = getSizeWidth() - 8;
                 int itemX = Math.round(getPositionX() + 4 + (contentW - ICON_SIZE) / 2.0f) + 8;
@@ -850,7 +933,41 @@ public final class ForeignTradeMenuScreenOpener {
 
             card.addChild(btnRow);
         }
+
+        if (isSellMode) {
+            card.addEventListener(UIEvents.MOUSE_DOWN, event -> {
+                if (!canOperate) return;
+                double lx = event.x - card.getPositionX();
+                double ly = event.y - card.getPositionY();
+                if (lx >= 0 && lx <= 18 && ly >= 0 && ly <= 18) {
+                    sendFreeMarketToggleStar(listing.id());
+                }
+            });
+            card.addEventListener(UIEvents.HOVER_TOOLTIPS, event -> {
+                double mx = Minecraft.getInstance().mouseHandler.xpos()
+                        * Minecraft.getInstance().getWindow().getGuiScaledWidth()
+                        / Minecraft.getInstance().getWindow().getScreenWidth();
+                double my = Minecraft.getInstance().mouseHandler.ypos()
+                        * Minecraft.getInstance().getWindow().getGuiScaledHeight()
+                        / Minecraft.getInstance().getWindow().getScreenHeight();
+                double cx = card.getPositionX();
+                double cy = card.getPositionY();
+                if (mx >= cx && mx <= cx + 18 && my >= cy && my <= cy + 18) {
+                    Component tip = listing.highlighted()
+                            ? Component.translatable("gui.xy2407_nsuk_addition.foreign_trade.star_hover_active")
+                            : Component.translatable("gui.xy2407_nsuk_addition.foreign_trade.star_hover_ask");
+                    event.hoverTooltips = new HoverTooltips(List.of(tip), null, null, ItemStack.EMPTY);
+                } else {
+                    event.hoverTooltips = null;
+                }
+            });
+        }
         return card;
+    }
+
+    private static void sendFreeMarketToggleStar(long listingId) {
+        if (boxPos == null) return;
+        PacketDistributor.sendToServer(new FreeMarketToggleStarPacket(boxPos, listingId));
     }
 
     private static Button makeSellBuyButton(Component text, int color, Runnable leftAction, Runnable rightAction) {
@@ -938,6 +1055,11 @@ public final class ForeignTradeMenuScreenOpener {
 
         if (mouseX < barX || mouseX >= barX + CATEGORY_WIDTH || mouseY < barY || mouseY >= barY + barH) {
             return false;
+        }
+        if (isRestrictedMode()) {
+            selectedCategoryIndex = restrictedCategoryIndex();
+            refreshByCategory();
+            return true;
         }
 
         int relY = (int) (mouseY - barY) + categoryScrollOffset;
@@ -1204,6 +1326,7 @@ public final class ForeignTradeMenuScreenOpener {
                     if (!stack.isEmpty()) {
                         ResourceLocation rl = BuiltInRegistries.ITEM.getKey(stack.getItem());
                         warehouseSelectedItem = rl.toString();
+                        warehouseSelectedNbt = stack.save(mc.player.level().registryAccess()).toString();
                         warehousePricingMode = true;
                         warehouseCountText = "1";
                         warehousePriceText = "10";
@@ -1813,7 +1936,7 @@ public final class ForeignTradeMenuScreenOpener {
         if (price == (long) price) {
             return String.valueOf((long) price);
         }
-        return String.format("%.1f", price);
+        return String.format("%.2f", price);
     }
 
     private static final class ForeignTradeMenuScreen extends ModularUIScreen {

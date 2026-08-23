@@ -141,7 +141,7 @@ public class RtsFakePlayerEntity extends LivingEntity {
             }
             if (level() instanceof ServerLevel serverLevel) {
                 BlockPos start = blockPosition();
-                Vec3 worldTarget = com.xy2407.nsukaddition.common.rts.path.SableStructureReader.projectOutOfSubLevel(serverLevel, targetPos);
+                Vec3 worldTarget = targetPos;
                 path = FakePlayerPathfinder.findPath(serverLevel, start, BlockPos.containing(worldTarget));
                 waypointIndex = 0;
                 waypointStuckTicks = 0;

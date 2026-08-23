@@ -33,6 +33,7 @@ import net.minecraft.nbt.NbtIo;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.network.chat.Component;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
@@ -218,8 +219,19 @@ public final class VillageTourismService {
 
     public static boolean openCaravanTrade(ServerLevel level, ServerPlayer player, CitizenEntity leader) {
         if (level == null || player == null || leader == null) return false;
-        Caravan caravan = findCaravanByLeader(leader.getUUID());
-        if (caravan == null) return false;
+        if (findCaravanByLeader(leader.getUUID()) == null) {
+            loadPersistedCaravans(level);
+        }
+        CommercialTradeView view = buildCaravanTradeView(level, leader.getUUID());
+        if (view == null) return false;
+        return CommercialTradeMenuProvider.open(player, view);
+    }
+
+    public static CommercialTradeView buildCaravanTradeView(ServerLevel level, UUID leaderId) {
+        if (level == null || leaderId == null) return null;
+        Caravan caravan = findCaravanByLeader(leaderId);
+        if (caravan == null) return null;
+        if (!(level.getEntity(leaderId) instanceof CitizenEntity citizen)) return null;
         List<CommercialTradeView.OfferEntry> offers = new ArrayList<>();
         for (CaravanProduct p : caravan.products) {
             ForeignTradeMarket.MarketEntry price = ForeignTradeMarket.getEntry(p.itemId());
@@ -244,16 +256,15 @@ public final class VillageTourismService {
                     0L,
                     0));
         }
-        CommercialTradeView view = new CommercialTradeView(
-                leader.blockPosition().immutable(),
-                leader.getUUID(),
+        return new CommercialTradeView(
+                citizen.blockPosition().immutable(),
+                leaderId,
                 "",
-                leader.getDisplayName().getString(),
+                citizen.getDisplayName().getString(),
                 caravan.funds,
                 true,
                 offers
         );
-        return CommercialTradeMenuProvider.open(player, view);
     }
 
     public static boolean executeCaravanTrade(ServerLevel level, ServerPlayer player, UUID leaderId,
@@ -277,6 +288,9 @@ public final class VillageTourismService {
         }
         int stock = caravan.productStock.getOrDefault(itemId, 0);
         if (count > stock) {
+            count = stock;
+        }
+        if (count <= 0) {
             return false;
         }
         var cityOpt = CityManager.get(level).getPlayerCity(player.getUUID());
@@ -339,6 +353,9 @@ public final class VillageTourismService {
         }
         int stock = caravan.productStock.getOrDefault(itemId, 0);
         if (stock + count > product.limit()) {
+            count = Math.max(0, product.limit() - stock);
+        }
+        if (count <= 0) {
             return false;
         }
         var cityOpt = CityManager.get(level).getPlayerCity(player.getUUID());
@@ -708,7 +725,7 @@ public final class VillageTourismService {
         if (entity == null) return;
         CitizenData data = CitizenService.ensureCitizen(level, entity);
         if (data == null) return;
-        String funds = String.format("%.1f", caravan.funds);
+        String funds = String.format("%.2f", caravan.funds);
         data.setStatusLabel(TourismConstants.CARAVAN_LEADER_STATUS + "||" + funds);
         CitizenService.save(level, data.uuid());
         CitizenService.syncEntity(level, entity);
@@ -906,7 +923,25 @@ public final class VillageTourismService {
 
         ACTIVE_CARAVANS.computeIfAbsent(cityId, k -> new CopyOnWriteArrayList<>())
                 .add(new Caravan(cityId, sourceCity.cityId(), leader.getUUID(), followerIds, muleIds, products, funds));
+        notifyCaravanArrival(level, playerCity, sourceCity, center);
         persistCaravan(level, playerCity, sourceCity, leader.getUUID(), followerIds, muleIds, products, funds);
+    }
+
+    private static void notifyCaravanArrival(ServerLevel level, CityData playerCity, CityData sourceCity, Vec3 pos) {
+        if (level == null || playerCity == null || sourceCity == null) {
+            return;
+        }
+        String coords = Math.round(pos.x) + ", " + Math.round(pos.y) + ", " + Math.round(pos.z);
+        Component message = Component.literal("\u00a7e商队\u00a7r来到了你的城市，坐标\u00a7a" + coords + "\u00a7r");
+        for (CityMemberData member : CityManager.get(level).getMembers(playerCity.cityId())) {
+            if (member.permissionLevel() == CityPermissionLevel.CITIZEN) {
+                continue;
+            }
+            ServerPlayer online = level.getServer().getPlayerList().getPlayerByName(member.playerName());
+            if (online != null) {
+                online.sendSystemMessage(message);
+            }
+        }
     }
 
     private static void tickCaravans(ServerLevel level) {
@@ -1133,7 +1168,9 @@ public final class VillageTourismService {
 
         Caravan caravan = new Caravan(cityId, sourceCityId, leaderId, followerIds, muleIds, products, funds);
         stocks.forEach(caravan.productStock::put);
-        ACTIVE_CARAVANS.computeIfAbsent(cityId, k -> new CopyOnWriteArrayList<>()).add(caravan);
+        if (findCaravanByLeader(leaderId) == null) {
+            ACTIVE_CARAVANS.computeIfAbsent(cityId, k -> new CopyOnWriteArrayList<>()).add(caravan);
+        }
         long today = level.getDayTime() / 24000L;
         LAST_CARAVAN_SPAWN_DAY_BY_CITY.put(cityId, today);
         DailyMarkerStorage.save(level, cityId, "caravan_spawn", today);

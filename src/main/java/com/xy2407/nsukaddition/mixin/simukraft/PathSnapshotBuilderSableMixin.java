@@ -38,8 +38,8 @@ public abstract class PathSnapshotBuilderSableMixin {
         if (!state.isAir()) {
             return state;
         }
-        if (SableStructureReader.mayContainStructure(level)) {
-            BlockState sub = SableStructureReader.getBlockStateAt(level, pos);
+        if (SableStructureReader.isAvailable()) {
+            BlockState sub = SableStructureReader.getInflatedBlockStateAt(level, pos);
             if (sub != null && !sub.isAir()) {
                 return sub;
             }

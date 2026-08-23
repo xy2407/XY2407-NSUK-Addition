@@ -165,6 +165,47 @@ public final class CaravanProductConfig {
         }
     }
 
+    public static int unitLimit(CityLevel level, String category) {
+        if (level == null) {
+            level = CityLevel.VILLAGE;
+        }
+        boolean material = category != null && VillageStockConfig.isMaterialCategory(category);
+        String cat = category == null ? "" : category.toLowerCase(Locale.ROOT);
+        return switch (level) {
+            case SETTLEMENT -> material ? 500 : 100;
+            case VILLAGE -> material ? 1000 : switch (cat) {
+                case "crop" -> 500;
+                case "animal" -> 16;
+                case "mineral" -> 300;
+                default -> 100;
+            };
+            case TOWN -> material ? 1500 : switch (cat) {
+                case "crop" -> 800;
+                case "animal" -> 24;
+                case "mineral" -> 500;
+                case "cheese" -> 32;
+                case "wine" -> 64;
+                default -> 150;
+            };
+            case CITY_STATE -> material ? 2000 : switch (cat) {
+                case "crop" -> 1200;
+                case "animal" -> 32;
+                case "mineral" -> 1200;
+                case "cheese" -> 64;
+                case "wine" -> 128;
+                default -> 200;
+            };
+            case METROPOLIS -> material ? 3000 : switch (cat) {
+                case "crop" -> 2000;
+                case "animal" -> 64;
+                case "mineral" -> 1000;
+                case "cheese" -> 128;
+                case "wine" -> 192;
+                default -> 300;
+            };
+        };
+    }
+
     private static List<TradeItemDef> materialPool() {
         List<TradeItemDef> result = new ArrayList<>();
         for (TradeItemDef d : ForeignTradeConfig.getEntries()) {

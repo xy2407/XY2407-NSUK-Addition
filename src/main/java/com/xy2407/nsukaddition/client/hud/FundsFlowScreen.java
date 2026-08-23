@@ -125,7 +125,7 @@ public final class FundsFlowScreen extends Screen {
         }
         gg.drawString(font, Component.literal(reason), x + 10, y + 24, TEXT_SECONDARY, false);
 
-        String balanceStr = "余额: " + String.format("%.1f", record.balanceAfter());
+        String balanceStr = "余额: " + String.format("%.2f", record.balanceAfter());
         int balanceW = font.width(balanceStr);
         gg.drawString(font, Component.literal(balanceStr), x + cardW - balanceW - 10, y + 24, COLOR_BALANCE, false);
     }

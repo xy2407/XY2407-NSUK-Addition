@@ -44,7 +44,7 @@ public final class NsukSqliteDatabase implements Closeable {
             "breeding_boxes", "auto_restock",
             "foreign_trade_boxes", "free_market_listings", "restaurant_boxes",
             "village_diplomacy", "village_trade_quota", "village_city_type",
-            "foreign_trade_caravans", "foreign_trade_caravan_members", "foreign_trade_shopping_list"
+            "foreign_trade_caravans", "foreign_trade_caravan_members", "foreign_trade_shopping_list", "village_city_grade"
     };
 
     private static final ConcurrentMap<MinecraftServer, NsukSqliteDatabase> INSTANCES = new ConcurrentHashMap<>();

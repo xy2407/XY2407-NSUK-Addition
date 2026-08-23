@@ -1,8 +1,12 @@
 package com.xy2407.nsukaddition.common.rts.path;
 
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.Direction;
+import net.minecraft.world.level.ChunkPos;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.chunk.LevelChunk;
 import net.minecraft.world.phys.Vec3;
 
 import java.lang.reflect.Constructor;
@@ -40,6 +44,12 @@ public final class SableStructureReader {
     private static final String BB3D_CLASS = "dev.ryanhcode.sable.companion.math.BoundingBox3d";
     private static final String BB3DC_CLASS = "dev.ryanhcode.sable.companion.math.BoundingBox3dc";
     private static final String SUB_LEVEL_CONTAINER_CLASS = "dev.ryanhcode.sable.api.sublevel.SubLevelContainer";
+    private static final String GET_PLOT = "getPlot";
+    private static final String TO_LOCAL = "toLocal";
+    private static final String PLOT_GET_CHUNK_HOLDER = "getChunkHolder";
+    private static final String PLOT_GET_CHUNK = "getChunk";
+    private static final String LEVEL_PLOT_CLASS = "dev.ryanhcode.sable.sublevel.plot.LevelPlot";
+    private static final String PLOT_CHUNK_HOLDER_CLASS = "dev.ryanhcode.sable.sublevel.plot.PlotChunkHolder";
 
     private static volatile Boolean available = null;
     private static Object helper = null;
@@ -52,8 +62,12 @@ public final class SableStructureReader {
     private static Constructor<?> boundingBoxCtor = null;
     private static Method getContainerMethod = null;
     private static Method getLoadedCountMethod = null;
+    private static Method getPlotMethod = null;
+    private static Method plotToLocalMethod = null;
+    private static Method plotGetChunkHolderMethod = null;
+    private static Method plotGetChunkMethod = null;
 
-    private static volatile boolean anyStructure = false;
+    private static boolean anyStructure = false;
     private static volatile long lastAnyQueryTick = Long.MIN_VALUE;
     private static final long ANY_QUERY_INTERVAL_TICKS = 20L;
 
@@ -79,10 +93,14 @@ public final class SableStructureReader {
                 Class<?> containerClass = Class.forName(SUB_LEVEL_CONTAINER_CLASS);
                 getContainerMethod = containerClass.getMethod("getContainer", Level.class);
                 getLoadedCountMethod = containerClass.getMethod("getLoadedCount");
+                Class<?> subLevelClass = Class.forName("dev.ryanhcode.sable.sublevel.SubLevel");
+                getPlotMethod = subLevelClass.getMethod(GET_PLOT);
+                Class<?> levelPlotClass = Class.forName(LEVEL_PLOT_CLASS);
+                plotToLocalMethod = levelPlotClass.getMethod(TO_LOCAL, ChunkPos.class);
+                plotGetChunkHolderMethod = levelPlotClass.getMethod(PLOT_GET_CHUNK_HOLDER, ChunkPos.class);
+                plotGetChunkMethod = Class.forName(PLOT_CHUNK_HOLDER_CLASS).getMethod(PLOT_GET_CHUNK);
                 available = Boolean.TRUE;
             } catch (Throwable t) {
-                org.slf4j.Logger logger = org.slf4j.LoggerFactory.getLogger(SableStructureReader.class);
-                logger.warn("[nsuk] Sable API 探测失败，物理结构兼容已降级（结构障碍将不可见）: {}", String.valueOf(t));
                 available = Boolean.FALSE;
                 clearCachedApis();
             }
@@ -100,6 +118,10 @@ public final class SableStructureReader {
         boundingBoxCtor = null;
         getContainerMethod = null;
         getLoadedCountMethod = null;
+        getPlotMethod = null;
+        plotToLocalMethod = null;
+        plotGetChunkHolderMethod = null;
+        plotGetChunkMethod = null;
     }
 
     public static boolean isAvailable() {
@@ -107,6 +129,11 @@ public final class SableStructureReader {
         return available == Boolean.TRUE;
     }
 
+    /**
+     * 把 Sable 结构命中点投影回父世界坐标。物理化结构内容存放于 plot 远端坐标，clip/选中点
+     * 可能落在这些远端坐标上，必须用当前 pose transformPosition 映射到父世界才能作为寻路目标；
+     * 不在结构内则原样返回。不可到达的远端坐标场景（修正旋转目标时必须保留此投影）。
+     */
     public static Vec3 projectOutOfSubLevel(Level level, Vec3 pos) {
         if (!isAvailable() || level == null || pos == null) return pos;
         try {
@@ -127,6 +154,66 @@ public final class SableStructureReader {
         return sub == null ? null : sub.state();
     }
 
+    /**
+     * 任意角旋转结构的半格膨胀读取：先按中心点读结构状态；自身为空气时，若命中某个
+     * 非轴对齐水平旋转结构的邻接格子，则返回一个占位实心方块，让 A* 在这条倾斜边外围
+     * 留出约半格到一格的安全边距，避免 NPC 贴着格子路径撞到实际倾斜/错位碰撞面的边角。
+     * 轴对齐结构不被膨胀，完全保留 SimuKraft 原先的贴墙精度。
+     */
+    public static BlockState getInflatedBlockStateAt(Level level, BlockPos pos) {
+        SubLevelBlock sub = getSubLevelBlockAt(level, pos);
+        if (sub != null) {
+            return sub.state();
+        }
+        if (!anyStructure) {
+            return null;
+        }
+        BlockPos.MutableBlockPos nb = new BlockPos.MutableBlockPos();
+        for (Direction d : Direction.Plane.HORIZONTAL) {
+            nb.set(pos).move(d);
+            SubLevelBlock neighbor = getSubLevelBlockAt(level, nb);
+            if (neighbor == null) continue;
+            if (isRotatedPoseAt(level, nb)) {
+                return Blocks.STONE.defaultBlockState();
+            }
+        }
+        return null;
+    }
+
+    /** 判断世界格子处是否命中一个"任意角"水平旋转结构（非 90° 整数倍）。 */
+    private static boolean isRotatedPoseAt(Level level, BlockPos pos) {
+        if (!isAvailable()) return false;
+        try {
+            Vec3 world = new Vec3(pos.getX() + 0.5, pos.getY() + 0.5, pos.getZ() + 0.5);
+            double e = 0.1;
+            Object bounds = boundingBoxCtor.newInstance(world.add(-e, -e, -e), world.add(e, e, e));
+            Object iterable = getAllIntersectingMethod.invoke(helper, level, bounds);
+            for (Object obj : (Iterable<?>) iterable) {
+                Object pose = logicalPoseMethod.invoke(obj);
+                if (isArbitraryYaw(pose, world)) {
+                    return true;
+                }
+            }
+        } catch (ReflectiveOperationException | RuntimeException e) {
+            return false;
+        }
+        return false;
+    }
+
+    /** 用世界 X 方向向量的局部像判断水平偏航是否为任意角。 */
+    private static boolean isArbitraryYaw(Object pose, Vec3 world) throws ReflectiveOperationException {
+        Vec3 l1 = (Vec3) transformPositionInverseMethod.invoke(pose, world);
+        Vec3 l2 = (Vec3) transformPositionInverseMethod.invoke(pose, world.add(1.0, 0.0, 0.0));
+        double dx = l2.x - l1.x;
+        double dz = l2.z - l1.z;
+        double h = Math.sqrt(dx * dx + dz * dz);
+        if (h < 1.0E-6D) {
+            return false;
+        }
+        double cosX = Math.abs(dx / h);
+        return cosX > 0.05D && cosX < 0.995D;
+    }
+
     public static SubLevelBlock getSubLevelBlockAt(Level level, BlockPos pos) {
         if (!isAvailable() || level == null || pos == null) return null;
         try {
@@ -144,12 +231,18 @@ public final class SableStructureReader {
                 Object localObj = transformPositionInverseMethod.invoke(pose, world);
                 if (!(localObj instanceof Vec3 local)) continue;
                 Object parentLevel = getLevelMethod.invoke(sub);
+                BlockPos absPos = BlockPos.containing(local);
                 if (parentLevel instanceof Level lv) {
-                    BlockState state = lv.getBlockState(BlockPos.containing(local));
+                    BlockState state = lv.getBlockState(absPos);
                     if (state != null && !state.isAir()) {
-                        read = new SubLevelBlock(lv, BlockPos.containing(local), state);
+                        read = new SubLevelBlock(lv, absPos, state);
                         break;
                     }
+                }
+                BlockState plotState = readFromPlot(sub, absPos);
+                if (plotState != null && !plotState.isAir()) {
+                    read = new SubLevelBlock(parentLevel instanceof Level lv ? lv : level, absPos, plotState);
+                    break;
                 }
             }
             return read;
@@ -158,41 +251,35 @@ public final class SableStructureReader {
         }
     }
 
-    public record StructureAnchor(Level ownerLevel, Object sublevel, Vec3 plotLocalTarget) {
-    }
-
-    public static StructureAnchor resolveAnchor(Level level, Vec3 worldPos) {
-        if (!isAvailable() || level == null || worldPos == null) return null;
+    private static BlockState readFromPlot(Object sub, BlockPos absPos) {
+        if (getPlotMethod == null || plotToLocalMethod == null || plotGetChunkHolderMethod == null || plotGetChunkMethod == null) {
+            return null;
+        }
         try {
-            double e = 0.1;
-            Object bounds = boundingBoxCtor.newInstance(worldPos.add(-e, -e, -e), worldPos.add(e, e, e));
-            Object iterable = getAllIntersectingMethod.invoke(helper, level, bounds);
-            for (Object sub : (Iterable<?>) iterable) {
-                Object pose = logicalPoseMethod.invoke(sub);
-                Object localObj = transformPositionInverseMethod.invoke(pose, worldPos);
-                if (!(localObj instanceof Vec3 local)) continue;
-                Object owner = getLevelMethod.invoke(sub);
-                if (owner instanceof Level lv) {
-                    return new StructureAnchor(lv, sub, local);
+            Object plot = getPlotMethod.invoke(sub);
+            if (plot == null) {
+                return null;
+            }
+            ChunkPos globalChunk = new ChunkPos(absPos.getX() >> 4, absPos.getZ() >> 4);
+            Object localChunk = plotToLocalMethod.invoke(plot, globalChunk);
+            if (!(localChunk instanceof ChunkPos lc)) {
+                return null;
+            }
+            Object holder = plotGetChunkHolderMethod.invoke(plot, lc);
+            if (holder == null) {
+                return null;
+            }
+            Object chunkObj = plotGetChunkMethod.invoke(holder);
+            if (chunkObj instanceof LevelChunk chunk) {
+                BlockState state = chunk.getBlockState(absPos);
+                if (state != null && !state.isAir()) {
+                    return state;
                 }
             }
         } catch (ReflectiveOperationException | RuntimeException e) {
             return null;
         }
         return null;
-    }
-
-    public static Vec3 anchorToWorld(StructureAnchor anchor) {
-        if (anchor == null || anchor.sublevel() == null || anchor.plotLocalTarget() == null) return null;
-        if (!isAvailable()) return null;
-        try {
-            Object sub = getContainingMethod.invoke(helper, anchor.ownerLevel(), BlockPos.containing(anchor.plotLocalTarget()));
-            if (sub != anchor.sublevel()) return null;
-            Object worldObj = transformPositionMethod.invoke(logicalPoseMethod.invoke(anchor.sublevel()), anchor.plotLocalTarget());
-            return worldObj instanceof Vec3 w ? w : null;
-        } catch (ReflectiveOperationException | RuntimeException e) {
-            return null;
-        }
     }
 
     public static boolean mayContainStructure(Level level) {

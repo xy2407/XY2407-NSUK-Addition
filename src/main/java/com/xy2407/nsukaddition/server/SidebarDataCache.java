@@ -26,13 +26,8 @@ import java.util.concurrent.atomic.AtomicReference;
 /** 侧边栏 HUD 的 SQLite 数据缓存，每 20 tick（1秒）后台异步刷新，防重入。 */
 public final class SidebarDataCache {
 
-    private static final AtomicBoolean SHUTDOWN = new AtomicBoolean(false);
     private static final AtomicBoolean REFRESH_IN_PROGRESS = new AtomicBoolean(false);
-    private static final ExecutorService READ_EXECUTOR = Executors.newSingleThreadExecutor(r -> {
-        Thread t = new Thread(r, "nsuk-sidebar-cache-read");
-        t.setDaemon(true);
-        return t;
-    });
+    private static volatile ExecutorService READ_EXECUTOR;
 
     private static final AtomicReference<Map<UUID, CitySqliteCache>> CACHE =
             new AtomicReference<>(Map.of());
@@ -40,16 +35,35 @@ public final class SidebarDataCache {
     private SidebarDataCache() {
     }
 
+    private static ExecutorService reader() {
+        ExecutorService executor = READ_EXECUTOR;
+        if (executor != null && !executor.isShutdown()) {
+            return executor;
+        }
+        synchronized (SidebarDataCache.class) {
+            executor = READ_EXECUTOR;
+            if (executor == null || executor.isShutdown()) {
+                executor = Executors.newSingleThreadExecutor(r -> {
+                    Thread t = new Thread(r, "nsuk-sidebar-cache-read");
+                    t.setDaemon(true);
+                    return t;
+                });
+                READ_EXECUTOR = executor;
+            }
+            return executor;
+        }
+    }
+
     public static void refreshAsync(ServerLevel level) {
-        if (SHUTDOWN.get()) return;
-        if (READ_EXECUTOR.isShutdown()) return;
+        if (level == null) return;
+        ExecutorService executor = reader();
         if (!REFRESH_IN_PROGRESS.compareAndSet(false, true)) return;
         List<UUID> cityIds = new ArrayList<>();
         for (CityData city : CityManager.get(level).allCities()) {
             cityIds.add(city.cityId());
         }
         try {
-            READ_EXECUTOR.execute(() -> {
+            executor.execute(() -> {
                 try {
                     refresh(level, cityIds);
                 } finally {
@@ -150,15 +164,17 @@ public final class SidebarDataCache {
     }
 
     public static void shutdown() {
-        SHUTDOWN.set(true);
-        READ_EXECUTOR.shutdown();
-        try {
-            if (!READ_EXECUTOR.awaitTermination(5, TimeUnit.SECONDS)) {
-                READ_EXECUTOR.shutdownNow();
+        ExecutorService executor = READ_EXECUTOR;
+        if (executor != null) {
+            executor.shutdown();
+            try {
+                if (!executor.awaitTermination(5, TimeUnit.SECONDS)) {
+                    executor.shutdownNow();
+                }
+            } catch (InterruptedException e) {
+                executor.shutdownNow();
+                Thread.currentThread().interrupt();
             }
-        } catch (InterruptedException e) {
-            READ_EXECUTOR.shutdownNow();
-            Thread.currentThread().interrupt();
         }
         CACHE.set(Map.of());
     }

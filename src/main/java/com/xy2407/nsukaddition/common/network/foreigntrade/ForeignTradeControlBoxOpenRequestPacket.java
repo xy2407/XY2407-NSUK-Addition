@@ -1,5 +1,8 @@
 package com.xy2407.nsukaddition.common.network.foreigntrade;
 
+import common.cn.kafei.simukraft.city.CityChunkManager;
+import common.cn.kafei.simukraft.city.CityData;
+import common.cn.kafei.simukraft.city.CityService;
 import com.xy2407.nsukaddition.NsukAddition;
 import com.xy2407.nsukaddition.common.foreigntrade.ForeignTradeConstants;
 import com.xy2407.nsukaddition.common.foreigntrade.ForeignTradeControlBoxService;
@@ -12,8 +15,12 @@ import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.level.ChunkPos;
 import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
+
+import java.util.Optional;
+import java.util.UUID;
 
 /** 外贸控制箱打开请求网络包，客户端请求服务端返回界面数据。 */
 @SuppressWarnings("null")
@@ -44,6 +51,16 @@ public record ForeignTradeControlBoxOpenRequestPacket(BlockPos pos) implements C
     public static void openFor(ServerLevel level, ServerPlayer player, BlockPos pos) {
         if (!player.blockPosition().closerThan(pos, 16.0D)) {
             InfoToastService.warning(player, Component.translatable(ForeignTradeConstants.TOO_FAR_MESSAGE));
+            return;
+        }
+        UUID boxCityId = CityChunkManager.get(level).getChunkOwner(new ChunkPos(pos).toLong());
+        if (boxCityId == null) {
+            InfoToastService.warning(player, Component.translatable(ForeignTradeConstants.NO_CITY_MESSAGE));
+            return;
+        }
+        Optional<CityData> playerCity = CityService.findManagedPlayerCity(level, player.getUUID());
+        if (playerCity.isEmpty() || !boxCityId.equals(playerCity.get().cityId())) {
+            InfoToastService.warning(player, Component.translatable(ForeignTradeConstants.NOT_OFFICIAL_MESSAGE));
             return;
         }
         PacketDistributor.sendToPlayer(player,

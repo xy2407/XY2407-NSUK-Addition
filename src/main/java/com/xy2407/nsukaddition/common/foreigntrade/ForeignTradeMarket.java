@@ -5,28 +5,20 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.neoforged.neoforge.server.ServerLifecycleHooks;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Random;
-import java.util.Set;
-import java.util.UUID;
+import java.util.*;
 import java.util.concurrent.ConcurrentHashMap;
 
 /**
- * 外贸市场:按游戏天确定性浮动价格,基准分类按分类基准价值派生,村庄按分类映射随机抽取可售物品。
+ * 外贸市场:每 10 分钟确定性浮动价格,每个村庄每件物品的购买与出售各自独立波动 -15% ~ +25%,
+ * 出售价不得超过收购价;基准分类按分类基准价值派生。
  */
 public final class ForeignTradeMarket {
 
     private static final double FLUCTUATION_MIN = -0.15;
     private static final double FLUCTUATION_MAX = 0.25;
-    private static final double SELL_RATIO = 0.8;
-    private static final int VILLAGE_ITEMS_PER_CATEGORY = 6;
+    private static final long PRICE_SLOT_TICKS = 12000L;
 
-    private static int lastRefreshDay = -1;
+    private static int lastRefreshSlot = -1;
     private static final ConcurrentHashMap<String, MarketEntry> currentPrices = new ConcurrentHashMap<>();
 
     public record MarketEntry(String itemId, int count, double buyPrice, double sellPrice, String category, String villageType) {}
@@ -34,80 +26,65 @@ public final class ForeignTradeMarket {
     private ForeignTradeMarket() {}
 
     public static void ensureRefreshed() {
-        int day = currentGameDay();
-        if (day != lastRefreshDay || currentPrices.isEmpty()) {
-            refresh(day);
+        int slot = currentPriceSlot();
+        if (slot != lastRefreshSlot || currentPrices.isEmpty()) {
+            refresh(slot);
         }
     }
 
     public static void refresh() {
-        refresh(currentGameDay());
+        refresh(currentPriceSlot());
     }
 
-    private static void refresh(int day) {
+    private static void refresh(int slot) {
         currentPrices.clear();
 
-        Map<String, List<TradeItemDef>> byCategory = new HashMap<>();
         for (var def : ForeignTradeConfig.getEntries()) {
-            byCategory.computeIfAbsent(def.category(), k -> new ArrayList<>()).add(def);
-        }
-
-        for (var def : ForeignTradeConfig.getEntries()) {
-            Double base = ForeignTradeCategoryConfig.getBasePrice(def.category());
-            double buyPrice;
-            double sellPrice;
-            if (base != null) {
-                buyPrice = round1(base * (1.0 + flucFor(day, def.item_id())));
-                sellPrice = round1(buyPrice * SELL_RATIO);
-            } else {
-                buyPrice = round1(def.buy());
-                sellPrice = round1(Math.min(def.sell(), buyPrice * SELL_RATIO));
-            }
-            if (sellPrice > buyPrice) {
-                sellPrice = buyPrice;
-            }
-            String key = def.tradeKey();
-            currentPrices.put(key,
-                    new MarketEntry(key, def.count(), buyPrice, sellPrice, def.category(), ""));
+            double[] p = priceFor(slot, def.tradeKey(), def);
+            currentPrices.put(def.tradeKey(),
+                    new MarketEntry(def.tradeKey(), def.count(), p[0], p[1], def.category(), ""));
         }
 
         for (String villageType : ForeignTradeCategoryConfig.getAllVillageTypes()) {
-            Random rng = new Random(day * 104729L + villageType.hashCode());
-            for (String category : ForeignTradeCategoryConfig.getVillageCategories(villageType)) {
-                List<TradeItemDef> pool = byCategory.getOrDefault(category, List.of());
-                if (pool.isEmpty()) {
+            Set<String> enabled = new HashSet<>(ForeignTradeCategoryConfig.getVillageCategories(villageType));
+            for (TradeItemDef def : ForeignTradeConfig.getEntries()) {
+                if (!enabled.contains(def.category())) {
                     continue;
                 }
-                List<TradeItemDef> shuffled = new ArrayList<>(pool);
-                Collections.shuffle(shuffled, rng);
-                int n = Math.min(VILLAGE_ITEMS_PER_CATEGORY, shuffled.size());
-                for (int i = 0; i < n; i++) {
-                    TradeItemDef def = shuffled.get(i);
-                    String key = def.tradeKey();
-                    MarketEntry global = currentPrices.get(key);
-                    if (global == null) {
-                        continue;
-                    }
-                    currentPrices.put(villageType + ":" + key,
-                            new MarketEntry(key, def.count(), global.buyPrice(), global.sellPrice(), "village", villageType));
-                }
+                String villageKey = villageType + ":" + def.tradeKey();
+                double[] p = priceFor(slot, villageKey, def);
+                currentPrices.put(villageKey,
+                        new MarketEntry(def.tradeKey(), def.count(), p[0], p[1], def.category(), villageType));
             }
         }
-        lastRefreshDay = day;
+        lastRefreshSlot = slot;
     }
 
-    private static double flucFor(int day, String itemId) {
-        double r = new Random(day * 7919L + itemId.hashCode()).nextDouble();
+    /** 每个村庄每件物品的购买与出售各自独立波动，出售价不超过收购价（超过则直接相等）。 */
+    private static double[] priceFor(int slot, String key, TradeItemDef def) {
+        Double base = ForeignTradeCategoryConfig.getBasePrice(def.category());
+        double buyBase = base != null ? base : def.buy();
+        double sellBase = base != null ? base : def.sell();
+        double buyPrice = round2(buyBase * (1.0 + flucFor(slot, key, 0)));
+        double sellPrice = round2(sellBase * (1.0 + flucFor(slot, key, 1)));
+        if (sellPrice > buyPrice) {
+            sellPrice = buyPrice;
+        }
+        return new double[]{buyPrice, sellPrice};
+    }
+
+    private static double flucFor(int slot, String key, int salt) {
+        double r = new Random((long) slot * 7919L + key.hashCode() * 31L + salt).nextDouble();
         return FLUCTUATION_MIN + r * (FLUCTUATION_MAX - FLUCTUATION_MIN);
     }
 
-    private static double round1(double value) {
-        return Math.round(value * 10.0) / 10.0;
+    private static double round2(double value) {
+        return Math.round(value * 100.0) / 100.0;
     }
 
-    private static int currentGameDay() {
+    private static int currentPriceSlot() {
         MinecraftServer server = ServerLifecycleHooks.getCurrentServer();
-        return server != null ? (int) (server.overworld().getDayTime() / 24000L) : 0;
+        return server != null ? (int) (server.overworld().getDayTime() / PRICE_SLOT_TICKS) : 0;
     }
 
     public static List<MarketEntry> getMarketEntries() {

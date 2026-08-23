@@ -88,7 +88,7 @@ public final class FakePlayerPathfinder {
         }
         Set<BlockPos> passable = new HashSet<>(channel.size());
         for (BlockPos c : channel) {
-            BlockState floor = level.getBlockState(c.below());
+            BlockState floor = effectiveState(level, c.below());
             if (isWalkableFloor(level, c.below(), floor)) {
                 passable.add(c);
             } else if (isFenceLike(floor)) {
@@ -172,7 +172,7 @@ public final class FakePlayerPathfinder {
             }
             BlockPos drop = base.below();
             while (drop.getY() >= base.getY() - DOWNWARD_RANGE && isChannelClear(level, drop)) {
-                BlockState floorState = level.getBlockState(drop.below());
+                BlockState floorState = effectiveState(level, drop.below());
                 if (isWalkableFloor(level, drop.below(), floorState)) {
                     if (drop.getY() < base.getY() - 1) {
                         result.add(drop);
@@ -200,8 +200,19 @@ public final class FakePlayerPathfinder {
         return isBodyPassable(level, pos) && isHeadPassable(level, pos.above());
     }
 
+    /** 取某格的有效方块：主世界为空气时桥接读取 Sable 物理结构/膨胀障碍，与 NPC 快照桥同套判定。 */
+    private static BlockState effectiveState(ServerLevel level, BlockPos pos) {
+        BlockState s = level.getBlockState(pos);
+        if (!s.isAir()) return s;
+        if (SableStructureReader.isAvailable()) {
+            BlockState sub = SableStructureReader.getInflatedBlockStateAt(level, pos);
+            if (sub != null && !sub.isAir()) return sub;
+        }
+        return s;
+    }
+
     public static boolean isBodyPassable(ServerLevel level, BlockPos pos) {
-        BlockState state = level.getBlockState(pos);
+        BlockState state = effectiveState(level, pos);
         if (state.isAir()) {
             return true;
         }
@@ -231,7 +242,7 @@ public final class FakePlayerPathfinder {
     }
 
     private static boolean isHeadPassable(ServerLevel level, BlockPos pos) {
-        BlockState state = level.getBlockState(pos);
+        BlockState state = effectiveState(level, pos);
         if (state.isAir()) {
             return true;
         }

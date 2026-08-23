@@ -97,7 +97,7 @@ public class RtsPhysicsMoveTask implements RtsTask {
     }
 
     private static Vec3 normalizeTarget(ServerLevel level, Vec3 target) {
-        Vec3 world = SableStructureReader.projectOutOfSubLevel(level, target);
+        Vec3 world = target;
         BlockPos pos = BlockPos.containing(world);
         if (isStandable(level, pos)) {
             return new Vec3(pos.getX() + 0.5, pos.getY(), pos.getZ() + 0.5);

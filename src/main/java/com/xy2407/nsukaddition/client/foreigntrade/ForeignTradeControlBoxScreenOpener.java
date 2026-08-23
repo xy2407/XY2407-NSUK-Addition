@@ -133,6 +133,12 @@ public final class ForeignTradeControlBoxScreenOpener {
         });
 
         boolean canOpenMarket = selectedCityId != null;
+        Button myCityBtn = new Button();
+        myCityBtn.setText(Component.translatable("gui.xy2407_nsuk_addition.foreign_trade.my_city"));
+        myCityBtn.setOnClick(event -> ForeignTradeMenuScreenOpener.openMyCity(packet.boxPos()));
+        myCityBtn.layout(layout -> { layout.flex(1); layout.height(24); });
+        bottomRow.addChild(myCityBtn);
+
         Button marketBtn = new Button();
         marketBtn.setText(Component.translatable("gui.xy2407_nsuk_addition.foreign_trade.open_market"));
         marketBtn.setOnClick(event -> ForeignTradeMenuScreenOpener.open(packet.boxPos(), selectedCityId));

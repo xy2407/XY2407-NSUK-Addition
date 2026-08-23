@@ -58,6 +58,8 @@ public final class NsukSqliteSchema {
                     + "PRIMARY KEY(player_uuid, city_id, item_id))");
             statement.executeUpdate("CREATE TABLE IF NOT EXISTS village_city_type("
                     + "city_id TEXT PRIMARY KEY, village_type TEXT)");
+            statement.executeUpdate("CREATE TABLE IF NOT EXISTS village_city_grade("
+                    + "city_id TEXT PRIMARY KEY, grade TEXT NOT NULL DEFAULT '', chunk_count INTEGER NOT NULL DEFAULT 0)");
             statement.executeUpdate("CREATE TABLE IF NOT EXISTS village_stock("
                     + "city_id TEXT NOT NULL, item_id TEXT NOT NULL, stock INTEGER NOT NULL DEFAULT 0, "
                     + "PRIMARY KEY(city_id, item_id))");
@@ -114,7 +116,8 @@ public final class NsukSqliteSchema {
                     + "price INTEGER NOT NULL, "
                     + "seller_player TEXT NOT NULL, "
                     + "created_at INTEGER NOT NULL, "
-                    + "item_nbt TEXT)");
+                    + "item_nbt TEXT, "
+                    + "highlighted INTEGER DEFAULT 0)");
             statement.executeUpdate("CREATE TABLE IF NOT EXISTS town_immigration("
                     + "request_id TEXT PRIMARY KEY, "
                     + "city_id TEXT NOT NULL, "

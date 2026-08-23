@@ -3,6 +3,7 @@ package com.xy2407.nsukaddition.client.hud;
 import com.xy2407.nsukaddition.client.data.SidebarDataSnapshot;
 import com.xy2407.nsukaddition.client.gui.CitizenHeadRenderer;
 import com.xy2407.nsukaddition.client.gui.ScrollablePanel;
+import com.xy2407.nsukaddition.common.network.CitizenTeleportPacket;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.components.EditBox;
@@ -10,8 +11,10 @@ import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.network.chat.Component;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.*;
+import java.util.UUID;
 
 /** 城市人口全屏界面，展示市民列表并支持职业/住房筛选和搜索。 */
 @OnlyIn(Dist.CLIENT)
@@ -46,6 +49,10 @@ public final class PopulationScreen extends Screen {
     private static final int ITEM_H = 40;
     private static final int ITEM_GAP = 2;
     private static final int AVATAR_SIZE = 28;
+    private static final int TELEPORT_BTN_W = 34;
+    private static final int TELEPORT_BTN_H = 13;
+    private static final int TELEPORT_BTN_BG = 0xFF555555;
+    private static final int TELEPORT_BTN_HOVER = 0xFF777777;
 
     private static final String FILTER_ALL = "all";
     private static final String FILTER_EMPLOYED = "employed";
@@ -198,7 +205,7 @@ public final class PopulationScreen extends Screen {
             int itemY = contentY - scrollPanel.scrollOffset();
             for (int i = 0; i < filtered.size(); i++) {
                 if (itemY + ITEM_H > contentY && itemY < contentY + contentH) {
-                    renderCitizenRow(gg, winX + PADDING, itemY, cardW, filtered.get(i), i);
+                    renderCitizenRow(gg, winX + PADDING, itemY, cardW, filtered.get(i), i, mouseX, mouseY);
                 }
                 itemY += ITEM_H + ITEM_GAP;
             }
@@ -217,18 +224,18 @@ public final class PopulationScreen extends Screen {
     }
 
     private void renderCitizenRow(GuiGraphics gg, int x, int y, int cardW,
-                                   SidebarDataSnapshot.CitizenRecord citizen, int index) {
+                                   SidebarDataSnapshot.CitizenRecord citizen, int index, int mouseX, int mouseY) {
         int bg = (index % 2 == 0) ? CARD_BG : CARD_BG_ALT;
         gg.fill(x, y, x + cardW, y + ITEM_H, bg);
 
         int avatarY = y + (ITEM_H - AVATAR_SIZE) / 2;
         CitizenHeadRenderer.render(gg, citizen.skinPath(), x + 6, avatarY, AVATAR_SIZE, AVATAR_BORDER);
 
-        gg.drawString(font, Component.literal(citizen.name()), x + 42, y + 5, TEXT_PRIMARY, false);
+        gg.drawString(font, Component.literal(citizen.name()), x + 42, y + 4, TEXT_PRIMARY, false);
 
         String jobDisplay = getJobName(citizen.jobType());
         int jobColor = "UNEMPLOYED".equals(citizen.jobType()) ? COLOR_UNEMPLOYED : COLOR_EMPLOYED;
-        gg.drawString(font, Component.literal(jobDisplay), x + 42, y + 20, jobColor, false);
+        gg.drawString(font, Component.literal(jobDisplay), x + 42, y + 18, jobColor, false);
 
         String homeStatus;
         int homeColor;
@@ -239,16 +246,59 @@ public final class PopulationScreen extends Screen {
             homeStatus = "无家";
             homeColor = TEXT_MUTED;
         }
-
         String colonyInfo = citizen.colonyName();
         if (colonyInfo != null && !colonyInfo.isEmpty()) {
             homeStatus = "附属:" + colonyInfo;
             homeColor = 0xFF66CCFF;
         }
+        gg.drawString(font, Component.literal(homeStatus), x + 42, y + 31, homeColor, false);
 
-        int hsW = font.width(homeStatus);
-        gg.drawString(font, Component.literal(homeStatus), x + cardW - hsW - 10, y + (ITEM_H - font.lineHeight) / 2,
-                homeColor, false);
+        int btnX = x + cardW - TELEPORT_BTN_W - 8;
+        renderTeleportButton(gg, btnX, y + 4, "传送1", mouseX, mouseY);
+        renderTeleportButton(gg, btnX, y + 23, "传送2", mouseX, mouseY);
+    }
+
+    private void renderTeleportButton(GuiGraphics gg, int x, int y, String label, int mouseX, int mouseY) {
+        boolean hovered = mouseX >= x && mouseX <= x + TELEPORT_BTN_W && mouseY >= y && mouseY <= y + TELEPORT_BTN_H;
+        gg.fill(x, y, x + TELEPORT_BTN_W, y + TELEPORT_BTN_H, hovered ? TELEPORT_BTN_HOVER : TELEPORT_BTN_BG);
+        gg.renderOutline(x, y, TELEPORT_BTN_W, TELEPORT_BTN_H, hovered ? 0xFFFFFFFF : 0xFF888888);
+        int labelW = font.width(label);
+        gg.drawString(font, Component.literal(label),
+                x + (TELEPORT_BTN_W - labelW) / 2, y + (TELEPORT_BTN_H - font.lineHeight) / 2,
+                hovered ? TEXT_PRIMARY : TEXT_SECONDARY, false);
+    }
+
+    private boolean handleTeleportClick(double mouseX, double mouseY) {
+        if (filtered == null || filtered.isEmpty()) return false;
+        int winX = (width - WINDOW_W) / 2;
+        int winY = (height - WINDOW_H) / 2;
+        int contentY = winY + TAB_Y + TAB_H + 6;
+        int cardW = scrollPanel.viewportWidth(WINDOW_W, PADDING);
+        int btnX = winX + PADDING + cardW - TELEPORT_BTN_W - 8;
+        for (int i = 0; i < filtered.size(); i++) {
+            int y = contentY - scrollPanel.scrollOffset() + i * (ITEM_H + ITEM_GAP);
+            if (inTeleportButton(mouseX, mouseY, btnX, y + 4)) {
+                sendTeleport(filtered.get(i), true);
+                return true;
+            }
+            if (inTeleportButton(mouseX, mouseY, btnX, y + 23)) {
+                sendTeleport(filtered.get(i), false);
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private static boolean inTeleportButton(double mx, double my, int bx, int by) {
+        return mx >= bx && mx <= bx + TELEPORT_BTN_W && my >= by && my <= by + TELEPORT_BTN_H;
+    }
+
+    private void sendTeleport(SidebarDataSnapshot.CitizenRecord citizen, boolean summonToPlayer) {
+        try {
+            UUID uuid = UUID.fromString(citizen.uuid());
+            PacketDistributor.sendToServer(new CitizenTeleportPacket(uuid, summonToPlayer));
+        } catch (IllegalArgumentException ignored) {
+        }
     }
 
     private void renderCategoryTabs(GuiGraphics gg, int mouseX, int mouseY, int tabX, int tabY) {
@@ -300,6 +350,8 @@ public final class PopulationScreen extends Screen {
         if (scrollPanel.onMouseClicked(mouseX, mouseY, button)) return true;
 
         if (button == 0) {
+            if (handleTeleportClick(mouseX, mouseY)) return true;
+
             int winY = (height - WINDOW_H) / 2;
             int tabY = winY + TAB_Y;
             int tabX = (width - WINDOW_W) / 2 + PADDING;

@@ -67,7 +67,7 @@ public class EntityCaptureItemRenderer extends BlockEntityWithoutLevelRenderer {
         float height = entity.getBbHeight();
         float scale = (float) Math.min(1.5, 1.0 / Math.max(Math.max(width, height), 0.5));
         poseStack.scale(scale, scale, scale);
-        poseStack.translate(0.16F, -height / 2.0F + 0.16F, 0.0F);
+        poseStack.translate(0.60F, -height / 5.6F, 0.0F);
         poseStack.mulPose(Axis.YP.rotationDegrees(90.0F));
         EntityRenderDispatcher dispatcher = Minecraft.getInstance().getEntityRenderDispatcher();
         dispatcher.render(entity, 0.0, 0.0, 0.0, 0.0F, 1.0F, poseStack, bufferSource, light);

@@ -24,12 +24,16 @@ import com.xy2407.nsukaddition.common.registry.ModFluids;
 import com.xy2407.nsukaddition.common.registry.ModMilkFluids;
 import com.xy2407.nsukaddition.server.autorestock.AutoRestockServerTick;
 import com.xy2407.nsukaddition.server.ServerShutdownHandler;
+import com.xy2407.nsukaddition.server.SidebarServerTick;
+import com.xy2407.nsukaddition.server.WriteBatchBufferTick;
 import com.xy2407.nsukaddition.server.breeding.BreedingServerTick;
 import com.xy2407.nsukaddition.server.cooking.RestaurantServerTick;
 import com.xy2407.nsukaddition.server.city.CityMobSpawnPrevention;
 import com.xy2407.nsukaddition.server.city.CityServerTick;
 import com.xy2407.nsukaddition.server.combat.CitizenCombatService;
 import com.xy2407.nsukaddition.server.combat.CitizenGunFriendlyFireHandler;
+import com.xy2407.nsukaddition.server.rts.RtsServerTick;
+import com.xy2407.nsukaddition.server.foreigntrade.FreeMarketHighlightBroadcastServerTick;
 import com.xy2407.nsukaddition.server.village.VillageCityConverter;
 import com.xy2407.nsukaddition.server.village.VillagerToNpcConverter;
 import net.neoforged.bus.api.IEventBus;
@@ -102,5 +106,9 @@ public final class NsukAddition {
         NeoForge.EVENT_BUS.register(ServerShutdownHandler.class);
         NeoForge.EVENT_BUS.register(VillageCityConverter.class);
         NeoForge.EVENT_BUS.register(VillagerToNpcConverter.class);
+        NeoForge.EVENT_BUS.register(SidebarServerTick.class);
+        NeoForge.EVENT_BUS.register(RtsServerTick.class);
+        NeoForge.EVENT_BUS.register(FreeMarketHighlightBroadcastServerTick.class);
+        NeoForge.EVENT_BUS.register(WriteBatchBufferTick.class);
     }
 }

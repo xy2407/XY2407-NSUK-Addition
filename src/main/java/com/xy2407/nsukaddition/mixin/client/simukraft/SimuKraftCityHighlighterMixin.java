@@ -1,6 +1,7 @@
 package com.xy2407.nsukaddition.mixin.client.simukraft;
 
 import client.cn.kafei.simukraft.client.city.ClientCityChunkCache;
+import com.xy2407.nsukaddition.client.city.OwnCityClientCache;
 import com.xy2407.nsukaddition.client.colony.ColonyChunkClientCache;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceKey;
@@ -46,7 +47,7 @@ public class SimuKraftCityHighlighterMixin {
             return;
         }
 
-        boolean isSelf = ownerCity.equals(cache.getCurrentCityId());
+        boolean isSelf = ownerCity.equals(OwnCityClientCache.getOwnCityId());
         int baseColor = isSelf ? NSUK_SELF_CITY_ARGB : NSUK_ENEMY_CITY_ARGB;
         int fillColor = xaeroColor(baseColor, NSUK_FILL_ALPHA);
         int borderColor = xaeroColor(baseColor, NSUK_BORDER_ALPHA);
@@ -87,7 +88,7 @@ public class SimuKraftCityHighlighterMixin {
         ClientCityChunkCache.CityCoreEntry core = cache.getAllCityCores().get(cityId);
         String cityName = core != null && core.cityName() != null && !core.cityName().isBlank()
                 ? core.cityName() : cityId.toString();
-        boolean isSelf = cityId.equals(cache.getCurrentCityId());
+        boolean isSelf = cityId.equals(OwnCityClientCache.getOwnCityId());
         cir.setReturnValue(net.minecraft.network.chat.Component.literal(cityName)
                 .withStyle(isSelf ? net.minecraft.ChatFormatting.GREEN : net.minecraft.ChatFormatting.RED));
     }

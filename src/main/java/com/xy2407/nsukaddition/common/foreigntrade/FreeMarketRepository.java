@@ -19,10 +19,11 @@ public final class FreeMarketRepository {
 
     private static final AtomicReference<List<FreeMarketListing>> ALL_CACHE = new AtomicReference<>();
     private static volatile boolean refreshing = false;
+    private static volatile boolean schemaEnsured = false;
 
     private FreeMarketRepository() {}
 
-    public record FreeMarketListing(long id, String cityId, String cityName, String itemId, int count, int price, String sellerPlayer, long createdAt, String itemNbt) {}
+    public record FreeMarketListing(long id, String cityId, String cityName, String itemId, int count, int price, String sellerPlayer, long createdAt, String itemNbt, boolean highlighted) {}
 
     public static void ensureTable(NsukSqliteDatabase db) {
         if (db == null) return;
@@ -37,9 +38,14 @@ public final class FreeMarketRepository {
                     + "price INTEGER NOT NULL, "
                     + "seller_player TEXT NOT NULL, "
                     + "created_at INTEGER NOT NULL, "
-                    + "item_nbt TEXT)");
+                    + "item_nbt TEXT, "
+                    + "highlighted INTEGER DEFAULT 0)");
             try {
                 stmt.executeUpdate("ALTER TABLE free_market_listings ADD COLUMN item_nbt TEXT");
+            } catch (SQLException ignored) {
+            }
+            try {
+                stmt.executeUpdate("ALTER TABLE free_market_listings ADD COLUMN highlighted INTEGER DEFAULT 0");
             } catch (SQLException ignored) {
             }
         } catch (SQLException e) {
@@ -48,7 +54,16 @@ public final class FreeMarketRepository {
     }
 
     public static void preloadAll() {
+        ensureSchema(NsukSqliteDatabase.getInstance());
         triggerAsyncRefresh();
+    }
+
+    private static void ensureSchema(NsukSqliteDatabase db) {
+        if (schemaEnsured || db == null) {
+            return;
+        }
+        ensureTable(db);
+        schemaEnsured = true;
     }
 
     private static void triggerAsyncRefresh() {
@@ -67,10 +82,11 @@ public final class FreeMarketRepository {
         List<FreeMarketListing> result = new ArrayList<>();
         var db = NsukSqliteDatabase.getInstance();
         if (db == null) return result;
+        ensureSchema(db);
         try (var conn = db.openConnection();
              var stmt = conn.createStatement();
              var rs = stmt.executeQuery(
-                     "SELECT id, city_id, city_name, item_id, count, price, seller_player, created_at, item_nbt "
+                     "SELECT id, city_id, city_name, item_id, count, price, seller_player, created_at, item_nbt, highlighted "
                              + "FROM free_market_listings ORDER BY created_at")) {
             while (rs.next()) {
                 result.add(readRow(rs));
@@ -93,7 +109,7 @@ public final class FreeMarketRepository {
     public static void insert(String cityId, String cityName, String itemId, int count, int price, String sellerPlayer, String itemNbt) {
         NsukSqliteDatabase db = NsukSqliteDatabase.getInstance();
         if (db == null) return;
-        WriteBatchBuffer.submit(db, "free_market_listings",
+        WriteBatchBuffer.submitSync(db, "free_market_listings",
                 "nsuk_free_market:insert:" + cityId + ":" + itemId + ":" + sellerPlayer, connection -> {
             try (var ps = connection.prepareStatement(
                     "INSERT INTO free_market_listings(city_id, city_name, item_id, count, price, seller_player, created_at, item_nbt) "
@@ -116,7 +132,7 @@ public final class FreeMarketRepository {
     public static void delete(long id) {
         NsukSqliteDatabase db = NsukSqliteDatabase.getInstance();
         if (db == null) return;
-        WriteBatchBuffer.submitPriority(db, "free_market_listings", "nsuk_free_market:id:" + id, connection -> {
+        WriteBatchBuffer.submitSync(db, "free_market_listings", "nsuk_free_market:id:" + id, connection -> {
             try (var ps = connection.prepareStatement("DELETE FROM free_market_listings WHERE id = ?")) {
                 ps.setLong(1, id);
                 ps.executeUpdate();
@@ -128,7 +144,7 @@ public final class FreeMarketRepository {
     public static void updatePriceAndCount(long id, int newCount, int newPrice) {
         NsukSqliteDatabase db = NsukSqliteDatabase.getInstance();
         if (db == null) return;
-        WriteBatchBuffer.submit(db, "free_market_listings", "nsuk_free_market:id:" + id, connection -> {
+        WriteBatchBuffer.submitSync(db, "free_market_listings", "nsuk_free_market:id:" + id, connection -> {
             try (var ps = connection.prepareStatement(
                     "UPDATE free_market_listings SET count = ?, price = ? WHERE id = ?")) {
                 ps.setInt(1, newCount);
@@ -183,9 +199,10 @@ public final class FreeMarketRepository {
         List<FreeMarketListing> result = new ArrayList<>();
         var db = NsukSqliteDatabase.getInstance();
         if (db == null) return result;
+        ensureSchema(db);
         try (var conn = db.openConnection();
              var ps = conn.prepareStatement(
-                     "SELECT id, city_id, city_name, item_id, count, price, seller_player, created_at, item_nbt "
+                     "SELECT id, city_id, city_name, item_id, count, price, seller_player, created_at, item_nbt, highlighted "
                              + "FROM free_market_listings WHERE city_id = ? ORDER BY created_at")) {
             ps.setString(1, cityId);
             try (var rs = ps.executeQuery()) {
@@ -203,9 +220,10 @@ public final class FreeMarketRepository {
         List<FreeMarketListing> result = new ArrayList<>();
         var db = NsukSqliteDatabase.getInstance();
         if (db == null) return result;
+        ensureSchema(db);
         try (var conn = db.openConnection();
              var ps = conn.prepareStatement(
-                     "SELECT id, city_id, city_name, item_id, count, price, seller_player, created_at, item_nbt "
+                     "SELECT id, city_id, city_name, item_id, count, price, seller_player, created_at, item_nbt, highlighted "
                              + "FROM free_market_listings WHERE city_id != ? ORDER BY created_at")) {
             ps.setString(1, excludeCityId);
             try (var rs = ps.executeQuery()) {
@@ -222,9 +240,10 @@ public final class FreeMarketRepository {
     private static FreeMarketListing queryById(long id) {
         var db = NsukSqliteDatabase.getInstance();
         if (db == null) return null;
+        ensureSchema(db);
         try (var conn = db.openConnection();
              var ps = conn.prepareStatement(
-                     "SELECT id, city_id, city_name, item_id, count, price, seller_player, created_at, item_nbt "
+                     "SELECT id, city_id, city_name, item_id, count, price, seller_player, created_at, item_nbt, highlighted "
                              + "FROM free_market_listings WHERE id = ?")) {
             ps.setLong(1, id);
             try (var rs = ps.executeQuery()) {
@@ -246,7 +265,22 @@ public final class FreeMarketRepository {
                 rs.getInt("price"),
                 rs.getString("seller_player"),
                 rs.getLong("created_at"),
-                rs.getString("item_nbt") != null ? rs.getString("item_nbt") : ""
+                rs.getString("item_nbt") != null ? rs.getString("item_nbt") : "",
+                rs.getInt("highlighted") != 0
         );
+    }
+
+    public static void setHighlighted(long id, boolean highlighted) {
+        NsukSqliteDatabase db = NsukSqliteDatabase.getInstance();
+        if (db == null) return;
+        WriteBatchBuffer.submitSync(db, "free_market_listings", "nsuk_free_market:id:" + id, connection -> {
+            try (var ps = connection.prepareStatement(
+                    "UPDATE free_market_listings SET highlighted = ? WHERE id = ?")) {
+                ps.setInt(1, highlighted ? 1 : 0);
+                ps.setLong(2, id);
+                ps.executeUpdate();
+            }
+            invalidateCache();
+        });
     }
 }

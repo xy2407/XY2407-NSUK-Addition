@@ -6,6 +6,7 @@ import com.xy2407.nsukaddition.NsukAddition;
 import com.xy2407.nsukaddition.client.city.CityCoreMovePreview;
 import com.xy2407.nsukaddition.client.foreigntrade.DiplomacyClientCache;
 import com.xy2407.nsukaddition.common.foreigntrade.DiplomacyStorage.DiplomacyRelation;
+import com.xy2407.nsukaddition.common.foreigntrade.VillageCityGrade;
 import com.xy2407.nsukaddition.common.network.foreigntrade.DiplomacyDataRequestPacket;
 import com.xy2407.nsukaddition.common.network.foreigntrade.EstablishDiplomacyRequestPacket;
 import common.cn.kafei.simukraft.city.CityPermissionLevel;
@@ -51,6 +52,14 @@ public abstract class CityCoreScreenOpenerMixin {
     @Inject(method = "open", at = @At("HEAD"), remap = false)
     private static void nsuk$capturePacket(CityCoreOpenResponsePacket packet, CallbackInfo ci) {
         nsuk$currentPacket = packet;
+    }
+
+    @Inject(method = "addCitySummary", at = @At("RETURN"), remap = false)
+    private static void nsuk$appendGradeLine(UIElement root, CityCoreOpenResponsePacket packet, CallbackInfo ci) {
+        if (packet == null || !packet.hasCity()) return;
+        String grade = VillageCityGrade.displayNameFor(packet.cityChunkCount());
+        if (grade.isEmpty()) return;
+        root.addChild(line(Component.translatable("gui.xy2407_nsuk_addition.village_city.grade", grade)));
     }
 
     @Inject(method = "menuColumn", at = @At("RETURN"), remap = false)

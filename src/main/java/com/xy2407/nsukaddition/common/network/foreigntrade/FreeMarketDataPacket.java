@@ -47,6 +47,7 @@ public record FreeMarketDataPacket(
             buf.writeUtf(e.sellerPlayer(), 64);
             buf.writeVarLong(e.createdAt());
             buf.writeUtf(e.itemNbt() != null ? e.itemNbt() : "", 4096);
+            buf.writeBoolean(e.highlighted());
         }
     }
 
@@ -63,7 +64,8 @@ public record FreeMarketDataPacket(
                     buf.readVarInt(),
                     buf.readUtf(64),
                     buf.readVarLong(),
-                    buf.readUtf(4096)
+                    buf.readUtf(4096),
+                    buf.readBoolean()
             ));
         }
         return list;

@@ -16,7 +16,7 @@ public final class NsukMigrations {
     }
 
     public static List<Migration> all() {
-        return List.of(new AddLegacyColumns(), new RebuildVillageTradeQuota(), new EnsureRestaurantTables());
+        return List.of(new AddLegacyColumns(), new RebuildVillageTradeQuota(), new EnsureRestaurantTables(), new EnsureVillageCityGrade());
     }
 
     private static final class AddLegacyColumns implements Migration {
@@ -43,6 +43,7 @@ public final class NsukMigrations {
             addColumnIfMissing(connection, "foreign_trade_caravans", "funds", "REAL DEFAULT 0");
             addColumnIfMissing(connection, "foreign_trade_caravan_members", "role", "TEXT DEFAULT ''");
             addColumnIfMissing(connection, "free_market_listings", "item_nbt", "TEXT");
+            addColumnIfMissing(connection, "free_market_listings", "highlighted", "INTEGER DEFAULT 0");
         }
     }
 
@@ -103,6 +104,26 @@ public final class NsukMigrations {
                         + "seat_pos_long INTEGER NOT NULL, "
                         + "recipe_id TEXT NOT NULL DEFAULT '', "
                         + "status TEXT NOT NULL DEFAULT 'PENDING')");
+            }
+        }
+    }
+
+    private static final class EnsureVillageCityGrade implements Migration {
+        @Override
+        public int version() {
+            return 5;
+        }
+
+        @Override
+        public String description() {
+            return "ensure village_city_grade table";
+        }
+
+        @Override
+        public void apply(Connection connection) throws SQLException {
+            try (Statement statement = connection.createStatement()) {
+                statement.executeUpdate("CREATE TABLE IF NOT EXISTS village_city_grade("
+                        + "city_id TEXT PRIMARY KEY, grade TEXT NOT NULL DEFAULT '', chunk_count INTEGER NOT NULL DEFAULT 0)");
             }
         }
     }

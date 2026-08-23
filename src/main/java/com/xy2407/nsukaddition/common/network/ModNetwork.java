@@ -46,12 +46,14 @@ import com.xy2407.nsukaddition.common.network.foreigntrade.ForeignTradeTransacti
 import com.xy2407.nsukaddition.common.network.foreigntrade.ForeignTradeMarketRequestPacket;
 import com.xy2407.nsukaddition.common.network.foreigntrade.ForeignTradeMarketDataPacket;
 import com.xy2407.nsukaddition.common.network.foreigntrade.ForeignTradeInventorySyncPacket;
+import com.xy2407.nsukaddition.common.network.foreigntrade.ForeignTradeVillageStockSyncPacket;
 import com.xy2407.nsukaddition.common.network.foreigntrade.FreeMarketListPacket;
 import com.xy2407.nsukaddition.common.network.foreigntrade.FreeMarketBuyPacket;
 import com.xy2407.nsukaddition.common.network.foreigntrade.FreeMarketCancelPacket;
 import com.xy2407.nsukaddition.common.network.foreigntrade.FreeMarketModifyPacket;
 import com.xy2407.nsukaddition.common.network.foreigntrade.FreeMarketDataPacket;
 import com.xy2407.nsukaddition.common.network.foreigntrade.FreeMarketDataRequestPacket;
+import com.xy2407.nsukaddition.common.network.foreigntrade.FreeMarketToggleStarPacket;
 import com.xy2407.nsukaddition.common.network.foreigntrade.FreeMarketWarehouseRequestPacket;
 import com.xy2407.nsukaddition.common.network.foreigntrade.FreeMarketWarehouseDataPacket;
 import com.xy2407.nsukaddition.common.network.foreigntrade.DiplomacyDataRequestPacket;
@@ -91,6 +93,8 @@ public final class ModNetwork {
     public static void onRegister(RegisterPayloadHandlersEvent event) {
         PayloadRegistrar r = event.registrar("1");
         r.playToClient(SidebarSyncPacket.TYPE, SidebarSyncPacket.STREAM_CODEC, SidebarSyncPacket::handle);
+        r.playToServer(CitizenTeleportPacket.TYPE, CitizenTeleportPacket.STREAM_CODEC, CitizenTeleportPacket::handle);
+        r.playToServer(CommercialTradeRefreshRequestPacket.TYPE, CommercialTradeRefreshRequestPacket.STREAM_CODEC, CommercialTradeRefreshRequestPacket::handle);
 
         r.playToServer(BuildTaskActionPacket.TYPE, BuildTaskActionPacket.STREAM_CODEC, BuildTaskActionPacket::handle);
 
@@ -153,11 +157,13 @@ public final class ModNetwork {
         r.playToServer(ForeignTradeMarketRequestPacket.TYPE, ForeignTradeMarketRequestPacket.STREAM_CODEC, ForeignTradeMarketRequestPacket::handle);
         r.playToClient(ForeignTradeMarketDataPacket.TYPE, ForeignTradeMarketDataPacket.STREAM_CODEC, ForeignTradeMarketDataPacket::handle);
         r.playToClient(ForeignTradeInventorySyncPacket.TYPE, ForeignTradeInventorySyncPacket.STREAM_CODEC, ForeignTradeInventorySyncPacket::handle);
+        r.playToClient(ForeignTradeVillageStockSyncPacket.TYPE, ForeignTradeVillageStockSyncPacket.STREAM_CODEC, ForeignTradeVillageStockSyncPacket::handle);
 
         r.playToServer(FreeMarketListPacket.TYPE, FreeMarketListPacket.STREAM_CODEC, FreeMarketListPacket::handle);
         r.playToServer(FreeMarketBuyPacket.TYPE, FreeMarketBuyPacket.STREAM_CODEC, FreeMarketBuyPacket::handle);
         r.playToServer(FreeMarketCancelPacket.TYPE, FreeMarketCancelPacket.STREAM_CODEC, FreeMarketCancelPacket::handle);
         r.playToServer(FreeMarketModifyPacket.TYPE, FreeMarketModifyPacket.STREAM_CODEC, FreeMarketModifyPacket::handle);
+        r.playToServer(FreeMarketToggleStarPacket.TYPE, FreeMarketToggleStarPacket.STREAM_CODEC, FreeMarketToggleStarPacket::handle);
         r.playToClient(FreeMarketDataPacket.TYPE, FreeMarketDataPacket.STREAM_CODEC, FreeMarketDataPacket::handle);
         r.playToServer(FreeMarketDataRequestPacket.TYPE, FreeMarketDataRequestPacket.STREAM_CODEC, FreeMarketDataRequestPacket::handle);
         r.playToServer(FreeMarketWarehouseRequestPacket.TYPE, FreeMarketWarehouseRequestPacket.STREAM_CODEC, FreeMarketWarehouseRequestPacket::handle);

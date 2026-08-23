@@ -51,6 +51,7 @@ import com.xy2407.nsukaddition.common.network.clientbound.ForeignTradeControlBox
 import com.xy2407.nsukaddition.common.network.clientbound.RestaurantControlBoxBridge;
 import com.xy2407.nsukaddition.common.network.clientbound.RestaurantMaidHireBridge;
 import com.xy2407.nsukaddition.common.network.clientbound.ForeignTradeInventorySyncBridge;
+import com.xy2407.nsukaddition.common.network.clientbound.ForeignTradeVillageStockSyncBridge;
 import com.xy2407.nsukaddition.common.network.clientbound.ForeignTradeMarketDataBridge;
 import com.xy2407.nsukaddition.common.network.clientbound.FreeMarketDataBridge;
 import com.xy2407.nsukaddition.common.network.clientbound.FreeMarketWarehouseDataBridge;
@@ -190,6 +191,7 @@ public final class NsukAdditionClient {
         ForeignTradeControlBoxBridge.install(ForeignTradeControlBoxScreenOpener::open);
         ForeignTradeMarketDataBridge.install(ForeignTradeMenuScreenOpener::openWithMarketData);
         ForeignTradeInventorySyncBridge.install(ForeignTradeMenuScreenOpener::updateAvailableCounts);
+        ForeignTradeVillageStockSyncBridge.install(ForeignTradeMenuScreenOpener::updateVillageStocks);
         FreeMarketDataBridge.install(ForeignTradeMenuScreenOpener::updateFreeMarketData);
         FreeMarketWarehouseDataBridge.install(ForeignTradeMenuScreenOpener::updateWarehouseData);
         DiplomacyDataBridge.install(DiplomacyClientCache::update);
