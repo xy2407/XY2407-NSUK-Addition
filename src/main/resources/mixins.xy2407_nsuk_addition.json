@@ -17,6 +17,7 @@
     "BuildingPackageCatalogMixin",
     "BuildingCatalogMixin",
     "CityPlacementRestrictionHandlerMixin",
+    "CityPlacementRestrictionSyncMixin",
     "BuildingStructureServiceMixin",
     "FarmlandFarmingServiceMixin",
     "FarmlandWorkGeometryMixin",
@@ -127,7 +128,15 @@
     "simukraft.CitizenWorkplaceMoveServiceMixin",
     "simukraft.CitizenHomeRestServiceMixin",
     "simukraft.PlayerWelcomeServiceMixin",
-    "EntityPushableMixin"
+    "EntityPushableMixin",
+    "mysticsbiomes.SwimToSurfaceGoalMixin",
+    "mysticsbiomes.MoveToWaterGoalMixin",
+    "mysticsbiomes.SeaOtterPathfindMixin",
+    "mysticsbiomes.ButterflyPathfindMixin",
+    "mysticsbiomes.ButterflyPollinateGoalMixin",
+    "mysticsbiomes.RedPandaAvoidGoalMixin",
+    "mysticsbiomes.RedPandaSearchItemsMixin",
+    "mysticsbiomes.RedPandaBreedMixin"
   ],
   "client": [
     "client.ScoreboardRemovePlayerTeamSafetyMixin",

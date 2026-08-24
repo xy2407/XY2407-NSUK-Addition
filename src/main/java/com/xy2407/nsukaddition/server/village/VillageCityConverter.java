@@ -42,6 +42,11 @@ public final class VillageCityConverter {
     private static final UUID SYSTEM_MAYOR_ID = UUID.nameUUIDFromBytes("nsuk:village_city_mayor".getBytes());
     private static final String SYSTEM_MAYOR_NAME = "村庄自治";
 
+    private static final Set<String> CASTLE_STRUCTURE_IDS = Set.of(
+            "aegis_castle", "barathian_castle", "burgundian_castle", "hospitaller_castle",
+            "orleanian_castle", "templar_castle", "valarian_castle", "visgothian_castle");
+    private static final String CASTLE_VILLAGE_TYPE = "castle";
+
     private static final ArrayDeque<PendingChunk> PENDING = new ArrayDeque<>();
     private static final ConcurrentHashMap<String, Boolean> PROCESSED = new ConcurrentHashMap<>();
     private static final ConcurrentHashMap<String, Boolean> CLAIMED_CORES = new ConcurrentHashMap<>();
@@ -67,15 +72,14 @@ public final class VillageCityConverter {
                     .registryOrThrow(net.minecraft.core.registries.Registries.STRUCTURE);
             for (var entry : chunk.getAllStarts().entrySet()) {
                 ResourceLocation id = structureRegistry.getKey(entry.getKey());
-                if (!isVillageStructure(id)) {
+                if (!isCityStructure(id)) {
                     continue;
                 }
                 StructureStart start = entry.getValue();
                 if (start == StructureStart.INVALID_START || !start.isValid()) {
                     continue;
                 }
-                VillageBox vb = collectVillageBox(start,
-                        id.getPath().substring("village_".length()));
+                VillageBox vb = collectVillageBox(start, villageTypeFor(id));
                 if (vb == null || !vb.chunks().contains(coreChunk.toLong())) {
                     continue;
                 }
@@ -106,11 +110,10 @@ public final class VillageCityConverter {
                 .registryOrThrow(net.minecraft.core.registries.Registries.STRUCTURE);
         for (var entry : chunk.getAllStarts().entrySet()) {
             ResourceLocation id = structureRegistry.getKey(entry.getKey());
-            if (isVillageStructure(id)) {
+            if (isCityStructure(id)) {
                 StructureStart start = entry.getValue();
                 if (start != StructureStart.INVALID_START && start.isValid()) {
-                    VillageBox vb = collectVillageBox(start,
-                            id.getPath().substring("village_".length()));
+                    VillageBox vb = collectVillageBox(start, villageTypeFor(id));
                     if (vb != null) {
                         boxes.add(vb);
                     }
@@ -233,7 +236,7 @@ public final class VillageCityConverter {
         if (city == null) return;
 
         VillageCityTypeStorage.saveVillageType(level, city.cityId(), vb.villageType());
-        applyGradeLevel(level, city.cityId(), vb.chunks().size());
+        applyGradeLevel(level, city.cityId(), vb.chunks().size(), CASTLE_VILLAGE_TYPE.equals(vb.villageType()));
         claimTerritoryChunks(level, city.cityId(), vb.chunks());
 
         CityChunkSyncService.syncToAll(level);
@@ -251,10 +254,10 @@ public final class VillageCityConverter {
         }
     }
 
-    private static void applyGradeLevel(ServerLevel level, UUID cityId, int chunkCount) {
+    private static void applyGradeLevel(ServerLevel level, UUID cityId, int chunkCount, boolean forceVillage) {
         VillageCityGrade.save(level, cityId, chunkCount);
         CityService.findCity(level, cityId).ifPresent(city -> {
-            int lvl = switch (VillageCityGrade.gradeForChunks(chunkCount)) {
+            int lvl = forceVillage ? 2 : switch (VillageCityGrade.gradeForChunks(chunkCount)) {
                 case VillageCityGrade.HAMLET -> 1;
                 case VillageCityGrade.VILLAGE -> 2;
                 case VillageCityGrade.TOWN -> 3;
@@ -295,9 +298,16 @@ public final class VillageCityConverter {
         chunkManager.saveToSqlite(level);
     }
 
-    private static boolean isVillageStructure(ResourceLocation id) {
+    private static boolean isCityStructure(ResourceLocation id) {
         if (id == null) return false;
-        return id.getNamespace().equals("minecraft") && id.getPath().startsWith("village_");
+        if (id.getNamespace().equals("minecraft") && id.getPath().startsWith("village_")) return true;
+        if (id.getNamespace().equals("joshie") && id.getPath().equals("village_ocean")) return true;
+        return id.getNamespace().equals("valarian_conquest") && CASTLE_STRUCTURE_IDS.contains(id.getPath());
+    }
+
+    private static String villageTypeFor(ResourceLocation id) {
+        if (id.getNamespace().equals("valarian_conquest")) return CASTLE_VILLAGE_TYPE;
+        return id.getPath().substring("village_".length());
     }
 
     private static String generateUniqueName(ServerLevel level) {

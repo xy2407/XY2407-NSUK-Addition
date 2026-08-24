@@ -12,8 +12,10 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Random;
 import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
@@ -37,9 +39,22 @@ public final class VillageStockService {
     private VillageStockService() {
     }
 
+    private static final int CASTLE_MATERIAL_PICK = 5;
+    private static final int CASTLE_SPECIAL_PICK = 2;
+
+    private static final List<String> MATERIAL_CATEGORIES = List.of(
+            "wood", "stone", "brick", "sand", "concrete", "terracotta",
+            "glass", "wool", "prismarine", "quartz", "lighting", "leaves");
+
+    private static final List<String> SPECIAL_CATEGORIES = List.of(
+            "animal", "crop", "mineral", "wine", "cheese", "aquatic");
+
     static CityLevel villageCityLevel(ServerLevel level, UUID cityId) {
         if (cityId == null) {
             return CityLevel.SETTLEMENT;
+        }
+        if ("castle".equals(VillageCityTypeStorage.getVillageType(level, cityId))) {
+            return CityLevel.VILLAGE;
         }
         int chunks = level == null ? 0 : CityChunkManager.get(level).getCityChunks(cityId).size();
         return switch (VillageCityGrade.gradeForChunks(chunks)) {
@@ -99,8 +114,13 @@ public final class VillageStockService {
     }
 
     private static List<StockItem> pickVillageItems(ServerLevel level, UUID cityId, String villageType) {
-        Set<String> enabled = new HashSet<>(
-                ForeignTradeCategoryConfig.getVillageCategories(villageType));
+        Set<String> enabled;
+        if ("castle".equals(villageType)) {
+            enabled = pickCastleCategories(cityId);
+        } else {
+            enabled = new HashSet<>(
+                    ForeignTradeCategoryConfig.getVillageCategories(villageType));
+        }
         List<StockItem> result = new ArrayList<>();
         for (TradeItemDef def : ForeignTradeConfig.getEntries()) {
             if (enabled.contains(def.category())) {
@@ -108,6 +128,18 @@ public final class VillageStockService {
             }
         }
         return result;
+    }
+
+    private static Set<String> pickCastleCategories(UUID cityId) {
+        long seed = cityId.getMostSignificantBits() ^ cityId.getLeastSignificantBits();
+        Random random = new Random(seed);
+        List<String> materials = new ArrayList<>(MATERIAL_CATEGORIES);
+        List<String> specials = new ArrayList<>(SPECIAL_CATEGORIES);
+        Collections.shuffle(materials, random);
+        Collections.shuffle(specials, random);
+        Set<String> picked = new HashSet<>(materials.subList(0, CASTLE_MATERIAL_PICK));
+        picked.addAll(specials.subList(0, CASTLE_SPECIAL_PICK));
+        return picked;
     }
 
     private static boolean hasItems(ServerLevel level, String cityKey) {

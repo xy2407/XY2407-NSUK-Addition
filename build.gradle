@@ -71,6 +71,8 @@ dependencies {
     compileOnly files('libs/kawaiidishes-1.13.jar')
     compileOnly files('libs/letsdo-brewery-neoforge-2.1.9.jar')
     compileOnly files('libs/Jade-1.21.1-NeoForge-15.10.5.jar')
+
+    compileOnly files('libs/mysticsbiomes-neoforge-1.21.1-3.5.3.jar')
 }
 
 base {

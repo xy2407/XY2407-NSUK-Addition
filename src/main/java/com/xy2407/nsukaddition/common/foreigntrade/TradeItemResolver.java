@@ -86,10 +86,10 @@ public final class TradeItemResolver {
     }
 
     public static int countIn(ItemStack stack, TradeItemDef def) {
-        if (stack == null || def == null) {
+        if (stack == null || def == null || !matches(stack, def)) {
             return 0;
         }
-        if (isAnimal(def) && stack.getItem() instanceof EntityCaptureItem) {
+        if (isAnimal(def)) {
             return EntityCaptureItem.getEntryCount(stack);
         }
         return stack.getCount();
@@ -99,7 +99,10 @@ public final class TradeItemResolver {
         if (stack == null || def == null || amount <= 0) {
             return 0;
         }
-        if (isAnimal(def) && stack.getItem() instanceof EntityCaptureItem) {
+        if (!matches(stack, def)) {
+            return 0;
+        }
+        if (isAnimal(def)) {
             return EntityCaptureItem.removeEntries(stack, amount);
         }
         int taken = Math.min(amount, stack.getCount());

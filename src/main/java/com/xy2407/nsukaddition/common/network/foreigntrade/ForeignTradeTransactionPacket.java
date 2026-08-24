@@ -7,7 +7,6 @@ import com.xy2407.nsukaddition.common.foreigntrade.ForeignTradeConfig;
 import com.xy2407.nsukaddition.common.foreigntrade.ForeignTradeConfig.TradeItemDef;
 import com.xy2407.nsukaddition.common.foreigntrade.ForeignTradeMarket;
 import com.xy2407.nsukaddition.common.foreigntrade.TradeItemResolver;
-import com.xy2407.nsukaddition.common.foreigntrade.TradeQuotaService;
 import com.xy2407.nsukaddition.common.foreigntrade.VillageCityTypeStorage;
 import com.xy2407.nsukaddition.common.foreigntrade.VillageStockService;
 import com.xy2407.nsukaddition.common.item.EntityCaptureItem;
@@ -113,21 +112,11 @@ public record ForeignTradeTransactionPacket(BlockPos boxPos, String cityId, Stri
         int baseCount = marketEntry.count();
         int totalCount = baseCount * amount;
         if (p.isBuy()) {
-            int remainingQuota = TradeQuotaService.getRemainingBuyQuota(level, player.getUUID(), cityIdStr, p.itemId());
-            if (remainingQuota < amount) {
-                fail(player, "message.xy2407_nsuk_addition.foreign_trade.buy_quota");
-                return;
-            }
             if (!VillageStockService.canBuy(level, tradeCityUuid, p.itemId())) {
                 fail(player, "message.xy2407_nsuk_addition.foreign_trade.out_of_stock");
                 return;
             }
         } else {
-            int remainingQuota = TradeQuotaService.getRemainingSellQuota(level, player.getUUID(), cityIdStr, p.itemId());
-            if (remainingQuota < amount) {
-                fail(player, "message.xy2407_nsuk_addition.foreign_trade.sell_quota");
-                return;
-            }
             if (!VillageStockService.canSell(level, tradeCityUuid, p.itemId(), def.category())) {
                 fail(player, "message.xy2407_nsuk_addition.foreign_trade.sell_full");
                 return;
@@ -178,7 +167,6 @@ public record ForeignTradeTransactionPacket(BlockPos boxPos, String cityId, Stri
                     LogisticsWarehouseInventoryService.insertIntoPlayerInventory(player.getInventory(), remaining);
                 }
             }
-            TradeQuotaService.recordBuy(level, player.getUUID(), cityIdStr, p.itemId(), amount);
             VillageStockService.removeStock(level, tradeCityUuid, p.itemId(), amount);
             pushVillageStock(level, player, cityIdStr);
         } else {
@@ -230,7 +218,6 @@ public record ForeignTradeTransactionPacket(BlockPos boxPos, String cityId, Stri
                 EconomyService.depositCityFunds(level, cityId, player,
                         totalPrice * actuallySold / totalCount, "foreign_trade_sell");
                 if (soldBatches > 0) {
-                    TradeQuotaService.recordSell(level, player.getUUID(), cityIdStr, p.itemId(), soldBatches);
                     VillageStockService.addStock(level, tradeCityUuid, p.itemId(), def.category(), soldBatches);
                     pushVillageStock(level, player, cityIdStr);
                 }

@@ -98,17 +98,31 @@ public final class ForeignTradeMarket {
         var relations = DiplomacyStorage.loadRelations(level, playerUuid);
         if (relations.isEmpty()) return List.of();
         Set<String> villageTypes = new HashSet<>();
+        List<UUID> castleCities = new ArrayList<>();
         for (var r : relations) {
-            if (r.villageType() != null && !r.villageType().isEmpty()) {
+            if (r.villageType() == null || r.villageType().isEmpty()) continue;
+            if ("castle".equals(r.villageType())) {
+                try {
+                    castleCities.add(UUID.fromString(r.cityId()));
+                } catch (IllegalArgumentException ignored) {
+                }
+            } else {
                 villageTypes.add(r.villageType());
             }
         }
-        if (villageTypes.isEmpty()) return List.of();
         List<MarketEntry> result = new ArrayList<>();
         for (var entry : currentPrices.values()) {
-            if (entry.villageType() != null && !entry.villageType().isEmpty()
-                    && villageTypes.contains(entry.villageType())) {
+            String vt = entry.villageType();
+            if (vt == null || vt.isEmpty()) continue;
+            if (villageTypes.contains(vt)) {
                 result.add(entry);
+            } else if ("castle".equals(vt)) {
+                for (UUID castleCity : castleCities) {
+                    if (VillageStockService.isVillageItem(level, castleCity, entry.itemId())) {
+                        result.add(entry);
+                        break;
+                    }
+                }
             }
         }
         return result;

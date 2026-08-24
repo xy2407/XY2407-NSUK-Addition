@@ -12,6 +12,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -30,6 +31,13 @@ public final class ForeignTradeCategoryConfig {
 
     private static Map<String, Double> categoryBase = new HashMap<>();
     private static Map<String, List<String>> villageCategories = new HashMap<>();
+
+    public static final String CASTLE_VILLAGE_TYPE = "castle";
+
+    private static final List<String> CASTLE_CATEGORIES = List.of(
+            "wood", "stone", "brick", "sand", "concrete", "terracotta",
+            "glass", "wool", "prismarine", "quartz", "lighting", "leaves",
+            "animal", "crop", "mineral", "wine", "cheese", "aquatic");
 
     private ForeignTradeCategoryConfig() {
     }
@@ -107,11 +115,16 @@ public final class ForeignTradeCategoryConfig {
     }
 
     public static List<String> getVillageCategories(String villageType) {
+        if (CASTLE_VILLAGE_TYPE.equals(villageType)) {
+            return CASTLE_CATEGORIES;
+        }
         List<String> list = villageCategories.get(villageType);
         return list != null ? List.copyOf(list) : Collections.emptyList();
     }
 
     public static Set<String> getAllVillageTypes() {
-        return Set.copyOf(villageCategories.keySet());
+        Set<String> types = new HashSet<>(villageCategories.keySet());
+        types.add(CASTLE_VILLAGE_TYPE);
+        return Set.copyOf(types);
     }
 }

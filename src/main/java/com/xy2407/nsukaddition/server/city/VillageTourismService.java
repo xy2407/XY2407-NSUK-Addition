@@ -219,19 +219,27 @@ public final class VillageTourismService {
 
     public static boolean openCaravanTrade(ServerLevel level, ServerPlayer player, CitizenEntity leader) {
         if (level == null || player == null || leader == null) return false;
-        if (findCaravanByLeader(leader.getUUID()) == null) {
+        int keyTag = extractCaravanKeyTag(leader);
+        if (findCaravanByKeyTag(keyTag) == null) {
             loadPersistedCaravans(level);
         }
-        CommercialTradeView view = buildCaravanTradeView(level, leader.getUUID());
+        CommercialTradeView view = buildCaravanTradeView(level, keyTag);
         if (view == null) return false;
         return CommercialTradeMenuProvider.open(player, view);
     }
 
     public static CommercialTradeView buildCaravanTradeView(ServerLevel level, UUID leaderId) {
         if (level == null || leaderId == null) return null;
-        Caravan caravan = findCaravanByLeader(leaderId);
+        Entity entity = level.getEntity(leaderId);
+        int keyTag = extractCaravanKeyTag(entity);
+        return buildCaravanTradeView(level, keyTag);
+    }
+
+    public static CommercialTradeView buildCaravanTradeView(ServerLevel level, int keyTag) {
+        if (level == null || keyTag < 0) return null;
+        Caravan caravan = findCaravanByKeyTag(keyTag);
         if (caravan == null) return null;
-        if (!(level.getEntity(leaderId) instanceof CitizenEntity citizen)) return null;
+        if (!(level.getEntity(caravan.leaderId) instanceof CitizenEntity citizen)) return null;
         List<CommercialTradeView.OfferEntry> offers = new ArrayList<>();
         for (CaravanProduct p : caravan.products) {
             ForeignTradeMarket.MarketEntry price = ForeignTradeMarket.getEntry(p.itemId());
@@ -249,7 +257,7 @@ public final class VillageTourismService {
             offers.add(new CommercialTradeView.OfferEntry(
                     "caravan_sell_" + p.itemId(),
                     List.of(new CommercialTradeView.ResourceEntry("item", p.itemId(), 1, 0)),
-                    List.of(new CommercialTradeView.ResourceEntry("money", "", 0, sellPrice)),
+                    List.of(new CommercialTradeView.ResourceEntry("money", "", 1, sellPrice)),
                     p.itemId(),
                     stock,
                     p.limit(),
@@ -258,7 +266,7 @@ public final class VillageTourismService {
         }
         return new CommercialTradeView(
                 citizen.blockPosition().immutable(),
-                leaderId,
+                caravan.leaderId,
                 "",
                 citizen.getDisplayName().getString(),
                 caravan.funds,
@@ -272,7 +280,13 @@ public final class VillageTourismService {
         if (level == null || player == null || leaderId == null || offerId == null || count <= 0) {
             return false;
         }
-        Caravan caravan = findCaravanByLeader(leaderId);
+        Entity leaderEntity = level.getEntity(leaderId);
+        int keyTag = extractCaravanKeyTag(leaderEntity);
+        Caravan caravan = findCaravanByKeyTag(keyTag);
+        if (caravan == null) {
+            loadPersistedCaravans(level);
+            caravan = findCaravanByKeyTag(keyTag);
+        }
         if (caravan == null || !offerId.startsWith("caravan_")) {
             return false;
         }
@@ -358,6 +372,13 @@ public final class VillageTourismService {
         if (count <= 0) {
             return false;
         }
+        int held = countMatchingInInventory(player, itemId);
+        if (count > held) {
+            count = held;
+        }
+        if (count <= 0) {
+            return false;
+        }
         var cityOpt = CityManager.get(level).getPlayerCity(player.getUUID());
         if (cityOpt.isEmpty()) {
             return false;
@@ -397,22 +418,47 @@ public final class VillageTourismService {
         return remaining == 0;
     }
 
+    private static int countMatchingInInventory(ServerPlayer player, String itemId) {
+        ForeignTradeConfig.TradeItemDef def = ForeignTradeConfig.find(itemId);
+        if (def == null) {
+            return 0;
+        }
+        net.minecraft.world.entity.player.Inventory inventory = player.getInventory();
+        int total = 0;
+        for (int i = 0; i < inventory.getContainerSize(); i++) {
+            total += TradeItemResolver.countIn(inventory.getItem(i), def);
+        }
+        return total;
+    }
+
     @Nullable
-    private static Caravan findCaravanByLeader(UUID leaderId) {
-        if (leaderId == null) return null;
+    private static Caravan findCaravanByKeyTag(int keyTag) {
         for (List<Caravan> caravans : ACTIVE_CARAVANS.values()) {
             if (caravans == null) continue;
             for (Caravan caravan : caravans) {
-                if (leaderId.equals(caravan.leaderId)) return caravan;
+                if (caravan.keyTag == keyTag) return caravan;
             }
         }
         return null;
     }
 
+    private static int extractCaravanKeyTag(Entity entity) {
+        if (entity == null) return -1;
+        for (String tag : entity.getTags()) {
+            if (tag.length() == 8 && tag.chars().allMatch(Character::isDigit)) {
+                try {
+                    return Integer.parseInt(tag);
+                } catch (NumberFormatException ignored) {
+                }
+            }
+        }
+        return -1;
+    }
+
     public static boolean isCaravanLeader(ServerLevel level, UUID citizenId) {
         if (level == null || citizenId == null) return false;
         Entity entity = level.getEntity(citizenId);
-        return entity != null && entity.getTags().contains(TourismConstants.TRADE_TAG);
+        return entity instanceof CitizenEntity && entity.getTags().contains(TourismConstants.TRADE_TAG);
     }
 
     private static List<CityData> getPlayerCities(ServerLevel level) {
@@ -818,6 +864,8 @@ public final class VillageTourismService {
         final UUID cityId;
         final UUID sourceCityId;
         final UUID leaderId;
+        final int keyTag;
+        final long boxPosLong;
         final List<UUID> followerIds;
         final List<UUID> muleIds;
         final List<CaravanProduct> products;
@@ -826,11 +874,13 @@ public final class VillageTourismService {
         BlockPos targetShop;
         int tradeCooldown;
 
-        Caravan(UUID cityId, UUID sourceCityId, UUID leaderId, List<UUID> followerIds, List<UUID> muleIds,
-                List<CaravanProduct> products, double funds) {
+        Caravan(UUID cityId, UUID sourceCityId, UUID leaderId, int keyTag, long boxPosLong,
+                List<UUID> followerIds, List<UUID> muleIds, List<CaravanProduct> products, double funds) {
             this.cityId = cityId;
             this.sourceCityId = sourceCityId;
             this.leaderId = leaderId;
+            this.keyTag = keyTag;
+            this.boxPosLong = boxPosLong;
             this.followerIds = followerIds;
             this.muleIds = muleIds;
             this.products = products;
@@ -843,6 +893,14 @@ public final class VillageTourismService {
         }
 
         boolean isOnCooldown() { return tradeCooldown > 0; }
+    }
+
+    private static int nextCaravanKeyTag(ServerLevel level) {
+        int candidate;
+        do {
+            candidate = level.random.nextInt(100_000_000);
+        } while (findCaravanByKeyTag(candidate) != null);
+        return candidate;
     }
 
     private static void spawnCaravanForCity(ServerLevel level, CityData playerCity, CityData sourceCity) {
@@ -866,6 +924,7 @@ public final class VillageTourismService {
             default -> 1000.0;
         };
 
+        int keyTag = nextCaravanKeyTag(level);
         CitizenEntity leader = ModEntities.CITIZEN.get().create(level);
         if (leader == null) return;
         leader.moveTo(center.x, center.y, center.z, level.random.nextFloat() * 360.0F, 0.0F);
@@ -873,6 +932,7 @@ public final class VillageTourismService {
         leader.setStatusLabel(TourismConstants.CARAVAN_LEADER_STATUS);
         leader.addTag(TourismConstants.CARAVAN_TAG);
         leader.addTag(TourismConstants.TRADE_TAG);
+        leader.addTag(String.format("%08d", keyTag));
         level.addFreshEntity(leader);
 
         CitizenData leaderData = CitizenService.ensureCitizen(level, leader);
@@ -922,9 +982,10 @@ public final class VillageTourismService {
         }
 
         ACTIVE_CARAVANS.computeIfAbsent(cityId, k -> new CopyOnWriteArrayList<>())
-                .add(new Caravan(cityId, sourceCity.cityId(), leader.getUUID(), followerIds, muleIds, products, funds));
+                .add(new Caravan(cityId, sourceCity.cityId(), leader.getUUID(), keyTag, core.asLong(),
+                        followerIds, muleIds, products, funds));
         notifyCaravanArrival(level, playerCity, sourceCity, center);
-        persistCaravan(level, playerCity, sourceCity, leader.getUUID(), followerIds, muleIds, products, funds);
+        persistCaravan(level, playerCity, sourceCity, leader.getUUID(), keyTag, followerIds, muleIds, products, funds);
     }
 
     private static void notifyCaravanArrival(ServerLevel level, CityData playerCity, CityData sourceCity, Vec3 pos) {
@@ -991,13 +1052,13 @@ public final class VillageTourismService {
     }
 
     private static void persistCaravan(ServerLevel level, CityData playerCity, CityData sourceCity,
-                                       UUID leaderId, List<UUID> followerIds, List<UUID> muleIds,
+                                       UUID leaderId, int keyTag, List<UUID> followerIds, List<UUID> muleIds,
                                        List<CaravanProduct> products, double funds) {
         if (level == null || playerCity == null || sourceCity == null || leaderId == null) {
             return;
         }
         long boxPosLong = playerCity.cityCorePos().asLong();
-        int caravanIndex = (leaderId.hashCode() & 0x7fffffff) % 1_000_000;
+        int caravanIndex = keyTag;
         int cityLevel = CityLevel.fromLevel(sourceCity.cityLevel()).level();
         long gameTime = level.getGameTime();
         MinecraftServer server = level.getServer();
@@ -1166,9 +1227,10 @@ public final class VillageTourismService {
             return;
         }
 
-        Caravan caravan = new Caravan(cityId, sourceCityId, leaderId, followerIds, muleIds, products, funds);
+        Caravan caravan = new Caravan(cityId, sourceCityId, leaderId, caravanIndex, boxPosLong,
+                followerIds, muleIds, products, funds);
         stocks.forEach(caravan.productStock::put);
-        if (findCaravanByLeader(leaderId) == null) {
+        if (findCaravanByKeyTag(caravanIndex) == null) {
             ACTIVE_CARAVANS.computeIfAbsent(cityId, k -> new CopyOnWriteArrayList<>()).add(caravan);
         }
         long today = level.getDayTime() / 24000L;
@@ -1186,10 +1248,28 @@ public final class VillageTourismService {
             return;
         }
         WriteBatchBuffer.submitPriority(db, "foreign_trade_caravans", "caravan:clear", connection -> {
-            try (PreparedStatement ps = connection.prepareStatement("DELETE FROM foreign_trade_caravans");
-                 PreparedStatement ps2 = connection.prepareStatement("DELETE FROM foreign_trade_caravan_products")) {
-                ps.executeUpdate();
-                ps2.executeUpdate();
+            for (List<Caravan> caravans : ACTIVE_CARAVANS.values()) {
+                if (caravans == null) continue;
+                for (Caravan caravan : caravans) {
+                    try (PreparedStatement ps = connection.prepareStatement(
+                            "DELETE FROM foreign_trade_caravans WHERE box_pos_long = ? AND caravan_index = ?")) {
+                        ps.setLong(1, caravan.boxPosLong);
+                        ps.setInt(2, caravan.keyTag);
+                        ps.executeUpdate();
+                    }
+                    try (PreparedStatement ps = connection.prepareStatement(
+                            "DELETE FROM foreign_trade_caravan_members WHERE box_pos_long = ? AND caravan_index = ?")) {
+                        ps.setLong(1, caravan.boxPosLong);
+                        ps.setInt(2, caravan.keyTag);
+                        ps.executeUpdate();
+                    }
+                    try (PreparedStatement ps = connection.prepareStatement(
+                            "DELETE FROM foreign_trade_caravan_products WHERE box_pos_long = ? AND caravan_index = ?")) {
+                        ps.setLong(1, caravan.boxPosLong);
+                        ps.setInt(2, caravan.keyTag);
+                        ps.executeUpdate();
+                    }
+                }
             }
         });
     }

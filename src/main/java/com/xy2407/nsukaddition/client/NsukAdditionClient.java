@@ -194,7 +194,10 @@ public final class NsukAdditionClient {
         ForeignTradeVillageStockSyncBridge.install(ForeignTradeMenuScreenOpener::updateVillageStocks);
         FreeMarketDataBridge.install(ForeignTradeMenuScreenOpener::updateFreeMarketData);
         FreeMarketWarehouseDataBridge.install(ForeignTradeMenuScreenOpener::updateWarehouseData);
-        DiplomacyDataBridge.install(DiplomacyClientCache::update);
+        DiplomacyDataBridge.install(relations -> {
+            DiplomacyClientCache.update(relations);
+            refreshDiplomacyPanel();
+        });
 
         TouristStatusRenderer.register();
 
@@ -207,6 +210,16 @@ public final class NsukAdditionClient {
 
         CityCoreMoveInputHandler.register();
         ColonyCoreMoveInputHandler.register();
+    }
+
+    private static void refreshDiplomacyPanel() {
+        try {
+            Class<?> openerClass = Class.forName("client.cn.kafei.simukraft.client.city.CityCoreScreenOpener");
+            java.lang.reflect.Method m = openerClass.getDeclaredMethod("nsuk$refreshDiplomacyPanel");
+            m.setAccessible(true);
+            m.invoke(null);
+        } catch (Exception ignored) {
+        }
     }
 
     @SubscribeEvent

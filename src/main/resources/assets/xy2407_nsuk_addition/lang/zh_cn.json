@@ -105,7 +105,7 @@
   "hud.xy2407_nsuk_addition.quest.status.paused_offline": "离线暂停",
   "block.xy2407_nsuk_addition.breeding_control_box": "养殖控制箱",
   "item.xy2407_nsuk_addition.breeding_control_box": "养殖控制箱",
-  "item.xy2407_nsuk_addition.entity_capture": "生物捕获球",
+  "item.xy2407_nsuk_addition.entity_capture": "生物捕获器",
   "gui.xy2407_nsuk_addition.breeding.title": "养殖控制箱",
   "gui.xy2407_nsuk_addition.breeding.building_line": "建筑: %s",
   "gui.xy2407_nsuk_addition.breeding.definition_line": "配置: %s",

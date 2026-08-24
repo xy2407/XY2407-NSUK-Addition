@@ -5,8 +5,9 @@ import client.cn.kafei.simukraft.client.toast.ClientInfoToast;
 import com.xy2407.nsukaddition.NsukAddition;
 import com.xy2407.nsukaddition.client.city.CityCoreMovePreview;
 import com.xy2407.nsukaddition.client.foreigntrade.DiplomacyClientCache;
+import com.xy2407.nsukaddition.client.foreigntrade.ForeignTradeMenuScreenOpener;
+import com.xy2407.nsukaddition.common.city.CityLevel;
 import com.xy2407.nsukaddition.common.foreigntrade.DiplomacyStorage.DiplomacyRelation;
-import com.xy2407.nsukaddition.common.foreigntrade.VillageCityGrade;
 import com.xy2407.nsukaddition.common.network.foreigntrade.DiplomacyDataRequestPacket;
 import com.xy2407.nsukaddition.common.network.foreigntrade.EstablishDiplomacyRequestPacket;
 import common.cn.kafei.simukraft.city.CityPermissionLevel;
@@ -24,6 +25,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
+import org.spongepowered.asm.mixin.Unique;
 
 /** 修改 CityCoreScreenOpener：升级面板使用官方 UI，仅在菜单中添加核心迁移与外交选项。 */
 @Mixin(CityCoreScreenOpener.class)
@@ -57,7 +59,7 @@ public abstract class CityCoreScreenOpenerMixin {
     @Inject(method = "addCitySummary", at = @At("RETURN"), remap = false)
     private static void nsuk$appendGradeLine(UIElement root, CityCoreOpenResponsePacket packet, CallbackInfo ci) {
         if (packet == null || !packet.hasCity()) return;
-        String grade = VillageCityGrade.displayNameFor(packet.cityChunkCount());
+        String grade = CityLevel.fromLevel(packet.cityLevel()).displayName();
         if (grade.isEmpty()) return;
         root.addChild(line(Component.translatable("gui.xy2407_nsuk_addition.village_city.grade", grade)));
     }
@@ -82,22 +84,10 @@ public abstract class CityCoreScreenOpenerMixin {
                             Component.translatable("gui.xy2407_nsuk_addition.foreign_trade.establish_title"),
                             Component.translatable("gui.xy2407_nsuk_addition.foreign_trade.opening_panel"),
                             "info");
-                    try {
-                        Class<?> openerClass = Class.forName("client.cn.kafei.simukraft.client.city.CityCoreScreenOpener");
-                        java.lang.reflect.Field f = openerClass.getDeclaredField("activeWindow");
-                        f.setAccessible(true);
-                        Object window = f.get(null);
-                        if (window != null) {
-                            java.lang.reflect.Method m = window.getClass().getDeclaredMethod(
-                                    "openTab", String.class, String.class, UIElement.class);
-                            m.setAccessible(true);
-                            m.invoke(window, "diplomacy",
-                                    "gui.xy2407_nsuk_addition.foreign_trade.establish_menu",
-                                    nsuk$createDiplomacyPanel(packet));
-                        }
-                    } catch (Exception e) {
-                        NsukAddition.LOGGER.error("Failed to open diplomacy panel", e);
-                    }
+                    nsuk$openDiplomacyTab(packet);
+                }));
+                menu.addChild(menuButton("gui.xy2407_nsuk_addition.foreign_trade.open_market", () -> {
+                    ForeignTradeMenuScreenOpener.open(packet.pos(), packet.cityId().toString());
                 }));
                 menu.addChild(spacer);
                 menu.addChild(closeBtn);
@@ -119,8 +109,55 @@ public abstract class CityCoreScreenOpenerMixin {
                 Minecraft.getInstance().setScreen(null);
                 CityCoreMovePreview.enter(packet.pos(), packet.cityId());
             }));
+            menu.addChild(menuButton("gui.xy2407_nsuk_addition.foreign_trade.open_market", () -> {
+                ForeignTradeMenuScreenOpener.openMyCity(packet.pos());
+            }));
             menu.addChild(spacer);
             menu.addChild(closeBtn);
+        }
+    }
+
+    private static void nsuk$openDiplomacyTab(CityCoreOpenResponsePacket packet) {
+        try {
+            Class<?> openerClass = Class.forName("client.cn.kafei.simukraft.client.city.CityCoreScreenOpener");
+            java.lang.reflect.Field f = openerClass.getDeclaredField("activeWindow");
+            f.setAccessible(true);
+            Object window = f.get(null);
+            if (window != null) {
+                java.lang.reflect.Method m = window.getClass().getDeclaredMethod(
+                        "openTab", String.class, String.class, UIElement.class);
+                m.setAccessible(true);
+                m.invoke(window, "diplomacy",
+                        "gui.xy2407_nsuk_addition.foreign_trade.establish_menu",
+                        nsuk$createDiplomacyPanel(packet));
+            }
+        } catch (Exception e) {
+            NsukAddition.LOGGER.error("Failed to open diplomacy panel", e);
+        }
+    }
+
+    @Unique
+    private static void nsuk$refreshDiplomacyPanel() {
+        CityCoreOpenResponsePacket packet = nsuk$currentPacket;
+        if (packet == null) return;
+        try {
+            Class<?> openerClass = Class.forName("client.cn.kafei.simukraft.client.city.CityCoreScreenOpener");
+            java.lang.reflect.Field wf = openerClass.getDeclaredField("activeWindow");
+            wf.setAccessible(true);
+            Object window = wf.get(null);
+            if (window == null) return;
+            java.lang.reflect.Field sf = openerClass.getDeclaredField("activeScreen");
+            sf.setAccessible(true);
+            Object activeScreen = sf.get(null);
+            if (activeScreen != Minecraft.getInstance().screen) return;
+            java.lang.reflect.Field tf = window.getClass().getDeclaredField("openedTabs");
+            tf.setAccessible(true);
+            Object tabs = tf.get(window);
+            java.lang.reflect.Method rm = tabs.getClass().getMethod("remove", Object.class);
+            rm.invoke(tabs, "diplomacy");
+            nsuk$openDiplomacyTab(packet);
+        } catch (Exception e) {
+            NsukAddition.LOGGER.error("Failed to refresh diplomacy panel", e);
         }
     }
 
