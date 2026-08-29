@@ -26,8 +26,10 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.phys.AABB;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -120,6 +122,7 @@ public final class RtsBuildingMoveService {
         ResidentialBedPoiService.removeRecordedBeds(level, old);
         MedicalBedPoiService.removeRecordedBeds(level, old);
         PlacedBuildingService.unregister(level, buildingId);
+        clearDroppedItems(level, old.minPos(), old.maxPos());
 
         List<BuildingBlockData> placedBlocks = new ArrayList<>();
         for (MovedBlock m : moved) {
@@ -202,6 +205,16 @@ public final class RtsBuildingMoveService {
             }
         }
         return result;
+    }
+
+    private static void clearDroppedItems(ServerLevel level, BlockPos min, BlockPos max) {
+        if (level == null || min == null || max == null) return;
+        AABB box = new AABB(
+                Math.min(min.getX(), max.getX()) - 2, Math.min(min.getY(), max.getY()) - 2, Math.min(min.getZ(), max.getZ()) - 2,
+                Math.max(min.getX(), max.getX()) + 3, Math.max(min.getY(), max.getY()) + 3, Math.max(min.getZ(), max.getZ()) + 3);
+        for (ItemEntity item : level.getEntitiesOfClass(ItemEntity.class, box)) {
+            item.discard();
+        }
     }
 
     private record MovedBlock(BlockPos relative,

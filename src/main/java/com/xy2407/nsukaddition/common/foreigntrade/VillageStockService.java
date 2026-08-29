@@ -53,9 +53,6 @@ public final class VillageStockService {
         if (cityId == null) {
             return CityLevel.SETTLEMENT;
         }
-        if ("castle".equals(VillageCityTypeStorage.getVillageType(level, cityId))) {
-            return CityLevel.VILLAGE;
-        }
         int chunks = level == null ? 0 : CityChunkManager.get(level).getCityChunks(cityId).size();
         return switch (VillageCityGrade.gradeForChunks(chunks)) {
             case VillageCityGrade.HAMLET -> CityLevel.SETTLEMENT;
@@ -66,7 +63,8 @@ public final class VillageStockService {
     }
 
     public static int villageCap(ServerLevel level, UUID cityId, String category) {
-        return CaravanProductConfig.unitLimit(villageCityLevel(level, cityId), category) * 2;
+        int base = CaravanProductConfig.unitLimit(villageCityLevel(level, cityId), category) * 2;
+        return VillageStockConfig.isMaterialCategory(category) ? base * 2 : base;
     }
 
     private static void ensureTable(ServerLevel level) {

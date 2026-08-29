@@ -118,6 +118,7 @@
     "simukraft.CommercialTradePacketMixin",
     "simukraft.CityLevelDefinitionLoaderMixin",
     "simukraft.CityUpgradeServiceMixin",
+    "simukraft.CityPopulationStatsMixin",
     "simukraft.CityDataUpgradeInvoker",
     "simukraft.CityManagerUpgradeInvoker",
     "simukraft.MineralDrillingWorkServiceMixin",
@@ -178,6 +179,7 @@
     "client.GuiMixin",
     "client.KeyboardHandlerMixin",
     "client.simukraft.BuildingBoundsRendererRtsMixin",
+    "client.simukraft.CommercialClientTradeUiMixin",
     "client.simukraft.SimuMapManagerMixin",
     "client.simukraft.ClientboundNetworkHandlerImplMixin",
     "client.CommercialTradeUiRootShiftMixin"

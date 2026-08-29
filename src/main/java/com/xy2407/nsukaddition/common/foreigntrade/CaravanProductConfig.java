@@ -12,9 +12,7 @@ import java.util.Locale;
  * 商队产品配置：按来源村庄城市等级决定商队携带的商品种类与单商品库存上限。
  * - 材料类(基准分类)：聚落 5 种(必含木头/石头/砖石)…都市全部材料
  * - 作物/动物/酒水/矿产/奶酪按等级递增
- * - 动物/奶酪分类当前外贸配置未收录物品时对应产品为空(等配置补齐)
  * - 初始库存 = 单商品上限 × 50%
- * - 水产一律不考虑
  */
 public final class CaravanProductConfig {
 
@@ -38,16 +36,16 @@ public final class CaravanProductConfig {
         List<CaravanProduct> result = new ArrayList<>();
         switch (level) {
             case SETTLEMENT -> {
-                pickMaterial(result, rng, 5, 500, true);
+                pickMaterial(result, rng, 5, 1000, true);
             }
             case VILLAGE -> {
-                pickMaterial(result, rng, 7, 1000, false);
+                pickMaterial(result, rng, 7, 2000, false);
                 pickCategory(result, rng, "crop", 4, 500);
                 pickCategory(result, rng, "animal", 4, 16);
                 pickMineral(result, rng, 3, 300, 0, 0, false);
             }
             case TOWN -> {
-                pickMaterial(result, rng, 9, 1500, false);
+                pickMaterial(result, rng, 9, 3000, false);
                 pickCategory(result, rng, "crop", 6, 800);
                 pickCategory(result, rng, "animal", 6, 24);
                 pickMineral(result, rng, 0, 500, 64, 32, true);
@@ -55,7 +53,7 @@ public final class CaravanProductConfig {
                 pickCategory(result, rng, "wine", 12, 64);
             }
             case CITY_STATE -> {
-                pickMaterial(result, rng, 11, 2000, false);
+                pickMaterial(result, rng, 11, 4000, false);
                 pickCategory(result, rng, "crop", 8, 1200);
                 pickCategory(result, rng, "animal", 8, 32);
                 pickMineral(result, rng, 0, 1200, 128, 64, true);
@@ -63,7 +61,7 @@ public final class CaravanProductConfig {
                 pickCategory(result, rng, "wine", 16, 128);
             }
             case METROPOLIS -> {
-                pickAllMaterial(result, 3000);
+                pickAllMaterial(result, 6000);
                 pickAllCategory(result, "crop", 2000);
                 pickAllCategory(result, "animal", 64);
                 pickAllCategory(result, "wine", 192);

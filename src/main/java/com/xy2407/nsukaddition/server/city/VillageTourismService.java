@@ -5,6 +5,7 @@ import com.xy2407.nsukaddition.common.city.CityDataService;
 import com.xy2407.nsukaddition.common.city.CityLevel;
 import com.xy2407.nsukaddition.common.city.CityProsperityCache;
 import com.xy2407.nsukaddition.common.city.TourismConstants;
+import com.xy2407.nsukaddition.common.item.EntityCaptureItem;
 import com.xy2407.nsukaddition.common.cooking.RestaurantBoxData;
 import com.xy2407.nsukaddition.common.cooking.RestaurantBoxManager;
 import com.xy2407.nsukaddition.common.cooking.RestaurantControlBoxService;
@@ -328,12 +329,25 @@ public final class VillageTourismService {
             return false;
         }
         if (def.isAnimal()) {
-            ItemStack stack = TradeItemResolver.deliver(def, count);
-            if (stack.isEmpty()) {
+            ItemStack deliver = TradeItemResolver.deliver(def, count);
+            if (deliver.isEmpty()) {
                 return false;
             }
-            if (!player.addItem(stack)) {
-                player.drop(stack, false);
+            // 与外贸系统一致：优先把数量合并进背包已有的同名实体捕获器，装不下再新建。
+            EntityType<?> type = EntityCaptureItem.getEntityType(deliver);
+            if (type == null) {
+                return false;
+            }
+            boolean baby = EntityCaptureItem.isBaby(deliver);
+            int remaining = EntityCaptureItem.distributeCapture(
+                    player.getInventory().items, new ItemStack(deliver.getItem()), type, baby,
+                    EntityCaptureItem.getEntryCount(deliver));
+            if (remaining > 0) {
+                ItemStack leftover = EntityCaptureItem.createCapture(
+                        new ItemStack(deliver.getItem()), type, baby, remaining);
+                if (!player.addItem(leftover) && !leftover.isEmpty()) {
+                    player.drop(leftover, false);
+                }
             }
             return true;
         }

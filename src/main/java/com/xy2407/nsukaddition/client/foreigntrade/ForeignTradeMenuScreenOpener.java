@@ -247,7 +247,10 @@ public final class ForeignTradeMenuScreenOpener {
         var villageFiltered = villageType != null
                 ? entries.stream().filter(e -> villageType.equals(e.villageType())).toList()
                 : entries;
-        filtered = new ArrayList<>(villageFiltered);
+        filtered = new ArrayList<>(villageFiltered.stream()
+                .collect(java.util.stream.Collectors.toMap(
+                        ForeignTradeMarket.MarketEntry::itemId, e -> e, (a, b) -> a, java.util.LinkedHashMap::new))
+                .values());
         searchText = "";
         scrollOffset = 0;
         categoryScrollOffset = 0;

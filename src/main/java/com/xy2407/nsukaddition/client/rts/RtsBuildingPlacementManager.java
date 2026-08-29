@@ -164,6 +164,10 @@ public final class RtsBuildingPlacementManager {
         return moveActive;
     }
 
+    public static boolean isMoveDragging() {
+        return moveDragging;
+    }
+
     public static Vec3 getMoveOrigin() {
         return moveOrigin;
     }

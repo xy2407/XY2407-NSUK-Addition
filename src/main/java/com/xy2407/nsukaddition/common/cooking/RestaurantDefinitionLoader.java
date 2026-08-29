@@ -42,9 +42,6 @@ public final class RestaurantDefinitionLoader {
     private static final String CURRENT_VERSION = "6";
     private static final List<String> COOKING_FILES = List.of(
             "restaurant.json", "restaurant.sk", "restaurant.nbt",
-            "pub.json", "pub.sk", "pub.nbt",
-            "bread.json", "bread.sk", "bread.nbt",
-            "bar.json", "bar.sk", "bar.nbt",
             "coffee.json", "coffee.sk", "coffee.nbt"
     );
 

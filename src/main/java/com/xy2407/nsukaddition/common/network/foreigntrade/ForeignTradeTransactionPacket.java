@@ -65,23 +65,7 @@ public record ForeignTradeTransactionPacket(BlockPos boxPos, String cityId, Stri
         if (!player.blockPosition().closerThan(p.boxPos(), 64.0D)) return;
         int amount = Math.max(1, p.amount());
 
-        UUID cityId = CityChunkManager.get(level).getChunkOwner(
-                new net.minecraft.world.level.ChunkPos(p.boxPos()).toLong());
-        if (cityId == null) {
-            fail(player, "message.xy2407_nsuk_addition.foreign_trade.no_city");
-            return;
-        }
-        if (!CityService.hasPermission(level, cityId, player.getUUID(), CityPermissionLevel.OFFICIAL)) {
-            fail(player, "message.xy2407_nsuk_addition.foreign_trade.not_official");
-            return;
-        }
-
         String cityIdStr = p.cityId() != null ? p.cityId() : "";
-        if (!isDiplomacyEstablished(level, player.getUUID(), cityIdStr)) {
-            fail(player, "message.xy2407_nsuk_addition.foreign_trade.no_diplomacy");
-            return;
-        }
-
         UUID tradeCityUuid;
         try {
             tradeCityUuid = UUID.fromString(cityIdStr);
@@ -90,6 +74,36 @@ public record ForeignTradeTransactionPacket(BlockPos boxPos, String cityId, Stri
             return;
         }
         String villageType = VillageCityTypeStorage.getVillageType(level, tradeCityUuid);
+        boolean isVillage = villageType != null && !villageType.isEmpty();
+
+        UUID cityId;
+        if (isVillage) {
+            // 村庄城市市场交易：资金与仓储账户使用交易玩家自己的城市，而非村庄城市的资金。
+            cityId = CityService.findPlayerCity(level, player.getUUID())
+                    .map(city -> city.cityId())
+                    .orElse(null);
+            if (cityId == null) {
+                fail(player, "message.xy2407_nsuk_addition.foreign_trade.no_city");
+                return;
+            }
+        } else {
+            cityId = CityChunkManager.get(level).getChunkOwner(
+                    new net.minecraft.world.level.ChunkPos(p.boxPos()).toLong());
+            if (cityId == null) {
+                fail(player, "message.xy2407_nsuk_addition.foreign_trade.no_city");
+                return;
+            }
+            if (!CityService.hasPermission(level, cityId, player.getUUID(), CityPermissionLevel.OFFICIAL)) {
+                fail(player, "message.xy2407_nsuk_addition.foreign_trade.not_official");
+                return;
+            }
+        }
+
+        if (!isDiplomacyEstablished(level, player.getUUID(), cityIdStr)) {
+            fail(player, "message.xy2407_nsuk_addition.foreign_trade.no_diplomacy");
+            return;
+        }
+
         if (villageType == null) {
             fail(player, "message.xy2407_nsuk_addition.foreign_trade.no_village_type");
             return;

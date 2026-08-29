@@ -236,7 +236,7 @@ public final class VillageCityConverter {
         if (city == null) return;
 
         VillageCityTypeStorage.saveVillageType(level, city.cityId(), vb.villageType());
-        applyGradeLevel(level, city.cityId(), vb.chunks().size(), CASTLE_VILLAGE_TYPE.equals(vb.villageType()));
+        applyGradeLevel(level, city.cityId(), vb.chunks().size());
         claimTerritoryChunks(level, city.cityId(), vb.chunks());
 
         CityChunkSyncService.syncToAll(level);
@@ -254,10 +254,10 @@ public final class VillageCityConverter {
         }
     }
 
-    private static void applyGradeLevel(ServerLevel level, UUID cityId, int chunkCount, boolean forceVillage) {
+    private static void applyGradeLevel(ServerLevel level, UUID cityId, int chunkCount) {
         VillageCityGrade.save(level, cityId, chunkCount);
         CityService.findCity(level, cityId).ifPresent(city -> {
-            int lvl = forceVillage ? 2 : switch (VillageCityGrade.gradeForChunks(chunkCount)) {
+            int lvl = switch (VillageCityGrade.gradeForChunks(chunkCount)) {
                 case VillageCityGrade.HAMLET -> 1;
                 case VillageCityGrade.VILLAGE -> 2;
                 case VillageCityGrade.TOWN -> 3;

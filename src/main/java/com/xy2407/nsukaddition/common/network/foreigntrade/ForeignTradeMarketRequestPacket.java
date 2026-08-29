@@ -57,25 +57,50 @@ public record ForeignTradeMarketRequestPacket(BlockPos boxPos, String cityId) im
         if (!player.blockPosition().closerThan(p.boxPos(), 64.0D)) return;
 
         ForeignTradeMarket.ensureRefreshed();
-        var entries = ForeignTradeMarket.getMarketEntriesForPlayer(level, player.getUUID());
 
-        UUID cityId = CityChunkManager.get(level).getChunkOwner(
-                new net.minecraft.world.level.ChunkPos(p.boxPos()).toLong());
-        boolean canOperate = cityId != null
-                && CityService.hasPermission(level, cityId, player.getUUID(), CityPermissionLevel.OFFICIAL);
+        UUID targetCity = parseCityId(p.cityId());
+        String villageType = targetCity != null ? VillageCityTypeStorage.getVillageType(level, targetCity) : null;
+        boolean isVillage = villageType != null && !villageType.isEmpty();
 
-        var entriesToSend = cityId != null ? entries : List.<ForeignTradeMarket.MarketEntry>of();
+        List<ForeignTradeMarket.MarketEntry> entries;
+        boolean canOperate;
+        if (isVillage) {
+            VillageStockService.ensureVillage(level, targetCity, villageType);
+            entries = ForeignTradeMarket.getMarketEntries().stream()
+                    .filter(e -> villageType.equals(e.villageType()))
+                    .filter(e -> VillageStockService.isVillageItem(level, targetCity, e.itemId()))
+                    .toList();
+            canOperate = true;
+        } else {
+            entries = ForeignTradeMarket.getMarketEntriesForPlayer(level, player.getUUID());
+            UUID ownerCity = CityChunkManager.get(level).getChunkOwner(
+                    new net.minecraft.world.level.ChunkPos(p.boxPos()).toLong());
+            canOperate = ownerCity != null
+                    && CityService.hasPermission(level, ownerCity, player.getUUID(), CityPermissionLevel.OFFICIAL);
+        }
+
         PacketDistributor.sendToPlayer(player,
-                new ForeignTradeMarketDataPacket(p.boxPos(), entriesToSend, canOperate));
+                new ForeignTradeMarketDataPacket(p.boxPos(), entries, canOperate));
         PacketDistributor.sendToPlayer(player,
                 new ForeignTradeInventorySyncPacket(calcAvailableCounts(player, entries)));
-        PacketDistributor.sendToPlayer(player, buildVillageStockPacket(level, p.cityId(), entriesToSend));
+        PacketDistributor.sendToPlayer(player, buildVillageStockPacket(level, p.cityId(), entries));
     }
 
     /**
      * 构建选中村城的外贸库存。直接以目标村城 cityId 读取库存，与交易包(VillageStockService.removeStock/addStock)
      * 使用同一个村城，保证购买/出售后该村城库存能被实时反映到市场卡片。
      */
+    private static UUID parseCityId(String cityId) {
+        if (cityId == null || cityId.isEmpty()) {
+            return null;
+        }
+        try {
+            return UUID.fromString(cityId);
+        } catch (IllegalArgumentException ignored) {
+            return null;
+        }
+    }
+
     static ForeignTradeVillageStockSyncPacket buildVillageStockPacket(ServerLevel level, String targetCityId,
                                                                       List<ForeignTradeMarket.MarketEntry> entries) {
         Map<String, StockInfo> stocks = new HashMap<>();

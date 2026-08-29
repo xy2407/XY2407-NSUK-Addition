@@ -487,7 +487,7 @@ public final class RtsModeManager {
                 return;
             }
         }
-        if (RtsBuildingPlacementManager.isMoveActive()) {
+        if (RtsBuildingPlacementManager.isMoveActive() && RtsBuildingPlacementManager.isMoveDragging()) {
             RtsBuildingPlacementManager.adjustMoveHeight(vertical > 0.0D ? 1 : -1);
             return;
         }
