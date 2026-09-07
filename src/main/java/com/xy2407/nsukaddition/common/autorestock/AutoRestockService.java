@@ -5,13 +5,16 @@ import com.xy2407.nsukaddition.common.breeding.BreedingBoxManager;
 import com.xy2407.nsukaddition.common.breeding.BreedingControlBoxService;
 import com.xy2407.nsukaddition.common.breeding.BreedingDefinition;
 import com.xy2407.nsukaddition.common.breeding.BreedingDefinitionLoader;
-import com.xy2407.nsukaddition.common.cooking.CookingWorkService;
-import com.xy2407.nsukaddition.common.cooking.RestaurantBoxData;
-import com.xy2407.nsukaddition.common.cooking.RestaurantBoxManager;
-import com.xy2407.nsukaddition.common.cooking.RestaurantControlBoxService;
-import com.xy2407.nsukaddition.common.cooking.RestaurantDefinition;
-import com.xy2407.nsukaddition.common.cooking.RestaurantDefinitionLoader;
-import com.xy2407.nsukaddition.common.cooking.RestaurantRecipes;
+import com.xy2407.nsukaddition.common.restaurant.CookingWorkService;
+import com.xy2407.nsukaddition.common.restaurant.RestaurantBoxData;
+import com.xy2407.nsukaddition.common.restaurant.RestaurantBoxManager;
+import com.xy2407.nsukaddition.common.restaurant.RestaurantControlBoxService;
+import com.xy2407.nsukaddition.common.restaurant.RecipeDecompositionService;
+import com.xy2407.nsukaddition.common.restaurant.RestaurantDefinition;
+import com.xy2407.nsukaddition.common.restaurant.RestaurantDefinitionLoader;
+import com.xy2407.nsukaddition.common.restaurant.RestaurantRecipes;
+import com.xy2407.nsukaddition.server.autorestock.WarehouseChunkLoader;
+import common.cn.kafei.simukraft.building.BuildingBlockData;
 import common.cn.kafei.simukraft.building.PlacedBuildingRecord;
 import common.cn.kafei.simukraft.commercial.CommercialBoxData;
 import common.cn.kafei.simukraft.commercial.CommercialBoxManager;
@@ -35,6 +38,12 @@ import common.cn.kafei.simukraft.logistics.LogisticsManager;
 import common.cn.kafei.simukraft.logistics.LogisticsWarehouseData;
 import common.cn.kafei.simukraft.logistics.LogisticsWarehouseInventoryService;
 import common.cn.kafei.simukraft.material.GenericContainerAccess;
+import common.cn.kafei.simukraft.mineraldrilling.MineralDrillingBoxData;
+import common.cn.kafei.simukraft.mineraldrilling.MineralDrillingBoxManager;
+import common.cn.kafei.simukraft.mineraldrilling.MineralDrillingControlBoxService;
+import common.cn.kafei.simukraft.mineraldrilling.MineralDrillingDefinitionLoader;
+import common.cn.kafei.simukraft.mineraldrilling.MineralDrillingInventory;
+import common.cn.kafei.simukraft.registry.ModItems;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.item.Item;
@@ -43,6 +52,9 @@ import net.minecraft.world.item.Items;
 import net.minecraft.world.item.PickaxeItem;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.entity.item.ItemEntity;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -59,6 +71,13 @@ public final class AutoRestockService {
     private static final int COMMERCIAL_MATERIAL_RADIUS_Y = 2;
 
     private AutoRestockService() {}
+
+    /** keepWarehousesLoaded: 为该补货盒用到的所有物流仓库的箱子区块加强加载，避免远处仓库读不到/丢料。 */
+    public static void keepWarehousesLoaded(ServerLevel level, BlockPos pos) {
+        for (LogisticsWarehouseData warehouse : sortedWarehouses(level, pos)) {
+            WarehouseChunkLoader.forceLoad(level, warehouse);
+        }
+    }
 
     public static void storeIndustrialOutputs(ServerLevel level, BlockPos pos) {
         IndustrialBoxManager manager = IndustrialBoxManager.get(level);
@@ -165,13 +184,20 @@ public final class AutoRestockService {
             int shortage = required - existing;
             if (shortage <= 0) continue;
 
-            ItemStack extracted = extractSpecFromWarehouses(level, pos, spec, shortage);
+            // 只抽输入容器实际能放下的量，避免抽出后再放不回仓库而丢料。
+            int toExtract = Math.min(shortage, freeSpaceForSpec(level, inputContainers, spec));
+            if (toExtract <= 0) continue;
+
+            ItemStack extracted = extractSpecFromWarehouses(level, pos, spec, toExtract);
             if (extracted.isEmpty()) continue;
 
             ItemStack leftover = insertIntoContainers(level, inputContainers, extracted);
-            int deposited = extracted.getCount() - leftover.getCount();
             if (!leftover.isEmpty()) {
-                LogisticsWarehouseInventoryService.insert(level, warehouse.boxPos(), leftover);
+                // 兜底：送回全部仓库，仍放不下则在盒旁掉落，绝不静默消失。
+                leftover = insertIntoWarehouses(level, boxPos, leftover);
+                if (!leftover.isEmpty()) {
+                    dropItemStackAtBox(level, boxPos, leftover);
+                }
             }
         }
     }
@@ -348,6 +374,51 @@ public final class AutoRestockService {
         return remaining;
     }
 
+    /** freeSpaceForSpec: 统计一组容器对该规格物品还能放入的总数量(满/不匹配不计)。 */
+    private static int freeSpaceForSpec(ServerLevel level, List<BlockPos> containers, IndustrialItemStackSpec spec) {
+        int total = 0;
+        List<BlockPos> all = new ArrayList<>();
+        for (BlockPos c : containers) {
+            boolean dup = false;
+            for (BlockPos e : all) {
+                if (e.equals(c)) { dup = true; break; }
+            }
+            if (!dup) all.add(c);
+        }
+        for (BlockPos container : all) {
+            if (!level.isLoaded(container)) continue;
+            for (GenericContainerAccess.SlotSnapshot slot : GenericContainerAccess.snapshotSlots(level, container)) {
+                int maxStack = slot.stack().isEmpty() ? 64 : slot.stack().getMaxStackSize();
+                if (slot.stack().isEmpty()) {
+                    total += maxStack;
+                } else if (spec.matches(slot.stack(), level.registryAccess())) {
+                    total += Math.max(0, maxStack - slot.stack().getCount());
+                }
+            }
+        }
+        return total;
+    }
+
+    /** reinsertLeftover: 把放不进输入的余料送回仓库，仍放不下则在盒旁掉落，避免静默丢失。 */
+    private static void reinsertLeftover(ServerLevel level, BlockPos boxPos, ItemStack leftover) {
+        if (leftover == null || leftover.isEmpty()) return;
+        ItemStack remaining = insertIntoWarehouses(level, boxPos, leftover);
+        if (!remaining.isEmpty()) {
+            dropItemStackAtBox(level, boxPos, remaining);
+        }
+    }
+
+    /** dropItemStackAtBox: 在补货盒旁落下无法入库的物品实体，保证物品不凭空消失。 */
+    private static void dropItemStackAtBox(ServerLevel level, BlockPos boxPos, ItemStack stack) {
+        if (stack == null || stack.isEmpty() || level == null || boxPos == null) return;
+        double x = boxPos.getX() + 0.5D;
+        double y = boxPos.getY() + 1.0D;
+        double z = boxPos.getZ() + 0.5D;
+        ItemEntity entity = new ItemEntity(level, x, y, z, stack.copy());
+        entity.setDeltaMovement(0.0D, 0.1D, 0.0D);
+        level.addFreshEntity(entity);
+    }
+
     private static List<ItemStack> collectContainerItems(ServerLevel level, List<BlockPos> containers) {
         java.util.ArrayList<ItemStack> stacks = new java.util.ArrayList<>();
         for (BlockPos container : containers) {
@@ -434,7 +505,7 @@ public final class AutoRestockService {
 
         ItemStack leftover = insertIntoContainers(level, inputContainers, extracted);
         if (!leftover.isEmpty()) {
-            insertIntoWarehouses(level, boxPos, leftover);
+            reinsertLeftover(level, boxPos, leftover);
         }
     }
 
@@ -472,47 +543,24 @@ public final class AutoRestockService {
         BlockPos boxPos = building.worldOrigin();
         final int targetStockPerInput = 16;
 
-        java.util.LinkedHashMap<Item, Integer> neededByItem = new java.util.LinkedHashMap<>();
+        // 把每个菜品的直接材料递归解构成最基础原料再补给，仓库只需备基础料、无需备中间合成物。
         java.util.LinkedHashMap<Ingredient, Integer> neededByIngredient = new java.util.LinkedHashMap<>();
         for (String itemId : cookItems) {
             CookingWorkService.ResolvedRecipe recipe = CookingWorkService.findRecipe(level, itemId);
             if (recipe == null) continue;
-            boolean kawaiiMachine = recipe.device() == RestaurantRecipes.DeviceType.KAWAII_BLENDER
-                    || recipe.device() == RestaurantRecipes.DeviceType.KAWAII_COFFEE_MACHINE
-                    || recipe.device() == RestaurantRecipes.DeviceType.KAWAII_ICE_CREAM_MAKER;
             for (Ingredient ing : recipe.ingredients()) {
                 if (ing.isEmpty()) continue;
-                if (kawaiiMachine) {
-                    for (ItemStack candidate : ing.getItems()) {
-                        if (candidate == null || candidate.isEmpty()) continue;
-                        neededByItem.merge(candidate.getItem(), targetStockPerInput, Math::max);
-                    }
-                } else {
-                    neededByIngredient.merge(ing, targetStockPerInput, Math::max);
+                if (isContainerOnly(ing)) continue; // 桶/碗/瓶等容器不参与补货
+                for (Ingredient leaf : RecipeDecompositionService.decompose(level, ing)) {
+                    if (leaf == null || leaf.isEmpty()) continue;
+                    neededByIngredient.merge(leaf, targetStockPerInput, Math::max);
                 }
             }
         }
-        if (neededByItem.isEmpty() && neededByIngredient.isEmpty()) {
+        if (neededByIngredient.isEmpty()) {
             return;
         }
 
-        for (var entry : neededByItem.entrySet()) {
-            Item item = entry.getKey();
-            int required = entry.getValue();
-            int existing = countItemInInputContainers(level, inputContainers, item);
-            int shortage = required - existing;
-            if (shortage <= 0) continue;
-
-            ItemStack extracted = extractItemFromWarehouses(level, boxPos, item, shortage);
-            if (extracted.isEmpty()) {
-                continue;
-            }
-
-            ItemStack leftover = insertIntoContainers(level, inputContainers, extracted);
-            if (!leftover.isEmpty()) {
-                insertIntoWarehouses(level, boxPos, leftover);
-            }
-        }
         for (var entry : neededByIngredient.entrySet()) {
             Ingredient ing = entry.getKey();
             int required = entry.getValue();
@@ -527,9 +575,18 @@ public final class AutoRestockService {
 
             ItemStack leftover = insertIntoContainers(level, inputContainers, extracted);
             if (!leftover.isEmpty()) {
-                insertIntoWarehouses(level, boxPos, leftover);
+                reinsertLeftover(level, boxPos, leftover);
             }
         }
+    }
+
+    /** 判断材料是否仅为容器/工具类（桶、碗、瓶等），是则不参与补货需求。 */
+    private static boolean isContainerOnly(Ingredient ing) {
+        for (ItemStack candidate : ing.getItems()) {
+            if (candidate == null || candidate.isEmpty()) continue;
+            if (RecipeDecompositionService.isToolOrContainerItem(candidate.getItem())) return true;
+        }
+        return false;
     }
 
     private static int countItemInInputContainers(ServerLevel level, List<BlockPos> containers, Item item) {
@@ -650,6 +707,106 @@ public final class AutoRestockService {
         }
     }
 
+    /** storeMineralOutputs: 将钻井平台产出木桶内的矿物存入物流仓库(入库)。 */
+    public static void storeMineralOutputs(ServerLevel level, BlockPos pos) {
+        MineralDrillingBoxData data = MineralDrillingBoxManager.get(level).get(pos);
+        if (data == null || !data.running()) {
+            return;
+        }
+        PlacedBuildingRecord building = MineralDrillingControlBoxService.resolveBuilding(level, pos);
+        if (building == null) {
+            return;
+        }
+        for (BlockPos container : resolveMineralOutputPositions(level, building)) {
+            if (!level.isLoaded(container)) {
+                continue;
+            }
+            for (GenericContainerAccess.SlotSnapshot slot : GenericContainerAccess.snapshotSlots(level, container)) {
+                if (slot.stack().isEmpty()) {
+                    continue;
+                }
+                ItemStack stack = slot.stack();
+                ItemStack remaining = insertIntoWarehouses(level, building.worldOrigin(), stack.copy());
+                int deposited = stack.getCount() - remaining.getCount();
+                if (deposited > 0) {
+                    GenericContainerAccess.extractFromSlot(level, container,
+                            slot.slot(), slot.access(), slot.side(), deposited,
+                            s -> ItemStack.isSameItemSameComponents(s, stack));
+                }
+            }
+        }
+    }
+
+    /** restockMineralTools: 从仓库补钻杆段与钻头到钻井双槽；钻头按目标深度选浅/深(>=10 浅层，否则深层)。 */
+    public static void restockMineralTools(ServerLevel level, BlockPos pos) {
+        MineralDrillingBoxData data = MineralDrillingBoxManager.get(level).get(pos);
+        if (data == null) {
+            return;
+        }
+        MineralDrillingInventory inv = data.inventory();
+        PlacedBuildingRecord building = MineralDrillingControlBoxService.resolveBuilding(level, pos);
+        BlockPos boxPos = building != null ? building.worldOrigin() : pos;
+
+        int targetRod = 16;
+        int existingRod = inv.getItem(MineralDrillingInventory.DRILL_ROD_SLOT).getCount();
+        int rodShortage = targetRod - existingRod;
+        if (rodShortage > 0) {
+            ItemStack rod = new ItemStack(ModItems.DRILL_ROD_SEGMENT.get(), rodShortage);
+            ItemStack extracted = extractFromNearestWarehouse(level, boxPos, rod, rodShortage);
+            if (!extracted.isEmpty()) {
+                inv.setItem(MineralDrillingInventory.DRILL_ROD_SLOT,
+                        new ItemStack(ModItems.DRILL_ROD_SEGMENT.get(),
+                                existingRod + extracted.getCount()));
+            }
+        }
+
+        if (inv.getItem(MineralDrillingInventory.DRILL_BIT_SLOT).isEmpty()) {
+            int depth = data.drillDepth();
+            Item bitItem = depth >= MineralDrillingControlBoxService.SHALLOW_DRILL_MIN_Y
+                    ? ModItems.SHALLOW_DRILL_BIT.get()
+                    : ModItems.DEEP_DRILL_BIT.get();
+            ItemStack extracted = extractItemFromWarehouses(level, boxPos, bitItem, 1);
+            if (!extracted.isEmpty()) {
+                inv.setItem(MineralDrillingInventory.DRILL_BIT_SLOT, extracted);
+            }
+        }
+    }
+
+    /** resolveMineralOutputPositions: 优先用钻井 JSON 声明的产出容器坐标；无/空(含 JSON 错误)时回退扫描平台内任意容器方块。 */
+    private static List<BlockPos> resolveMineralOutputPositions(ServerLevel level, PlacedBuildingRecord building) {
+        if (building == null) {
+            return List.of();
+        }
+        MineralDrillingDefinitionLoader.OutputContainerResolution resolution =
+                MineralDrillingDefinitionLoader.resolveOutputContainers(building);
+        List<BlockPos> out = new ArrayList<>();
+        if (resolution.declared() && !resolution.positions().isEmpty()) {
+            for (BlockPos p : resolution.positions()) {
+                if (p != null) {
+                    out.add(p.immutable());
+                }
+            }
+            return out;
+        }
+        // declared 但为空(如 JSON 格式错误被 loader 吞掉)或 legacy：扫描平台内所有"容器方块"(木桶/箱子等)作为产出容器。
+        if (building.blocks() != null) {
+            LinkedHashSet<BlockPos> seen = new LinkedHashSet<>();
+            for (BuildingBlockData block : building.blocks()) {
+                if (block == null || block.relativePos() == null) {
+                    continue;
+                }
+                BlockPos world = building.worldOrigin() != null
+                        ? building.worldOrigin().offset(block.relativePos())
+                        : block.relativePos();
+                if (level.isLoaded(world) && level.getBlockEntity(world) instanceof net.minecraft.world.Container) {
+                    seen.add(world.immutable());
+                }
+            }
+            out.addAll(seen);
+        }
+        return out;
+    }
+
     private static List<BlockPos> resolveBreedingContainerPositions(
             PlacedBuildingRecord building, BreedingDefinition definition,
             String containerId, BlockPos boxPos) {
@@ -704,7 +861,7 @@ public final class AutoRestockService {
                 if (!extracted.isEmpty()) {
                     ItemStack leftover = insertIntoContainers(level, chests, extracted);
                     if (!leftover.isEmpty()) {
-                        insertIntoWarehouses(level, pos, leftover);
+                        reinsertLeftover(level, pos, leftover);
                     }
                 }
             }
@@ -718,7 +875,7 @@ public final class AutoRestockService {
             if (!extracted.isEmpty()) {
                 ItemStack leftover = insertIntoContainers(level, chests, extracted);
                 if (!leftover.isEmpty()) {
-                    insertIntoWarehouses(level, pos, leftover);
+                    reinsertLeftover(level, pos, leftover);
                 }
             }
         }

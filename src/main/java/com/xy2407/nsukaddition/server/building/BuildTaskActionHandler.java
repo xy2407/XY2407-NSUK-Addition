@@ -5,6 +5,7 @@ import common.cn.kafei.simukraft.building.BuildingTaskStatus;
 import common.cn.kafei.simukraft.citizen.CitizenService;
 import common.cn.kafei.simukraft.citizen.CitizenWorkStatus;
 import common.cn.kafei.simukraft.citizen.CitizenWorkplaceMoveService;
+import common.cn.kafei.simukraft.city.CityData;
 import common.cn.kafei.simukraft.city.CityManager;
 import common.cn.kafei.simukraft.storage.SimuSqliteStorage;
 import net.minecraft.server.level.ServerLevel;
@@ -23,11 +24,11 @@ public final class BuildTaskActionHandler {
     public static void handle(ServerLevel level, ServerPlayer player,
                               UUID citizenId, UUID taskId,
                               com.xy2407.nsukaddition.common.network.building.BuildTaskActionPacket.Action action) {
-        var cityOpt = CityManager.get(level).getPlayerCity(player.getUUID());
-        if (cityOpt.isEmpty()) return;
-        UUID cityId = cityOpt.get().cityId();
-
         BuildingTaskData task = SimuSqliteStorage.loadBuildingTask(level, citizenId);
+        // 城市以任务归属为准，避免暂停/恢复状态按玩家所属城市记录、而与侧边栏按任务城市查询不一致(导致首次暂停"回弹")
+        UUID cityId = task != null ? task.cityId()
+                : CityManager.get(level).getPlayerCity(player.getUUID()).map(CityData::cityId).orElse(null);
+        if (cityId == null) return;
 
         if (action == com.xy2407.nsukaddition.common.network.building.BuildTaskActionPacket.Action.ABORT) {
             handleAbort(level, cityId, citizenId, taskId);
@@ -40,49 +41,14 @@ public final class BuildTaskActionHandler {
             return;
         }
 
-        if (task == null || !cityId.equals(task.cityId())) return;
+        if (task == null) return;
         switch (action) {
-            case PAUSE -> {
-                if (isRunningTask(level, citizenId, taskId)) {
-                    handlePause(level, cityId, citizenId);
-                }
-            }
+            case PAUSE -> handlePause(level, cityId, citizenId);
             case RESUME -> handleResume(level, cityId, citizenId, task);
             case ABORT -> {
             }
         }
         SidebarDataCache.refreshAsync(level);
-    }
-
-    private static boolean isRunningTask(ServerLevel level, UUID citizenId, UUID taskId) {
-        if (taskId == null) {
-            return false;
-        }
-        try {
-            Class<?> service = common.cn.kafei.simukraft.building.BuilderConstructionService.class;
-            java.lang.reflect.Field runtimesField = service.getDeclaredField("LEVEL_RUNTIMES");
-            runtimesField.setAccessible(true);
-            Object runtimes = runtimesField.get(null);
-            String key = common.cn.kafei.simukraft.util.SaveScopedCacheKey.levelKey(level)
-                    .toLowerCase(java.util.Locale.ROOT);
-            Object runtime = ((java.util.Map<?, ?>) runtimes).get(key);
-            if (runtime == null) {
-                return false;
-            }
-            java.lang.reflect.Field tasksField = runtime.getClass().getDeclaredField("tasksByCitizen");
-            tasksField.setAccessible(true);
-            java.util.Map<?, ?> tasks = (java.util.Map<?, ?>) tasksField.get(runtime);
-            Object taskRuntime = tasks.get(citizenId);
-            if (taskRuntime == null) {
-                return false;
-            }
-            java.lang.reflect.Field taskField = taskRuntime.getClass().getDeclaredField("task");
-            taskField.setAccessible(true);
-            BuildingTaskData running = (BuildingTaskData) taskField.get(taskRuntime);
-            return running != null && taskId.equals(running.taskId());
-        } catch (ReflectiveOperationException | RuntimeException e) {
-            return false;
-        }
     }
 
     private static void handlePause(ServerLevel level, UUID cityId, UUID citizenId) {
@@ -102,7 +68,7 @@ public final class BuildTaskActionHandler {
         }
         BuildTaskTrackedState.setResumed(level, cityId, citizenId);
 
-        BuilderTaskControl.resumeTask(level, task);
+        BuildingTaskQueueService.startTaskIfIdle(level, task.withStatus(BuildingTaskStatus.BUILDING));
         setCitizenWorkStatus(level, citizenId, CitizenWorkStatus.WORKING, "");
         CitizenService.findCitizen(level, citizenId)
                 .ifPresent(c -> CitizenWorkplaceMoveService.returnToWorkplace(level, c));

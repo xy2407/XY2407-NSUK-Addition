@@ -1,6 +1,6 @@
 package com.xy2407.nsukaddition.common.network.clientbound;
 
-import com.xy2407.nsukaddition.common.network.cooking.RestaurantControlBoxOpenResponsePacket;
+import com.xy2407.nsukaddition.common.network.restaurant.RestaurantControlBoxOpenResponsePacket;
 
 import java.util.function.Consumer;
 

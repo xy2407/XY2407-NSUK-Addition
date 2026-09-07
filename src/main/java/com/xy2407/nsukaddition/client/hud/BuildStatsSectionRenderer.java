@@ -105,7 +105,7 @@ final class BuildStatsSectionRenderer {
             rightTitle = Component.translatable("hud.xy2407_nsuk_addition.material.title").getString();
 
             leftRows.clear();
-            leftRows.add(new RowCache(textRenderer, mc, "hud.xy2407_nsuk_addition.build_stats.shop", current.shopCount()));
+            leftRows.add(new RowCache(textRenderer, mc, "hud.xy2407_nsuk_addition.build_stats.restaurant", current.restaurantCount()));
             leftRows.add(new RowCache(textRenderer, mc, "hud.xy2407_nsuk_addition.build_stats.factory", current.factoryCount()));
             leftRows.add(new RowCache(textRenderer, mc, "hud.xy2407_nsuk_addition.build_stats.residence", current.residenceCount()));
             leftRows.add(new RowCache(textRenderer, mc, "hud.xy2407_nsuk_addition.build_stats.farm", current.farmCount()));

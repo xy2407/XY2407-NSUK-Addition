@@ -1,5 +1,6 @@
 package com.xy2407.nsukaddition.mixin;
 
+import com.xy2407.nsukaddition.common.city.CityBuildingStatsStore;
 import com.xy2407.nsukaddition.common.storage.BuildingPoiIndex;
 import common.cn.kafei.simukraft.building.BuildingPoiInstance;
 import common.cn.kafei.simukraft.building.PlacedBuildingRecord;
@@ -10,6 +11,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import java.util.HashMap;
@@ -98,5 +100,27 @@ public class PlacedBuildingServiceIndexMixin {
         List<PlacedBuildingRecord> buildings = PlacedBuildingService.getBuildings(level);
         BuildingPoiIndex idx = nsuk$index(buildings);
         cir.setReturnValue(idx.findByPos(poiPos.immutable()));
+    }
+
+    // 建筑放置后使该城市统计缓存失效，下次读取即重算并落库，保证侧边栏即时反映新增建筑。
+    @Inject(method = "register", at = @At("TAIL"), remap = false, require = 0)
+    private static void nsuk$onRegister(ServerLevel level, PlacedBuildingRecord record, CallbackInfo ci) {
+        if (level != null && record != null) {
+            CityBuildingStatsStore.invalidate(level, record.cityId());
+        }
+    }
+
+    // 建筑拆除前按 buildingId 定位所属城市并使缓存失效，保证侧边栏即时反映拆除。
+    @Inject(method = "unregister", at = @At("HEAD"), remap = false, require = 0)
+    private static void nsuk$onUnregister(ServerLevel level, UUID buildingId, CallbackInfo ci) {
+        if (level == null || buildingId == null) {
+            return;
+        }
+        for (PlacedBuildingRecord record : PlacedBuildingService.getBuildings(level)) {
+            if (buildingId.equals(record.buildingId())) {
+                CityBuildingStatsStore.invalidate(level, record.cityId());
+                break;
+            }
+        }
     }
 }

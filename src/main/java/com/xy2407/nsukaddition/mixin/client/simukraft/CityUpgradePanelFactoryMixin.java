@@ -6,6 +6,7 @@ import com.lowdragmc.lowdraglib2.gui.ui.elements.Label;
 import com.xy2407.nsukaddition.client.data.SidebarDataSnapshot;
 import com.xy2407.nsukaddition.common.city.CityLevel;
 import com.xy2407.nsukaddition.common.city.CityUpgradeRequirement;
+import com.xy2407.nsukaddition.common.colony.ColonyConstants;
 import com.xy2407.nsukaddition.common.material.MaterialCategoryRegistry;
 import common.cn.kafei.simukraft.network.city.core.CityCoreOpenResponsePacket;
 import net.minecraft.network.chat.Component;
@@ -64,13 +65,18 @@ public abstract class CityUpgradePanelFactoryMixin {
             }
         }
 
+        details.addChild(line(Component.translatable("gui.xy2407_nsuk_addition.city_upgrade.after_colony_chunks",
+                ColonyConstants.totalChunkPool(target.level()))));
+
         details.addChild(line(Component.translatable("gui.xy2407_nsuk_addition.city_upgrade.requirements")));
+        addBuildingRow(details, "gui.xy2407_nsuk_addition.city_upgrade.requirement.housing",
+                snap.residenceCount(), req.requiredHousing());
         addBuildingRow(details, "gui.xy2407_nsuk_addition.city_upgrade.requirement.farms",
                 snap.farmCount(), req.requiredFarms());
         addBuildingRow(details, "gui.xy2407_nsuk_addition.city_upgrade.requirement.ranches",
                 snap.ranchCount(), req.requiredRanches());
-        addBuildingRow(details, "gui.xy2407_nsuk_addition.city_upgrade.requirement.shops",
-                snap.shopCount(), req.requiredShops());
+        addBuildingRow(details, "gui.xy2407_nsuk_addition.city_upgrade.requirement.restaurants",
+                snap.restaurantCount(), req.requiredRestaurants());
         addBuildingRow(details, "gui.xy2407_nsuk_addition.city_upgrade.requirement.factories",
                 snap.factoryCount(), req.requiredFactories());
         addBuildingRow(details, "gui.xy2407_nsuk_addition.city_upgrade.requirement.mines",
@@ -92,9 +98,10 @@ public abstract class CityUpgradePanelFactoryMixin {
     }
 
     private static boolean buildingsMet(SidebarDataSnapshot snap, CityUpgradeRequirement req) {
-        return snap.farmCount() >= req.requiredFarms()
+        return snap.residenceCount() >= req.requiredHousing()
+                && snap.farmCount() >= req.requiredFarms()
                 && snap.ranchCount() >= req.requiredRanches()
-                && snap.shopCount() >= req.requiredShops()
+                && snap.restaurantCount() >= req.requiredRestaurants()
                 && snap.factoryCount() >= req.requiredFactories()
                 && snap.mineCount() >= req.requiredMines();
     }

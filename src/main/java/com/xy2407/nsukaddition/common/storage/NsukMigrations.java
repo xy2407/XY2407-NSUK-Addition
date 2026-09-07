@@ -16,7 +16,32 @@ public final class NsukMigrations {
     }
 
     public static List<Migration> all() {
-        return List.of(new AddLegacyColumns(), new RebuildVillageTradeQuota(), new EnsureRestaurantTables(), new EnsureVillageCityGrade());
+        return List.of(new AddLegacyColumns(), new RebuildVillageTradeQuota(), new EnsureRestaurantTables(),
+                new EnsureVillageCityGrade(), new EnsureCityBuildingStats());
+    }
+
+    private static final class EnsureCityBuildingStats implements Migration {
+        @Override
+        public int version() {
+            return 6;
+        }
+
+        @Override
+        public String description() {
+            return "ensure city_building_stats table";
+        }
+
+        @Override
+        public void apply(Connection connection) throws SQLException {
+            try (Statement statement = connection.createStatement()) {
+                statement.executeUpdate("CREATE TABLE IF NOT EXISTS city_building_stats("
+                        + "city_id TEXT PRIMARY KEY, "
+                        + "farm INTEGER NOT NULL DEFAULT 0, ranch INTEGER NOT NULL DEFAULT 0, "
+                        + "restaurant INTEGER NOT NULL DEFAULT 0, factory INTEGER NOT NULL DEFAULT 0, "
+                        + "mine INTEGER NOT NULL DEFAULT 0, housing INTEGER NOT NULL DEFAULT 0, "
+                        + "updated_at INTEGER NOT NULL DEFAULT 0)");
+            }
+        }
     }
 
     private static final class AddLegacyColumns implements Migration {

@@ -36,7 +36,7 @@ import java.util.Optional;
 public class BuildingStructureServiceMixin {
 
     private static final Path BREEDING_DIR = FMLPaths.GAMEDIR.get().resolve("xy2407_nsuk_addition/breeding");
-    private static final Path COOKING_DIR = FMLPaths.GAMEDIR.get().resolve("xy2407_nsuk_addition/cooking");
+    private static final Path RESTAURANT_DIR = FMLPaths.GAMEDIR.get().resolve("xy2407_nsuk_addition/restaurant");
     private static final Path FOREIGN_TRADE_DIR = FMLPaths.GAMEDIR.get().resolve("xy2407_nsuk_addition/foreign_trade");
     private static final Map<String, String> LEGACY_BLOCK_REMAPS = Map.of(
             "minecraft:grass", "minecraft:short_grass"
@@ -63,8 +63,8 @@ public class BuildingStructureServiceMixin {
         Path dir;
         if ("breeding".equalsIgnoreCase(category)) {
             dir = BREEDING_DIR;
-        } else if ("cooking".equalsIgnoreCase(category)) {
-            dir = COOKING_DIR;
+        } else if ("restaurant".equalsIgnoreCase(category)) {
+            dir = RESTAURANT_DIR;
         } else if ("foreign_trade".equalsIgnoreCase(category)) {
             dir = FOREIGN_TRADE_DIR;
         } else {

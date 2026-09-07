@@ -2,6 +2,7 @@ package com.xy2407.nsukaddition.server;
 
 import com.xy2407.nsukaddition.NsukAddition;
 import com.xy2407.nsukaddition.common.city.CityBuildingStats;
+import com.xy2407.nsukaddition.common.city.CityBuildingStatsStore;
 import com.xy2407.nsukaddition.common.city.CityProsperityCache;
 import com.xy2407.nsukaddition.common.material.MaterialCategory;
 import com.xy2407.nsukaddition.common.material.MaterialCategoryRegistry;
@@ -10,8 +11,6 @@ import com.xy2407.nsukaddition.server.building.BuildTaskTrackedState;
 import com.xy2407.nsukaddition.server.material.BuildingMaterialCalculator;
 import com.xy2407.nsukaddition.server.material.WarehouseReserveCollector;
 import common.cn.kafei.simukraft.building.BuildingTaskData;
-import common.cn.kafei.simukraft.building.PlacedBuildingRecord;
-import common.cn.kafei.simukraft.building.PlacedBuildingService;
 import common.cn.kafei.simukraft.city.CityManager;
 import common.cn.kafei.simukraft.city.CityMemberData;
 import common.cn.kafei.simukraft.city.CityPermissionLevel;
@@ -68,24 +67,9 @@ public final class SidebarSyncService {
             }
         }
 
-        CityBuildingStats stats;
-        try {
-            stats = CityBuildingStats.collect(level, cityId);
-        } catch (RuntimeException e) {
-            NsukAddition.LOGGER.warn("SidebarSync: CityBuildingStats.collect failed for city {}", cityId, e);
-            stats = new CityBuildingStats(0, 0, 0, 0, 0);
-        }
-
-        int res = 0;
-        try {
-            for (PlacedBuildingRecord rec : PlacedBuildingService.getBuildings(level)) {
-                if (cityId.equals(rec.cityId()) && "residential".equals(rec.category())) {
-                    res++;
-                }
-            }
-        } catch (RuntimeException e) {
-            NsukAddition.LOGGER.warn("SidebarSync: residential count failed for city {}", cityId, e);
-        }
+        // 统计从 DB 持久化缓存读取：仅在变更/超时刷新一次，未加载区块不强加载，多个玩家共享。
+        CityBuildingStats stats = CityBuildingStatsStore.get(level, cityId);
+        int res = stats.housingCount();
         long prosperity;
         try {
             prosperity = CityProsperityCache.getOrCalculate(level, cityId);
@@ -118,7 +102,7 @@ public final class SidebarSyncService {
         }
 
         PacketDistributor.sendToPlayer(player, new SidebarSyncPacket(
-                cityId, oNames, oPerms, stats.shopCount(), stats.factoryCount(), res, stats.farmCount(), stats.ranchCount(), stats.mineCount(),
+                cityId, oNames, oPerms, stats.restaurantCount(), stats.factoryCount(), res, stats.farmCount(), stats.ranchCount(), stats.mineCount(),
                 prosperity, reserveMaterials, buildTasks, financeEntries, citizens));
     }
 

@@ -8,6 +8,7 @@ import common.cn.kafei.simukraft.network.city.chunk.CityChunkSyncService;
 import common.cn.kafei.simukraft.network.hud.HudSyncService;
 import common.cn.kafei.simukraft.registry.ModBlocks;
 import common.cn.kafei.simukraft.storage.SimuSqliteStorage;
+import com.xy2407.nsukaddition.server.city.DialogNpcSpawnService;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -79,6 +80,9 @@ public final class CityCoreMoveService {
 
             CityChunkSyncService.syncToAll(level);
             HudSyncService.syncToCityGroup(level, cityId, true);
+
+            // 城市核心迁移后同步管家的游走锚点，使其巡逻跟随新核心。
+            DialogNpcSpawnService.updateCoreForMove(level, oldCorePos, newCorePos);
 
             return MoveResult.SUCCESS;
         } finally {

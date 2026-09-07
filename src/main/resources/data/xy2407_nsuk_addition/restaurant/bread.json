@@ -1,0 +1,118 @@
+{
+  "id": "bread",
+  "waiter": "and",
+  "name": "面包店",
+  "job": {
+    "id": "chef",
+    "name": "厨师",
+    "heldItem": "kaleidoscope_cookery:kitchen_shovel"
+  },
+  "points": {
+    "work": {
+      "type": "structure_pos",
+      "positions": [
+        [
+          3,
+          1,
+          4
+        ]
+      ]
+    },
+    "desk": {
+      "type": "structure_pos",
+      "positions": [
+        [9, 1, 4],
+        [6, 1, 5],
+        [6, 1, 3],
+        [3, 1, 11],
+        [4, 1, 11],
+        [8, 1, 11],
+        [8, 1, 7]
+      ]
+    }
+  },
+  "containers": {
+    "input": {
+      "type": "structure_pos",
+      "positions": [
+        [4, 1, 3],
+        [3, 1, 3]
+      ]
+    },
+    "output": {
+      "type": "structure_pos",
+      "positions": [
+        [4, 1, 3],
+        [3, 1, 3]
+      ]
+    }
+  },
+  "seats": [
+    {
+      "positions": [
+        [9, 1, 5]
+      ]
+    },
+    {
+      "positions": [
+        [9, 1, 3]
+      ]
+    },
+    {
+      "positions": [
+        [7, 1, 5]
+      ]
+    },
+    {
+      "positions": [
+        [7, 1, 3]
+      ]
+    },
+    {
+      "positions": [
+        [3, 1, 10]
+      ]
+    },
+    {
+      "positions": [
+        [5, 1, 11]
+      ]
+    },
+    {
+      "positions": [
+        [7, 1, 11]
+      ]
+    },
+    {
+      "positions": [
+        [7, 1, 7]
+      ]
+    }
+  ],
+  "cook": [
+    { "item": "bakeries:toast", "price": 4 },
+    { "item": "bakeries:cheese_cocoa_toast", "price": 7 },
+    { "item": "bakeries:bagel", "price": 4 },
+    { "item": "bakeries:whole_wheat_bagel", "price": 5 },
+    { "item": "bakeries:round_bread", "price": 5 },
+    { "item": "bakeries:brown_sugar_roll", "price": 6 },
+    { "item": "bakeries:pineapple_bun", "price": 7 },
+    { "item": "bakeries:croissant", "price": 7 },
+    { "item": "bakeries:salt_croissant", "price": 6 },
+    { "item": "bakeries:baguette", "price": 6 },
+    { "item": "bakeries:country_bread", "price": 5 },
+    { "item": "bakeries:ciabatta", "price": 5 },
+    { "item": "bakeries:focaccia", "price": 6 },
+    { "item": "bakeries:egg_tart", "price": 8 },
+    { "item": "bakeries:cup_cake", "price": 8 },
+    { "item": "bakeries:pound_cake", "price": 8 },
+    { "item": "bakeries:cake_base", "price": 5 },
+    { "item": "bakeries:red_velvet_cake_base", "price": 6 },
+    { "item": "bakeries:matcha_cake", "price": 9 },
+    { "item": "bakeries:cream_cake", "price": 9 },
+    { "item": "bakeries:tiramisu", "price": 10 },
+    { "item": "bakeries:carrot_cake", "price": 9 },
+    { "item": "bakeries:red_velvet_cake", "price": 10 },
+    { "item": "bakeries:basque_cake", "price": 10 }
+  ]
+}

@@ -1,6 +1,6 @@
 package com.xy2407.nsukaddition.client.network;
 
-import com.xy2407.nsukaddition.common.network.cooking.DiningOrderSyncPacket;
+import com.xy2407.nsukaddition.common.network.restaurant.DiningOrderSyncPacket;
 
 import java.util.Map;
 import java.util.UUID;

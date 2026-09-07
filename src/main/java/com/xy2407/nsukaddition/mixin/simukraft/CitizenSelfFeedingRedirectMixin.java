@@ -1,13 +1,13 @@
 package com.xy2407.nsukaddition.mixin.simukraft;
 
 import com.xy2407.nsukaddition.common.city.TouristNpcHelper;
-import com.xy2407.nsukaddition.common.cooking.RestaurantBoxData;
-import com.xy2407.nsukaddition.common.cooking.RestaurantBoxManager;
-import com.xy2407.nsukaddition.common.cooking.RestaurantConstants;
-import com.xy2407.nsukaddition.common.cooking.RestaurantControlBoxService;
-import com.xy2407.nsukaddition.common.cooking.RestaurantDefinition;
-import com.xy2407.nsukaddition.common.cooking.RestaurantDefinitionLoader;
-import com.xy2407.nsukaddition.common.cooking.RestaurantDiningService;
+import com.xy2407.nsukaddition.common.restaurant.RestaurantBoxData;
+import com.xy2407.nsukaddition.common.restaurant.RestaurantBoxManager;
+import com.xy2407.nsukaddition.common.restaurant.RestaurantConstants;
+import com.xy2407.nsukaddition.common.restaurant.RestaurantControlBoxService;
+import com.xy2407.nsukaddition.common.restaurant.RestaurantDefinition;
+import com.xy2407.nsukaddition.common.restaurant.RestaurantDefinitionLoader;
+import com.xy2407.nsukaddition.common.restaurant.RestaurantDiningService;
 import com.xy2407.nsukaddition.common.entity.SitEntity;
 import common.cn.kafei.simukraft.building.PlacedBuildingRecord;
 import common.cn.kafei.simukraft.citizen.CitizenData;
@@ -101,7 +101,7 @@ public class CitizenSelfFeedingRedirectMixin {
                 entity.stopRiding();
                 entity.setNoAi(false);
                 entity.getNavigation().stop();
-                if (citizen.statusLabel() != null && citizen.statusLabel().startsWith("gui.xy2407_nsuk_addition.cooking.dining.")) {
+                if (citizen.statusLabel() != null && citizen.statusLabel().startsWith("gui.xy2407_nsuk_addition.restaurant.dining.")) {
                     citizen.setStatusLabel("");
                     CitizenService.save(level, cid);
                 }

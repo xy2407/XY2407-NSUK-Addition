@@ -1,0 +1,16 @@
+{
+  "id": "simukraft:prismarine_vein",
+  "display_name": "海晶石矿脉",
+  "priority": 95,
+  "conditions": {
+    "continentalness": [-0.45, -0.11],
+    "erosion": [-1.0, 1.0],
+    "depth": [0.0, 1.0],
+    "temperature": [-1.0, 1.0],
+    "humidity": [0.0, 1.0],
+    "weirdness": [-1.0, 1.0]
+  },
+  "y_range": [-16, 16],
+  "product": "minecraft:prismarine_shard",
+  "production": { "min_amount": 2, "max_amount": 6, "period_ticks": 2400 }
+}

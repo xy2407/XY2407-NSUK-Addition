@@ -11,6 +11,7 @@
     "conformVisibility": true
   },
   "mixins": [
+    "ChunkMapAddEntityGuardMixin",
     "ScoreboardAddPlayerTeamDedupMixin",
     "WorkMaterialPolicyMixin",
     "NpcHireAssignPacketMixin",
@@ -57,10 +58,13 @@
     "simukraft.CitizenManagerTouristMixin",
     "simukraft.MedicalServiceDiseaseMixin",
     "simukraft.CitizenEntityStepUpMixin",
-    "simukraft.CitizenNavigationCollisionMixin",
     "simukraft.CitizenEntityCombatMixin",
     "CitizenWanderServiceMixin",
     "simukraft.WorkMaterialCacheWarehouseMixin",
+    "simukraft.CreatePlanningTaskPacketMixin",
+    "simukraft.PlannerMaterialScanRequestPacketMixin",
+    "simukraft.BuildingTerritoryValidatorColonyMixin",
+    "simukraft.VirtualVeinServiceMixin",
     "simukraft.NpcPregnancyServiceMixin",
     "simukraft.NpcChildbirthServiceMixin",
     "simukraft.BuilderConstructionServiceQueueMixin",
@@ -81,10 +85,12 @@
     "tide.SatchelContentsMixin",
     "tide.FishSatchelItemMixin",
     "SheepWoolRegrowMixin",
+    "IdleCitizenThrottleMixin",
     "NpcHireAccessValidatorMixin",
     "BuildingIntegrityServiceMixin",
     "PlacedBuildingServiceIndexMixin",
     "PlacedBuildingServiceProsperityMixin",
+    "BuildingBuiltTriggerMixin",
     "CommercialTradeServiceMixin",
     "CommercialDefinitionLoaderMixin",
     "CommercialTradeAccessValidatorMixin",
@@ -116,6 +122,7 @@
     "simukraft.MilkBucketPlacementServiceMixin",
     "WoodenMilkBucketUseMixin",
     "simukraft.CommercialTradePacketMixin",
+    "simukraft.CommercialTradeMenuHolderMixin",
     "simukraft.CityLevelDefinitionLoaderMixin",
     "simukraft.CityUpgradeServiceMixin",
     "simukraft.CityPopulationStatsMixin",
@@ -156,6 +163,7 @@
     "client.simukraft.SimuKraftCityHighlighterMixin",
     "client.simukraft.IndustrialControlBoxScreenOpenerMixin",
     "client.simukraft.IndustrialControlBoxAutoRestockMixin",
+    "client.simukraft.MineralDrillingAutoRestockMixin",
     "client.simukraft.CommercialControlBoxAutoRestockMixin",
     "client.simukraft.FarmlandBoxAutoRestockMixin",
     "client.ClientInputRtsMixin",
@@ -182,7 +190,10 @@
     "client.simukraft.CommercialClientTradeUiMixin",
     "client.simukraft.SimuMapManagerMixin",
     "client.simukraft.ClientboundNetworkHandlerImplMixin",
-    "client.CommercialTradeUiRootShiftMixin"
+    "client.CommercialTradeUiRootShiftMixin",
+    "client.DialogHotbarHiderMixin",
+    "client.voxy.VoxyRenderSystemShutdownSafetyMixin",
+    "client.voxy.VoxyFreedBufferBindGuardMixin"
   ]
 }
 

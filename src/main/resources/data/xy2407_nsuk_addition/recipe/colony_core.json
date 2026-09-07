@@ -2,16 +2,16 @@
   "type": "minecraft:crafting_shaped",
   "category": "building",
   "pattern": [
-    "###",
-    "#X#",
-    "###"
+    "DDD",
+    "DCD",
+    "DDD"
   ],
   "key": {
-    "#": {
-      "tag": "minecraft:planks"
+    "D": {
+      "item": "minecraft:diamond_block"
     },
-    "X": {
-      "item": "minecraft:iron_sword"
+    "C": {
+      "item": "simukraft:city_core"
     }
   },
   "result": {

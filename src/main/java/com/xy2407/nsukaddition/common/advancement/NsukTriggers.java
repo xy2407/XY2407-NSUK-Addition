@@ -17,4 +17,7 @@ public final class NsukTriggers {
 
     public static final Supplier<CityLevelUpTrigger> CITY_LEVEL_UP =
             TRIGGERS.register("city_level_up", CityLevelUpTrigger::new);
+
+    public static final Supplier<BuildingBuiltTrigger> BUILDING_BUILT =
+            TRIGGERS.register("building_built", BuildingBuiltTrigger::new);
 }

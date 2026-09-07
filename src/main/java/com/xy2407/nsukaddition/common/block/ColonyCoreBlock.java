@@ -32,6 +32,18 @@ import java.util.List;
 @SuppressWarnings("null")
 public final class ColonyCoreBlock extends Block {
 
+    /** 迁移(旧核心)时标记的原位置，onRemove 据此跳过保护还原，避免迁移后旧方块被复原。 */
+    private static final ThreadLocal<BlockPos> MOVING_FROM = new ThreadLocal<>();
+
+    /** setMovingFrom: 迁移附属地核心时登记原核心位置(from=null 清除)。 */
+    public static void setMovingFrom(BlockPos from) {
+        if (from == null) {
+            MOVING_FROM.remove();
+        } else {
+            MOVING_FROM.set(from);
+        }
+    }
+
     public ColonyCoreBlock() {
         super(BlockBehaviour.Properties.of().mapColor(MapColor.METAL).strength(1.0F)
                 .explosionResistance(3600000.0F).sound(SoundType.METAL));
@@ -68,6 +80,11 @@ public final class ColonyCoreBlock extends Block {
 
     @Override
     protected void onRemove(BlockState state, Level level, BlockPos pos, BlockState newState, boolean movedByPiston) {
+        // 迁移附属地核心时跳过保护还原，避免旧核心被 setBlock 移除后再度放回。
+        BlockPos movingFrom = MOVING_FROM.get();
+        if (movingFrom != null && movingFrom.equals(pos)) {
+            return;
+        }
         super.onRemove(state, level, pos, newState, movedByPiston);
         if (!(level instanceof ServerLevel serverLevel) || newState.is(state.getBlock())) {
             return;

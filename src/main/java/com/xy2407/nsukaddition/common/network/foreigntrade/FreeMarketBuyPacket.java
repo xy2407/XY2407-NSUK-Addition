@@ -27,6 +27,7 @@ import net.neoforged.neoforge.network.PacketDistributor;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 
 /** 自由市场购买网络包，客户端发送购买请求，服务端扣款、发货、删除上架记录。 */
@@ -53,8 +54,12 @@ public record FreeMarketBuyPacket(BlockPos boxPos, long listingId) implements Cu
         if (!(ctx.player() instanceof ServerPlayer player) || !(player.level() instanceof ServerLevel level)) return;
         if (!player.blockPosition().closerThan(p.boxPos(), 64.0D)) return;
 
-        UUID buyerCityId = CityChunkManager.get(level).getChunkOwner(
-                new net.minecraft.world.level.ChunkPos(p.boxPos()).toLong());
+        UUID buyerCityId = CityService.findPlayerCity(level, player.getUUID())
+                .map(city -> city.cityId())
+                .or(() -> Optional.ofNullable(
+                        CityChunkManager.get(level).getChunkOwner(
+                                new net.minecraft.world.level.ChunkPos(p.boxPos()).toLong())))
+                .orElse(null);
         if (buyerCityId == null) return;
         if (!CityService.hasPermission(level, buyerCityId, player.getUUID(), CityPermissionLevel.OFFICIAL)) return;
 

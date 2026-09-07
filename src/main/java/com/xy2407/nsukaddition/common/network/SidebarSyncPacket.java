@@ -18,7 +18,7 @@ public record SidebarSyncPacket(
         UUID cityId,
         List<String> officerNames,
         List<String> officerPerms,
-        int shopCount,
+        int restaurantCount,
         int factoryCount,
         int residenceCount,
         int farmCount,
@@ -84,7 +84,7 @@ public record SidebarSyncPacket(
         if (p.cityId != null) b.writeUUID(p.cityId);
         writeStrList(b, p.officerNames);
         writeStrList(b, p.officerPerms);
-        b.writeInt(p.shopCount);
+        b.writeInt(p.restaurantCount);
         b.writeInt(p.factoryCount);
         b.writeInt(p.residenceCount);
         b.writeInt(p.farmCount);
@@ -129,7 +129,7 @@ public record SidebarSyncPacket(
         UUID cityId = b.readBoolean() ? b.readUUID() : null;
         List<String> officerNames = readStrList(b);
         List<String> officerPerms = readStrList(b);
-        int shopCount = b.readInt();
+        int restaurantCount = b.readInt();
         int factoryCount = b.readInt();
         int residenceCount = b.readInt();
         int farmCount = b.readInt();
@@ -177,7 +177,7 @@ public record SidebarSyncPacket(
 
         return new SidebarSyncPacket(
                 cityId, officerNames, officerPerms,
-                shopCount, factoryCount, residenceCount, farmCount, ranchCount, mineCount, prosperity,
+                restaurantCount, factoryCount, residenceCount, farmCount, ranchCount, mineCount, prosperity,
                 reserveMaterials, buildTasks, financeEntries, citizens);
     }
 

@@ -1,6 +1,8 @@
 package com.xy2407.nsukaddition.mixin;
 
+import com.xy2407.nsukaddition.common.city.CityBuildingStatsStore;
 import com.xy2407.nsukaddition.common.city.CityManagerIndexAccessor;
+import com.xy2407.nsukaddition.server.city.DialogNpcSpawnService;
 import com.xy2407.nsukaddition.server.city.TownImmigrationService;
 import com.xy2407.nsukaddition.server.city.VillageTourismService;
 import common.cn.kafei.simukraft.city.CityChunkManager;
@@ -44,5 +46,9 @@ public class CityManagerMixin implements CityManagerIndexAccessor.Accessor {
         if (level == null) return;
         VillageTourismService.onCityDeleted(cityId);
         TownImmigrationService.onCityDeleted(level, cityId);
+        // 城市删除后清掉失去归属的对话管家，避免其残留且对话信息错误。
+        DialogNpcSpawnService.removeOrphans(level);
+        // 清空该城市的持久化建筑统计，防止旧数据残留导致串城。
+        CityBuildingStatsStore.delete(level, cityId);
     }
 }

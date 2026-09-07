@@ -1,12 +1,12 @@
 package com.xy2407.nsukaddition.common.compat.maid;
 
 import com.xy2407.nsukaddition.common.breeding.BreedingInventoryHelper;
-import com.xy2407.nsukaddition.common.cooking.CookingWorkService;
-import com.xy2407.nsukaddition.common.cooking.RestaurantBoxData;
-import com.xy2407.nsukaddition.common.cooking.RestaurantBoxManager;
-import com.xy2407.nsukaddition.common.cooking.RestaurantControlBoxService;
-import com.xy2407.nsukaddition.common.cooking.RestaurantDefinition;
-import com.xy2407.nsukaddition.common.cooking.RestaurantDefinitionLoader;
+import com.xy2407.nsukaddition.common.restaurant.CookingWorkService;
+import com.xy2407.nsukaddition.common.restaurant.RestaurantBoxData;
+import com.xy2407.nsukaddition.common.restaurant.RestaurantBoxManager;
+import com.xy2407.nsukaddition.common.restaurant.RestaurantControlBoxService;
+import com.xy2407.nsukaddition.common.restaurant.RestaurantDefinition;
+import com.xy2407.nsukaddition.common.restaurant.RestaurantDefinitionLoader;
 import common.cn.kafei.simukraft.building.PlacedBuildingRecord;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;

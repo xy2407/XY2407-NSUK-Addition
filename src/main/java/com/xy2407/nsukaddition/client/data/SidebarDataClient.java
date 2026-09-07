@@ -53,7 +53,7 @@ public final class SidebarDataClient {
         }
 
         SidebarDataSnapshot.set(new SidebarDataSnapshot(p.cityId(), officers,
-                p.shopCount(), p.factoryCount(), p.residenceCount(), p.farmCount(), p.ranchCount(), p.mineCount(),
+                p.restaurantCount(), p.factoryCount(), p.residenceCount(), p.farmCount(), p.ranchCount(), p.mineCount(),
                 p.prosperity(),
                 reserveMaterials, tasks, financeRecords, citizens));
     }

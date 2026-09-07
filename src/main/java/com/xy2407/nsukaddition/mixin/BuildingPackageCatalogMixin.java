@@ -35,8 +35,8 @@ public class BuildingPackageCatalogMixin {
             extended.add("breeding");
             changed = true;
         }
-        if (!extended.contains("cooking")) {
-            extended.add("cooking");
+        if (!extended.contains("restaurant")) {
+            extended.add("restaurant");
             changed = true;
         }
         if (!extended.contains("foreign_trade")) {
@@ -53,8 +53,8 @@ public class BuildingPackageCatalogMixin {
         if (category == null) return;
         if ("breeding".equalsIgnoreCase(category)) {
             cir.setReturnValue("breeding");
-        } else if ("cooking".equalsIgnoreCase(category)) {
-            cir.setReturnValue("cooking");
+        } else if ("restaurant".equalsIgnoreCase(category)) {
+            cir.setReturnValue("restaurant");
         } else if ("foreign_trade".equalsIgnoreCase(category) || "foreigntrade".equalsIgnoreCase(category)) {
             cir.setReturnValue("foreign_trade");
         }

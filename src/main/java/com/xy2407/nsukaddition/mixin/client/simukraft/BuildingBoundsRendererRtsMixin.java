@@ -2,6 +2,9 @@ package com.xy2407.nsukaddition.mixin.client.simukraft;
 
 import client.cn.kafei.simukraft.client.buildbox.BuildingBoundsRenderer;
 import client.cn.kafei.simukraft.client.buildbox.BuildingPreviewManager;
+import client.cn.kafei.simukraft.client.city.ClientCityChunkCache;
+import com.xy2407.nsukaddition.client.city.OwnCityClientCache;
+import com.xy2407.nsukaddition.client.colony.ColonyChunkClientCache;
 import com.xy2407.nsukaddition.client.rts.RtsBuildingListHudLayer;
 import com.xy2407.nsukaddition.client.rts.RtsBuildingPlacementManager;
 import com.xy2407.nsukaddition.client.rts.RtsModeManager;
@@ -15,6 +18,10 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.ModifyArg;
 import org.spongepowered.asm.mixin.injection.Redirect;
+
+import java.util.HashSet;
+import java.util.Set;
+import java.util.UUID;
 
 /**
  * 复用 simukraft 的 BuildingBoundsRenderer 渲染管线（已在 RTS 独立相机视角验证可正常渲染），
@@ -75,5 +82,32 @@ public abstract class BuildingBoundsRendererRtsMixin {
         double entryX = (entry.minPos().getX() + entry.maxPos().getX() + 1) / 2.0D;
         double entryZ = (entry.minPos().getZ() + entry.maxPos().getZ() + 1) / 2.0D;
         return Math.abs(centerX - entryX) < 1.0D && Math.abs(centerZ - entryZ) < 1.0D;
+    }
+
+    /**
+     * 城市边界渲染与建筑放置判定改用"自己城市 + 自己殖民地(附属地)"的区块，
+     * 避免打开他人城市核心后 simukraft 全局 currentCityId 被污染；未入城时回退原逻辑。
+     */
+    @Redirect(method = {"renderCityBoundary", "isEntireBuildingInCityTerritory"},
+            at = @At(value = "INVOKE",
+                    target = "Lclient/cn/kafei/simukraft/client/city/ClientCityChunkCache;getCurrentCityChunks()Ljava/util/Set;"),
+            remap = false, require = 1)
+    private static Set<Long> nsuk$ownTerritoryChunks(ClientCityChunkCache cache) {
+        UUID ownCityId = OwnCityClientCache.getOwnCityId();
+        if (ownCityId == null) {
+            return cache.getCurrentCityChunks();
+        }
+        // 站在附属地里时，ownCityId 会是"殖民地 id"而非父城市 id——取父城市作为归属判定基准，否则边界/殖民地匹配为空。
+        ColonyChunkClientCache.ColonyEntry colony = ColonyChunkClientCache.getInstance().getColonyEntry(ownCityId);
+        if (colony != null && colony.parentCityId() != null) {
+            ownCityId = colony.parentCityId();
+        }
+        Set<Long> own = cache.getAllCityChunks().get(ownCityId);
+        Set<Long> territory = new HashSet<>();
+        if (own != null) {
+            territory.addAll(own);
+        }
+        territory.addAll(ColonyChunkClientCache.getInstance().chunksOfParentCity(ownCityId));
+        return territory.isEmpty() ? cache.getCurrentCityChunks() : territory;
     }
 }

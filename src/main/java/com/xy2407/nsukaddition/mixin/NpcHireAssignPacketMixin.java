@@ -1,11 +1,11 @@
 package com.xy2407.nsukaddition.mixin;
 
-import com.xy2407.nsukaddition.common.cooking.RestaurantBoxData;
-import com.xy2407.nsukaddition.common.cooking.RestaurantBoxManager;
-import com.xy2407.nsukaddition.common.cooking.RestaurantConstants;
-import com.xy2407.nsukaddition.common.cooking.RestaurantControlBoxService;
-import com.xy2407.nsukaddition.common.cooking.RestaurantDefinition;
-import com.xy2407.nsukaddition.common.cooking.RestaurantDefinitionLoader;
+import com.xy2407.nsukaddition.common.restaurant.RestaurantBoxData;
+import com.xy2407.nsukaddition.common.restaurant.RestaurantBoxManager;
+import com.xy2407.nsukaddition.common.restaurant.RestaurantConstants;
+import com.xy2407.nsukaddition.common.restaurant.RestaurantControlBoxService;
+import com.xy2407.nsukaddition.common.restaurant.RestaurantDefinition;
+import com.xy2407.nsukaddition.common.restaurant.RestaurantDefinitionLoader;
 import com.xy2407.nsukaddition.common.registry.ModBlocks;
 import common.cn.kafei.simukraft.network.npc.hire.NpcHireAssignPacket;
 import common.cn.kafei.simukraft.network.toast.InfoToastService;
@@ -42,12 +42,12 @@ public abstract class NpcHireAssignPacketMixin {
             return;
         }
         if (!definition.isNsukWaiter()) {
-            InfoToastService.warning(player, Component.translatable("message.xy2407_nsuk_addition.cooking.waiter_maid_only"));
+            InfoToastService.warning(player, Component.translatable("message.xy2407_nsuk_addition.restaurant.waiter_maid_only"));
             ci.cancel();
             return;
         }
         if (data != null && !data.maidWaiters().isEmpty()) {
-            InfoToastService.warning(player, Component.translatable("message.xy2407_nsuk_addition.cooking.waiter_occupied_by_maid"));
+            InfoToastService.warning(player, Component.translatable("message.xy2407_nsuk_addition.restaurant.waiter_occupied_by_maid"));
             ci.cancel();
         }
     }

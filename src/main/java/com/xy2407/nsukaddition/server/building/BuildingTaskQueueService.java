@@ -236,8 +236,13 @@ public final class BuildingTaskQueueService {
         startTaskIfIdle(level, tracked.withStatus(BuildingTaskStatus.BUILDING));
     }
 
-    private static void startTaskIfIdle(ServerLevel level, BuildingTaskData task) {
+    static void startTaskIfIdle(ServerLevel level, BuildingTaskData task) {
         if (task == null || task.citizenId() == null) {
+            return;
+        }
+        // 暂停中的任务禁止被任何重开路径(排队 tick / ensureTracking 等)重启，保证"暂停一次即生效"
+        if (task.cityId() != null
+                && BuildTaskTrackedState.isPaused(level, task.cityId(), task.citizenId())) {
             return;
         }
         if (hasRunningTask(level, task.buildBoxPos())) {

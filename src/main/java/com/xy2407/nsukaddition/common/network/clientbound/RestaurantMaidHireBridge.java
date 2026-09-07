@@ -1,6 +1,6 @@
 package com.xy2407.nsukaddition.common.network.clientbound;
 
-import com.xy2407.nsukaddition.common.network.cooking.RestaurantMaidHireResponsePacket;
+import com.xy2407.nsukaddition.common.network.restaurant.RestaurantMaidHireResponsePacket;
 
 import java.util.function.Consumer;
 

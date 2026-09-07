@@ -26,16 +26,16 @@ import com.xy2407.nsukaddition.common.network.breeding.BreedingControlBoxDemolis
 import com.xy2407.nsukaddition.common.network.breeding.BreedingControlBoxOpenRequestPacket;
 import com.xy2407.nsukaddition.common.network.breeding.BreedingControlBoxOpenResponsePacket;
 import com.xy2407.nsukaddition.common.network.breeding.BreedingControlBoxViewUpdatePacket;
-import com.xy2407.nsukaddition.common.network.cooking.RestaurantControlBoxOpenRequestPacket;
-import com.xy2407.nsukaddition.common.network.cooking.RestaurantControlBoxOpenResponsePacket;
-import com.xy2407.nsukaddition.common.network.cooking.RestaurantControlBoxActionPacket;
-import com.xy2407.nsukaddition.common.network.cooking.RestaurantControlBoxDemolishPacket;
-import com.xy2407.nsukaddition.common.network.cooking.RestaurantMenuSelectPacket;
-import com.xy2407.nsukaddition.common.network.cooking.RestaurantControlBoxViewUpdatePacket;
-import com.xy2407.nsukaddition.common.network.cooking.DiningOrderSyncPacket;
-import com.xy2407.nsukaddition.common.network.cooking.RestaurantMaidHireRequestPacket;
-import com.xy2407.nsukaddition.common.network.cooking.RestaurantMaidHireResponsePacket;
-import com.xy2407.nsukaddition.common.network.cooking.RestaurantMaidHireActionPacket;
+import com.xy2407.nsukaddition.common.network.restaurant.RestaurantControlBoxOpenRequestPacket;
+import com.xy2407.nsukaddition.common.network.restaurant.RestaurantControlBoxOpenResponsePacket;
+import com.xy2407.nsukaddition.common.network.restaurant.RestaurantControlBoxActionPacket;
+import com.xy2407.nsukaddition.common.network.restaurant.RestaurantControlBoxDemolishPacket;
+import com.xy2407.nsukaddition.common.network.restaurant.RestaurantMenuSelectPacket;
+import com.xy2407.nsukaddition.common.network.restaurant.RestaurantControlBoxViewUpdatePacket;
+import com.xy2407.nsukaddition.common.network.restaurant.DiningOrderSyncPacket;
+import com.xy2407.nsukaddition.common.network.restaurant.RestaurantMaidHireRequestPacket;
+import com.xy2407.nsukaddition.common.network.restaurant.RestaurantMaidHireResponsePacket;
+import com.xy2407.nsukaddition.common.network.restaurant.RestaurantMaidHireActionPacket;
 import com.xy2407.nsukaddition.common.network.AutoRestockStatePacket;
 import com.xy2407.nsukaddition.common.network.AutoRestockTogglePacket;
 import com.xy2407.nsukaddition.common.network.foreigntrade.ForeignTradeControlBoxOpenRequestPacket;
@@ -62,6 +62,8 @@ import com.xy2407.nsukaddition.common.network.foreigntrade.EstablishDiplomacyReq
 import com.xy2407.nsukaddition.common.network.citycore.CityCoreRotatePacket;
 import com.xy2407.nsukaddition.common.network.citycore.CityGhostRequestPacket;
 import com.xy2407.nsukaddition.common.network.citycore.CityGhostSyncPacket;
+import com.xy2407.nsukaddition.common.network.dialog.DialogNpcOpenPacket;
+import com.xy2407.nsukaddition.common.network.dialog.DialogNpcOptionPacket;
 import com.xy2407.nsukaddition.common.network.rts.RtsAttackTargetClearPacket;
 import com.xy2407.nsukaddition.common.network.rts.RtsAttackTargetPacket;
 import com.xy2407.nsukaddition.common.network.rts.RtsFakePlayerSpawnPacket;
@@ -191,5 +193,7 @@ public final class ModNetwork {
         r.playToClient(RtsBuildingBoundsClearPacket.TYPE, RtsBuildingBoundsClearPacket.STREAM_CODEC, RtsBuildingBoundsClearPacket::handle);
         r.playToServer(RtsBuildingMovePacket.TYPE, RtsBuildingMovePacket.STREAM_CODEC, RtsBuildingMovePacket::handle);
         r.playToClient(RtsStartBuildingResultPacket.TYPE, RtsStartBuildingResultPacket.STREAM_CODEC, RtsStartBuildingResultPacket::handle);
+        r.playToClient(DialogNpcOpenPacket.TYPE, DialogNpcOpenPacket.STREAM_CODEC, DialogNpcOpenPacket::handle);
+        r.playToServer(DialogNpcOptionPacket.TYPE, DialogNpcOptionPacket.STREAM_CODEC, DialogNpcOptionPacket::handle);
     }
 }

@@ -1,0 +1,917 @@
+package com.xy2407.nsukaddition.client.modpack;
+
+import com.mojang.blaze3d.platform.NativeImage;
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.xy2407.nsukaddition.NsukAddition;
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.renderer.texture.DynamicTexture;
+import net.minecraft.network.chat.Component;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.util.FormattedCharSequence;
+import net.neoforged.api.distmarker.Dist;
+import net.neoforged.api.distmarker.OnlyIn;
+import net.neoforged.fml.ModList;
+import net.neoforged.fml.loading.FMLPaths;
+
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
+/** 整合包信息界面：黑底帧上随机漂移且四边反弹的 mod 图标卡片，可拖拽平移、Ctrl+滚轮居中缩放、悬停暂停并显示名称、拖动甩动、点开资源管理器。 */
+@OnlyIn(Dist.CLIENT)
+public class ModpackInfoScreen extends Screen {
+
+    private static final int CARD_W = 25;
+    private static final int CARD_H = 25;
+    private static final int CARD_PAD = 4;
+    private static final float FRAME_SCALE = 0.78F;
+    private static final double MIN_ZOOM = 0.3D;
+    private static final double MAX_ZOOM = 3.0D;
+    private static final int FIT_EDGE = 16;
+    private static final int FRAME_MARGIN = 12;
+    private static final int FLICK_SCALE = 40;
+    private static final int FRAME_T = 3;
+    private static final int FRAME_LINE = 2;
+    private static final int BG_BASE = 0xFF444444;
+    private static final int PANEL_PAD = 10;
+    private static final int INFO_GAP = 8;
+    private static final int INFO_BAR_H = 76;
+    private static final int LOG_WIDTH = 210;
+    private static final int SCROLLBAR_W = 6;
+    private static final int TEXT_MUTED = 0xFFBDBDBD;
+    private static final int TEXT_LINK = 0xFF7FDBFF;
+    private static final int TEXT_LINK_HOVER = 0xFFFFFFFF;
+    private static final int TEXT_TITLE = 0xFF80E0FF;
+    private static final String UPDATE_URL = "https://pan.quark.cn/s/6d1e155ba656";
+    private static final String SPONSOR_URL = "https://www.ifdian.net/a/xy2407";
+    private static final ResourceLocation BG_TITLE =
+            ResourceLocation.fromNamespaceAndPath("xy2407_nsuk_addition", "textures/background/day1.png");
+
+    private static final String[] DEFAULT_CHANGELOG_LINES = {
+            "# [v1.0.0]",
+            "- 【养殖】养殖控制箱：管理动物与鱼类繁殖的多方块控制器",
+            "- 【养殖】动态鱼卵方块，支持多种鱼类孵化",
+            "- 【养殖】鱼类繁殖兼容 LetFishLove / Tide / Aquaculture",
+            "- 【养殖】繁殖配方由 JSON 定义加载",
+            "- 【餐厅】餐厅控制箱与多设备菜系（厨锅、蒸笼、烤炉等）",
+            "- 【餐厅】厨师烹饪工作与用餐服务",
+            "- 【餐厅】可雇佣女仆服务员（touhou little maid 兼容）",
+            "- 【城市】城市多级升级系统，统计建筑、扣减仓库与玩家资源",
+            "- 【城市】城市繁荣度缓存",
+            "- 【殖民地】附属地核心方块，创建与销毁附属领地",
+            "- 【殖民地】附属地领地购买、出售与放弃，SQLite 持久化",
+            "- 【外贸】外贸控制箱与外交关系系统",
+            "- 【外贸】自由贸易市场（挂单、购买、收藏、仓库）",
+            "- 【外贸】村庄城市等级与繁荣度联动",
+            "- 【RTS】上帝视角指挥模式，可点选玩家假人下达移动、工作或攻击命令",
+            "- 【RTS】RTS 模式建筑平移与放置",
+            "- 【捕捉】生物捕获器，可捕捉与释放实体",
+            "- 【自动补货】工业/商业/农田/钻井控制箱自动补货",
+            "- 【自动补货】补货配置 SQLite 持久化存储",
+            "- 【城市核心】城市核心建筑按图纸旋转值投影放置",
+            "- 【农田】高杆作物、葡萄藤、葡萄灌木、水稻等扩展作物",
+            "- 【农田】右键一键收获兼容作物",
+            "- 【农田】兼容 Farmers Delight、Farm & Charm 等模组作物",
+            "- 【移民】城镇移民系统（申请、审批、SQLite 持久化队列）",
+            "- 【旅游】游客系统，游客到访并在餐厅用餐",
+            "- 【对话】对话 NPC 与对话界面",
+            "- 【侧边栏】信息侧边栏 HUD、建筑统计与弹窗动画",
+            "- 【战斗】市民战斗服务与枪械友伤判定（Tacz 兼容）",
+            "- 【流体】木桶装牛奶与凝固牛奶方块",
+            "- 【经济】金币掉落注入与金币存入",
+            "- 【其他】首次登录赠送物品",
+            "- 【兼容】附属地领地 Xaero 世界地图高亮（蓝=自己，红=他人）",
+            "- 【兼容】Jade、Vinery、Kaleidoscope、Brewery、MysticsBiomes 等模组整合",
+            "- 【标题】主界面新增整合包信息入口（mod 卡片、更新日志）"
+    };
+
+    private static String[] changelogLines = null;
+
+    private int worldW;
+    private int worldH;
+    private double camX;
+    private double camY;
+    private double zoom = 1.0D;
+    private final List<Card> cards = new ArrayList<>();
+    private final List<ResourceLocation> registeredIcons = new ArrayList<>();
+
+    // 面板几何（世界坐标）
+    private int panelX0;
+    private int panelX1;
+    private int panelTop;
+    private int panelBottom;
+    private int barX0;
+    private int barX1;
+    private int barY0;
+    private int barY1;
+    private int logX0;
+    private int logX1;
+    private int logY0;
+    private int logY1;
+
+    // 条形框内两个可点击链接的世界矩形
+    private int updateLinkX;
+    private int updateLinkY;
+    private int updateLinkW;
+    private int updateLinkH;
+    private int sponsorLinkX;
+    private int sponsorLinkY;
+    private int sponsorLinkW;
+    private int sponsorLinkH;
+
+    // 更新日志滚动状态
+    private double logScroll;
+    private int logMaxScroll;
+    private boolean logDrag;
+    private double logGrabOffset;
+    // 更新日志按视口宽度折行后的显示行，供绘制与滚动条复用
+    private List<FormattedCharSequence> logDisplayLines = List.of();
+
+    private Card hoveredCard;
+    private Card grabbed;
+    private boolean panning;
+    private double dragTotal;
+    private double smoothedVx;
+    private double smoothedVy;
+
+    public ModpackInfoScreen() {
+        super(Component.literal("modpack_info"));
+    }
+
+    /** 单卡片：世界坐标、速度、尺寸、图标纹理与 mod 信息；px/py 为上一 tick 位置用于插值。 */
+    private static final class Card {
+        double x;
+        double y;
+        double px;
+        double py;
+        double vx;
+        double vy;
+        final double normalMagX;
+        final double normalMagY;
+        final int w;
+        final int h;
+        final IconTex icon;
+        final Component name;
+
+        Card(double x, double y, int w, int h, IconTex icon, Component name,
+             double normalMagX, double normalMagY) {
+            this.px = x;
+            this.py = y;
+            this.x = x;
+            this.y = y;
+            this.w = w;
+            this.h = h;
+            this.icon = icon;
+            this.name = name;
+            this.normalMagX = normalMagX;
+            this.normalMagY = normalMagY;
+        }
+    }
+
+    /** 已注册的动态纹理及其原始像素尺寸。 */
+    private record IconTex(ResourceLocation loc, int width, int height) {
+    }
+
+    @Override
+    public boolean isPauseScreen() {
+        return true;
+    }
+
+    private static String[] getChangelogLines() {
+        String[] cached = changelogLines;
+        if (cached != null) {
+            return cached;
+        }
+        List<String> out = new ArrayList<>();
+        Path path = FMLPaths.GAMEDIR.get().resolve("xy2407_nsuk_addition/changelog.md");
+        try {
+            if (Files.isRegularFile(path)) {
+                List<String> lines = Files.readAllLines(path, StandardCharsets.UTF_8);
+                for (String line : lines) {
+                    if (!line.isBlank()) {
+                        out.add(line);
+                    }
+                }
+            }
+        } catch (Exception e) {
+            NsukAddition.LOGGER.warn("nsuk_addition: Failed to read changelog md, use default", e);
+        }
+        changelogLines = (!out.isEmpty()) ? out.toArray(new String[0]) : DEFAULT_CHANGELOG_LINES;
+        return changelogLines;
+    }
+
+    private static boolean isVersionHeader(String line) {
+        String trimmed = line.trim();
+        return !trimmed.isEmpty() && trimmed.charAt(0) == '#';
+    }
+
+    private static String stripHeader(String line) {
+        StringBuilder sb = new StringBuilder(line);
+        int i = 0;
+        while (i < sb.length() && (sb.charAt(i) == '#' || sb.charAt(i) == ' ')) {
+            i++;
+        }
+        return sb.substring(i).trim();
+    }
+
+    @Override
+    public void init() {
+        computeGeometry();
+        fitZoomToWorld();
+        centerView();
+        clampCamera();
+        cards.clear();
+        buildCards();
+    }
+
+    /** 初始缩放：整个世界(主框/条形框/日志框)整体适配屏幕并四周留白，默认视角即可全览居中。 */
+    private void fitZoomToWorld() {
+        double availW = Math.max(1, this.width - FIT_EDGE * 2);
+        double availH = Math.max(1, this.height - FIT_EDGE * 2);
+        double fit = Math.min(availW / worldW, availH / worldH);
+        zoom = Math.max(MIN_ZOOM, Math.min(MAX_ZOOM, fit));
+    }
+
+    /** 依据屏幕尺寸计算世界尺寸与条形框/主框/日志框的世界几何。 */
+    private void computeGeometry() {
+        int lh = minecraft.font.lineHeight;
+        int rowGap = 4;
+        int baseH = PANEL_PAD * 2 + lh * 5 + rowGap * 4;   // 条形框左侧 5 字段所需高度
+        int rightH = PANEL_PAD * 2 + lh * 3;               // 条形框右侧"特别贡献"所需高度
+        int barH = Math.max(baseH, rightH);
+        int logW = Math.min(LOG_WIDTH, (int) (this.width * 0.24D));
+        worldW = (int) (this.width * FRAME_SCALE) + logW + INFO_GAP + PANEL_PAD;
+        worldH = (int) (this.height * FRAME_SCALE) + barH + INFO_GAP + PANEL_PAD;
+        panelX0 = PANEL_PAD;
+        panelX1 = worldW - PANEL_PAD - logW - INFO_GAP;
+        panelTop = PANEL_PAD + barH + INFO_GAP;
+        panelBottom = worldH - PANEL_PAD;
+        barX0 = PANEL_PAD;
+        barX1 = panelX1;
+        barY0 = PANEL_PAD;
+        barY1 = PANEL_PAD + barH;
+        logX0 = panelX1 + INFO_GAP;
+        logX1 = worldW - PANEL_PAD;
+        logY0 = PANEL_PAD;
+        logY1 = worldH - PANEL_PAD;
+        logScroll = 0.0D;
+        logMaxScroll = 0;
+    }
+
+    @Override
+    public void onClose() {
+        Minecraft mc = Minecraft.getInstance();
+        for (ResourceLocation loc : registeredIcons) {
+            mc.getTextureManager().release(loc);
+        }
+        registeredIcons.clear();
+        super.onClose();
+    }
+
+    /** 默认视角：将世界居中显示在屏幕内（考虑当前缩放）。 */
+    private void centerView() {
+        camX = (worldW - this.width / zoom) / 2.0D;
+        camY = (worldH - this.height / zoom) / 2.0D;
+    }
+
+    /** 相机钳制：世界比视口大时相机可在 [0, world-view] 间自由平移（四边都可贴边）；世界小于视口时保持居中。 */
+    private void clampCamera() {
+        double viewW = this.width / zoom;
+        double viewH = this.height / zoom;
+        if (worldW > viewW) {
+            camX = Math.max(0, Math.min(camX, worldW - viewW));
+        } else {
+            camX = (worldW - viewW) / 2.0D;
+        }
+        if (worldH > viewH) {
+            camY = Math.max(0, Math.min(camY, worldH - viewH));
+        } else {
+            camY = (worldH - viewH) / 2.0D;
+        }
+    }
+
+    private void buildCards() {
+        var mods = ModList.get().getMods();
+        Random rnd = new Random();
+        for (int i = 0; i < mods.size(); i++) {
+            var info = mods.get(i);
+            String modId = info.getModId();
+            IconTex icon = registerIcon(i, modId, info.getLogoFile().orElse(null));
+            Component name = Component.literal(firstNonBlank(info.getDisplayName(), modId));
+            double minCX = panelX0 + FRAME_MARGIN;
+            double minCY = panelTop + FRAME_MARGIN;
+            double maxCX = Math.max(minCX, panelX1 - CARD_W - FRAME_MARGIN);
+            double maxCY = Math.max(minCY, panelBottom - CARD_H - FRAME_MARGIN);
+            double x = minCX + rnd.nextDouble() * (maxCX - minCX);
+            double y = minCY + rnd.nextDouble() * (maxCY - minCY);
+            double angle = rnd.nextDouble() * Math.PI * 2.0D;
+            double speed = 30.0D + rnd.nextDouble() * 60.0D;
+            double vx = Math.cos(angle) * speed;
+            double vy = Math.sin(angle) * speed;
+            Card card = new Card(x, y, CARD_W, CARD_H, icon, name, Math.abs(vx), Math.abs(vy));
+            card.vx = vx;
+            card.vy = vy;
+            cards.add(card);
+        }
+    }
+
+    private static String firstNonBlank(String a, String b) {
+        return a != null && !a.isBlank() ? a : (b != null ? b : "");
+    }
+
+    /** 尝试加载 mod 图标并注册为动态纹理；失败返回 null（卡片仅留边框）。 */
+    private IconTex registerIcon(int index, String modId, String logo) {
+        NativeImage img = loadIcon(modId, logo);
+        if (img == null) {
+            return null;
+        }
+        ResourceLocation loc = ResourceLocation.fromNamespaceAndPath("xy2407_nsuk_addition",
+                "modpack_mod_icon/" + index);
+        Minecraft mc = Minecraft.getInstance();
+        try {
+            mc.getTextureManager().register(loc, new DynamicTexture(img));
+            registeredIcons.add(loc);
+            return new IconTex(loc, img.getWidth(), img.getHeight());
+        } catch (Throwable t) {
+            img.close();
+            return null;
+        }
+    }
+
+    private NativeImage loadIcon(String modId, String logo) {
+        Minecraft mc = Minecraft.getInstance();
+        NativeImage img = null;
+        if (logo != null && !logo.isBlank()) {
+            img = readFromModJar(modId, logo);
+            if (img == null) {
+                img = openImage(mc, ResourceLocation.fromNamespaceAndPath("modlogo", modId + "/" + logo));
+            }
+        }
+        if (img == null) {
+            img = openImage(mc, ResourceLocation.fromNamespaceAndPath(modId, "icon.png"));
+        }
+        if (img == null) {
+            img = openImage(mc, ResourceLocation.fromNamespaceAndPath(modId, "textures/icon.png"));
+        }
+        return img;
+    }
+
+    /** 从 mod 所属 jar 内按 logoFile 路径读取图标，避免只依赖资源包路径。 */
+    private NativeImage readFromModJar(String modId, String logo) {
+        try {
+            var mf = ModList.get().getModFileById(modId);
+            if (mf == null) {
+                return null;
+            }
+            Path p = mf.getFile().getSecureJar().getPath(logo);
+            if (p == null || !Files.exists(p)) {
+                return null;
+            }
+            try (InputStream in = Files.newInputStream(p)) {
+                return NativeImage.read(in);
+            }
+        } catch (Throwable t) {
+            return null;
+        }
+    }
+
+    private NativeImage openImage(Minecraft mc, ResourceLocation loc) {
+        try {
+            var res = mc.getResourceManager().getResource(loc);
+            if (res.isEmpty()) {
+                return null;
+            }
+            try (var in = res.get().open()) {
+                return NativeImage.read(in);
+            }
+        } catch (Throwable t) {
+            return null;
+        }
+    }
+
+    /** 屏幕坐标 -> 世界坐标的 X。 */
+    private double toWorldX(double screenX) {
+        return camX + screenX / zoom;
+    }
+
+    /** 屏幕坐标 -> 世界坐标的 Y。 */
+    private double toWorldY(double screenY) {
+        return camY + screenY / zoom;
+    }
+
+    /** 命中检测：返回最上层包含该世界点的卡片，无则 null。 */
+    private Card hitTest(double screenX, double screenY) {
+        double wx = toWorldX(screenX);
+        double wy = toWorldY(screenY);
+        for (int i = cards.size() - 1; i >= 0; i--) {
+            Card c = cards.get(i);
+            if (wx >= c.x && wx <= c.x + c.w && wy >= c.y && wy <= c.y + c.h) {
+                return c;
+            }
+        }
+        return null;
+    }
+
+    private void clampCard(Card card) {
+        double minX = panelX0 + FRAME_MARGIN;
+        double minY = panelTop + FRAME_MARGIN;
+        card.x = Math.max(minX, Math.min(card.x, panelX1 - card.w - FRAME_MARGIN));
+        card.y = Math.max(minY, Math.min(card.y, panelBottom - card.h - FRAME_MARGIN));
+    }
+
+    @Override
+    public void tick() {
+        for (Card card : cards) {
+            // 被抓取的卡片与悬停的卡片暂停自主移动，位置同步为当前值，渲染无需插值
+            if (card == grabbed || card == hoveredCard) {
+                card.px = card.x;
+                card.py = card.y;
+                continue;
+            }
+            card.px = card.x;
+            card.py = card.y;
+            card.x += card.vx / 20.0D;
+            card.y += card.vy / 20.0D;
+            double minX = panelX0 + FRAME_MARGIN;
+            double maxX = panelX1 - card.w - FRAME_MARGIN;
+            double minY = panelTop + FRAME_MARGIN;
+            double maxY = panelBottom - card.h - FRAME_MARGIN;
+            if (card.x < minX) {
+                card.x = minX;
+                card.vx = bounceDampen(Math.abs(card.vx), card.normalMagX);
+            } else if (card.x > maxX) {
+                card.x = maxX;
+                card.vx = -bounceDampen(Math.abs(card.vx), card.normalMagX);
+            }
+            if (card.y < minY) {
+                card.y = minY;
+                card.vy = bounceDampen(Math.abs(card.vy), card.normalMagY);
+            } else if (card.y > maxY) {
+                card.y = maxY;
+                card.vy = -bounceDampen(Math.abs(card.vy), card.normalMagY);
+            }
+        }
+    }
+
+    /** 撞墙反弹时削减滑动带来的多余动量，逐步收敛到正常航行速度（不低于正常幅度）。 */
+    private static double bounceDampen(double magnitude, double normalMag) {
+        double base = Math.abs(normalMag);
+        if (magnitude > base) {
+            double extra = (magnitude - base) * 0.55D;
+            if (extra < 0.5D) {
+                extra = 0.0D;
+            }
+            magnitude = base + extra;
+        } else {
+            magnitude = base;
+        }
+        return magnitude;
+    }
+
+    @Override
+    public void renderBackground(GuiGraphics gg, int mouseX, int mouseY, float partialTick) {
+    }
+
+    @Override
+    public void render(GuiGraphics gg, int mouseX, int mouseY, float partialTick) {
+        // 背景：主菜单场景图 50% 半透明叠于深灰底上，不再是纯黑
+        gg.fill(0, 0, this.width, this.height, BG_BASE);
+        RenderSystem.enableBlend();
+        RenderSystem.defaultBlendFunc();
+        RenderSystem.setShaderColor(1f, 1f, 1f, 0.5f);
+        gg.blit(BG_TITLE, 0, 0, 0, 0f, 0f, this.width, this.height, this.width, this.height);
+        RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
+        RenderSystem.disableBlend();
+
+        hoveredCard = (grabbed == null) ? hitTest(mouseX, mouseY) : grabbed;
+
+        gg.pose().pushPose();
+        gg.pose().scale((float) zoom, (float) zoom, 1.0F);
+        gg.pose().translate((float) -camX, (float) -camY, 0.0F);
+
+        renderPanels(gg, mouseX, mouseY);
+
+        gg.pose().popPose();
+
+        // 卡片以屏幕空间整数坐标绘制，避免非整数相机缩放导致亚像素光栅化抖动
+        for (Card card : cards) {
+            renderCardScreen(gg, card, partialTick);
+        }
+
+        // 悬停显示该 mod 名称（不拖住时）
+        if (hoveredCard != null && grabbed == null && hoveredCard.name != null) {
+            String name = hoveredCard.name.getString();
+            int tw = this.font.width(name);
+            int tx = (this.width - tw) / 2;
+            int ty = 12;
+            gg.fill(tx - 5, ty - 2, tx + tw + 5, ty + this.font.lineHeight + 2, 0xCC000000);
+            gg.drawString(this.font, name, tx, ty, 0xFFFFFFFF, false);
+        }
+    }
+
+    private void renderPanels(GuiGraphics gg, int mouseX, int mouseY) {
+        renderInfoBar(gg, mouseX, mouseY);
+        renderMainFrame(gg);
+        renderLogBox(gg);
+    }
+
+    /** 绘制一个实心底 + 单色细边框的矩形框（世界坐标）。 */
+    private void renderBox(GuiGraphics gg, int x0, int y0, int x1, int y1, int bg, int border) {
+        gg.fill(x0, y0, x1, y1, bg);
+        gg.hLine(x0, x1 - 1, y0, border);
+        gg.hLine(x0, x1 - 1, y1 - 1, border);
+        gg.vLine(x0, y0, y1 - 1, border);
+        gg.vLine(x1 - 1, y0, y1 - 1, border);
+    }
+
+    private static boolean creditAvatarLoaded = false;
+    private static ResourceLocation creditAvatarTex = null;
+
+    private static final int CREDIT_AVATAR_SIZE = 128;
+
+    /** 懒加载贡献者头像：jpg 载入 → 压缩为 128x128 → 圆形裁剪(越界置透明)。 */
+    private void ensureCreditAvatar(Minecraft mc) {
+        if (creditAvatarLoaded) return;
+        creditAvatarLoaded = true;
+        creditAvatarTex = null;
+        try {
+            ResourceLocation loc = ResourceLocation.fromNamespaceAndPath(
+                    "xy2407_nsuk_addition", "textures/credit/1.jpg");
+            NativeImage src = openImage(mc, loc);
+            if (src == null) return;
+            int iw = src.getWidth(), ih = src.getHeight();
+            NativeImage sq = new NativeImage(CREDIT_AVATAR_SIZE, CREDIT_AVATAR_SIZE, false);
+            for (int y = 0; y < CREDIT_AVATAR_SIZE; y++) {
+                int sy = Math.min(ih - 1, y * ih / CREDIT_AVATAR_SIZE);
+                for (int x = 0; x < CREDIT_AVATAR_SIZE; x++) {
+                    int sx = Math.min(iw - 1, x * iw / CREDIT_AVATAR_SIZE);
+                    sq.setPixelRGBA(x, y, src.getPixelRGBA(sx, sy));
+                }
+            }
+            int c = CREDIT_AVATAR_SIZE / 2;
+            int r2 = c * c;
+            for (int y = 0; y < CREDIT_AVATAR_SIZE; y++) {
+                int dy = y - c;
+                for (int x = 0; x < CREDIT_AVATAR_SIZE; x++) {
+                    int dx = x - c;
+                    if (dx * dx + dy * dy > r2) {
+                        sq.setPixelRGBA(x, y, 0); // 圆形外置透明
+                    }
+                }
+            }
+            creditAvatarTex = mc.getTextureManager().register(
+                    "xy2407_nsuk_addition_credit_avatar", new DynamicTexture(sq));
+        } catch (Throwable ignore) {
+            creditAvatarTex = null;
+        }
+    }
+
+    /** 绘制圆形贡献者头像：直径取行高(与字体同尺寸)，128x 源压缩显示。 */
+    private void renderCreditAvatar(GuiGraphics gg, Minecraft mc, int x, int y, int dia) {
+        ensureCreditAvatar(mc);
+        if (creditAvatarTex == null) return;
+        gg.blit(creditAvatarTex, x, y, dia, dia,
+                0.0F, 0.0F, CREDIT_AVATAR_SIZE, CREDIT_AVATAR_SIZE, CREDIT_AVATAR_SIZE, CREDIT_AVATAR_SIZE);
+    }
+
+    /** 顶部条形框：左侧 5 条字段、中间分割线、右侧"特别贡献"。 */
+    private void renderInfoBar(GuiGraphics gg, int mouseX, int mouseY) {
+        renderBox(gg, barX0, barY0, barX1, barY1, 0xFF282838, 0xFFAAAAAA);
+
+        int lh = minecraft.font.lineHeight;
+        int rowGap = 4;
+        int leftX = barX0 + PANEL_PAD;
+        String[] leftLines = {
+                "整合包名称:[CT]城市模拟City Simulation",
+                "整合包作者：星影2407",
+                "整合包交流：1061156620",
+                "整合包更新（点击跳转）",
+                "整合包赞助（点击跳转）"
+        };
+        int lineX = leftX;
+        int lineY = barY0 + PANEL_PAD;
+        for (int i = 0; i < leftLines.length; i++) {
+            int color = TEXT_MUTED;
+            int textW = minecraft.font.width(leftLines[i]);
+            if (i == 3) {
+                updateLinkX = lineX;
+                updateLinkY = lineY;
+                updateLinkW = textW;
+                updateLinkH = lh;
+                color = overScreenPoint(mouseX, mouseY, updateLinkX, updateLinkY, updateLinkW, updateLinkH)
+                        ? TEXT_LINK_HOVER : TEXT_LINK;
+            }
+            if (i == 4) {
+                sponsorLinkX = lineX;
+                sponsorLinkY = lineY;
+                sponsorLinkW = textW;
+                sponsorLinkH = lh;
+                color = overScreenPoint(mouseX, mouseY, sponsorLinkX, sponsorLinkY, sponsorLinkW, sponsorLinkH)
+                        ? TEXT_LINK_HOVER : TEXT_LINK;
+            }
+            gg.drawString(minecraft.font, leftLines[i], lineX, lineY, color, false);
+            if ((i == 3 || i == 4) && color == TEXT_LINK_HOVER) {
+                gg.hLine(lineX, lineX + textW - 1, lineY + lh, TEXT_LINK_HOVER);
+            }
+            lineY += lh + rowGap;
+        }
+
+        // 中间分割线（左字段区 与 右侧特别贡献之间）
+        int rightZoneW = 130;
+        int splitX = (barX1 == panelX1) ? panelX1 - PANEL_PAD - rightZoneW : barX1 - PANEL_PAD - rightZoneW;
+        gg.vLine(splitX, barY0 + PANEL_PAD, barY1 - PANEL_PAD, 0xFF666688);
+
+        // 右侧：特别贡献
+        int rx = splitX + PANEL_PAD;
+        gg.drawString(minecraft.font, "特别贡献：", rx, barY0 + PANEL_PAD, TEXT_MUTED, false);
+        int nameY = barY0 + PANEL_PAD + lh + 3;
+        renderCreditAvatar(gg, minecraft, rx, nameY, lh);
+        gg.drawString(minecraft.font, "米青", rx + lh + 3, nameY, TEXT_MUTED, false);
+    }
+
+    /** 主框（mod 卡片区域）：双层边框 + 底色。 */
+    private void renderMainFrame(GuiGraphics gg) {
+        int panelXE = panelX0 + FRAME_T;
+        int panelYE = panelTop + FRAME_T;
+        gg.fill(panelX0, panelTop, panelX1, panelBottom, 0xFF14141F);
+        gg.fill(panelX0, panelTop, panelX1, panelTop + FRAME_T, 0xFFDDDDDD);
+        gg.fill(panelX0, panelBottom - FRAME_T, panelX1, panelBottom, 0xFFDDDDDD);
+        gg.fill(panelX0, panelTop, panelX0 + FRAME_T, panelBottom, 0xFFDDDDDD);
+        gg.fill(panelX1 - FRAME_T, panelTop, panelX1, panelBottom, 0xFFDDDDDD);
+        int inset = FRAME_T + 6;
+        gg.fill(panelXE, panelYE, panelX1 - inset, panelYE + FRAME_LINE, 0xFF666688);
+        gg.fill(panelXE, panelBottom - inset - FRAME_LINE, panelX1 - inset, panelBottom - inset, 0xFF666688);
+        gg.fill(panelXE, panelYE, panelXE + FRAME_LINE, panelBottom - inset, 0xFF666688);
+        gg.fill(panelX1 - inset - FRAME_LINE, panelYE, panelX1 - inset, panelBottom - inset, 0xFF666688);
+    }
+
+    /** 更新日志框：顶部居中标题 + 可滚动文本 + 右侧滚动条。 */
+    private void renderLogBox(GuiGraphics gg) {
+        renderBox(gg, logX0, logY0, logX1, logY1, 0xFF1C1C2A, 0xFFAAAAAA);
+
+        int lh = minecraft.font.lineHeight;
+        // 顶部标题
+        String title = "更新日志";
+        int tw = minecraft.font.width(title);
+        int titleY = logY0 + 5;
+        gg.drawString(minecraft.font, title, logX0 + (logX1 - logX0 - tw) / 2, titleY, TEXT_TITLE, false);
+
+        // 内容视口（标题之下）
+        String[] logLines = getChangelogLines();
+        int viewX0 = logX0 + 6;
+        int viewY0 = logViewY0();
+        int viewY1 = logViewY1();
+        int viewX1 = logX1 - SCROLLBAR_W - 8;
+        int viewH = viewY1 - viewY0;
+        int maxLineW = Math.max(20, viewX1 - viewX0);
+        List<FormattedCharSequence> displayLines = new ArrayList<>();
+        List<Boolean> versionFlags = new ArrayList<>();
+        for (String line : logLines) {
+            boolean versionLine = isVersionHeader(line);
+            String text = versionLine ? stripHeader(line) : line;
+            for (FormattedCharSequence seq : this.font.split(Component.literal(text), maxLineW)) {
+                displayLines.add(seq);
+                versionFlags.add(versionLine);
+            }
+        }
+        logDisplayLines = displayLines;
+        int contentH = displayLines.size() * lh;
+        logMaxScroll = Math.max(0, contentH - viewH);
+        logScroll = Math.max(0.0D, Math.min(logMaxScroll, logScroll));
+
+        // 裁剪到内容区域后逐行绘制
+        int sx0 = toScreenX(viewX0);
+        int sy0 = toScreenY(viewY0);
+        int sx1 = toScreenX(viewX1);
+        int sy1 = toScreenY(viewY1);
+        gg.enableScissor(sx0, sy0, sx1, sy1);
+        for (int i = 0; i < displayLines.size(); i++) {
+            int y = viewY0 + i * lh - (int) logScroll;
+            int lineColor = versionFlags.get(i) ? TEXT_TITLE : TEXT_MUTED;
+            gg.drawString(minecraft.font, displayLines.get(i), viewX0, y, lineColor, false);
+        }
+        gg.disableScissor();
+
+        // 右侧滚动条
+        int trackX = logTrackX();
+        int trackY0 = viewY0;
+        int trackY1 = viewY1;
+        gg.fill(trackX, trackY0, trackX + SCROLLBAR_W, trackY1, 0xFF0F0F18);
+        int handleH = logHandleH();
+        int handleTop = logHandleTop();
+        int handleColor = logDrag ? 0xFFDDDDDD : 0xFF8888AA;
+        gg.fill(trackX, handleTop, trackX + SCROLLBAR_W, handleTop + handleH, handleColor);
+    }
+
+    /** 日志内容视口顶部 Y（世界坐标）。 */
+    private int logViewY0() {
+        return logY0 + 5 + minecraft.font.lineHeight + 3;
+    }
+
+    /** 日志内容视口底部 Y（世界坐标）。 */
+    private int logViewY1() {
+        return logY1 - 6;
+    }
+
+    /** 滚动条轨道 X（世界坐标）。 */
+    private int logTrackX() {
+        return logX1 - SCROLLBAR_W - 3;
+    }
+
+    /** 滚动条把手高度（世界坐标）。 */
+    private int logHandleH() {
+        int viewH = logViewY1() - logViewY0();
+        int contentH = logDisplayLines.size() * minecraft.font.lineHeight;
+        return (logMaxScroll <= 0) ? viewH
+                : Math.max(SCROLLBAR_W, viewH * viewH / Math.max(viewH, contentH));
+    }
+
+    /** 滚动条把手顶部 Y（世界坐标）。 */
+    private int logHandleTop() {
+        int viewH = logViewY1() - logViewY0();
+        int handleH = logHandleH();
+        return (logMaxScroll <= 0) ? logViewY0()
+                : logViewY0() + (int) ((long) (viewH - handleH) * (long) logScroll / logMaxScroll);
+    }
+
+    /** 世界坐标 -> 屏幕 X（含相机缩放与平移）。 */
+    private int toScreenX(double wx) {
+        return (int) Math.round((wx - camX) * zoom);
+    }
+
+    /** 世界坐标 -> 屏幕 Y（含相机缩放与平移）。 */
+    private int toScreenY(double wy) {
+        return (int) Math.round((wy - camY) * zoom);
+    }
+
+    /** 判断屏幕鼠标点是否位于给定世界矩形内。 */
+    private boolean overScreenPoint(double mouseX, double mouseY, int wx0, int wy0, int ww, int wh) {
+        double mx = toWorldX(mouseX);
+        double my = toWorldY(mouseY);
+        return mx >= wx0 && mx <= wx0 + ww && my >= wy0 && my <= wy0 + wh;
+    }
+
+    /** 卡片：屏幕空间整数坐标绘制（位置与尺寸都按相机换算并取整），消除非整数缩放下亚像素抖动。 */
+    private void renderCardScreen(GuiGraphics gg, Card card, float partialTick) {
+        float t = Math.max(0.0F, Math.min(1.0F, partialTick));
+        double ix = card.px + (card.x - card.px) * t;
+        double iy = card.py + (card.y - card.py) * t;
+        int x = toScreenX(ix);
+        int y = toScreenY(iy);
+        int w = Math.max(1, Math.round(card.w * (float) zoom));
+        int h = Math.max(1, Math.round(card.h * (float) zoom));
+        int pad = Math.max(1, Math.round(CARD_PAD * (float) zoom));
+        // 不透明底色，避免移动/重叠时边框透过产生闪烁
+        gg.fill(x, y, x + w, y + h, 0xFF202030);
+        // 两层分割式边框：外框 + 内缩内框
+        gg.renderOutline(x, y, w, h, 0xFFDDDDDD);
+        int inset = Math.max(1, Math.round(2.0F * (float) zoom));
+        gg.renderOutline(x + inset, y + inset, w - inset * 2, h - inset * 2, 0xFF666688);
+        // 中央等比例渲染 mod 图标
+        IconTex it = card.icon;
+        if (it != null) {
+            int box = w - pad * 2;
+            if (box > 0) {
+                float ratio = Math.min((float) box / it.width, (float) box / it.height);
+                int dw = Math.max(1, Math.round(it.width * ratio));
+                int dh = Math.max(1, Math.round(it.height * ratio));
+                int ix2 = x + (w - dw) / 2;
+                int iy2 = y + (h - dh) / 2;
+                gg.blit(it.loc, ix2, iy2, dw, dh, 0.0F, 0.0F, it.width, it.height, it.width, it.height);
+            }
+        }
+    }
+
+    @Override
+    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+        if (button == 0) {
+            // 条形框链接：整合包更新 / 整合包赞助（世界坐标命中）
+            if (overScreenPoint(mouseX, mouseY, updateLinkX, updateLinkY, updateLinkW, updateLinkH)) {
+                net.minecraft.Util.getPlatform().openUri(UPDATE_URL);
+                return true;
+            }
+            if (overScreenPoint(mouseX, mouseY, sponsorLinkX, sponsorLinkY, sponsorLinkW, sponsorLinkH)) {
+                net.minecraft.Util.getPlatform().openUri(SPONSOR_URL);
+                return true;
+            }
+            // 日志框滚动条
+            double wx = toWorldX(mouseX);
+            double wy = toWorldY(mouseY);
+            int trackX = logTrackX();
+            int viewY0 = logViewY0();
+            int viewY1 = logViewY1();
+            if (wx >= trackX && wx <= trackX + SCROLLBAR_W && wy >= viewY0 && wy <= viewY1) {
+                int handleTop = logHandleTop();
+                int handleH = logHandleH();
+                if (wy >= handleTop && wy <= handleTop + handleH) {
+                    logDrag = true;
+                    logGrabOffset = handleTop - wy;
+                } else if (logMaxScroll > 0) {
+                    logScroll = (double) (wy - viewY0 - handleH / 2.0D) / (viewY1 - viewY0 - handleH) * logMaxScroll;
+                    logScroll = Math.max(0.0D, Math.min(logMaxScroll, logScroll));
+                }
+                return true;
+            }
+
+            Card hit = hitTest(mouseX, mouseY);
+            if (hit != null) {
+                grabbed = hit;
+                dragTotal = 0.0D;
+                smoothedVx = 0.0D;
+                smoothedVy = 0.0D;
+                return true;
+            }
+            panning = true;
+            return true;
+        }
+        return super.mouseClicked(mouseX, mouseY, button);
+    }
+
+    @Override
+    public boolean mouseDragged(double mouseX, double mouseY, int button, double dragX, double dragY) {
+        if (button == 0) {
+            if (logDrag) {
+                double wy = toWorldY(mouseY);
+                double viewY0 = logViewY0();
+                double trackSpan = (logViewY1() - viewY0) - logHandleH();
+                if (trackSpan > 0 && logMaxScroll > 0) {
+                    logScroll = (wy - viewY0 + logGrabOffset) / trackSpan * logMaxScroll;
+                    logScroll = Math.max(0.0D, Math.min(logMaxScroll, logScroll));
+                }
+                return true;
+            }
+            if (grabbed != null) {
+                double wd = dragX / zoom;
+                double wh = dragY / zoom;
+                grabbed.x += wd;
+                grabbed.y += wh;
+                clampCard(grabbed);
+                grabbed.px = grabbed.x;
+                grabbed.py = grabbed.y;
+                dragTotal += Math.abs(dragX) + Math.abs(dragY);
+                smoothedVx = smoothedVx * 0.5D + wd * 0.5D;
+                smoothedVy = smoothedVy * 0.5D + wh * 0.5D;
+                return true;
+            }
+            if (panning) {
+                camX -= dragX / zoom;
+                camY -= dragY / zoom;
+                clampCamera();
+                return true;
+            }
+        }
+        return super.mouseDragged(mouseX, mouseY, button, dragX, dragY);
+    }
+
+    @Override
+    public boolean mouseReleased(double mouseX, double mouseY, int button) {
+        if (button == 0) {
+            logDrag = false;
+            if (grabbed != null) {
+                // 若拖动距离足够则作为甩动抛出；否则视为普通的点击/松手，不触发其他动作
+                if (dragTotal >= 6.0D) {
+                    grabbed.vx = clampSpeed(smoothedVx * FLICK_SCALE);
+                    grabbed.vy = clampSpeed(smoothedVy * FLICK_SCALE);
+                }
+                grabbed = null;
+            }
+            panning = false;
+            return true;
+        }
+        return super.mouseReleased(mouseX, mouseY, button);
+    }
+
+    private static double clampSpeed(double v) {
+        return Math.max(-450.0D, Math.min(450.0D, v));
+    }
+
+    @Override
+    public boolean mouseScrolled(double mouseX, double mouseY, double deltaX, double deltaY) {
+        if (hasControlDown()) {
+            double newZoom = Math.max(MIN_ZOOM, Math.min(MAX_ZOOM, zoom * (1.0D + deltaY * 0.1D)));
+            // 以屏幕中心为锚点缩放，保证缩放后内容仍居中
+            double centerW = camX + (this.width / 2.0D) / zoom;
+            double centerH = camY + (this.height / 2.0D) / zoom;
+            zoom = newZoom;
+            camX = centerW - (this.width / 2.0D) / zoom;
+            camY = centerH - (this.height / 2.0D) / zoom;
+            clampCamera();
+            return true;
+        }
+        // 未按 Ctrl：鼠标位于日志框内时滚动更新日志
+        double mx = toWorldX(mouseX);
+        double my = toWorldY(mouseY);
+        if (mx >= logX0 && mx <= logX1 && my >= logY0 && my <= logY1) {
+            logScroll -= deltaY * 12.0D;
+            logScroll = Math.max(0.0D, Math.min(logMaxScroll, logScroll));
+            return true;
+        }
+        return super.mouseScrolled(mouseX, mouseY, deltaX, deltaY);
+    }
+}

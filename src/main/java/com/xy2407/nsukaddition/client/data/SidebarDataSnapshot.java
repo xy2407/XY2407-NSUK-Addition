@@ -36,7 +36,7 @@ public final class SidebarDataSnapshot {
     private static volatile SidebarDataSnapshot instance = new SidebarDataSnapshot();
 
     private final UUID cityId;
-    private final int shopCount, factoryCount, residenceCount, farmCount, ranchCount, mineCount;
+    private final int restaurantCount, factoryCount, residenceCount, farmCount, ranchCount, mineCount;
     private final long prosperity;
     private final List<Officer> officers;
     private final List<MaterialStock> reserveMaterials;
@@ -50,14 +50,14 @@ public final class SidebarDataSnapshot {
 
     public SidebarDataSnapshot(UUID cityId,
                                List<Officer> officers,
-                               int shopCount, int factoryCount, int residenceCount, int farmCount, int ranchCount,
+                               int restaurantCount, int factoryCount, int residenceCount, int farmCount, int ranchCount,
                                int mineCount, long prosperity,
                                List<MaterialStock> reserveMaterials, List<BuildTask> buildTasks,
                                List<FinanceRecord> financeRecords,
                                List<CitizenRecord> citizens) {
         this.cityId = cityId;
         this.officers = List.copyOf(officers);
-        this.shopCount = shopCount;
+        this.restaurantCount = restaurantCount;
         this.factoryCount = factoryCount;
         this.residenceCount = residenceCount;
         this.farmCount = farmCount;
@@ -86,8 +86,8 @@ public final class SidebarDataSnapshot {
         return officers;
     }
 
-    public int shopCount() {
-        return shopCount;
+    public int restaurantCount() {
+        return restaurantCount;
     }
 
     public int factoryCount() {

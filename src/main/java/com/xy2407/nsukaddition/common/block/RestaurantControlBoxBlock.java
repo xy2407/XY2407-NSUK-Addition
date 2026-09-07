@@ -1,7 +1,7 @@
 package com.xy2407.nsukaddition.common.block;
 
-import com.xy2407.nsukaddition.common.cooking.RestaurantControlBoxService;
-import com.xy2407.nsukaddition.common.network.cooking.RestaurantControlBoxOpenRequestPacket;
+import com.xy2407.nsukaddition.common.restaurant.RestaurantControlBoxService;
+import com.xy2407.nsukaddition.common.network.restaurant.RestaurantControlBoxOpenRequestPacket;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;

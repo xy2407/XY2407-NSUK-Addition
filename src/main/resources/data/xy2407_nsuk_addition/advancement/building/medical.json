@@ -1,0 +1,30 @@
+{
+  "display": {
+    "icon": {
+      "id": "simukraft:medical_control_box"
+    },
+    "title": {
+      "translate": "advancement.xy2407_nsuk_addition.building.medical.title"
+    },
+    "description": {
+      "translate": "advancement.xy2407_nsuk_addition.building.medical.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "building_built": {
+      "trigger": "xy2407_nsuk_addition:building_built",
+      "conditions": {
+        "block": "simukraft:medical_control_box"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "building_built"
+    ]
+  ]
+}

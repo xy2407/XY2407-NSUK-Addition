@@ -6,11 +6,11 @@ import com.xy2407.nsukaddition.common.city.CityLevel;
 import com.xy2407.nsukaddition.common.city.CityProsperityCache;
 import com.xy2407.nsukaddition.common.city.TourismConstants;
 import com.xy2407.nsukaddition.common.item.EntityCaptureItem;
-import com.xy2407.nsukaddition.common.cooking.RestaurantBoxData;
-import com.xy2407.nsukaddition.common.cooking.RestaurantBoxManager;
-import com.xy2407.nsukaddition.common.cooking.RestaurantControlBoxService;
-import com.xy2407.nsukaddition.common.cooking.RestaurantDefinitionLoader;
-import com.xy2407.nsukaddition.common.cooking.RestaurantDiningService;
+import com.xy2407.nsukaddition.common.restaurant.RestaurantBoxData;
+import com.xy2407.nsukaddition.common.restaurant.RestaurantBoxManager;
+import com.xy2407.nsukaddition.common.restaurant.RestaurantControlBoxService;
+import com.xy2407.nsukaddition.common.restaurant.RestaurantDefinitionLoader;
+import com.xy2407.nsukaddition.common.restaurant.RestaurantDiningService;
 import com.xy2407.nsukaddition.common.foreigntrade.DiplomacyStorage;
 import common.cn.kafei.simukraft.citizen.CitizenData;
 import common.cn.kafei.simukraft.citizen.CitizenManager;
@@ -246,6 +246,9 @@ public final class VillageTourismService {
             ForeignTradeMarket.MarketEntry price = ForeignTradeMarket.getEntry(p.itemId());
             double sellPrice = price != null ? price.sellPrice() : 1.0;
             int stock = caravan.productStock.getOrDefault(p.itemId(), 0);
+            // 动物商品以捕获器为交易载体；购买与收购两侧统一用实体id展示商品图标，好让客户端把图标渲染成对应动物。
+            // 玩家出售(收购)时需拿出的是捕获器(entity_capture)，由客户端 countPlayerItems 按实体计数，服务端按 offerId 前缀结算。
+            String sellGiveId = p.itemId();
             offers.add(new CommercialTradeView.OfferEntry(
                     "caravan_" + p.itemId(),
                     List.of(new CommercialTradeView.ResourceEntry("money", "", 0, sellPrice)),
@@ -257,7 +260,7 @@ public final class VillageTourismService {
                     0));
             offers.add(new CommercialTradeView.OfferEntry(
                     "caravan_sell_" + p.itemId(),
-                    List.of(new CommercialTradeView.ResourceEntry("item", p.itemId(), 1, 0)),
+                    List.of(new CommercialTradeView.ResourceEntry("item", sellGiveId, 1, 0)),
                     List.of(new CommercialTradeView.ResourceEntry("money", "", 1, sellPrice)),
                     p.itemId(),
                     stock,

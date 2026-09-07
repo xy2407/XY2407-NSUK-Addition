@@ -1,6 +1,7 @@
 package com.xy2407.nsukaddition.common.network.colony;
 
 import com.xy2407.nsukaddition.NsukAddition;
+import com.xy2407.nsukaddition.common.block.ColonyCoreBlock;
 import com.xy2407.nsukaddition.common.colony.ColonyConstants;
 import com.xy2407.nsukaddition.common.colony.ColonyData;
 import com.xy2407.nsukaddition.common.colony.ColonySqliteStorage;
@@ -81,8 +82,14 @@ public record ColonyCoreMovePacket(BlockPos oldCorePos, BlockPos newCorePos, UUI
                 p.newCorePos().immutable(), colony.dimensionId(), colony.createdAt());
         ColonySqliteStorage.saveColony(level, updated);
 
-        level.setBlock(p.newCorePos(), ModBlocks.COLONY_CORE.get().defaultBlockState(), Block.UPDATE_ALL);
-        level.setBlock(p.oldCorePos(), level.getFluidState(p.oldCorePos()).createLegacyBlock(), Block.UPDATE_ALL);
+        ColonyCoreBlock.setMovingFrom(p.oldCorePos());
+        try {
+            level.setBlock(p.newCorePos(), ModBlocks.COLONY_CORE.get().defaultBlockState(), Block.UPDATE_ALL);
+            level.setBlock(p.oldCorePos(), level.getFluidState(p.oldCorePos()).createLegacyBlock(), Block.UPDATE_ALL);
+        } finally {
+            // 迁移完成清除标记：之后若再挖旧位置，仍按正常保护处理。
+            ColonyCoreBlock.setMovingFrom((BlockPos) null);
+        }
 
         ColonyChunkSyncPacket.broadcast(level, colony.colonyId());
 

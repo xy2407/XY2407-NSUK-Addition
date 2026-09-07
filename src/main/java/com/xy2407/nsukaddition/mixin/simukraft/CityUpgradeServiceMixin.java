@@ -121,9 +121,10 @@ public abstract class CityUpgradeServiceMixin {
                 return;
             }
             CityBuildingStats stats = CityBuildingStats.collect(level, city.cityId());
-            if (stats.farmCount() < req.requiredFarms()
+            if (stats.housingCount() < req.requiredHousing()
+                    || stats.farmCount() < req.requiredFarms()
                     || stats.ranchCount() < req.requiredRanches()
-                    || stats.shopCount() < req.requiredShops()
+                    || stats.restaurantCount() < req.requiredRestaurants()
                     || stats.factoryCount() < req.requiredFactories()
                     || stats.mineCount() < req.requiredMines()) {
                 if (player != null) {

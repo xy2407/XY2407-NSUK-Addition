@@ -1,0 +1,30 @@
+{
+  "display": {
+    "icon": {
+      "id": "simukraft:commercial_control_box"
+    },
+    "title": {
+      "translate": "advancement.xy2407_nsuk_addition.building.commercial.title"
+    },
+    "description": {
+      "translate": "advancement.xy2407_nsuk_addition.building.commercial.description"
+    },
+    "frame": "task",
+    "show_toast": true,
+    "announce_to_chat": true,
+    "hidden": false
+  },
+  "criteria": {
+    "building_built": {
+      "trigger": "xy2407_nsuk_addition:building_built",
+      "conditions": {
+        "block": "simukraft:commercial_control_box"
+      }
+    }
+  },
+  "requirements": [
+    [
+      "building_built"
+    ]
+  ]
+}

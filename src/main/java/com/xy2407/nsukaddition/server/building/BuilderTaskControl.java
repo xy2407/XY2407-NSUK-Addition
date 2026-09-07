@@ -4,9 +4,11 @@ import common.cn.kafei.simukraft.building.BuildingTaskData;
 import common.cn.kafei.simukraft.building.BuilderConstructionService;
 import common.cn.kafei.simukraft.util.NpcWorkChunkLoadService;
 import common.cn.kafei.simukraft.util.SaveScopedCacheKey;
+import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
 
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.Locale;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentMap;
@@ -18,6 +20,8 @@ public final class BuilderTaskControl {
     private static final Field TASKS_BY_CITIZEN_FIELD;
     private static final Class<?> LEVEL_RUNTIME_CLASS;
     private static final Class<?> TASK_RUNTIME_CLASS;
+    /** NpcWorkChunkLoadService.release 的真实签名引用于运行时探测(新版 UUID / 旧版 BlockPos)。 */
+    private static final Method RELEASE_METHOD;
 
     static {
         try {
@@ -30,6 +34,20 @@ public final class BuilderTaskControl {
         } catch (Exception e) {
             throw new RuntimeException("Failed to initialize BuilderConstructionService reflection", e);
         }
+    }
+
+    static {
+        Method release = null;
+        try {
+            release = NpcWorkChunkLoadService.class.getMethod("release", ServerLevel.class, UUID.class);
+        } catch (ReflectiveOperationException ignored) {
+            try {
+                release = NpcWorkChunkLoadService.class.getMethod("release", ServerLevel.class, BlockPos.class);
+            } catch (ReflectiveOperationException ignored2) {
+                release = null;
+            }
+        }
+        RELEASE_METHOD = release;
     }
 
     private BuilderTaskControl() {
@@ -65,7 +83,7 @@ public final class BuilderTaskControl {
             }
             BuildingTaskData task = taskFromRuntime(removed);
             if (task != null) {
-                NpcWorkChunkLoadService.release(level, task.buildBoxPos());
+                releaseWorkChunk(level, task);
             }
             return removed;
         } catch (Exception e) {
@@ -92,7 +110,7 @@ public final class BuilderTaskControl {
             }
             Object removed = tasks.remove(citizenId);
             if (removed != null) {
-                NpcWorkChunkLoadService.release(level, running.buildBoxPos());
+                releaseWorkChunk(level, running);
             }
             return removed;
         } catch (Exception e) {
@@ -107,6 +125,21 @@ public final class BuilderTaskControl {
             return (BuildingTaskData) taskField.get(taskRuntime);
         } catch (Exception e) {
             return null;
+        }
+    }
+
+    /** releaseWorkChunk：按运行时真实签名释放 NPC 工作区块租约(新版 UUID / 旧版 BlockPos 均可)。 */
+    private static void releaseWorkChunk(ServerLevel level, BuildingTaskData task) {
+        if (RELEASE_METHOD == null || task == null) {
+            return;
+        }
+        try {
+            if (RELEASE_METHOD.getParameterTypes()[1] == UUID.class) {
+                RELEASE_METHOD.invoke(null, level, task.taskId());
+            } else {
+                RELEASE_METHOD.invoke(null, level, task.buildBoxPos());
+            }
+        } catch (ReflectiveOperationException ignored) {
         }
     }
 }

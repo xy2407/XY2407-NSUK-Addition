@@ -277,8 +277,17 @@ public final class ForeignTradeMenuScreenOpener {
     public static void updateFreeMarketData(
             List<FreeMarketRepository.FreeMarketListing> ownListings,
             List<FreeMarketRepository.FreeMarketListing> otherListings) {
-        freeSellListings = ownListings != null ? ownListings : new ArrayList<>();
-        freeBuyListings = otherListings != null ? otherListings : new ArrayList<>();
+        List<FreeMarketRepository.FreeMarketListing> own = ownListings != null ? ownListings : new ArrayList<>();
+        List<FreeMarketRepository.FreeMarketListing> other = otherListings != null ? otherListings : new ArrayList<>();
+        if (isMyCityMode) {
+            // 自己城市：own=我的上架(可管理)，other=其它城市(可购买)
+            freeSellListings = own;
+            freeBuyListings = other;
+        } else {
+            // 查看其它城市：只显示该城市(own)自己上架的物品
+            freeBuyListings = own;
+            freeSellListings = own;
+        }
         refreshGridCards();
     }
 
@@ -916,24 +925,31 @@ public final class ForeignTradeMenuScreenOpener {
         });
         card.addChild(spacer);
 
-        if (canOperate) {
+        if (isSellMode) {
+            // 管理/取消/修改仅"我的市场"需要操作权
+            if (canOperate) {
+                UIElement btnRow = new UIElement().layout(layout -> {
+                    layout.widthPercent(100);
+                    layout.height(BTN_H);
+                    layout.flexDirection(FlexDirection.ROW);
+                    layout.gapAll(2);
+                });
+                btnRow.addChild(smallButton(Component.translatable("gui.xy2407_nsuk_addition.foreign_trade.cancel"), CANCEL_BTN,
+                        () -> sendFreeMarketCancel(listing.id())));
+                btnRow.addChild(smallButton(Component.translatable("gui.xy2407_nsuk_addition.foreign_trade.modify"), MODIFY_BTN,
+                        () -> openModifyPopup(listing)));
+                card.addChild(btnRow);
+            }
+        } else {
+            // 购买按钮对所有浏览该市场商品的玩家显示，不依赖城市操作权
             UIElement btnRow = new UIElement().layout(layout -> {
                 layout.widthPercent(100);
                 layout.height(BTN_H);
                 layout.flexDirection(FlexDirection.ROW);
                 layout.gapAll(2);
             });
-
-            if (isSellMode) {
-                btnRow.addChild(smallButton(Component.translatable("gui.xy2407_nsuk_addition.foreign_trade.cancel"), CANCEL_BTN,
-                        () -> sendFreeMarketCancel(listing.id())));
-                btnRow.addChild(smallButton(Component.translatable("gui.xy2407_nsuk_addition.foreign_trade.modify"), MODIFY_BTN,
-                        () -> openModifyPopup(listing)));
-            } else {
-                btnRow.addChild(smallButton(Component.translatable("gui.xy2407_nsuk_addition.foreign_trade.buy"), BUY_BTN,
-                        () -> sendFreeMarketBuy(listing.id())));
-            }
-
+            btnRow.addChild(smallButton(Component.translatable("gui.xy2407_nsuk_addition.foreign_trade.buy"), BUY_BTN,
+                    () -> sendFreeMarketBuy(listing.id())));
             card.addChild(btnRow);
         }
 

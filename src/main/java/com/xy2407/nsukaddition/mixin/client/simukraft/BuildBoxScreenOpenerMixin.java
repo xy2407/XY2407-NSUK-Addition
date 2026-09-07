@@ -49,15 +49,15 @@ public class BuildBoxScreenOpenerMixin {
         });
         gridRegion.addChild(btn);
 
-        Button cookBtn = new Button();
-        cookBtn.setText(Component.translatable("gui.category.cooking"));
-        cookBtn.setOnClick(event -> BuildingListScreenOpener.open("cooking", pos));
-        cookBtn.layout(layout -> {
+        Button restaurantBtn = new Button();
+        restaurantBtn.setText(Component.translatable("gui.category.restaurant"));
+        restaurantBtn.setOnClick(event -> BuildingListScreenOpener.open("restaurant", pos));
+        restaurantBtn.layout(layout -> {
             layout.width(110);
             layout.height(20);
             layout.flexShrink(0);
         });
-        gridRegion.addChild(cookBtn);
+        gridRegion.addChild(restaurantBtn);
 
         Button foreignTradeBtn = new Button();
         foreignTradeBtn.setText(Component.translatable("gui.category.foreign_trade"));
@@ -79,8 +79,8 @@ public class BuildBoxScreenOpenerMixin {
         if ("gui.category.breeding".equals(translationKey)) {
             BuildingListScreenOpener.open("breeding", buildBoxPos);
             ci.cancel();
-        } else if ("gui.category.cooking".equals(translationKey)) {
-            BuildingListScreenOpener.open("cooking", buildBoxPos);
+        } else if ("gui.category.restaurant".equals(translationKey)) {
+            BuildingListScreenOpener.open("restaurant", buildBoxPos);
             ci.cancel();
         } else if ("gui.category.foreign_trade".equals(translationKey)) {
             BuildingListScreenOpener.open("foreign_trade", buildBoxPos);

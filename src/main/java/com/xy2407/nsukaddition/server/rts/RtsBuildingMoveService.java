@@ -1,7 +1,7 @@
 package com.xy2407.nsukaddition.server.rts;
 
 import com.xy2407.nsukaddition.common.breeding.BreedingConstants;
-import com.xy2407.nsukaddition.common.cooking.RestaurantConstants;
+import com.xy2407.nsukaddition.common.restaurant.RestaurantConstants;
 import common.cn.kafei.simukraft.building.BuildingBlockData;
 import common.cn.kafei.simukraft.building.BuildingBlockPlacementService;
 import common.cn.kafei.simukraft.building.BuildingPoiInstance;
@@ -26,6 +26,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.entity.BlockEntity;
@@ -76,12 +77,14 @@ public final class RtsBuildingMoveService {
         int originalRotation = BuildingTransform.rotationDegreesFromFacing(old.facing());
         int deltaRotation = Math.floorMod(rotation - originalRotation, 360);
 
-        if ("cooking".equals(category)) {
+        if ("restaurant".equals(category)) {
             BlockPos boxPos = resolveControlBoxPos(level, old);
             if (boxPos != null) {
-                com.xy2407.nsukaddition.common.cooking.RestaurantDiningService.cleanupForBox(level, boxPos);
+                com.xy2407.nsukaddition.common.restaurant.RestaurantDiningService.cleanupForBox(level, boxPos);
             }
         }
+
+        relocateEntities(level, oldOrigin, newOrigin, deltaRotation, old);
 
         CityPoiManager poiManager = CityPoiManager.get(level);
         Map<BuildingPoiInstance, UUID> poiIdMap = new HashMap<>();
@@ -207,6 +210,25 @@ public final class RtsBuildingMoveService {
         return result;
     }
 
+    private static void relocateEntities(ServerLevel level, BlockPos oldOrigin, BlockPos newOrigin,
+                                     int deltaRotation, PlacedBuildingRecord old) {
+    if (level == null || oldOrigin == null || newOrigin == null) {
+        return;
+    }
+    BlockPos minP = old.minPos();
+    BlockPos maxP = old.maxPos();
+    AABB box = new AABB(minP.getX(), minP.getY(), minP.getZ(),
+            maxP.getX() + 1.0D, maxP.getY() + 1.0D, maxP.getZ() + 1.0D);
+    for (Entity entity : level.getEntitiesOfClass(Entity.class, box)) {
+        if (entity == null || !entity.isAlive() || entity instanceof net.minecraft.server.level.ServerPlayer) {
+            continue;
+        }
+        BlockPos bp = entity.blockPosition();
+        BlockPos target = newOrigin.offset(BuildingTransform.rotatePosition(bp.subtract(oldOrigin), deltaRotation));
+        entity.moveTo(target.getX() + 0.5D, entity.getY(), target.getZ() + 0.5D, entity.getYRot(), entity.getXRot());
+    }
+}
+
     private static void clearDroppedItems(ServerLevel level, BlockPos min, BlockPos max) {
         if (level == null || min == null || max == null) return;
         AABB box = new AABB(
@@ -234,7 +256,7 @@ public final class RtsBuildingMoveService {
     private static void updateWorkers(ServerLevel level, PlacedBuildingRecord old, BlockPos oldOrigin,
                                       BlockPos newOrigin, int deltaRotation, String category) {
         List<SourceRole> roles = sourceRolesFor(category);
-        if (roles.isEmpty() && !"cooking".equals(category)) {
+        if (roles.isEmpty() && !"restaurant".equals(category)) {
             return;
         }
         for (CitizenData citizen : CitizenManager.get(level).allCitizens()) {
@@ -255,14 +277,14 @@ public final class RtsBuildingMoveService {
             }
         }
 
-        if ("cooking".equals(category)) {
+        if ("restaurant".equals(category)) {
             BlockPos movedBox = resolveControlBoxPosAt(level, old, newOrigin, oldOrigin, deltaRotation);
             if (movedBox != null) {
-                com.xy2407.nsukaddition.common.cooking.RestaurantBoxManager manager =
-                        com.xy2407.nsukaddition.common.cooking.RestaurantBoxManager.get(level);
-                com.xy2407.nsukaddition.common.cooking.RestaurantBoxData data = manager.get(movedBox);
+                com.xy2407.nsukaddition.common.restaurant.RestaurantBoxManager manager =
+                        com.xy2407.nsukaddition.common.restaurant.RestaurantBoxManager.get(level);
+                com.xy2407.nsukaddition.common.restaurant.RestaurantBoxData data = manager.get(movedBox);
                 if (data != null) {
-                    for (com.xy2407.nsukaddition.common.cooking.RestaurantBoxData.MaidEntry entry : data.maidWaiters()) {
+                    for (com.xy2407.nsukaddition.common.restaurant.RestaurantBoxData.MaidEntry entry : data.maidWaiters()) {
                         net.minecraft.world.entity.LivingEntity maid =
                                 com.xy2407.nsukaddition.common.compat.maid.MaidWaiterBridge.findMaid(level, entry.uuid());
                         if (maid != null) {
@@ -285,9 +307,9 @@ public final class RtsBuildingMoveService {
 
     private static BlockPos resolveControlBoxPos(ServerLevel level, PlacedBuildingRecord old) {
         String buildingId = old.buildingId().toString();
-        com.xy2407.nsukaddition.common.cooking.RestaurantBoxManager manager =
-                com.xy2407.nsukaddition.common.cooking.RestaurantBoxManager.get(level);
-        for (com.xy2407.nsukaddition.common.cooking.RestaurantBoxData data : manager.all()) {
+        com.xy2407.nsukaddition.common.restaurant.RestaurantBoxManager manager =
+                com.xy2407.nsukaddition.common.restaurant.RestaurantBoxManager.get(level);
+        for (com.xy2407.nsukaddition.common.restaurant.RestaurantBoxData data : manager.all()) {
             if (buildingId.equals(data.buildingId())) {
                 return data.boxPos();
             }
@@ -306,7 +328,7 @@ public final class RtsBuildingMoveService {
             case "farmland" -> List.of(new SourceRole(FarmlandBoxService.HIRE_SOURCE_TYPE, FarmlandBoxService.HIRE_ROLE));
             case "logistics" -> List.of(new SourceRole(LogisticsConstants.SERVER_SOURCE_TYPE, LogisticsConstants.STORAGE_ROLE));
             case "breeding" -> List.of(new SourceRole(BreedingConstants.HIRE_SOURCE_TYPE, BreedingConstants.HIRE_ROLE));
-            case "cooking" -> List.of(
+            case "restaurant" -> List.of(
                     new SourceRole(RestaurantConstants.HIRE_SOURCE_TYPE, RestaurantConstants.HIRE_ROLE_CHEF),
                     new SourceRole(RestaurantConstants.HIRE_SOURCE_TYPE, RestaurantConstants.HIRE_ROLE_WAITER));
             default -> List.of();

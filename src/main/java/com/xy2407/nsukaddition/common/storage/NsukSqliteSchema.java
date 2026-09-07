@@ -158,6 +158,12 @@ public final class NsukSqliteSchema {
                     + "kind TEXT NOT NULL, "
                     + "day INTEGER NOT NULL, "
                     + "PRIMARY KEY(city_id, kind))");
+            statement.executeUpdate("CREATE TABLE IF NOT EXISTS city_building_stats("
+                    + "city_id TEXT PRIMARY KEY, "
+                    + "farm INTEGER NOT NULL DEFAULT 0, ranch INTEGER NOT NULL DEFAULT 0, "
+                    + "restaurant INTEGER NOT NULL DEFAULT 0, factory INTEGER NOT NULL DEFAULT 0, "
+                    + "mine INTEGER NOT NULL DEFAULT 0, housing INTEGER NOT NULL DEFAULT 0, "
+                    + "updated_at INTEGER NOT NULL DEFAULT 0)");
         }
     }
 }

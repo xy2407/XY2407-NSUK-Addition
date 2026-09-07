@@ -47,15 +47,18 @@ public final class CityUpgradeService {
             int currentPopulation,
             int requiredPopulation,
             boolean populationMet,
+            int currentHousing,
+            int requiredHousing,
+            boolean housingMet,
             int currentFarms,
             int requiredFarms,
             boolean farmsMet,
             int currentRanches,
             int requiredRanches,
             boolean ranchesMet,
-            int currentShops,
-            int requiredShops,
-            boolean shopsMet,
+            int currentRestaurants,
+            int requiredRestaurants,
+            boolean restaurantsMet,
             int currentFactories,
             int requiredFactories,
             boolean factoriesMet,
@@ -96,9 +99,10 @@ public final class CityUpgradeService {
         boolean populationMet = population >= req.requiredPopulation();
 
         CityBuildingStats stats = CityBuildingStats.collect(level, cityId);
+        boolean housingMet = stats.housingCount() >= req.requiredHousing();
         boolean farmsMet = stats.farmCount() >= req.requiredFarms();
         boolean ranchesMet = stats.ranchCount() >= req.requiredRanches();
-        boolean shopsMet = stats.shopCount() >= req.requiredShops();
+        boolean restaurantsMet = stats.restaurantCount() >= req.requiredRestaurants();
         boolean factoriesMet = stats.factoryCount() >= req.requiredFactories();
         boolean minesMet = stats.mineCount() >= req.requiredMines();
 
@@ -111,15 +115,16 @@ public final class CityUpgradeService {
 
         boolean fundsMet = city.funds() >= req.requiredFunds();
 
-        boolean allMet = populationMet && farmsMet && ranchesMet && shopsMet
+        boolean allMet = populationMet && housingMet && farmsMet && ranchesMet && restaurantsMet
                 && factoriesMet && minesMet && logsMet && stoneMet && fundsMet;
 
         return new UpgradeCheckResult(
                 currentLevel, targetLevel, req,
                 population, req.requiredPopulation(), populationMet,
+                stats.housingCount(), req.requiredHousing(), housingMet,
                 stats.farmCount(), req.requiredFarms(), farmsMet,
                 stats.ranchCount(), req.requiredRanches(), ranchesMet,
-                stats.shopCount(), req.requiredShops(), shopsMet,
+                stats.restaurantCount(), req.requiredRestaurants(), restaurantsMet,
                 stats.factoryCount(), req.requiredFactories(), factoriesMet,
                 stats.mineCount(), req.requiredMines(), minesMet,
                 totalLogs, req.requiredLogs(), logsMet,

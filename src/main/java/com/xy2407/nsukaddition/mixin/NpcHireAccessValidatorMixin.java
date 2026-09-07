@@ -1,9 +1,10 @@
 package com.xy2407.nsukaddition.mixin;
 
 import com.xy2407.nsukaddition.common.breeding.BreedingConstants;
-import com.xy2407.nsukaddition.common.cooking.RestaurantConstants;
+import com.xy2407.nsukaddition.common.restaurant.RestaurantConstants;
 import com.xy2407.nsukaddition.common.registry.ModBlocks;
 import com.xy2407.nsukaddition.common.colony.ColonyData;
+import com.xy2407.nsukaddition.common.colony.ColonyEmploymentResolver;
 import com.xy2407.nsukaddition.common.colony.ColonySqliteStorage;
 import common.cn.kafei.simukraft.citizen.CitizenData;
 import common.cn.kafei.simukraft.city.CityChunkManager;
@@ -25,6 +26,14 @@ public class NpcHireAccessValidatorMixin {
 
     @Inject(method = "resolveCityId", at = @At("RETURN"), cancellable = true, remap = false)
     private static void onResolveCityId(ServerLevel level, BlockPos sourcePos, String sourceType, String role, CallbackInfoReturnable<UUID> cir) {
+        // 通用规则(不按方块枚举)：源方块所在区块若属于某殖民地(附属地)，一律解析为该殖民地 id，
+        // 使采矿等任意 simukraft 控制箱在附属地内也能正确走"附属地雇佣隔离"。
+        UUID owner = ColonyEmploymentResolver.employerGroup(level, sourcePos);
+        if (owner != null && ColonyEmploymentResolver.isColony(level, owner)) {
+            cir.setReturnValue(owner);
+            return;
+        }
+
         if (cir.getReturnValue() != null) return;
 
         if (RestaurantConstants.HIRE_SOURCE_TYPE.equals(sourceType)
@@ -73,10 +82,6 @@ public class NpcHireAccessValidatorMixin {
             remap = false, require = 1, allow = 1
     )
     private static UUID nsuk$effectiveCityId(CitizenData citizen) {
-        if (citizen == null) {
-            return null;
-        }
-        UUID colonyId = ColonySqliteStorage.getColonyForCitizen(citizen.uuid());
-        return colonyId != null ? colonyId : citizen.cityId();
+        return ColonyEmploymentResolver.citizenGroup(citizen);
     }
 }

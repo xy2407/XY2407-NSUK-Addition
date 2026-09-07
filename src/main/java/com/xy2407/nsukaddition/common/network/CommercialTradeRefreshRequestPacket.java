@@ -1,6 +1,8 @@
 package com.xy2407.nsukaddition.common.network;
 
 import com.xy2407.nsukaddition.NsukAddition;
+import com.xy2407.nsukaddition.common.entity.DialogNpcEntity;
+import com.xy2407.nsukaddition.server.city.DialogNpcDialogService;
 import com.xy2407.nsukaddition.server.city.VillageTourismService;
 import common.cn.kafei.simukraft.commercial.CommercialControlBoxService;
 import common.cn.kafei.simukraft.commercial.CommercialTradeView;
@@ -47,6 +49,13 @@ public record CommercialTradeRefreshRequestPacket(BlockPos pos, UUID workerId) i
             return;
         }
         try {
+            if (level.getEntity(packet.workerId()) instanceof DialogNpcEntity) {
+                CommercialTradeView shopView = DialogNpcDialogService.buildInitialShopView(level, packet.workerId());
+                if (shopView != null) {
+                    PacketDistributor.sendToPlayer(player, CommercialTradeOpenResponsePacket.from(shopView));
+                }
+                return;
+            }
             if (VillageTourismService.isCaravanLeader(level, packet.workerId())) {
                 CommercialTradeView caravanView = VillageTourismService.buildCaravanTradeView(level, packet.workerId());
                 if (caravanView != null) {

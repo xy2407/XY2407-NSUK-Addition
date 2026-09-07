@@ -1,7 +1,7 @@
 package com.xy2407.nsukaddition.mixin.simukraft;
 
 import common.cn.kafei.simukraft.entity.CitizenEntity;
-import com.xy2407.nsukaddition.common.cooking.RestaurantDiningService;
+import com.xy2407.nsukaddition.common.restaurant.RestaurantDiningService;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;

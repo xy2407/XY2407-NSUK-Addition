@@ -138,6 +138,21 @@ public final class TownImmigrationService {
         return list == null ? List.of() : List.copyOf(list);
     }
 
+    /** isPendingCitizen: 指定市民是否处于"移民待审批"状态（未通过前不消耗饥饿）。 */
+    public static boolean isPendingCitizen(UUID citizenId) {
+        if (citizenId == null) {
+            return false;
+        }
+        for (CopyOnWriteArrayList<ImmigrantData> list : PENDING.values()) {
+            for (ImmigrantData immigrant : list) {
+                if (citizenId.equals(immigrant.citizenId())) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     public static void cleanupExpired(ServerLevel level, long currentDay) {
         for (Map.Entry<UUID, CopyOnWriteArrayList<ImmigrantData>> entry : PENDING.entrySet()) {
             UUID cityId = entry.getKey();

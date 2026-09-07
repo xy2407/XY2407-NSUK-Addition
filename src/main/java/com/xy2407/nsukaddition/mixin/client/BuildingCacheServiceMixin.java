@@ -26,7 +26,7 @@ import java.util.Map;
 public class BuildingCacheServiceMixin {
 
     private static final Path BREEDING_DIR = FMLPaths.GAMEDIR.get().resolve("xy2407_nsuk_addition/breeding");
-    private static final Path COOKING_DIR = FMLPaths.GAMEDIR.get().resolve("xy2407_nsuk_addition/cooking");
+    private static final Path RESTAURANT_DIR = FMLPaths.GAMEDIR.get().resolve("xy2407_nsuk_addition/restaurant");
     private static final Path FOREIGN_TRADE_DIR = FMLPaths.GAMEDIR.get().resolve("xy2407_nsuk_addition/foreign_trade");
 
     @Inject(method = "getBuildings", at = @At("HEAD"), cancellable = true)
@@ -35,8 +35,8 @@ public class BuildingCacheServiceMixin {
 
         if ("breeding".equals(normalized)) {
             cir.setReturnValue(loadBuildingsFromDir(BREEDING_DIR, "breeding", "nsuk_breeding"));
-        } else if ("cooking".equals(normalized)) {
-            cir.setReturnValue(loadBuildingsFromDir(COOKING_DIR, "cooking", "nsuk_cooking"));
+        } else if ("restaurant".equals(normalized)) {
+            cir.setReturnValue(loadBuildingsFromDir(RESTAURANT_DIR, "restaurant", "nsuk_restaurant"));
         } else if ("foreign_trade".equals(normalized)) {
             cir.setReturnValue(loadBuildingsFromDir(FOREIGN_TRADE_DIR, "foreign_trade", "nsuk_foreign_trade"));
         }

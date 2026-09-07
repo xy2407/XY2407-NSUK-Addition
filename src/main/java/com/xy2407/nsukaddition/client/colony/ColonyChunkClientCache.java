@@ -5,8 +5,10 @@ import net.minecraft.world.level.ChunkPos;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -27,7 +29,10 @@ public final class ColonyChunkClientCache {
     public void updateFromPacket(UUID colonyId, String colonyName, String parentCityName,
                                   List<ColonyCoreOpenResponsePacket.ChunkCoord> chunks) {
         chunkToColony.entrySet().removeIf(e -> colonyId.equals(e.getValue()));
-        colonyEntries.put(colonyId, new ColonyEntry(colonyName, parentCityName));
+        // 保留已同步到的 parentCityId：本路径只带 parentCityName，若覆盖会把殖民地从父城市关联中剔除(边界被吞)。
+        ColonyEntry existing = colonyEntries.get(colonyId);
+        UUID parentCityId = existing != null ? existing.parentCityId() : null;
+        colonyEntries.put(colonyId, new ColonyEntry(colonyName, parentCityName, parentCityId));
         for (ColonyCoreOpenResponsePacket.ChunkCoord cc : chunks) {
             chunkToColony.put(ChunkPos.asLong(cc.x(), cc.z()), colonyId);
         }
@@ -67,6 +72,21 @@ public final class ColonyChunkClientCache {
             if (parentCityId.equals(entry.parentCityId())) count++;
         }
         return count;
+    }
+
+    /** chunksOfParentCity: 返回指定父城市下全部附属地的领地区块集合(用于建筑边界/放置判定)。 */
+    public Set<Long> chunksOfParentCity(UUID parentCityId) {
+        if (parentCityId == null) {
+            return Set.of();
+        }
+        Set<Long> result = new HashSet<>();
+        chunkToColony.forEach((chunkLong, colonyId) -> {
+            ColonyEntry entry = colonyEntries.get(colonyId);
+            if (entry != null && parentCityId.equals(entry.parentCityId())) {
+                result.add(chunkLong);
+            }
+        });
+        return Set.copyOf(result);
     }
 
     public record ColonyEntry(String colonyName, String parentCityName, UUID parentCityId) {

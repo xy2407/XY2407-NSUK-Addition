@@ -1,6 +1,7 @@
 package com.xy2407.nsukaddition.client.title;
 
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.xy2407.nsukaddition.client.modpack.ModpackInfoScreen;
 import net.minecraft.Util;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
@@ -64,7 +65,7 @@ public final class ModTitleScreen extends Screen {
     private static final int COLLAPSED_TEXT_COLOR = 0xFF333333;
     private static final String[] COLLAPSED_CHARS = {"开", "始", "游", "戏"};
 
-    private final SidebarButton[] menuButtons = new SidebarButton[4];
+    private final SidebarButton[] menuButtons = new SidebarButton[5];
     private final SlideButton[] linkButtons = new SlideButton[2];
     private final CelestialBody celestialBody = new CelestialBody();
 
@@ -109,6 +110,10 @@ public final class ModTitleScreen extends Screen {
         menuButtons[3] = new SidebarButton(
                 Component.translatable("menu.quit"),
                 () -> minecraft.stop()
+        );
+        menuButtons[4] = new SidebarButton(
+                Component.translatable("menu.xy2407_nsuk_addition.modpack_info"),
+                () -> openScreen(new ModpackInfoScreen())
         );
         layoutMenuButtons();
 

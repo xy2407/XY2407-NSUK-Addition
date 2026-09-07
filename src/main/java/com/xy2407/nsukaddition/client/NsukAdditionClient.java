@@ -15,6 +15,7 @@ import com.xy2407.nsukaddition.client.colony.ColonyCoreMoveRenderer;
 import com.xy2407.nsukaddition.client.network.DiningOrderClientHandler;
 import com.xy2407.nsukaddition.client.network.SidebarSyncClientHandler;
 import com.xy2407.nsukaddition.client.render.EntityCaptureItemRenderer;
+import com.xy2407.nsukaddition.client.renderer.DialogNpcRenderer;
 import com.xy2407.nsukaddition.client.renderer.EmptyRenderer;
 import com.xy2407.nsukaddition.client.renderer.RtsFakePlayerRenderer;
 import com.xy2407.nsukaddition.client.renderer.TouristStatusRenderer;
@@ -33,8 +34,8 @@ import com.xy2407.nsukaddition.client.colony.ColonyCoreScreenOpener;
 import com.xy2407.nsukaddition.client.colony.ColonyChunkClientCache;
 import com.xy2407.nsukaddition.client.colony.ColonyChunkMapElement;
 import com.xy2407.nsukaddition.client.container.ContainerRoleClientCache;
-import com.xy2407.nsukaddition.client.cooking.RestaurantControlBoxScreenOpener;
-import com.xy2407.nsukaddition.client.cooking.RestaurantMaidHireScreenOpener;
+import com.xy2407.nsukaddition.client.restaurant.RestaurantControlBoxScreenOpener;
+import com.xy2407.nsukaddition.client.restaurant.RestaurantMaidHireScreenOpener;
 import com.xy2407.nsukaddition.client.foreigntrade.DiplomacyClientCache;
 import com.xy2407.nsukaddition.client.foreigntrade.ForeignTradeControlBoxScreenOpener;
 import com.xy2407.nsukaddition.client.foreigntrade.ForeignTradeMenuScreenOpener;
@@ -60,6 +61,8 @@ import com.xy2407.nsukaddition.common.network.clientbound.AutoRestockStateBridge
 import com.xy2407.nsukaddition.common.network.clientbound.DiningOrderBridge;
 import com.xy2407.nsukaddition.common.network.clientbound.CityGhostSyncBridge;
 import com.xy2407.nsukaddition.common.network.clientbound.SidebarSyncBridge;
+import com.xy2407.nsukaddition.common.network.clientbound.DialogNpcOpenBridge;
+import com.xy2407.nsukaddition.client.DialogScreen;
 
 import net.minecraft.client.model.PlayerModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
@@ -104,6 +107,7 @@ public final class NsukAdditionClient {
     public static void onRegisterRenderers(EntityRenderersEvent.RegisterRenderers event) {
         event.registerEntityRenderer(ModEntities.SIT_ENTITY.get(), EmptyRenderer::new);
         event.registerEntityRenderer(ModEntities.RTS_FAKE_PLAYER.get(), RtsFakePlayerRenderer::new);
+        event.registerEntityRenderer(ModEntities.DIALOG_NPC.get(), DialogNpcRenderer::new);
     }
 
     private static LayerDefinition createCitizenLayerDefinition(boolean slim) {
@@ -155,6 +159,7 @@ public final class NsukAdditionClient {
         NeoForge.EVENT_BUS.register(NsukAdditionGameClient.class);
 
         SidebarSyncBridge.install(SidebarSyncClientHandler.INSTANCE);
+        DialogNpcOpenBridge.install(DialogScreen::open);
 
         RtsPlacedBuildingSyncBridge.install(RtsPlacedBuildingCache::applySync);
         RtsBuildingBoundsClearBridge.install(() -> client.cn.kafei.simukraft.client.buildbox.BuildingBoundsRenderer.clearAll());

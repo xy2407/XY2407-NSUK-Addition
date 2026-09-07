@@ -47,6 +47,22 @@ public final class RtsServerTick {
     }
 
     @SubscribeEvent
+    public static void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event) {
+        if (!(event.getEntity() instanceof ServerPlayer player)) return;
+        // 兜底：登出/强退/崩溃可能残留 RTS 假人，进服时按 owner 清扫，避免假人残留。
+        UUID ownerId = player.getUUID();
+        RtsFakePlayerSyncService.clearPlayer(ownerId);
+        for (ServerLevel level : player.getServer().getAllLevels()) {
+            for (Entity entity : level.getAllEntities()) {
+                if (entity instanceof RtsFakePlayerEntity fake
+                        && ownerId.equals(fake.getOwnerUUID())) {
+                    fake.discard();
+                }
+            }
+        }
+    }
+
+    @SubscribeEvent
     public static void onPlayerLogout(PlayerEvent.PlayerLoggedOutEvent event) {
         if (!(event.getEntity() instanceof ServerPlayer player)) return;
         UUID ownerId = player.getUUID();

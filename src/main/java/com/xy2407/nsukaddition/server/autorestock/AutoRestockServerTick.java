@@ -6,6 +6,9 @@ import com.xy2407.nsukaddition.common.autorestock.AutoRestockSqliteStorage;
 import com.xy2407.nsukaddition.common.foreigntrade.FreeMarketRepository;
 import com.xy2407.nsukaddition.common.foreigntrade.VillageCityTypeStorage;
 import com.xy2407.nsukaddition.common.registry.ModBlocks;
+import common.cn.kafei.simukraft.mineraldrilling.MineralDrillingBoxData;
+import common.cn.kafei.simukraft.mineraldrilling.MineralDrillingBoxManager;
+import net.minecraft.core.BlockPos;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -13,10 +16,16 @@ import net.neoforged.neoforge.event.server.ServerStartedEvent;
 import net.neoforged.neoforge.event.server.ServerStoppingEvent;
 import net.neoforged.neoforge.event.tick.ServerTickEvent;
 
+import java.util.concurrent.ConcurrentHashMap;
+
 /** 自动补货服务端定时任务，周期性处理工业、商业、矿业与养殖控制箱的物品存取和补货。 */
 public final class AutoRestockServerTick {
     private static final int STORE_INTERVAL = 600;
     private static int tickCounter;
+
+    /** 已预热的补货盒：首轮只强加载仓库，等待区块异步加载完成；次轮起才真正读写，避免首轮空窗。 */
+    private static final ConcurrentHashMap.KeySetView<BlockPos, Boolean> PRIMED =
+            ConcurrentHashMap.newKeySet();
 
     private AutoRestockServerTick() {}
 
@@ -33,6 +42,8 @@ public final class AutoRestockServerTick {
 
     @SubscribeEvent
     public static void onServerStopping(ServerStoppingEvent event) {
+        WarehouseChunkLoader.releaseAll(event.getServer());
+        PRIMED.clear();
         AutoRestockConfig.clear();
         AutoRestockSqliteStorage.clearServerCache(event.getServer());
     }
@@ -60,6 +71,12 @@ public final class AutoRestockServerTick {
             if (!level.isLoaded(pos)) {
                 continue;
             }
+            // 先确保该盒所用到的物流仓库箱子区块保持加载，避免远处仓库读不到/丢料。
+            AutoRestockService.keepWarehousesLoaded(level, pos);
+            // 首轮只强加载(等待区块异步加载)，次轮起才真正读写。
+            if (PRIMED.add(pos.immutable())) {
+                continue;
+            }
             var state = level.getBlockState(pos);
             if (state.is(common.cn.kafei.simukraft.registry.ModBlocks.INDUSTRIAL_CONTROL_BOX.get())) {
                 AutoRestockService.storeIndustrialOutputs(level, pos);
@@ -76,6 +93,24 @@ public final class AutoRestockServerTick {
             } else {
                 AutoRestockConfig.remove(level, pos);
             }
+        }
+
+        // 钻井控制盒：仅处理已手动开启自动补货的盒(左上角开关)，产出入库 + 缺工具补钻杆/钻头。
+        for (MineralDrillingBoxData drill : MineralDrillingBoxManager.get(level).all()) {
+            BlockPos drillPos = drill.boxPos();
+            if (drillPos == null || !level.isLoaded(drillPos)) {
+                continue;
+            }
+            if (!AutoRestockConfig.isEnabled(drillPos)) {
+                continue;
+            }
+            AutoRestockService.keepWarehousesLoaded(level, drillPos);
+            // 首轮只强加载(等待区块异步加载)，次轮起才真正读写。
+            if (PRIMED.add(drillPos.immutable())) {
+                continue;
+            }
+            AutoRestockService.storeMineralOutputs(level, drillPos);
+            AutoRestockService.restockMineralTools(level, drillPos);
         }
     }
 }

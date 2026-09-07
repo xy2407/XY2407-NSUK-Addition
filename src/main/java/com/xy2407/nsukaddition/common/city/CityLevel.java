@@ -5,9 +5,9 @@ public enum CityLevel {
 
     SETTLEMENT(1, "聚落", 49),
     VILLAGE(2, "村庄", 100),
-    TOWN(3, "城镇", 196),
-    CITY_STATE(4, "城邦", 361),
-    METROPOLIS(5, "都市", 625);
+    TOWN(3, "城镇", 225),
+    CITY_STATE(4, "城邦", 484),
+    METROPOLIS(5, "都市", 961);
 
     private final int level;
 

@@ -7,12 +7,13 @@ import com.xy2407.nsukaddition.common.building.IndustrialBuildingDeployer;
 
 import com.xy2407.nsukaddition.common.compat.AquacultureFishCompat;
 import com.xy2407.nsukaddition.common.compat.vinerykaleidoscope.VineryFluidCompat;
-import com.xy2407.nsukaddition.common.cooking.RestaurantDefinitionLoader;
+import com.xy2407.nsukaddition.common.restaurant.RestaurantDefinitionLoader;
 import com.xy2407.nsukaddition.common.farmland.ModFarmCropRegistry;
 import com.xy2407.nsukaddition.common.foreigntrade.ForeignTradeBuildingDeployer;
 import com.xy2407.nsukaddition.common.foreigntrade.ForeignTradeCategoryConfig;
 import com.xy2407.nsukaddition.common.foreigntrade.ForeignTradeConfig;
 import com.xy2407.nsukaddition.common.foreigntrade.VillageTradeConfig;
+import com.xy2407.nsukaddition.common.entity.DialogNpcEntity;
 import com.xy2407.nsukaddition.common.entity.RtsFakePlayerEntity;
 import com.xy2407.nsukaddition.common.item.EntityCaptureInteractHandler;
 import com.xy2407.nsukaddition.common.menu.ModMenuTypes;
@@ -27,7 +28,7 @@ import com.xy2407.nsukaddition.server.ServerShutdownHandler;
 import com.xy2407.nsukaddition.server.SidebarServerTick;
 import com.xy2407.nsukaddition.server.WriteBatchBufferTick;
 import com.xy2407.nsukaddition.server.breeding.BreedingServerTick;
-import com.xy2407.nsukaddition.server.cooking.RestaurantServerTick;
+import com.xy2407.nsukaddition.server.restaurant.RestaurantServerTick;
 import com.xy2407.nsukaddition.server.city.CityMobSpawnPrevention;
 import com.xy2407.nsukaddition.server.city.CityServerTick;
 import com.xy2407.nsukaddition.server.combat.CitizenCombatService;
@@ -71,6 +72,7 @@ public final class NsukAddition {
 
         modEventBus.addListener(EntityAttributeCreationEvent.class, event -> {
             event.put(ModEntities.RTS_FAKE_PLAYER.get(), RtsFakePlayerEntity.createAttributes().build());
+            event.put(ModEntities.DIALOG_NPC.get(), DialogNpcEntity.createAttributes().build());
         });
 
         modEventBus.addListener(EntityAttributeModificationEvent.class, event -> {
@@ -80,6 +82,8 @@ public final class NsukAddition {
         modEventBus.addListener((FMLCommonSetupEvent event) -> {
             ModFarmCropRegistry.registerAll();
             event.enqueueWork(() -> {
+                com.xy2407.nsukaddition.common.modpack.ChangelogDeployer.deployFiles();
+                com.xy2407.nsukaddition.common.modpack.DialogLinks.deployFiles();
                 BreedingDefinitionLoader.deployFiles();
                 RestaurantDefinitionLoader.deployFiles();
                 IndustrialBuildingDeployer.deploy();

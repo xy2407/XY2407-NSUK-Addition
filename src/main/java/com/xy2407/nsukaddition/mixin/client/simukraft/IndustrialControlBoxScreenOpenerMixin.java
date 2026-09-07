@@ -152,8 +152,9 @@ public abstract class IndustrialControlBoxScreenOpenerMixin {
         } else {
             List<RecipeRowEntry> recipeRows = new ArrayList<>(recipes.size());
             for (var recipe : recipes) {
-                UIElement row = invokeRecipeRow(packet, recipe, metrics);
-                recipeRows.add(new RecipeRowEntry(recipe.id(), row, buildSearchText(recipe)));
+                var displayRecipe = localizedRecipe(recipe);
+                UIElement row = invokeRecipeRow(packet, displayRecipe, metrics);
+                recipeRows.add(new RecipeRowEntry(displayRecipe.id(), row, buildSearchText(displayRecipe)));
                 scrollerView.addScrollViewChild(row);
             }
 
@@ -189,6 +190,19 @@ public abstract class IndustrialControlBoxScreenOpenerMixin {
 
         container.addChildren(searchField, scrollerView);
         cir.setReturnValue(container);
+    }
+
+    /** 用产出物品的本地化显示名替换配方 hardcoded 的 name，使 vinery/酒馆等配方显示真实物品名。 */
+    private static IndustrialControlBoxOpenResponsePacket.RecipeEntry localizedRecipe(
+            IndustrialControlBoxOpenResponsePacket.RecipeEntry recipe) {
+        if (recipe == null || recipe.outputs().isEmpty()) {
+            return recipe;
+        }
+        ItemStack stack = nsuk$invokeStack(recipe.outputs().getFirst());
+        String name = (stack != null && !stack.isEmpty())
+                ? stack.getHoverName().getString() : recipe.name();
+        return new IndustrialControlBoxOpenResponsePacket.RecipeEntry(
+                recipe.id(), name, recipe.inputs(), recipe.outputs());
     }
 
     private static String buildSearchText(IndustrialControlBoxOpenResponsePacket.RecipeEntry recipe) {

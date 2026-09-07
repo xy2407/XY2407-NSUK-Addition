@@ -21,7 +21,7 @@ import java.util.UUID;
 
 /**
  * RTS 底部建筑列表 HUD（侧边栏同款风格）：选中建筑师后显示，顶部搜索框 + 分类按钮 + 横向滚动卡片列表 + 滚动条。
- * 分类：原版 5 + nsuk 注入建筑盒的 breeding/cooking/foreign_trade；卡片文字左对齐。
+ * 分类：原版 5 + nsuk 注入建筑盒的 breeding/restaurant/foreign_trade；卡片文字左对齐。
  */
 @OnlyIn(Dist.CLIENT)
 public final class RtsBuildingListHudLayer implements LayeredDraw.Layer {
@@ -44,8 +44,8 @@ public final class RtsBuildingListHudLayer implements LayeredDraw.Layer {
     private static final int SEARCH_BG = 0xFF2A2A3A;
     private static final int SCROLLBAR_BG = 0xFF222222;
 
-    private static final String[] CATEGORIES = {"residential", "commercial", "industry", "public", "other", "breeding", "cooking", "foreign_trade"};
-    private static final String[] CATEGORY_NAMES = {"住宅", "商业", "工业", "公共", "其他", "养殖", "烹饪", "外贸"};
+    private static final String[] CATEGORIES = {"residential", "commercial", "industry", "public", "other", "breeding", "restaurant", "foreign_trade"};
+    private static final String[] CATEGORY_NAMES = {"住宅", "商业", "工业", "公共", "其他", "养殖", "餐厅", "外贸"};
 
     private static final int PANEL_H = 128;
     private static final int CATEGORY_W = 74;
