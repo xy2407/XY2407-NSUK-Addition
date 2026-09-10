@@ -6,6 +6,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -25,9 +26,8 @@ public final class FirstLoginGiftHandler {
     @SubscribeEvent
     public static void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event) {
         if (!(event.getEntity() instanceof ServerPlayer player)) return;
-        CompoundTag data = player.getPersistentData();
-        if (data.getBoolean(GIFT_TAG)) return;
-        data.putBoolean(GIFT_TAG, true);
+        if (hasGifted(player)) return;
+        markGifted(player);
 
         grant(player, "xy2407_nsuk_addition:city_core_placer", null, 1);
         grant(player, "simukraft:nsuk_farmland_box", null, 1);
@@ -36,6 +36,18 @@ public final class FirstLoginGiftHandler {
         grant(player, "sophisticatedbackpacks:netherite_backpack", null, 1);
         grant(player, "tacz:modern_kinetic_gun", gunTag(), 1);
         grant(player, "tacz:ammo_box", ammoTag(), 1);
+    }
+
+    private static boolean hasGifted(ServerPlayer player) {
+        return player.getPersistentData()
+                .getCompound(Player.PERSISTED_NBT_TAG)
+                .getBoolean(GIFT_TAG);
+    }
+
+    private static void markGifted(ServerPlayer player) {
+        CompoundTag persistedData = player.getPersistentData().getCompound(Player.PERSISTED_NBT_TAG);
+        persistedData.putBoolean(GIFT_TAG, true);
+        player.getPersistentData().put(Player.PERSISTED_NBT_TAG, persistedData);
     }
 
     private static CompoundTag gunTag() {

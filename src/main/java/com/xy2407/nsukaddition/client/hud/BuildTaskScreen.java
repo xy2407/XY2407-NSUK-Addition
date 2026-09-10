@@ -167,20 +167,28 @@ public final class BuildTaskScreen extends Screen {
         int btnGap = 4;
         int btnTop = y + CARD_H - btnH - 6;
         int btnAreaW = cardW - 16;
-        int btnW = (btnAreaW - btnGap * 2) / 3;
         boolean paused = isPaused(task.statusKey());
-
-        drawActionButton(gg, x + 8, btnTop, btnW, btnH, paused ? "恢复" : "暂停",
-                paused ? BuildTaskActionPacket.Action.RESUME : BuildTaskActionPacket.Action.PAUSE, task.taskId(), task.citizenId(), false, false);
-        drawActionButton(gg, x + 8 + btnW + btnGap, btnTop, btnW, btnH, "追踪",
-                BuildTaskActionPacket.Action.TRACK, task.taskId(), task.citizenId(), task.tracked(), false);
-        drawActionButton(gg, x + 8 + (btnW + btnGap) * 2, btnTop, btnW, btnH, "终止",
-                BuildTaskActionPacket.Action.ABORT, task.taskId(), task.citizenId(), false, true);
+        boolean plan = task.plan();
+        if (plan) {
+            int btnW = (btnAreaW - btnGap) / 2;
+            drawActionButton(gg, x + 8, btnTop, btnW, btnH, paused ? "恢复" : "暂停",
+                    paused ? BuildTaskActionPacket.Action.RESUME : BuildTaskActionPacket.Action.PAUSE, task.taskId(), task.citizenId(), false, false, true);
+            drawActionButton(gg, x + 8 + btnW + btnGap, btnTop, btnW, btnH, "终止",
+                    BuildTaskActionPacket.Action.ABORT, task.taskId(), task.citizenId(), false, true, true);
+        } else {
+            int btnW = (btnAreaW - btnGap * 2) / 3;
+            drawActionButton(gg, x + 8, btnTop, btnW, btnH, paused ? "恢复" : "暂停",
+                    paused ? BuildTaskActionPacket.Action.RESUME : BuildTaskActionPacket.Action.PAUSE, task.taskId(), task.citizenId(), false, false, false);
+            drawActionButton(gg, x + 8 + btnW + btnGap, btnTop, btnW, btnH, "追踪",
+                    BuildTaskActionPacket.Action.TRACK, task.taskId(), task.citizenId(), task.tracked(), false, false);
+            drawActionButton(gg, x + 8 + (btnW + btnGap) * 2, btnTop, btnW, btnH, "终止",
+                    BuildTaskActionPacket.Action.ABORT, task.taskId(), task.citizenId(), false, true, false);
+        }
     }
 
     private void drawActionButton(GuiGraphics gg, int x, int y, int w, int h,
                                    String label, BuildTaskActionPacket.Action action,
-                                   String taskId, String citizenId, boolean active, boolean danger) {
+                                   String taskId, String citizenId, boolean active, boolean danger, boolean plan) {
         boolean hovered = mouseIn(x, y, w, h);
         int bg;
         if (danger) {
@@ -193,7 +201,7 @@ public final class BuildTaskScreen extends Screen {
         int tw = font.width(label);
         gg.drawString(font, Component.literal(label), x + (w - tw) / 2,
                 y + (h - font.lineHeight) / 2, BTN_TEXT, false);
-        buttons.add(new Button(x, y, w, h, taskId, citizenId, action));
+        buttons.add(new Button(x, y, w, h, taskId, citizenId, action, plan));
     }
 
     private static boolean mouseIn(int x, int y, int w, int h) {
@@ -208,6 +216,7 @@ public final class BuildTaskScreen extends Screen {
         return switch (statusKey) {
             case "building" -> "建造中";
             case "queued" -> "排队中";
+            case "planning" -> Component.translatable("hud.xy2407_nsuk_addition.quest.status.planning").getString();
             case "waiting_materials" -> "等待材料";
             case "paused_manual" -> Component.translatable("gui.xy2407_nsuk_addition.build_tasks.status.paused_manual").getString();
             case "paused_resting" -> Component.translatable("hud.xy2407_nsuk_addition.quest.status.paused_resting").getString();
@@ -249,8 +258,8 @@ public final class BuildTaskScreen extends Screen {
                         NsukAddition.LOGGER.error("建造任务按钮 UUID 非法: citizen={}, task={}", btn.citizenId, btn.taskId, e);
                         return true;
                     }
-                    PacketDistributor.sendToServer(new BuildTaskActionPacket(citizenUuid, taskUuid, btn.action));
-                    optimisticTasks = applyOptimistic(tasks, btn.taskId, btn.action);
+                    PacketDistributor.sendToServer(new BuildTaskActionPacket(citizenUuid, taskUuid, btn.action, btn.plan));
+                    optimisticTasks = applyOptimistic(tasks, btn.taskId, btn.action, btn.plan);
                     return true;
                 }
             }
@@ -259,18 +268,18 @@ public final class BuildTaskScreen extends Screen {
     }
 
     private static List<SidebarDataSnapshot.BuildTask> applyOptimistic(
-            List<SidebarDataSnapshot.BuildTask> list, String taskId, BuildTaskActionPacket.Action action) {
+            List<SidebarDataSnapshot.BuildTask> list, String taskId, BuildTaskActionPacket.Action action, boolean plan) {
         List<SidebarDataSnapshot.BuildTask> updated = new ArrayList<>(list);
         for (int i = 0; i < updated.size(); i++) {
             SidebarDataSnapshot.BuildTask t = updated.get(i);
             if (!t.taskId().equals(taskId)) continue;
             switch (action) {
                 case PAUSE -> updated.set(i, new SidebarDataSnapshot.BuildTask(
-                        t.taskId(), t.displayName(), t.citizenId(), t.progressPercent(), "paused_manual", t.tracked(), t.materials()));
+                        t.taskId(), t.displayName(), t.citizenId(), t.progressPercent(), "paused_manual", t.tracked(), t.materials(), t.plan()));
                 case RESUME -> updated.set(i, new SidebarDataSnapshot.BuildTask(
-                        t.taskId(), t.displayName(), t.citizenId(), t.progressPercent(), "building", t.tracked(), t.materials()));
+                        t.taskId(), t.displayName(), t.citizenId(), t.progressPercent(), "building", t.tracked(), t.materials(), t.plan()));
                 case TRACK -> updated.set(i, new SidebarDataSnapshot.BuildTask(
-                        t.taskId(), t.displayName(), t.citizenId(), t.progressPercent(), t.statusKey(), !t.tracked(), t.materials()));
+                        t.taskId(), t.displayName(), t.citizenId(), t.progressPercent(), t.statusKey(), !t.tracked(), t.materials(), t.plan()));
                 case ABORT -> updated.remove(i);
             }
             break;
@@ -308,5 +317,5 @@ public final class BuildTaskScreen extends Screen {
         Minecraft.getInstance().setScreen(new BuildTaskScreen());
     }
 
-    private record Button(int x, int y, int w, int h, String taskId, String citizenId, BuildTaskActionPacket.Action action) {}
+    private record Button(int x, int y, int w, int h, String taskId, String citizenId, BuildTaskActionPacket.Action action, boolean plan) {}
 }

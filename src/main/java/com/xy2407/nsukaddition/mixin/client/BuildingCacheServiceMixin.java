@@ -28,6 +28,7 @@ public class BuildingCacheServiceMixin {
     private static final Path BREEDING_DIR = FMLPaths.GAMEDIR.get().resolve("xy2407_nsuk_addition/breeding");
     private static final Path RESTAURANT_DIR = FMLPaths.GAMEDIR.get().resolve("xy2407_nsuk_addition/restaurant");
     private static final Path FOREIGN_TRADE_DIR = FMLPaths.GAMEDIR.get().resolve("xy2407_nsuk_addition/foreign_trade");
+    private static final Path PHYSICAL_DIR = FMLPaths.GAMEDIR.get().resolve("xy2407_nsuk_addition/physical");
 
     @Inject(method = "getBuildings", at = @At("HEAD"), cancellable = true)
     private static void nsuk$dynamicLoadBreeding(String category, CallbackInfoReturnable<List<BuildingCacheService.BuildingMeta>> cir) {
@@ -39,6 +40,8 @@ public class BuildingCacheServiceMixin {
             cir.setReturnValue(loadBuildingsFromDir(RESTAURANT_DIR, "restaurant", "nsuk_restaurant"));
         } else if ("foreign_trade".equals(normalized)) {
             cir.setReturnValue(loadBuildingsFromDir(FOREIGN_TRADE_DIR, "foreign_trade", "nsuk_foreign_trade"));
+        } else if ("physical".equals(normalized)) {
+            cir.setReturnValue(loadBuildingsFromDir(PHYSICAL_DIR, "physical", "nsuk_physical"));
         }
     }
 

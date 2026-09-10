@@ -3,6 +3,7 @@ package com.xy2407.nsukaddition.server;
 import com.xy2407.nsukaddition.NsukAddition;
 import common.cn.kafei.simukraft.building.BuildingTaskData;
 import common.cn.kafei.simukraft.citizen.CitizenData;
+import common.cn.kafei.simukraft.planner.PlanningTaskData;
 import common.cn.kafei.simukraft.citizen.CitizenService;
 import common.cn.kafei.simukraft.city.CityData;
 import common.cn.kafei.simukraft.city.CityManager;
@@ -89,6 +90,13 @@ public final class SidebarDataCache {
                 byId.put(t.taskId(), t);
             }
             allTasks = new ArrayList<>(byId.values());
+            java.util.Map<String, PlanningTaskData> allPlanning = new java.util.LinkedHashMap<>();
+            for (PlanningTaskData t : SimuSqliteStorage.loadPlanningTasks(level)) {
+                allPlanning.put(t.citizenId().toString(), t);
+            }
+            for (PlanningTaskData t : com.xy2407.nsukaddition.server.planning.PlannerRuntimeAccess.runningTasks(level)) {
+                allPlanning.put(t.citizenId().toString(), t);
+            }
             Map<UUID, CitySqliteCache> next = new ConcurrentHashMap<>();
             for (UUID cityId : cityIds) {
                 List<BuildingTaskData> cityTasks = new ArrayList<>();
@@ -97,9 +105,15 @@ public final class SidebarDataCache {
                         cityTasks.add(t);
                     }
                 }
+                List<PlanningTaskData> cityPlanning = new ArrayList<>();
+                for (PlanningTaskData t : allPlanning.values()) {
+                    if (cityId.equals(t.cityId())) {
+                        cityPlanning.add(t);
+                    }
+                }
                 List<SidebarCacheFinanceEntry> financeEntries = collectFinanceEntries(level, cityId);
                 List<SidebarCacheCitizenEntry> citizens = collectCitizens(level, cityId);
-                next.put(cityId, new CitySqliteCache(cityTasks, financeEntries, citizens));
+                next.put(cityId, new CitySqliteCache(cityTasks, cityPlanning, financeEntries, citizens));
             }
             CACHE.set(next);
         } catch (Exception e) {
@@ -181,6 +195,7 @@ public final class SidebarDataCache {
 
     public record CitySqliteCache(
             List<BuildingTaskData> buildingTasks,
+            List<PlanningTaskData> planningTasks,
             List<SidebarCacheFinanceEntry> financeEntries,
             List<SidebarCacheCitizenEntry> citizens) {
     }

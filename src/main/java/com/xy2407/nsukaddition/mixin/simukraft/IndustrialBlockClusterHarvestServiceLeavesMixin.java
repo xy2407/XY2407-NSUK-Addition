@@ -28,7 +28,7 @@ public abstract class IndustrialBlockClusterHarvestServiceLeavesMixin {
     )
     private static List<ItemStack> nsukaddition$harvestLeafDrops(BlockState state, ServerLevel level, BlockPos pos,
                                                                   BlockEntity blockEntity, Entity entity, ItemStack tool) {
-        if (state.is(BlockTags.LEAVES)) {
+        if (state.is(BlockTags.LEAVES) && level.random.nextBoolean()) {
             Item leafItem = state.getBlock().asItem();
             if (leafItem != Items.AIR) {
                 return List.of(new ItemStack(leafItem));

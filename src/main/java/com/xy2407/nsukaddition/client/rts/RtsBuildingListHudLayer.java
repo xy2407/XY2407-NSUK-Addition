@@ -44,8 +44,8 @@ public final class RtsBuildingListHudLayer implements LayeredDraw.Layer {
     private static final int SEARCH_BG = 0xFF2A2A3A;
     private static final int SCROLLBAR_BG = 0xFF222222;
 
-    private static final String[] CATEGORIES = {"residential", "commercial", "industry", "public", "other", "breeding", "restaurant", "foreign_trade"};
-    private static final String[] CATEGORY_NAMES = {"住宅", "商业", "工业", "公共", "其他", "养殖", "餐厅", "外贸"};
+    private static final String[] CATEGORIES = {"residential", "commercial", "industry", "public", "other", "breeding", "restaurant", "foreign_trade", "physical"};
+    private static final String[] CATEGORY_NAMES = {"住宅", "商业", "工业", "公共", "其他", "养殖", "餐厅", "外贸", "物理化建筑"};
 
     private static final int PANEL_H = 128;
     private static final int CATEGORY_W = 74;

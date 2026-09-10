@@ -89,6 +89,7 @@ public final class NsukAddition {
                 IndustrialBuildingDeployer.deploy();
                 ForeignTradeBuildingDeployer.deploy();
                 CommercialBuildingDeployer.deploy();
+                com.xy2407.nsukaddition.server.physicise.PhysicalBuildingDeployer.deploy();
                 com.xy2407.nsukaddition.common.capture.CapturableEntityRegistry.load();
             });
         });

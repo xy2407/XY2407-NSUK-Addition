@@ -57,6 +57,8 @@ public class BuildingPackageCatalogMixin {
             cir.setReturnValue("restaurant");
         } else if ("foreign_trade".equalsIgnoreCase(category) || "foreigntrade".equalsIgnoreCase(category)) {
             cir.setReturnValue("foreign_trade");
+        } else if ("physical".equalsIgnoreCase(category)) {
+            cir.setReturnValue("physical");
         }
     }
 

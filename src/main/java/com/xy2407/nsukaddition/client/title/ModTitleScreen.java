@@ -18,7 +18,7 @@ public final class ModTitleScreen extends Screen {
     private static final int BG_MAIN = 0xFF444444;
     private static final int TEXT_MUTED = 0xFFBDBDBD;
     private static final int LINK_HOVER_COLOR = 0xFFFFFFFF;
-    private static final String UPDATE_URL = "https://pan.quark.cn/s/6d1e155ba656";
+    private static final String UPDATE_URL = "https://pan.quark.cn/s/4f6754b99942";
 
     private static final ResourceLocation BG_DAY1 =
             ResourceLocation.fromNamespaceAndPath("xy2407_nsuk_addition", "textures/background/day1.png");

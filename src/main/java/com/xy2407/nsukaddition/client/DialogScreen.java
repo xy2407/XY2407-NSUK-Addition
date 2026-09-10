@@ -67,7 +67,6 @@ public class DialogScreen extends Screen {
     public void onClose() {
         boolean wasOpen = open;
         open = false;
-        // 无论 ESC 或点击离开，都通知服务端恢复管家的巡逻移动
         if (wasOpen) {
             PacketDistributor.sendToServer(new DialogNpcOptionPacket(this.entityId, "leave"));
         }
@@ -94,7 +93,6 @@ public class DialogScreen extends Screen {
         gg.fillGradient(0, 0, width, height, GRADIENT_TOP, GRADIENT_BOTTOM);
 
         float cs = Math.max(1.0F, Math.min(1.8F, width / 900F));
-        // 正文顶部上方：显示对话实体名称
         gg.drawCenteredString(this.font, "[" + dialogName() + "]", width / 2,
                 (int) (height * 0.67F), 0xFFFFFFFF);
         float bodyY = height * 0.74F;
@@ -166,11 +164,9 @@ public class DialogScreen extends Screen {
                     if ("leave".equals(action)) {
                         onClose();
                     } else if ("shop_open".equals(action)) {
-                        // 先完整关闭对话框（setScreen(null)），再请求服务端打开商业UI，避免 LDLib 容器在被占用的 Modal screen 上打开被顶掉
                         onClose();
                         PacketDistributor.sendToServer(new DialogNpcOptionPacket(entityId, action));
                     } else if (action.startsWith("url:")) {
-                        // 客户端直接打开链接，无需通知服务端
                         net.minecraft.Util.getPlatform().openUri(action.substring(4));
                     } else if (!action.isEmpty()) {
                         PacketDistributor.sendToServer(new DialogNpcOptionPacket(entityId, action));
@@ -191,7 +187,6 @@ public class DialogScreen extends Screen {
         return chars >= body.length() ? body : body.substring(0, chars);
     }
 
-    /** 按 \n 切成逻辑段落，再对每段按像素宽度折行并合并，确保手动换行与自动折行均正确生效。 */
     private List<FormattedCharSequence> splitBody(String text, int maxWidth) {
         List<FormattedCharSequence> lines = new ArrayList<>();
         for (String para : text.split("\n", -1)) {
@@ -200,7 +195,6 @@ public class DialogScreen extends Screen {
         return lines;
     }
 
-    /** 将含 § 颜色/格式码的旧式字符串解析为带样式的组件，供正文着色渲染。 */
     private static Component legacyComponent(String text) {
         MutableComponent root = Component.literal("");
         StringBuilder sb = new StringBuilder();
@@ -232,18 +226,15 @@ public class DialogScreen extends Screen {
         if (mc == null || mc.level == null) {
             return;
         }
-        // 常驻单例渲染实体：不走每帧 new，经正常实体渲染管线(EMF/贴图/头不透明)，位置角度由矩阵固定、实体不tick不动
         if (DIALOG_STAND == null) {
             DIALOG_STAND = new DialogNpcEntity(DialogNpcEntity.TYPE, mc.level);
             DIALOG_STAND.setPos(0.0D, 0.0D, 0.0D);
             DIALOG_STAND.setCustomName(Component.literal("城市管家"));
         }
         DialogNpcEntity dummy = DIALOG_STAND;
-        // 反向侧身：面朝右侧（180-30=150）
         dummy.setYRot(150.0F);
         dummy.setYBodyRot(150.0F);
         dummy.setYHeadRot(150.0F);
-        // 用世界时间推进动画计时：让 jem/眼睛等实体动画平滑播放，位置由矩阵固定不动
         dummy.tickCount = (int) (mc.level.getGameTime());
 
         int modelX = (int) (this.width * 0.18F);

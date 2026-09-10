@@ -14,14 +14,23 @@ import common.cn.kafei.simukraft.building.BuildingTaskData;
 import common.cn.kafei.simukraft.city.CityManager;
 import common.cn.kafei.simukraft.city.CityMemberData;
 import common.cn.kafei.simukraft.city.CityPermissionLevel;
+import common.cn.kafei.simukraft.planner.PlanOperation;
+import common.cn.kafei.simukraft.planner.PlanningTaskData;
+import com.xy2407.nsukaddition.server.planning.PlanningPauseState;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.level.block.Block;
 import net.neoforged.neoforge.network.PacketDistributor;
 
 import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.UUID;
 
 /** 侧边栏数据同步服务，每 tick 从统一缓存读取数据并发送给客户端，避免直接访问 SQLite。 */
@@ -57,6 +66,7 @@ public final class SidebarSyncService {
         List<SidebarDataCache.SidebarCacheFinanceEntry> cachedFinance = cached != null ? cached.financeEntries() : List.of();
         List<SidebarDataCache.SidebarCacheCitizenEntry> cachedCitizens = cached != null ? cached.citizens() : List.of();
         List<BuildingTaskData> cachedTasks = cached != null ? cached.buildingTasks() : List.of();
+        List<PlanningTaskData> cachedPlanning = cached != null ? cached.planningTasks() : List.of();
 
         List<String> oNames = new ArrayList<>();
         List<String> oPerms = new ArrayList<>();
@@ -88,6 +98,8 @@ public final class SidebarSyncService {
         List<SidebarSyncPacket.MaterialEntry> reserveMaterials = toSortedEntries(reserveCounts);
 
         List<SidebarSyncPacket.BuildTaskData> buildTasks = collectBuildTasks(level, cityId, cachedTasks, reserveCounts);
+        List<SidebarSyncPacket.BuildTaskData> planningTasks = collectPlanningTasks(level, cachedPlanning, reserveCounts);
+        buildTasks.addAll(planningTasks);
 
         List<SidebarSyncPacket.FinanceEntry> financeEntries = new ArrayList<>(cachedFinance.size());
         for (SidebarDataCache.SidebarCacheFinanceEntry e : cachedFinance) {
@@ -200,11 +212,92 @@ public final class SidebarSyncService {
 
                 tasks.add(new SidebarSyncPacket.BuildTaskData(
                         t.taskId().toString(), t.displayName(), t.citizenId().toString(), progress, st, tracked,
-                        reqEntries, availEntries));
+                        reqEntries, availEntries, false));
             }
         } catch (Exception ignored) {
         }
         return tasks;
+    }
+
+    private static List<SidebarSyncPacket.BuildTaskData> collectPlanningTasks(
+            ServerLevel level, List<PlanningTaskData> loaded, Map<String, Integer> reserveSnapshot) {
+        List<SidebarSyncPacket.BuildTaskData> tasks = new ArrayList<>();
+        for (PlanningTaskData t : loaded) {
+            String st = t.status() != null ? t.status() : "queued";
+            if ("completed".equals(st) || "interrupted".equals(st)) {
+                continue;
+            }
+            String statusKey = PlanningPauseState.isPaused(level, t.citizenId()) ? "paused_manual" : st;
+            int target = Math.max(1, t.targetBlocks());
+            int progress = (int) ((double) Math.max(0, t.completedBlocks()) / target * 100);
+
+            Map<String, Integer> total = planningCategoryRequirements(t, false);
+            Map<String, Integer> remaining = planningCategoryRequirements(t, true);
+            List<SidebarSyncPacket.MaterialEntry> reqEntries = toTaskEntries(total, remaining);
+            List<SidebarSyncPacket.MaterialEntry> availEntries = toTaskEntries(total, reserveSnapshot);
+
+            tasks.add(new SidebarSyncPacket.BuildTaskData(
+                    t.taskId().toString(), planDisplayName(t), t.citizenId().toString(),
+                    progress, statusKey, false, reqEntries, availEntries, true));
+        }
+        return tasks;
+    }
+
+    private static Map<String, Integer> planningCategoryRequirements(PlanningTaskData t, boolean remaining) {
+        Map<String, Integer> result = new LinkedHashMap<>();
+        if (t == null || t.operation() == null || t.operation() == PlanOperation.REMOVE) {
+            return result;
+        }
+        int target = Math.max(1, t.targetBlocks());
+        int count = remaining ? Math.max(0, target - Math.max(0, t.completedBlocks())) : target;
+        if (count <= 0) {
+            return result;
+        }
+        Set<String> cats = new LinkedHashSet<>();
+        if (t.operation() == PlanOperation.FILL) {
+            String cat = blockCategory(t.fillBlockId());
+            if (cat != null) {
+                cats.add(cat);
+            }
+        } else if (t.operation() == PlanOperation.REPLACE) {
+            for (String targetId : t.effectiveReplacementMap().values()) {
+                String cat = blockCategory(targetId);
+                if (cat != null) {
+                    cats.add(cat);
+                }
+            }
+        }
+        for (String c : cats) {
+            result.put(c, count);
+        }
+        return result;
+    }
+
+    private static String blockCategory(String blockId) {
+        if (blockId == null || blockId.isBlank()) {
+            return null;
+        }
+        ResourceLocation id = ResourceLocation.tryParse(blockId);
+        if (id == null) {
+            return null;
+        }
+        Block block = BuiltInRegistries.BLOCK.get(id);
+        if (block == null) {
+            return null;
+        }
+        return MaterialCategoryRegistry.getCategoryKey(block);
+    }
+
+    private static String planDisplayName(PlanningTaskData t) {
+        String op;
+        if (t.operation() == PlanOperation.FILL) {
+            op = "填充";
+        } else if (t.operation() == PlanOperation.REPLACE) {
+            op = "替换";
+        } else {
+            op = "清除";
+        }
+        return "规划·" + op + " " + t.minPos().getX() + "," + t.minPos().getY() + "," + t.minPos().getZ();
     }
 
     private static List<SidebarSyncPacket.MaterialEntry> toSortedEntries(Map<String, Integer> counts) {

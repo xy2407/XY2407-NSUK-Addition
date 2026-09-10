@@ -9,7 +9,7 @@ import com.xy2407.nsukaddition.common.restaurant.CookingWorkService;
 import com.xy2407.nsukaddition.common.restaurant.RestaurantBoxData;
 import com.xy2407.nsukaddition.common.restaurant.RestaurantBoxManager;
 import com.xy2407.nsukaddition.common.restaurant.RestaurantControlBoxService;
-import com.xy2407.nsukaddition.common.restaurant.RecipeDecompositionService;
+import com.xy2407.nsukaddition.common.restaurant.RestaurantRecipeCacheService;
 import com.xy2407.nsukaddition.common.restaurant.RestaurantDefinition;
 import com.xy2407.nsukaddition.common.restaurant.RestaurantDefinitionLoader;
 import com.xy2407.nsukaddition.common.restaurant.RestaurantRecipes;
@@ -544,17 +544,12 @@ public final class AutoRestockService {
         final int targetStockPerInput = 16;
 
         // 把每个菜品的直接材料递归解构成最基础原料再补给，仓库只需备基础料、无需备中间合成物。
+        // 整菜解析结果全局缓存(最多70道，超出淘汰最早)，避免每次补货重复全表扫配方。
         java.util.LinkedHashMap<Ingredient, Integer> neededByIngredient = new java.util.LinkedHashMap<>();
         for (String itemId : cookItems) {
-            CookingWorkService.ResolvedRecipe recipe = CookingWorkService.findRecipe(level, itemId);
-            if (recipe == null) continue;
-            for (Ingredient ing : recipe.ingredients()) {
-                if (ing.isEmpty()) continue;
-                if (isContainerOnly(ing)) continue; // 桶/碗/瓶等容器不参与补货
-                for (Ingredient leaf : RecipeDecompositionService.decompose(level, ing)) {
-                    if (leaf == null || leaf.isEmpty()) continue;
-                    neededByIngredient.merge(leaf, targetStockPerInput, Math::max);
-                }
+            for (Ingredient leaf : RestaurantRecipeCacheService.dishMaterials(level, itemId)) {
+                if (leaf == null || leaf.isEmpty()) { continue; }
+                neededByIngredient.merge(leaf, targetStockPerInput, Math::max);
             }
         }
         if (neededByIngredient.isEmpty()) {
@@ -578,15 +573,6 @@ public final class AutoRestockService {
                 reinsertLeftover(level, boxPos, leftover);
             }
         }
-    }
-
-    /** 判断材料是否仅为容器/工具类（桶、碗、瓶等），是则不参与补货需求。 */
-    private static boolean isContainerOnly(Ingredient ing) {
-        for (ItemStack candidate : ing.getItems()) {
-            if (candidate == null || candidate.isEmpty()) continue;
-            if (RecipeDecompositionService.isToolOrContainerItem(candidate.getItem())) return true;
-        }
-        return false;
     }
 
     private static int countItemInInputContainers(ServerLevel level, List<BlockPos> containers, Item item) {

@@ -103,7 +103,6 @@ public final class RtsBuildingPlacementManager {
 
     private static boolean moveActive;
     private static RtsPlacedBuildingSyncPacket.Entry moveEntry;
-    /** 迁移以"被迁移建筑所属城市"为领地锚点(已解析为父城市)，不依赖当前视角城市，避免主城/附属地迁移判定失效。 */
     private static UUID moveTargetCityId;
     private static BuildingStructure moveStructure;
     private static List<BuildingBlockData> moveLocalBlocks = List.of();
@@ -504,18 +503,15 @@ public final class RtsBuildingPlacementManager {
         return BuildingTerritoryValidator.positionBoundsInChunks(worldPoses, nsukTerritoryChunks());
     }
 
-    /** nsukTerritoryChunks: 建筑放置判定用"自己城市 ∪ 自己殖民地(附属地)"的领地区块，避免殖民地内投影被钉在角落。 */
     private static Set<Long> nsukTerritoryChunks() {
         return territoryFor(OwnCityClientCache.getOwnCityId());
     }
 
-    /** territoryFor: 以指定城市为锚点，返回"该城市 ∪ 其附属地"的领地区块；锚点为空/未知时回退当前视角城市。 */
     private static Set<Long> territoryFor(UUID cityId) {
         ClientCityChunkCache cache = ClientCityChunkCache.getInstance();
         if (cityId == null) {
             return cache.getCurrentCityChunks();
         }
-        // 若锚点是殖民地 id，取其父城市作为归属基准，避免殖民地领地匹配为空。
         ColonyChunkClientCache.ColonyEntry colony = ColonyChunkClientCache.getInstance().getColonyEntry(cityId);
         if (colony != null && colony.parentCityId() != null) {
             cityId = colony.parentCityId();
@@ -584,7 +580,6 @@ public final class RtsBuildingPlacementManager {
         dragOriginStart = null;
         moveValid = false;
         lastMoveCheckedOrigin = null;
-        // 以被迁移建筑实际归属城市为领地锚点，免疫 currentCityId/ownCityId 污染(主城与附属地都可靠)。
         long originChunkLong = new net.minecraft.world.level.ChunkPos(entryOrigin).toLong();
         UUID owner = ClientCityChunkCache.getInstance().getChunkOwner(originChunkLong);
         moveTargetCityId = owner;

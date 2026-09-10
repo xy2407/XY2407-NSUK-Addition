@@ -7,7 +7,9 @@ import common.cn.kafei.simukraft.citizen.CitizenWorkStatus;
 import common.cn.kafei.simukraft.citizen.CitizenWorkplaceMoveService;
 import common.cn.kafei.simukraft.city.CityData;
 import common.cn.kafei.simukraft.city.CityManager;
+import common.cn.kafei.simukraft.planner.PlannerWorkService;
 import common.cn.kafei.simukraft.storage.SimuSqliteStorage;
+import com.xy2407.nsukaddition.server.planning.PlanningPauseState;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import com.xy2407.nsukaddition.server.SidebarDataCache;
@@ -23,7 +25,13 @@ public final class BuildTaskActionHandler {
 
     public static void handle(ServerLevel level, ServerPlayer player,
                               UUID citizenId, UUID taskId,
-                              com.xy2407.nsukaddition.common.network.building.BuildTaskActionPacket.Action action) {
+                              com.xy2407.nsukaddition.common.network.building.BuildTaskActionPacket.Action action,
+                              boolean plan) {
+        if (plan) {
+            handlePlanning(level, citizenId, taskId, action);
+            SidebarDataCache.refreshAsync(level);
+            return;
+        }
         BuildingTaskData task = SimuSqliteStorage.loadBuildingTask(level, citizenId);
         // 城市以任务归属为准，避免暂停/恢复状态按玩家所属城市记录、而与侧边栏按任务城市查询不一致(导致首次暂停"回弹")
         UUID cityId = task != null ? task.cityId()
@@ -99,5 +107,40 @@ public final class BuildTaskActionHandler {
             citizen.setStatusLabel(statusLabel);
             SimuSqliteStorage.saveCitizen(level, citizen.toTag());
         });
+    }
+
+    private static void handlePlanning(ServerLevel level, UUID citizenId, UUID taskId,
+                                       com.xy2407.nsukaddition.common.network.building.BuildTaskActionPacket.Action action) {
+        switch (action) {
+            case PAUSE -> planningPause(level, citizenId);
+            case RESUME -> planningResume(level, citizenId);
+            case ABORT -> planningAbort(level, citizenId);
+            case TRACK -> { } // 规划任务无追踪概念
+        }
+    }
+
+    private static void planningPause(ServerLevel level, UUID citizenId) {
+        if (citizenId == null || PlanningPauseState.isPaused(level, citizenId)) {
+            return;
+        }
+        PlanningPauseState.setPaused(level, citizenId);
+        setCitizenWorkStatus(level, citizenId, CitizenWorkStatus.RESTING, "");
+    }
+
+    private static void planningResume(ServerLevel level, UUID citizenId) {
+        if (citizenId == null || !PlanningPauseState.isPaused(level, citizenId)) {
+            return;
+        }
+        PlanningPauseState.setResumed(level, citizenId);
+        setCitizenWorkStatus(level, citizenId, CitizenWorkStatus.WORKING, "");
+    }
+
+    private static void planningAbort(ServerLevel level, UUID citizenId) {
+        if (citizenId == null) {
+            return;
+        }
+        PlanningPauseState.setResumed(level, citizenId);
+        PlannerWorkService.cancelTask(level, citizenId);
+        setCitizenWorkStatus(level, citizenId, CitizenWorkStatus.IDLE, "");
     }
 }

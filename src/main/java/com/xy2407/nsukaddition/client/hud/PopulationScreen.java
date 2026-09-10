@@ -81,6 +81,8 @@ public final class PopulationScreen extends Screen {
 
     private final ScrollablePanel scrollPanel = new ScrollablePanel();
     private EditBox searchBox;
+    private UUID lostUuid;
+    private UUID busyUuid;
 
     private List<SidebarDataSnapshot.CitizenRecord> allCitizens;
     private List<SidebarDataSnapshot.CitizenRecord> filtered;
@@ -213,6 +215,12 @@ public final class PopulationScreen extends Screen {
 
         gg.disableScissor();
 
+        if (lostUuid != null) {
+            renderHintBanner(gg, winX, winY, lostUuid, "已遗失，请点击其【传送1】找回");
+        } else if (busyUuid != null) {
+            renderHintBanner(gg, winX, winY, busyUuid, "正在就餐，无法赶到");
+        }
+
         if (scrollPanel.isScrollbarVisible()) {
             int barX = scrollPanel.scrollbarX(winX + WINDOW_W, PADDING);
             scrollPanel.renderScrollbar(gg, barX, contentY, contentH, mouseX, mouseY);
@@ -268,6 +276,25 @@ public final class PopulationScreen extends Screen {
                 hovered ? TEXT_PRIMARY : TEXT_SECONDARY, false);
     }
 
+    private void renderHintBanner(GuiGraphics gg, int winX, int winY, UUID uuid, String suffix) {
+        String name = null;
+        if (allCitizens != null) {
+            String lost = uuid.toString();
+            for (SidebarDataSnapshot.CitizenRecord c : allCitizens) {
+                if (lost.equals(c.uuid())) {
+                    name = c.name();
+                    break;
+                }
+            }
+        }
+        String msg = (name != null ? "⚠ " + name : "⚠ 该NPC") + " " + suffix;
+        int x = winX + PADDING;
+        int right = winX + WINDOW_W - PADDING;
+        int textTop = winY + WINDOW_H - font.lineHeight - 6;
+        gg.fill(x, textTop - 2, right, textTop + font.lineHeight + 2, 0xCC553300);
+        gg.drawString(font, msg, x, textTop, 0xFFFFCF66, false);
+    }
+
     private boolean handleTeleportClick(double mouseX, double mouseY) {
         if (filtered == null || filtered.isEmpty()) return false;
         int winX = (width - WINDOW_W) / 2;
@@ -278,6 +305,8 @@ public final class PopulationScreen extends Screen {
         for (int i = 0; i < filtered.size(); i++) {
             int y = contentY - scrollPanel.scrollOffset() + i * (ITEM_H + ITEM_GAP);
             if (inTeleportButton(mouseX, mouseY, btnX, y + 4)) {
+                lostUuid = null;
+                busyUuid = null;
                 sendTeleport(filtered.get(i), true);
                 return true;
             }
@@ -402,5 +431,17 @@ public final class PopulationScreen extends Screen {
 
     public static void open() {
         Minecraft.getInstance().setScreen(new PopulationScreen());
+    }
+
+    public static void onLost(UUID uuid) {
+        if (Minecraft.getInstance().screen instanceof PopulationScreen ps) {
+            ps.lostUuid = uuid;
+        }
+    }
+
+    public static void onBusy(UUID uuid) {
+        if (Minecraft.getInstance().screen instanceof PopulationScreen ps) {
+            ps.busyUuid = uuid;
+        }
     }
 }

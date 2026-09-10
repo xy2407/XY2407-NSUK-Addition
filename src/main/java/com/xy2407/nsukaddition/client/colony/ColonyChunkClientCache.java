@@ -29,7 +29,6 @@ public final class ColonyChunkClientCache {
     public void updateFromPacket(UUID colonyId, String colonyName, String parentCityName,
                                   List<ColonyCoreOpenResponsePacket.ChunkCoord> chunks) {
         chunkToColony.entrySet().removeIf(e -> colonyId.equals(e.getValue()));
-        // 保留已同步到的 parentCityId：本路径只带 parentCityName，若覆盖会把殖民地从父城市关联中剔除(边界被吞)。
         ColonyEntry existing = colonyEntries.get(colonyId);
         UUID parentCityId = existing != null ? existing.parentCityId() : null;
         colonyEntries.put(colonyId, new ColonyEntry(colonyName, parentCityName, parentCityId));
@@ -74,7 +73,6 @@ public final class ColonyChunkClientCache {
         return count;
     }
 
-    /** chunksOfParentCity: 返回指定父城市下全部附属地的领地区块集合(用于建筑边界/放置判定)。 */
     public Set<Long> chunksOfParentCity(UUID parentCityId) {
         if (parentCityId == null) {
             return Set.of();

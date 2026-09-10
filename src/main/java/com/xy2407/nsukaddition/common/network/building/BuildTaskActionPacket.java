@@ -13,7 +13,7 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
 import java.util.UUID;
 
 /** 建造任务操作网络包，携带市民与任务 ID，处理暂停、恢复、追踪和终止建造任务操作。 */
-public record BuildTaskActionPacket(UUID citizenId, UUID taskId, Action action) implements CustomPacketPayload {
+public record BuildTaskActionPacket(UUID citizenId, UUID taskId, Action action, boolean plan) implements CustomPacketPayload {
 
     public static final Type<BuildTaskActionPacket> TYPE = new Type<>(
             ResourceLocation.fromNamespaceAndPath(NsukAddition.MOD_ID, "build_task_action"));
@@ -27,15 +27,16 @@ public record BuildTaskActionPacket(UUID citizenId, UUID taskId, Action action) 
         b.writeUUID(p.citizenId);
         b.writeUUID(p.taskId);
         b.writeEnum(p.action);
+        b.writeBoolean(p.plan);
     }
 
     public static BuildTaskActionPacket decode(RegistryFriendlyByteBuf b) {
-        return new BuildTaskActionPacket(b.readUUID(), b.readUUID(), b.readEnum(Action.class));
+        return new BuildTaskActionPacket(b.readUUID(), b.readUUID(), b.readEnum(Action.class), b.readBoolean());
     }
 
     public static void handle(BuildTaskActionPacket p, IPayloadContext ctx) {
         if (ctx.player() instanceof ServerPlayer player && player.level() instanceof ServerLevel level) {
-            BuildTaskActionHandler.handle(level, player, p.citizenId, p.taskId, p.action);
+            BuildTaskActionHandler.handle(level, player, p.citizenId, p.taskId, p.action, p.plan);
         }
     }
 

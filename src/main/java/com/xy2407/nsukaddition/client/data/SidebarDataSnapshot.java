@@ -20,7 +20,7 @@ public final class SidebarDataSnapshot {
 
     public record BuildTask(String taskId, String displayName, String citizenId, int progressPercent,
                             String statusKey, boolean tracked,
-                            List<BuildTaskMaterial> materials) {
+                            List<BuildTaskMaterial> materials, boolean plan) {
     }
 
     public record FinanceRecord(long time, String actorName, double amount, double balanceAfter,

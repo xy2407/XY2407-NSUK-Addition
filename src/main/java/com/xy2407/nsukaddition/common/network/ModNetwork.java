@@ -96,6 +96,8 @@ public final class ModNetwork {
         PayloadRegistrar r = event.registrar("1");
         r.playToClient(SidebarSyncPacket.TYPE, SidebarSyncPacket.STREAM_CODEC, SidebarSyncPacket::handle);
         r.playToServer(CitizenTeleportPacket.TYPE, CitizenTeleportPacket.STREAM_CODEC, CitizenTeleportPacket::handle);
+        r.playToClient(CitizenLostHintPacket.TYPE, CitizenLostHintPacket.STREAM_CODEC, CitizenLostHintPacket::handle);
+        r.playToClient(CitizenBusyHintPacket.TYPE, CitizenBusyHintPacket.STREAM_CODEC, CitizenBusyHintPacket::handle);
         r.playToServer(CommercialTradeRefreshRequestPacket.TYPE, CommercialTradeRefreshRequestPacket.STREAM_CODEC, CommercialTradeRefreshRequestPacket::handle);
 
         r.playToServer(BuildTaskActionPacket.TYPE, BuildTaskActionPacket.STREAM_CODEC, BuildTaskActionPacket::handle);

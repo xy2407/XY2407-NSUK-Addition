@@ -65,7 +65,6 @@ public final class RestaurantControlBoxScreenOpener {
 
     private static RestaurantControlBoxOpenResponsePacket currentPacket;
 
-    /** 菜品选择界面中当前悬停的菜品，供 JEI R 键查看配方。 */
     private static ItemStack hoveredDishStack = ItemStack.EMPTY;
 
     public static void open(RestaurantControlBoxOpenResponsePacket packet) {
@@ -422,7 +421,6 @@ public final class RestaurantControlBoxScreenOpener {
 
     private record DishEntry(String itemId, ItemStack stack, Component name) {}
 
-    /** 通过客户端配方管理器反向查出产出该菜品的合成配方，收集其材料（去重）作为图标来源。 */
     private static java.util.List<ItemStack> resolveDishIngredients(String outputItemId) {
         java.util.List<ItemStack> out = new ArrayList<>();
         var level = Minecraft.getInstance().level;
@@ -436,7 +434,6 @@ public final class RestaurantControlBoxScreenOpener {
         var regs = level.registryAccess();
         java.util.LinkedHashMap<String, ItemStack> seen = new java.util.LinkedHashMap<>();
         try {
-            // 遍历全部配方类型（合成/烹饪/灶台/烤箱/咖啡机/搅拌机等），找出产出该菜品的配方
             for (var holder : level.getRecipeManager().getRecipes()) {
                 ItemStack result = holder.value().getResultItem(regs);
                 if (result.isEmpty() || !result.getItemHolder().is(want)) {
@@ -446,7 +443,6 @@ public final class RestaurantControlBoxScreenOpener {
                 for (var ing : holder.value().getIngredients()) {
                     ings.add(ing);
                 }
-                // KawaiiDishes 配方未覆写 getIngredients()，材料在 recipeItems
                 if (holder.value() instanceof CoffeeMachineRecipe cafe) {
                     for (var ing : cafe.getRecipeItems()) ings.add(ing);
                 } else if (holder.value() instanceof BlenderRecipe blender) {
@@ -454,10 +450,8 @@ public final class RestaurantControlBoxScreenOpener {
                 } else if (holder.value() instanceof IceCreamMakerRecipe iceCream) {
                     for (var ing : iceCream.getRecipeItems()) ings.add(ing);
                 } else if (holder.value() instanceof com.renyigesai.bakeries.common.recipe.BlenderRecipe bakeryBlender) {
-                    // bakery 搅拌机配方材料在 getInputItems()（未覆写 getIngredients）
                     for (var ing : bakeryBlender.getInputItems()) ings.add(ing);
                 } else if (holder.value() instanceof com.renyigesai.bakeries.common.recipe.DrinkRecipe bakeryDrink) {
-                    // bakery 饮品配方材料在 getInputItems()（未覆写 getIngredients）
                     for (var ing : bakeryDrink.getInputItems()) ings.add(ing);
                 }
                 for (net.minecraft.world.item.crafting.Ingredient ing : ings) {
@@ -474,13 +468,11 @@ public final class RestaurantControlBoxScreenOpener {
                 }
             }
         } catch (Throwable ignore) {
-            // 配方查询失败时返回空，卡片仅不显示材料图标，不影响其余功能
         }
         out.addAll(seen.values());
         return out;
     }
 
-    /** 菜品图标：悬停显示菜品自身原版 tooltip。用 ItemStackTexture 自绘，避免 ItemSlot 自带提示干扰。 */
     private static UIElement dishIcon(DishEntry dish) {
         ItemStack stack = dish.stack();
         return new UIElement().layout(l -> { l.width(20); l.height(20); l.flexShrink(0); })
@@ -505,7 +497,6 @@ public final class RestaurantControlBoxScreenOpener {
         return row;
     }
 
-    /** 通用材料图标（16x16）：ItemStackTexture 自绘，悬停用该物品原版 tooltip。 */
     private static UIElement materialIcon(ItemStack stack) {
         return new UIElement().layout(l -> { l.width(16); l.height(16); l.flexShrink(0); })
                 .style(s -> s.backgroundTexture(new ItemStackTexture(stack)))
@@ -536,7 +527,6 @@ public final class RestaurantControlBoxScreenOpener {
 
     private static int clamp(int v, int min, int max) { return Math.max(min, Math.min(max, v)); }
 
-    /** 用 JEI 显示悬停菜品的合成配方（R 键）。运行时未装 JEI 时静默忽略。 */
     private static void showJeiRecipes(ItemStack stack) {
         if (stack == null || stack.isEmpty()) return;
         try {
@@ -548,11 +538,9 @@ public final class RestaurantControlBoxScreenOpener {
                     .createFocus(RecipeIngredientRole.OUTPUT, ingredientType, stack);
             rt.getRecipesGui().show(focus);
         } catch (Throwable ignored) {
-            // JEI 不可用或版本接口变动时静默降级，不影响其余功能
         }
     }
 
-    /** 菜品选择界面：悬停菜品按 R 调起 JEI 查看该菜品配方。 */
     private static final class MenuSelectScreen extends ModularUIScreen {
         MenuSelectScreen(ModularUI ui, Component title) {
             super(ui, title);
@@ -560,7 +548,7 @@ public final class RestaurantControlBoxScreenOpener {
 
         @Override
         public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
-            if (keyCode == 82) { // GLFW KEY_R
+            if (keyCode == 82) {
                 showJeiRecipes(hoveredDishStack);
                 return true;
             }

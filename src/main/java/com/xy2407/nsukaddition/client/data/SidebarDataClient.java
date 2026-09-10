@@ -35,7 +35,7 @@ public final class SidebarDataClient {
             }
             tasks.add(new SidebarDataSnapshot.BuildTask(
                     task.taskId(), task.displayName(), task.citizenId(), task.progressPercent(),
-                    task.statusKey(), task.tracked(), materials));
+                    task.statusKey(), task.tracked(), materials, task.plan()));
         }
 
         List<SidebarDataSnapshot.FinanceRecord> financeRecords = new ArrayList<>();

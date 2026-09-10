@@ -1,10 +1,10 @@
 [
     {
         "matchItems": [
-            "kaleidoscope_cookery:rice",
+            "farmersdelight:rice",
             "kaleidoscope_cookery:wild_rice"
         ],
-        "resultItems": "farmersdelight:rice",
+        "resultItems": "kaleidoscope_cookery:rice",
         "rules": {
             "data": {
                 "recipe": "replace",

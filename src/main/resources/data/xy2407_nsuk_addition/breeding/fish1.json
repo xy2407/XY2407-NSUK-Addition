@@ -5,17 +5,53 @@
   "jobName": "养殖工人",
   "heldItem": "aquaculture:worm",
   "points": {
-    "work": { "type": "structure_pos", "positions": [[7, 3, 7]] },
-    "spawn": { "type": "structure_pos", "positions": [[7, 3, 7]] }
+    "work": {
+      "type": "structure_pos",
+      "positions": [
+        [
+          7,
+          3,
+          7
+        ]
+      ]
+    },
+    "spawn": {
+      "type": "structure_pos",
+      "positions": [
+        [
+          7,
+          3,
+          7
+        ]
+      ]
+    }
   },
   "containers": {
-    "input": { "type": "structure_pos", "positions": [[7, 3, 6]] },
-    "output": { "type": "structure_pos", "positions": [[7, 3, 8]] }
+    "input": {
+      "type": "structure_pos",
+      "positions": [
+        [
+          7,
+          3,
+          6
+        ]
+      ]
+    },
+    "output": {
+      "type": "structure_pos",
+      "positions": [
+        [
+          7,
+          3,
+          8
+        ]
+      ]
+    }
   },
   "recipes": [
     {
       "id": "atlantic_cod",
-      "name": "atlantic_cod",
+      "name": "大西洋鳕鱼",
       "type": "breeding_slaughter",
       "entityType": "aquaculture:atlantic_cod",
       "feedItem": "aquaculture:worm",
@@ -23,7 +59,7 @@
     },
     {
       "id": "blackfish",
-      "name": "blackfish",
+      "name": "黑鱼",
       "type": "breeding_slaughter",
       "entityType": "aquaculture:blackfish",
       "feedItem": "aquaculture:worm",
@@ -31,7 +67,7 @@
     },
     {
       "id": "pacific_halibut",
-      "name": "pacific_halibut",
+      "name": "太平洋比目鱼",
       "type": "breeding_slaughter",
       "entityType": "aquaculture:pacific_halibut",
       "feedItem": "aquaculture:worm",
@@ -39,7 +75,7 @@
     },
     {
       "id": "atlantic_halibut",
-      "name": "atlantic_halibut",
+      "name": "大西洋比目鱼",
       "type": "breeding_slaughter",
       "entityType": "aquaculture:atlantic_halibut",
       "feedItem": "aquaculture:worm",
@@ -47,7 +83,7 @@
     },
     {
       "id": "atlantic_herring",
-      "name": "atlantic_herring",
+      "name": "大西洋鲱鱼",
       "type": "breeding_slaughter",
       "entityType": "aquaculture:atlantic_herring",
       "feedItem": "aquaculture:worm",
@@ -55,7 +91,7 @@
     },
     {
       "id": "pink_salmon",
-      "name": "pink_salmon",
+      "name": "粉鲑",
       "type": "breeding_slaughter",
       "entityType": "aquaculture:pink_salmon",
       "feedItem": "aquaculture:worm",
@@ -63,7 +99,7 @@
     },
     {
       "id": "pollock",
-      "name": "pollock",
+      "name": "绿鳕",
       "type": "breeding_slaughter",
       "entityType": "aquaculture:pollock",
       "feedItem": "aquaculture:worm",
@@ -71,7 +107,7 @@
     },
     {
       "id": "rainbow_trout",
-      "name": "rainbow_trout",
+      "name": "虹鳟鱼",
       "type": "breeding_slaughter",
       "entityType": "aquaculture:rainbow_trout",
       "feedItem": "aquaculture:worm",
@@ -79,7 +115,7 @@
     },
     {
       "id": "bayad",
-      "name": "bayad",
+      "name": "鲿鱼",
       "type": "breeding_slaughter",
       "entityType": "aquaculture:bayad",
       "feedItem": "aquaculture:worm",
@@ -87,7 +123,7 @@
     },
     {
       "id": "boulti",
-      "name": "boulti",
+      "name": "尼罗罗非鱼",
       "type": "breeding_slaughter",
       "entityType": "aquaculture:boulti",
       "feedItem": "aquaculture:worm",
@@ -95,7 +131,7 @@
     },
     {
       "id": "capitaine",
-      "name": "capitaine",
+      "name": "尼罗河鲈鱼",
       "type": "breeding_slaughter",
       "entityType": "aquaculture:capitaine",
       "feedItem": "aquaculture:worm",
@@ -103,7 +139,7 @@
     },
     {
       "id": "synodontis",
-      "name": "synodontis",
+      "name": "反游猫鱼",
       "type": "breeding_slaughter",
       "entityType": "aquaculture:synodontis",
       "feedItem": "aquaculture:worm",
@@ -111,7 +147,7 @@
     },
     {
       "id": "smallmouth_bass",
-      "name": "smallmouth_bass",
+      "name": "黑鲈鱼",
       "type": "breeding_slaughter",
       "entityType": "aquaculture:smallmouth_bass",
       "feedItem": "aquaculture:worm",
@@ -119,7 +155,7 @@
     },
     {
       "id": "bluegill",
-      "name": "bluegill",
+      "name": "蓝鳃太阳鱼",
       "type": "breeding_slaughter",
       "entityType": "aquaculture:bluegill",
       "feedItem": "aquaculture:worm",
@@ -127,7 +163,7 @@
     },
     {
       "id": "brown_trout",
-      "name": "brown_trout",
+      "name": "褐鲑鱼",
       "type": "breeding_slaughter",
       "entityType": "aquaculture:brown_trout",
       "feedItem": "aquaculture:worm",
@@ -135,7 +171,7 @@
     },
     {
       "id": "carp",
-      "name": "carp",
+      "name": "鲤鱼",
       "type": "breeding_slaughter",
       "entityType": "aquaculture:carp",
       "feedItem": "aquaculture:worm",
@@ -143,7 +179,7 @@
     },
     {
       "id": "catfish",
-      "name": "catfish",
+      "name": "鲶鱼",
       "type": "breeding_slaughter",
       "entityType": "aquaculture:catfish",
       "feedItem": "aquaculture:worm",
@@ -151,7 +187,7 @@
     },
     {
       "id": "gar",
-      "name": "gar",
+      "name": "雀鳝",
       "type": "breeding_slaughter",
       "entityType": "aquaculture:gar",
       "feedItem": "aquaculture:worm",
@@ -159,7 +195,7 @@
     },
     {
       "id": "minnow",
-      "name": "minnow",
+      "name": "鲦鱼",
       "type": "breeding_slaughter",
       "entityType": "aquaculture:minnow",
       "feedItem": "aquaculture:worm",
@@ -167,7 +203,7 @@
     },
     {
       "id": "muskellunge",
-      "name": "muskellunge",
+      "name": "北美狗鱼",
       "type": "breeding_slaughter",
       "entityType": "aquaculture:muskellunge",
       "feedItem": "aquaculture:worm",
@@ -175,7 +211,7 @@
     },
     {
       "id": "perch",
-      "name": "perch",
+      "name": "河鲈鱼",
       "type": "breeding_slaughter",
       "entityType": "aquaculture:perch",
       "feedItem": "aquaculture:worm",
@@ -183,7 +219,7 @@
     },
     {
       "id": "arapaima",
-      "name": "arapaima",
+      "name": "巨滑舌鱼",
       "type": "breeding_slaughter",
       "entityType": "aquaculture:arapaima",
       "feedItem": "aquaculture:worm",
@@ -191,7 +227,7 @@
     },
     {
       "id": "piranha",
-      "name": "piranha",
+      "name": "食人鱼",
       "type": "breeding_slaughter",
       "entityType": "aquaculture:piranha",
       "feedItem": "aquaculture:worm",
@@ -199,7 +235,7 @@
     },
     {
       "id": "tambaqui",
-      "name": "tambaqui",
+      "name": "大盖巨脂鲤",
       "type": "breeding_slaughter",
       "entityType": "aquaculture:tambaqui",
       "feedItem": "aquaculture:worm",
@@ -207,7 +243,7 @@
     },
     {
       "id": "brown_shrooma",
-      "name": "brown_shrooma",
+      "name": "褐蕈鱼",
       "type": "breeding_slaughter",
       "entityType": "aquaculture:brown_shrooma",
       "feedItem": "aquaculture:worm",
@@ -215,7 +251,7 @@
     },
     {
       "id": "red_shrooma",
-      "name": "red_shrooma",
+      "name": "红蕈鱼",
       "type": "breeding_slaughter",
       "entityType": "aquaculture:red_shrooma",
       "feedItem": "aquaculture:worm",
@@ -223,7 +259,7 @@
     },
     {
       "id": "jellyfish",
-      "name": "jellyfish",
+      "name": "水母",
       "type": "breeding_slaughter",
       "entityType": "aquaculture:jellyfish",
       "feedItem": "aquaculture:worm",
@@ -231,7 +267,7 @@
     },
     {
       "id": "red_grouper",
-      "name": "red_grouper",
+      "name": "赤点石斑鱼",
       "type": "breeding_slaughter",
       "entityType": "aquaculture:red_grouper",
       "feedItem": "aquaculture:worm",
@@ -239,7 +275,7 @@
     },
     {
       "id": "tuna",
-      "name": "tuna",
+      "name": "金枪鱼",
       "type": "breeding_slaughter",
       "entityType": "aquaculture:tuna",
       "feedItem": "aquaculture:worm",
@@ -247,7 +283,7 @@
     },
     {
       "id": "tuna",
-      "name": "tuna",
+      "name": "金枪鱼",
       "type": "breeding_slaughter",
       "entityType": "tide:tuna",
       "feedItem": "tide:crystal_shrimp",
@@ -255,7 +291,7 @@
     },
     {
       "id": "mackerel",
-      "name": "mackerel",
+      "name": "鲭鱼",
       "type": "breeding_slaughter",
       "entityType": "tide:mackerel",
       "feedItem": "tide:crystal_shrimp",
@@ -263,7 +299,7 @@
     },
     {
       "id": "snook",
-      "name": "snook",
+      "name": "锯盖鱼",
       "type": "breeding_slaughter",
       "entityType": "tide:snook",
       "feedItem": "tide:crystal_shrimp",
@@ -271,7 +307,7 @@
     },
     {
       "id": "angelfish",
-      "name": "angelfish",
+      "name": "神仙鱼",
       "type": "breeding_slaughter",
       "entityType": "tide:angelfish",
       "feedItem": "tide:crystal_shrimp",
@@ -279,7 +315,7 @@
     },
     {
       "id": "mahi_mahi",
-      "name": "mahi_mahi",
+      "name": "鲯鳅",
       "type": "breeding_slaughter",
       "entityType": "tide:mahi_mahi",
       "feedItem": "tide:crystal_shrimp",
@@ -287,7 +323,7 @@
     },
     {
       "id": "sailfish",
-      "name": "sailfish",
+      "name": "旗鱼",
       "type": "breeding_slaughter",
       "entityType": "tide:sailfish",
       "feedItem": "tide:crystal_shrimp",
@@ -295,7 +331,7 @@
     },
     {
       "id": "swordfish",
-      "name": "swordfish",
+      "name": "剑鱼",
       "type": "breeding_slaughter",
       "entityType": "tide:swordfish",
       "feedItem": "tide:crystal_shrimp",
@@ -303,7 +339,7 @@
     },
     {
       "id": "manta_ray",
-      "name": "manta_ray",
+      "name": "蝠鲼",
       "type": "breeding_slaughter",
       "entityType": "tide:manta_ray",
       "feedItem": "tide:guppy",
@@ -311,7 +347,7 @@
     },
     {
       "id": "aquathorn",
-      "name": "aquathorn",
+      "name": "流水荆棘",
       "type": "breeding_slaughter",
       "entityType": "tide:aquathorn",
       "feedItem": "tide:crystal_shrimp",
@@ -319,7 +355,7 @@
     },
     {
       "id": "rainbow_trout",
-      "name": "rainbow_trout",
+      "name": "虹鳟",
       "type": "breeding_slaughter",
       "entityType": "tide:rainbow_trout",
       "feedItem": "tide:crystal_shrimp",
@@ -327,7 +363,7 @@
     },
     {
       "id": "brook_trout",
-      "name": "brook_trout",
+      "name": "溪鳟",
       "type": "breeding_slaughter",
       "entityType": "tide:brook_trout",
       "feedItem": "tide:crystal_shrimp",
@@ -335,7 +371,7 @@
     },
     {
       "id": "largemouth_bass",
-      "name": "largemouth_bass",
+      "name": "大口黑鲈",
       "type": "breeding_slaughter",
       "entityType": "tide:largemouth_bass",
       "feedItem": "tide:crystal_shrimp",
@@ -343,7 +379,7 @@
     },
     {
       "id": "smallmouth_bass",
-      "name": "smallmouth_bass",
+      "name": "小口黑鲈",
       "type": "breeding_slaughter",
       "entityType": "tide:smallmouth_bass",
       "feedItem": "tide:crystal_shrimp",
@@ -351,7 +387,7 @@
     },
     {
       "id": "white_crappie",
-      "name": "white_crappie",
+      "name": "白莓鲈",
       "type": "breeding_slaughter",
       "entityType": "tide:white_crappie",
       "feedItem": "tide:crystal_shrimp",
@@ -359,7 +395,7 @@
     },
     {
       "id": "black_crappie",
-      "name": "black_crappie",
+      "name": "黑莓鲈",
       "type": "breeding_slaughter",
       "entityType": "tide:black_crappie",
       "feedItem": "tide:crystal_shrimp",
@@ -367,7 +403,7 @@
     },
     {
       "id": "yellow_perch",
-      "name": "yellow_perch",
+      "name": "黄鲈",
       "type": "breeding_slaughter",
       "entityType": "tide:yellow_perch",
       "feedItem": "tide:crystal_shrimp",
@@ -375,7 +411,7 @@
     },
     {
       "id": "carp",
-      "name": "carp",
+      "name": "鲤鱼",
       "type": "breeding_slaughter",
       "entityType": "tide:carp",
       "feedItem": "tide:crystal_shrimp",
@@ -383,7 +419,7 @@
     },
     {
       "id": "pike",
-      "name": "pike",
+      "name": "狗鱼",
       "type": "breeding_slaughter",
       "entityType": "tide:pike",
       "feedItem": "tide:crystal_shrimp",
@@ -391,7 +427,7 @@
     },
     {
       "id": "guppy",
-      "name": "guppy",
+      "name": "孔雀鱼",
       "type": "breeding_slaughter",
       "entityType": "tide:guppy",
       "feedItem": "tide:crystal_shrimp",
@@ -399,7 +435,7 @@
     },
     {
       "id": "bluegill",
-      "name": "bluegill",
+      "name": "蓝鳃太阳鱼",
       "type": "breeding_slaughter",
       "entityType": "tide:bluegill",
       "feedItem": "tide:crystal_shrimp",
@@ -407,7 +443,7 @@
     },
     {
       "id": "catfish",
-      "name": "catfish",
+      "name": "鲶鱼",
       "type": "breeding_slaughter",
       "entityType": "tide:catfish",
       "feedItem": "tide:crystal_shrimp",
@@ -415,7 +451,7 @@
     },
     {
       "id": "walleye",
-      "name": "walleye",
+      "name": "玻璃梭鲈",
       "type": "breeding_slaughter",
       "entityType": "tide:walleye",
       "feedItem": "tide:crystal_shrimp",
@@ -423,7 +459,7 @@
     },
     {
       "id": "arapaima",
-      "name": "arapaima",
+      "name": "巨骨舌鱼",
       "type": "breeding_slaughter",
       "entityType": "tide:arapaima",
       "feedItem": "tide:crystal_shrimp",
@@ -431,7 +467,7 @@
     },
     {
       "id": "mirage_catfish",
-      "name": "mirage_catfish",
+      "name": "幻影鲶鱼",
       "type": "breeding_slaughter",
       "entityType": "tide:mirage_catfish",
       "feedItem": "tide:crystal_shrimp",
@@ -439,7 +475,7 @@
     },
     {
       "id": "sand_tiger_shark",
-      "name": "sand_tiger_shark",
+      "name": "沙虎鲨",
       "type": "breeding_slaughter",
       "entityType": "tide:sand_tiger_shark",
       "feedItem": "tide:crystal_shrimp",
@@ -447,7 +483,7 @@
     },
     {
       "id": "slimy_salmon",
-      "name": "slimy_salmon",
+      "name": "黏液鲑鱼",
       "type": "breeding_slaughter",
       "entityType": "tide:slimy_salmon",
       "feedItem": "tide:crystal_shrimp",
@@ -455,7 +491,7 @@
     },
     {
       "id": "frostbite_flounder",
-      "name": "frostbite_flounder",
+      "name": "霜冻比目鱼",
       "type": "breeding_slaughter",
       "entityType": "tide:frostbite_flounder",
       "feedItem": "tide:crystal_shrimp",
@@ -463,7 +499,7 @@
     },
     {
       "id": "sturgeon",
-      "name": "sturgeon",
+      "name": "鲟鱼",
       "type": "breeding_slaughter",
       "entityType": "tide:sturgeon",
       "feedItem": "tide:crystal_shrimp",
@@ -471,7 +507,7 @@
     },
     {
       "id": "blossom_bass",
-      "name": "blossom_bass",
+      "name": "花鲈",
       "type": "breeding_slaughter",
       "entityType": "tide:blossom_bass",
       "feedItem": "tide:crystal_shrimp",
@@ -479,7 +515,7 @@
     },
     {
       "id": "spore_stalker",
-      "name": "spore_stalker",
+      "name": "孢子追踪者",
       "type": "breeding_slaughter",
       "entityType": "tide:spore_stalker",
       "feedItem": "tide:crystal_shrimp",
@@ -487,7 +523,7 @@
     },
     {
       "id": "mooneye",
-      "name": "mooneye",
+      "name": "月眼鱼",
       "type": "breeding_slaughter",
       "entityType": "tide:mooneye",
       "feedItem": "tide:crystal_shrimp",
@@ -495,7 +531,7 @@
     },
     {
       "id": "bull_shark",
-      "name": "bull_shark",
+      "name": "公牛鲨",
       "type": "breeding_slaughter",
       "entityType": "tide:bull_shark",
       "feedItem": "tide:crystal_shrimp",
@@ -503,7 +539,7 @@
     },
     {
       "id": "ocean_perch",
-      "name": "ocean_perch",
+      "name": "海鲈",
       "type": "breeding_slaughter",
       "entityType": "tide:ocean_perch",
       "feedItem": "tide:crystal_shrimp",
@@ -511,7 +547,7 @@
     },
     {
       "id": "red_snapper",
-      "name": "red_snapper",
+      "name": "红鲷鱼",
       "type": "breeding_slaughter",
       "entityType": "tide:red_snapper",
       "feedItem": "tide:crystal_shrimp",
@@ -519,7 +555,7 @@
     },
     {
       "id": "flounder",
-      "name": "flounder",
+      "name": "比目鱼",
       "type": "breeding_slaughter",
       "entityType": "tide:flounder",
       "feedItem": "tide:crystal_shrimp",
@@ -527,7 +563,7 @@
     },
     {
       "id": "anchovy",
-      "name": "anchovy",
+      "name": "鳀鱼",
       "type": "breeding_slaughter",
       "entityType": "tide:anchovy",
       "feedItem": "tide:crystal_shrimp",
@@ -535,7 +571,7 @@
     },
     {
       "id": "devils_hole_pupfish",
-      "name": "devils_hole_pupfish",
+      "name": "魔鳉",
       "type": "breeding_slaughter",
       "entityType": "tide:devils_hole_pupfish",
       "feedItem": "tide:crystal_shrimp",
@@ -543,7 +579,7 @@
     },
     {
       "id": "midas_fish",
-      "name": "midas_fish",
+      "name": "点金鱼",
       "type": "breeding_slaughter",
       "entityType": "tide:midas_fish",
       "feedItem": "tide:crystal_shrimp",
@@ -551,7 +587,7 @@
     },
     {
       "id": "incandescent_larva",
-      "name": "incandescent_larva",
+      "name": "白炽幼虫",
       "type": "breeding_slaughter",
       "entityType": "tide:incandescent_larva",
       "feedItem": "tide:crystal_shrimp",
@@ -559,7 +595,7 @@
     },
     {
       "id": "bedrock_bug",
-      "name": "bedrock_bug",
+      "name": "基岩虫",
       "type": "breeding_slaughter",
       "entityType": "tide:bedrock_bug",
       "feedItem": "tide:crystal_shrimp",
@@ -567,7 +603,7 @@
     },
     {
       "id": "sleepy_carp",
-      "name": "sleepy_carp",
+      "name": "嗜睡鲤",
       "type": "breeding_slaughter",
       "entityType": "tide:sleepy_carp",
       "feedItem": "tide:crystal_shrimp",
@@ -575,7 +611,7 @@
     },
     {
       "id": "blue_neonfish",
-      "name": "blue_neonfish",
+      "name": "蓝色霓虹鱼",
       "type": "breeding_slaughter",
       "entityType": "tide:blue_neonfish",
       "feedItem": "tide:crystal_shrimp",
@@ -583,7 +619,7 @@
     },
     {
       "id": "judgment_fish",
-      "name": "judgment_fish",
+      "name": "审判之鱼",
       "type": "breeding_slaughter",
       "entityType": "tide:judgment_fish",
       "feedItem": "tide:crystal_shrimp",
@@ -591,7 +627,7 @@
     },
     {
       "id": "deep_blue",
-      "name": "deep_blue",
+      "name": "深邃之蓝",
       "type": "breeding_slaughter",
       "entityType": "tide:deep_blue",
       "feedItem": "tide:crystal_shrimp",
@@ -599,7 +635,7 @@
     },
     {
       "id": "nephrosilu",
-      "name": "nephrosilu",
+      "name": "肾形畸鲶",
       "type": "breeding_slaughter",
       "entityType": "tide:nephrosilu",
       "feedItem": "tide:crystal_shrimp",
@@ -607,7 +643,7 @@
     },
     {
       "id": "neptune_koi",
-      "name": "neptune_koi",
+      "name": "海王鲤",
       "type": "breeding_slaughter",
       "entityType": "tide:neptune_koi",
       "feedItem": "tide:crystal_shrimp",
@@ -615,7 +651,7 @@
     },
     {
       "id": "pluto_snail",
-      "name": "pluto_snail",
+      "name": "冥王海螺",
       "type": "breeding_slaughter",
       "entityType": "tide:pluto_snail",
       "feedItem": "tide:crystal_shrimp",
@@ -623,7 +659,7 @@
     },
     {
       "id": "sun_emblem",
-      "name": "sun_emblem",
+      "name": "烈阳徽章水母",
       "type": "breeding_slaughter",
       "entityType": "tide:sun_emblem",
       "feedItem": "tide:crystal_shrimp",
@@ -631,7 +667,7 @@
     },
     {
       "id": "saturn_cuttlefish",
-      "name": "saturn_cuttlefish",
+      "name": "土星乌贼",
       "type": "breeding_slaughter",
       "entityType": "tide:saturn_cuttlefish",
       "feedItem": "tide:crystal_shrimp",
@@ -639,7 +675,7 @@
     },
     {
       "id": "marstilus",
-      "name": "marstilus",
+      "name": "火星螺",
       "type": "breeding_slaughter",
       "entityType": "tide:marstilus",
       "feedItem": "tide:crystal_shrimp",
@@ -647,7 +683,7 @@
     },
     {
       "id": "uranias_pisces",
-      "name": "uranias_pisces",
+      "name": "天王双鱼",
       "type": "breeding_slaughter",
       "entityType": "tide:uranias_pisces",
       "feedItem": "tide:guppy",
@@ -655,7 +691,7 @@
     },
     {
       "id": "great_white_shark",
-      "name": "great_white_shark",
+      "name": "大白鲨",
       "type": "breeding_slaughter",
       "entityType": "tide:great_white_shark",
       "feedItem": "tide:guppy",
@@ -663,7 +699,7 @@
     },
     {
       "id": "shooting_starfish",
-      "name": "shooting_starfish",
+      "name": "流星",
       "type": "breeding_slaughter",
       "entityType": "tide:shooting_starfish",
       "feedItem": "tide:crystal_shrimp",
@@ -671,7 +707,7 @@
     },
     {
       "id": "coelacanth",
-      "name": "coelacanth",
+      "name": "腔棘鱼",
       "type": "breeding_slaughter",
       "entityType": "tide:coelacanth",
       "feedItem": "tide:guppy",
@@ -679,7 +715,7 @@
     },
     {
       "id": "cave_eel",
-      "name": "cave_eel",
+      "name": "穴鳗",
       "type": "breeding_slaughter",
       "entityType": "tide:cave_eel",
       "feedItem": "tide:guppy",
@@ -687,7 +723,7 @@
     },
     {
       "id": "cave_crawler",
-      "name": "cave_crawler",
+      "name": "穴爬鱼",
       "type": "breeding_slaughter",
       "entityType": "tide:cave_crawler",
       "feedItem": "tide:guppy",
@@ -695,7 +731,7 @@
     },
     {
       "id": "deep_grouper",
-      "name": "deep_grouper",
+      "name": "深层石斑鱼",
       "type": "breeding_slaughter",
       "entityType": "tide:deep_grouper",
       "feedItem": "tide:crystal_shrimp",
@@ -703,7 +739,7 @@
     },
     {
       "id": "shadow_snapper",
-      "name": "shadow_snapper",
+      "name": "暗影鲷鱼",
       "type": "breeding_slaughter",
       "entityType": "tide:shadow_snapper",
       "feedItem": "tide:crystal_shrimp",
@@ -711,7 +747,7 @@
     },
     {
       "id": "glowfish",
-      "name": "glowfish",
+      "name": "荧光鱼",
       "type": "breeding_slaughter",
       "entityType": "tide:glowfish",
       "feedItem": "tide:crystal_shrimp",
@@ -719,7 +755,7 @@
     },
     {
       "id": "anglerfish",
-      "name": "anglerfish",
+      "name": "鮟鱇鱼",
       "type": "breeding_slaughter",
       "entityType": "tide:anglerfish",
       "feedItem": "tide:crystal_shrimp",
@@ -727,7 +763,7 @@
     },
     {
       "id": "abyss_angler",
-      "name": "abyss_angler",
+      "name": "深层鮟鱇鱼",
       "type": "breeding_slaughter",
       "entityType": "tide:abyss_angler",
       "feedItem": "tide:crystal_shrimp",
@@ -735,7 +771,7 @@
     },
     {
       "id": "iron_tetra",
-      "name": "iron_tetra",
+      "name": "铁脂鲤",
       "type": "breeding_slaughter",
       "entityType": "tide:iron_tetra",
       "feedItem": "tide:crystal_shrimp",
@@ -743,7 +779,7 @@
     },
     {
       "id": "lapis_lanternfish",
-      "name": "lapis_lanternfish",
+      "name": "青金灯笼鱼",
       "type": "breeding_slaughter",
       "entityType": "tide:lapis_lanternfish",
       "feedItem": "tide:crystal_shrimp",
@@ -751,7 +787,7 @@
     },
     {
       "id": "crystal_shrimp",
-      "name": "crystal_shrimp",
+      "name": "晶虾",
       "type": "breeding_slaughter",
       "entityType": "tide:crystal_shrimp",
       "feedItem": "minecraft:wheat_seeds",
@@ -759,7 +795,7 @@
     },
     {
       "id": "dripstone_darter",
-      "name": "dripstone_darter",
+      "name": "滴水石镖鲈",
       "type": "breeding_slaughter",
       "entityType": "tide:dripstone_darter",
       "feedItem": "tide:crystal_shrimp",
@@ -767,7 +803,7 @@
     },
     {
       "id": "luminescent_jellyfish",
-      "name": "luminescent_jellyfish",
+      "name": "夜光水母",
       "type": "breeding_slaughter",
       "entityType": "tide:luminescent_jellyfish",
       "feedItem": "tide:crystal_shrimp",
@@ -775,7 +811,7 @@
     },
     {
       "id": "crystalline_carp",
-      "name": "crystalline_carp",
+      "name": "晶鲤",
       "type": "breeding_slaughter",
       "entityType": "tide:crystalline_carp",
       "feedItem": "tide:crystal_shrimp",
@@ -783,7 +819,7 @@
     },
     {
       "id": "gilded_minnow",
-      "name": "gilded_minnow",
+      "name": "金鲦鱼",
       "type": "breeding_slaughter",
       "entityType": "tide:gilded_minnow",
       "feedItem": "tide:crystal_shrimp",
@@ -791,7 +827,7 @@
     },
     {
       "id": "bedrock_tetra",
-      "name": "bedrock_tetra",
+      "name": "基岩脂鲤",
       "type": "breeding_slaughter",
       "entityType": "tide:bedrock_tetra",
       "feedItem": "tide:crystal_shrimp",
@@ -799,7 +835,7 @@
     },
     {
       "id": "chasm_eel",
-      "name": "chasm_eel",
+      "name": "裂隙鳗",
       "type": "breeding_slaughter",
       "entityType": "tide:chasm_eel",
       "feedItem": "tide:guppy",
@@ -807,7 +843,7 @@
     },
     {
       "id": "echo_snapper",
-      "name": "echo_snapper",
+      "name": "回响鲷鱼",
       "type": "breeding_slaughter",
       "entityType": "tide:echo_snapper",
       "feedItem": "tide:crystal_shrimp",
@@ -815,7 +851,7 @@
     },
     {
       "id": "windbass",
-      "name": "windbass",
+      "name": "疾风鲈",
       "type": "breeding_slaughter",
       "entityType": "tide:windbass",
       "feedItem": "tide:crystal_shrimp",
@@ -823,7 +859,7 @@
     },
     {
       "id": "snatcher_squid",
-      "name": "snatcher_squid",
+      "name": "劫掠鱿鱼",
       "type": "breeding_slaughter",
       "entityType": "tide:snatcher_squid",
       "feedItem": "tide:guppy",
@@ -831,7 +867,7 @@
     },
     {
       "id": "voidseeker",
-      "name": "voidseeker",
+      "name": "虚空寻觅者",
       "type": "breeding_slaughter",
       "entityType": "tide:voidseeker",
       "feedItem": "tide:crystal_shrimp",
@@ -839,7 +875,7 @@
     },
     {
       "id": "dragon_fish",
-      "name": "dragon_fish",
+      "name": "龙鱼",
       "type": "breeding_slaughter",
       "entityType": "tide:dragon_fish",
       "feedItem": "tide:guppy",
@@ -847,7 +883,7 @@
     },
     {
       "id": "vengeance",
-      "name": "vengeance",
+      "name": "怨鳞",
       "type": "breeding_slaughter",
       "entityType": "tide:vengeance",
       "feedItem": "tide:crystal_shrimp",
@@ -855,7 +891,7 @@
     },
     {
       "id": "pentapus",
-      "name": "pentapus",
+      "name": "五足章鱼",
       "type": "breeding_slaughter",
       "entityType": "tide:pentapus",
       "feedItem": "tide:guppy",
@@ -863,7 +899,7 @@
     },
     {
       "id": "darkness_eater",
-      "name": "darkness_eater",
+      "name": "黑暗吞食者",
       "type": "breeding_slaughter",
       "entityType": "tide:darkness_eater",
       "feedItem": "tide:guppy",
@@ -871,7 +907,7 @@
     },
     {
       "id": "shadow_shark",
-      "name": "shadow_shark",
+      "name": "暗影鲨",
       "type": "breeding_slaughter",
       "entityType": "tide:shadow_shark",
       "feedItem": "tide:guppy",
@@ -879,7 +915,7 @@
     },
     {
       "id": "alpha_fish",
-      "name": "alpha_fish",
+      "name": "始祖鱼",
       "type": "breeding_slaughter",
       "entityType": "tide:alpha_fish",
       "feedItem": "tide:guppy",
@@ -887,7 +923,7 @@
     },
     {
       "id": "pale_clubfish",
-      "name": "pale_clubfish",
+      "name": "苍白棒鱼",
       "type": "breeding_slaughter",
       "entityType": "tide:pale_clubfish",
       "feedItem": "tide:crystal_shrimp",
@@ -895,7 +931,7 @@
     },
     {
       "id": "amber_rockfish",
-      "name": "amber_rockfish",
+      "name": "琥珀岩鱼",
       "type": "breeding_slaughter",
       "entityType": "tide:amber_rockfish",
       "feedItem": "tide:crystal_shrimp",
@@ -903,7 +939,7 @@
     },
     {
       "id": "enderfin",
-      "name": "enderfin",
+      "name": "末影鳍鱼",
       "type": "breeding_slaughter",
       "entityType": "tide:enderfin",
       "feedItem": "tide:crystal_shrimp",
@@ -911,7 +947,7 @@
     },
     {
       "id": "chorus_cod",
-      "name": "chorus_cod",
+      "name": "紫颂鳕鱼",
       "type": "breeding_slaughter",
       "entityType": "tide:chorus_cod",
       "feedItem": "tide:crystal_shrimp",
@@ -919,7 +955,7 @@
     },
     {
       "id": "ender_glider",
-      "name": "ender_glider",
+      "name": "末影滑翔者",
       "type": "breeding_slaughter",
       "entityType": "tide:ender_glider",
       "feedItem": "tide:crystal_shrimp",
@@ -927,7 +963,7 @@
     },
     {
       "id": "endergazer",
-      "name": "endergazer",
+      "name": "末影凝视者",
       "type": "breeding_slaughter",
       "entityType": "tide:endergazer",
       "feedItem": "tide:crystal_shrimp",
@@ -935,7 +971,7 @@
     },
     {
       "id": "violet_carp",
-      "name": "violet_carp",
+      "name": "紫鲤",
       "type": "breeding_slaughter",
       "entityType": "tide:violet_carp",
       "feedItem": "tide:crystal_shrimp",
@@ -943,7 +979,7 @@
     },
     {
       "id": "red_40",
-      "name": "red_40",
+      "name": "诱惑红40号",
       "type": "breeding_slaughter",
       "entityType": "tide:red_40",
       "feedItem": "tide:crystal_shrimp",
@@ -951,7 +987,7 @@
     },
     {
       "id": "dutchman_sock",
-      "name": "dutchman_sock",
+      "name": "飞翔荷兰人的袜子",
       "type": "breeding_slaughter",
       "entityType": "tide:dutchman_sock",
       "feedItem": "tide:crystal_shrimp",
@@ -959,7 +995,7 @@
     },
     {
       "id": "elytrout",
-      "name": "elytrout",
+      "name": "鞘翅鳟",
       "type": "breeding_slaughter",
       "entityType": "tide:elytrout",
       "feedItem": "tide:crystal_shrimp",
@@ -967,7 +1003,7 @@
     },
     {
       "id": "mantyvern",
-      "name": "mantyvern",
+      "name": "蝠飞龙",
       "type": "breeding_slaughter",
       "entityType": "tide:mantyvern",
       "feedItem": "tide:guppy",

@@ -38,6 +38,7 @@ public class BuildingStructureServiceMixin {
     private static final Path BREEDING_DIR = FMLPaths.GAMEDIR.get().resolve("xy2407_nsuk_addition/breeding");
     private static final Path RESTAURANT_DIR = FMLPaths.GAMEDIR.get().resolve("xy2407_nsuk_addition/restaurant");
     private static final Path FOREIGN_TRADE_DIR = FMLPaths.GAMEDIR.get().resolve("xy2407_nsuk_addition/foreign_trade");
+    private static final Path PHYSICAL_DIR = FMLPaths.GAMEDIR.get().resolve("xy2407_nsuk_addition/physical");
     private static final Map<String, String> LEGACY_BLOCK_REMAPS = Map.of(
             "minecraft:grass", "minecraft:short_grass"
     );
@@ -67,6 +68,8 @@ public class BuildingStructureServiceMixin {
             dir = RESTAURANT_DIR;
         } else if ("foreign_trade".equalsIgnoreCase(category)) {
             dir = FOREIGN_TRADE_DIR;
+        } else if ("physical".equalsIgnoreCase(category)) {
+            dir = PHYSICAL_DIR;
         } else {
             return;
         }

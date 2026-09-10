@@ -52,7 +52,8 @@ public record SidebarSyncPacket(
             String statusKey,
             boolean tracked,
             List<MaterialEntry> required,
-            List<MaterialEntry> available
+            List<MaterialEntry> available,
+            boolean plan
     ) {
     }
 
@@ -102,6 +103,7 @@ public record SidebarSyncPacket(
             b.writeBoolean(task.tracked);
             writeMaterials(b, task.required);
             writeMaterials(b, task.available);
+            b.writeBoolean(task.plan);
         }
 
         b.writeVarInt(p.financeEntries.size());
@@ -149,7 +151,8 @@ public record SidebarSyncPacket(
             boolean tracked = b.readBoolean();
             List<MaterialEntry> required = readMaterials(b);
             List<MaterialEntry> available = readMaterials(b);
-            buildTasks.add(new BuildTaskData(taskId, displayName, citizenId, progress, status, tracked, required, available));
+            boolean plan = b.readBoolean();
+            buildTasks.add(new BuildTaskData(taskId, displayName, citizenId, progress, status, tracked, required, available, plan));
         }
 
         int financeCount = b.readVarInt();

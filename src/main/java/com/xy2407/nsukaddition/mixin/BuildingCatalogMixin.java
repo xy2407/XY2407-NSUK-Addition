@@ -103,7 +103,8 @@ public abstract class BuildingCatalogMixin {
 
     private static Path looseDir(String category) {
         String normalized = category == null ? "" : category.toLowerCase(Locale.ROOT);
-        if (!"breeding".equals(normalized) && !"restaurant".equals(normalized) && !"foreign_trade".equals(normalized)) {
+        if (!"breeding".equals(normalized) && !"restaurant".equals(normalized)
+                && !"foreign_trade".equals(normalized) && !"physical".equals(normalized)) {
             return null;
         }
         return FMLPaths.GAMEDIR.get().resolve("xy2407_nsuk_addition/" + normalized);

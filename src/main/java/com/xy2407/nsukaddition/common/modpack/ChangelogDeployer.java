@@ -16,8 +16,10 @@ public final class ChangelogDeployer {
     private static final String EXTERNAL_DIR = "xy2407_nsuk_addition";
     private static final String FILE_NAME = "changelog.md";
     private static final String RESOURCE_PATH = "/data/xy2407_nsuk_addition/changelog.md";
+    private static final String PREVIEW_FILE_NAME = "preview_plan.md";
+    private static final String PREVIEW_RESOURCE_PATH = "/data/xy2407_nsuk_addition/preview_plan.md";
     private static final String VERSION_ENTRY = "_nsuk_changelog_version.txt";
-    private static final String CURRENT_VERSION = "1";
+    private static final String CURRENT_VERSION = "2";
 
     private ChangelogDeployer() {
     }
@@ -42,6 +44,16 @@ public final class ChangelogDeployer {
             Files.copy(is, dirPath.resolve(FILE_NAME), StandardCopyOption.REPLACE_EXISTING);
         } catch (IOException e) {
             NsukAddition.LOGGER.error("nsuk_addition: Failed to deploy changelog md", e);
+            return;
+        }
+        try (InputStream is = ChangelogDeployer.class.getResourceAsStream(PREVIEW_RESOURCE_PATH)) {
+            if (is == null) {
+                NsukAddition.LOGGER.warn("nsuk_addition: Missing preview plan resource: {}", PREVIEW_RESOURCE_PATH);
+                return;
+            }
+            Files.copy(is, dirPath.resolve(PREVIEW_FILE_NAME), StandardCopyOption.REPLACE_EXISTING);
+        } catch (IOException e) {
+            NsukAddition.LOGGER.error("nsuk_addition: Failed to deploy preview plan md", e);
             return;
         }
         writeVersion(dirPath);

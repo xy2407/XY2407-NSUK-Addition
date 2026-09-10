@@ -160,6 +160,10 @@ public final class NsukAdditionClient {
 
         SidebarSyncBridge.install(SidebarSyncClientHandler.INSTANCE);
         DialogNpcOpenBridge.install(DialogScreen::open);
+        com.xy2407.nsukaddition.common.network.clientbound.CitizenLostBridge.install(
+                com.xy2407.nsukaddition.client.hud.PopulationScreen::onLost);
+        com.xy2407.nsukaddition.common.network.clientbound.CitizenBusyBridge.install(
+                com.xy2407.nsukaddition.client.hud.PopulationScreen::onBusy);
 
         RtsPlacedBuildingSyncBridge.install(RtsPlacedBuildingCache::applySync);
         RtsBuildingBoundsClearBridge.install(() -> client.cn.kafei.simukraft.client.buildbox.BuildingBoundsRenderer.clearAll());

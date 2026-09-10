@@ -97,6 +97,9 @@ public final class CitizenCombatService {
         }
         boolean hasMoveTask = RtsCitizenTaskManager.hasActiveTask(id);
         RtsCitizenTaskManager.applyRtsSpeed(npc, hasMoveTask);
+        if (hasMoveTask) {
+            return;
+        }
         NpcCombatState state = STATES.computeIfAbsent(id, k -> new NpcCombatState());
         if (state.rangedCooldown > 0) {
             state.rangedCooldown--;

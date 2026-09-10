@@ -302,7 +302,6 @@ public final class DialogNpcDialogService {
                 new DialogNpcOpenPacket(title, body, options, resolveActions(actions), entity.getId()));
     }
 
-    /** 将形如 url:<key> 的动作按 DialogLinks 配置解析为 url:<实际地址>，未配置则置空，避免服务端硬编码链接。 */
     private static List<String> resolveActions(List<String> actions) {
         if (actions == null) {
             return null;

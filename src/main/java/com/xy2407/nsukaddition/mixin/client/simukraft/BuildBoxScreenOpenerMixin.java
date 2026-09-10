@@ -68,6 +68,16 @@ public class BuildBoxScreenOpenerMixin {
             layout.flexShrink(0);
         });
         gridRegion.addChild(foreignTradeBtn);
+
+        Button physicalBtn = new Button();
+        physicalBtn.setText(Component.translatable("gui.category.physical"));
+        physicalBtn.setOnClick(event -> BuildingListScreenOpener.open("physical", pos));
+        physicalBtn.layout(layout -> {
+            layout.width(110);
+            layout.height(20);
+            layout.flexShrink(0);
+        });
+        gridRegion.addChild(physicalBtn);
         return gridRegion;
     }
 
@@ -84,6 +94,9 @@ public class BuildBoxScreenOpenerMixin {
             ci.cancel();
         } else if ("gui.category.foreign_trade".equals(translationKey)) {
             BuildingListScreenOpener.open("foreign_trade", buildBoxPos);
+            ci.cancel();
+        } else if ("gui.category.physical".equals(translationKey)) {
+            BuildingListScreenOpener.open("physical", buildBoxPos);
             ci.cancel();
         }
     }
